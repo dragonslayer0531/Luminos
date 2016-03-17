@@ -1,0 +1,19 @@
+Completed:
+	Component Based Entities
+	GLFW Based Display
+	Input Handling
+	Loading to VAO and VBO
+	Model Textures
+	Vector Math Classes
+	4x4 Matrix Class
+
+In Progress:
+	Terrain Generation - Attempting to create world-like terrains by creating a spherical mesh as a terrain, instead of the former planar style terrains.
+	Physics - Currently only allows for gravity to be calculated with.  It will take other forces, and have an the extendablity for custom user forces.
+
+Future (Order subject to change):
+	Rendering
+	Random Generation
+	Shaders
+	Audio
+	Animation
