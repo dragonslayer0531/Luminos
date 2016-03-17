@@ -2,6 +2,7 @@ package luminoscore.graphics.entities;
 
 import java.util.HashMap;
 
+import luminoscore.graphics.entities.components.Camera;
 import luminoscore.graphics.entities.components.Component;
 import luminoscore.graphics.entities.components.ComponentException;
 import luminoscore.graphics.models.TexturedModel;
@@ -16,6 +17,7 @@ public class Entity {
 	
 	//Component Mapping	
 	private HashMap<Class<?>, Component> components;
+	private Camera camera;
 	
 	//Constructor Fields
 	private Vector3f position;
@@ -54,8 +56,7 @@ public class Entity {
 	 */
 	public void updateComponent(Component c) throws ComponentException {
 		if(components.containsKey(c.getClass())) {
-			components.remove(c.getClass());
-			components.put(c.getClass(), c);
+			components.get(c.getClass()).setComponent(c);
 		} else {
 			addComponent(c);
 		}
@@ -88,6 +89,16 @@ public class Entity {
 		}
 		
 		throw new ComponentException("Component " + c + " is not a part of this object.  ");
+	}
+	
+	//Attaches Camera to the entity
+	public void attachCamera() {
+		this.camera = new Camera(this);
+	}
+	
+	//Uses user inputs to manipulate the position and rotation of the entity, as well as the position and rotation of the camera
+	public void move() {
+		camera.move();
 	}
  	
 	//Getter-Setter Methods
