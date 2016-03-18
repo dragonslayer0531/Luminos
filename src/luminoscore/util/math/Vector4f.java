@@ -10,12 +10,21 @@ public class Vector4f {
 	//Constructor Fields
 	public float x, y, z, w;
 	
-	//Constructor
+	/*
+	 * Default Constructor
+	 */
 	public Vector4f() {
 		x = y = z = w = 0;
 	}
 	
-	//Constructor
+	/*
+	 * @param x Defines X
+	 * @param y Defines Y
+	 * @param z Defines Z
+	 * @param w Defines W
+	 * 
+	 * Constructor
+	 */
 	public Vector4f(float x, float y, float z, float w) {
 		this.x = x;
 		this.y = y;

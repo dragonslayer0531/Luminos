@@ -21,6 +21,7 @@ public class Mouse extends GLFWMouseButtonCallback {
 
 	
 	/*
+	 * Constructor
 	 * Creates the Mouse Listener.  It is created when the window is created.
 	 */
 	public Mouse() {

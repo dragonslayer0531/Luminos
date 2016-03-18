@@ -24,7 +24,9 @@ public class VAOLoader {
 	private List<Integer> vaos = new ArrayList<Integer>();
 	private List<Integer> vbos = new ArrayList<Integer>();
 
-	//Constructor
+	/*
+	 * Constructor
+	 */
 	public VAOLoader() {
 
 	}

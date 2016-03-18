@@ -84,7 +84,6 @@ public class GLFWwindow {
 	 * Constructor for the GLFW Window
 	 * init() is to be called after constructor is defined
 	 */
-	
 	public GLFWwindow(String title, int width, int height, boolean fullscreen,
 			boolean vsync, boolean resizable, boolean mouseVisible,
 			boolean windowVisible) {

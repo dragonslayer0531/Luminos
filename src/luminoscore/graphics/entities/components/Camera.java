@@ -23,7 +23,11 @@ public class Camera {
 	private float pitchChangeSpeed = 0;
 	private Vector3f position = new Vector3f(0, 0, 0);
 
-	//Constructor
+	/*
+	 * @param entity Sets the entity
+	 * 
+	 * Constructor
+	 */
 	public Camera(Entity entity) {
 		this.entity = entity;
 	}

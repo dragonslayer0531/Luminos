@@ -25,7 +25,14 @@ public class Entity {
 	private float scale;
 	private TexturedModel model;
 	
-	//Constructor
+	/*
+	 * @param position Defines the entity's position
+	 * @param rotation Defines the entity's rotation
+	 * @param scale Defines the scale of the entity
+	 * @param model Defines the model to be rendered
+	 * 
+	 * Constructor
+	 */
 	public Entity(Vector3f position, Vector3f rotation, float scale, TexturedModel model) {
 		this.position = position;
 		this.rotation = rotation;

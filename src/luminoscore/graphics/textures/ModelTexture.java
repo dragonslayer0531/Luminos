@@ -10,7 +10,11 @@ public class ModelTexture {
 	//Constructor Fields
 	private int id;
 	
-	//Constructor
+	/*
+	 * @param id Defines ID
+	 * 
+	 * Constructor
+	 */
 	public ModelTexture(int id) {
 		this.id = id;
 	}

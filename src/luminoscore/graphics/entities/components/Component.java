@@ -10,7 +10,11 @@ public class Component {
 	//Constructor Field	
 	private Object o;
 	
-	//Constructor
+	/*
+	 * @param o Object
+	 * 
+	 * Constructor
+	 */
 	public Component(Object o) {
 		this.o = o;
 	}

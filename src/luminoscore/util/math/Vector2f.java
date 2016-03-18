@@ -10,12 +10,19 @@ public class Vector2f {
 	//Constructor Fields
 	public float x, y;
 	
-	//Constructor
+	/*
+	 * Default Constructor
+	 */
 	public Vector2f() {
 		x = y = 0;
 	}
 	
-	//Constructor
+	/*
+	 * @param x Defines X
+	 * @param y Defines Y
+	 * 
+	 * Constructor
+	 */
 	public Vector2f(float x, float y) {
 		this.x = x;
 		this.y = y;

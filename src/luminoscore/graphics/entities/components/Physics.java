@@ -8,6 +8,9 @@ public class Physics extends Component {
 	 */
 	
 	/*
+	 * @param usePhysics Determines whether to use physics or not
+	 * 
+	 * Constructor using super class
 	 * Determines whether or not to use physics on an entity
 	 */
 	public Physics(Boolean usePhysics) {

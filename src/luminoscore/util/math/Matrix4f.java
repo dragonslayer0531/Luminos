@@ -1,27 +1,64 @@
+/*
+ * Copyright (c) 2002-2008 LWJGL Project
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ * * Redistributions of source code must retain the above copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright
+ *   notice, this list of conditions and the following disclaimer in the
+ *   documentation and/or other materials provided with the distribution.
+ *
+ * * Neither the name of 'LWJGL' nor the names of
+ *   its contributors may be used to endorse or promote products derived
+ *   from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 package luminoscore.util.math;
 
+import java.io.Serializable;
 import java.nio.FloatBuffer;
 
-public class Matrix4f {
-	
-	/*
-	 * Author: Nick Clark
-	 * Created On: 3/16/2016
-	 * 
-	 * Imported from LWJGL 2.9.2
-	 */
-	
-	//Data fields
+/**
+ * Holds a 4x4 float matrix.
+ *
+ * @author foo
+ */
+public class Matrix4f extends Matrix implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	public float m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33;
 
-	//Constructor
+	/**
+	 * Construct a new matrix, initialized to the identity.
+	 */
 	public Matrix4f() {
-		setIdentity(this);
+		super();
+		setIdentity();
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#toString()
+
+	public Matrix4f(final Matrix4f src) {
+		super();
+		load(src);
+	}
+
+	/**
+	 * Returns a string representation of this matrix
 	 */
 	public String toString() {
 		StringBuilder buf = new StringBuilder();
@@ -31,12 +68,19 @@ public class Matrix4f {
 		buf.append(m03).append(' ').append(m13).append(' ').append(m23).append(' ').append(m33).append('\n');
 		return buf.toString();
 	}
-	
-	/*
-	 * @param m Matrix to have identity set
-	 * @return Matrix4f
-	 * 
-	 * Sets identity of matrix
+
+	/**
+	 * Set this matrix to be the identity matrix.
+	 * @return this
+	 */
+	public Matrix setIdentity() {
+		return setIdentity(this);
+	}
+
+	/**
+	 * Set the given matrix to be the identity matrix.
+	 * @param m The matrix to set to the identity
+	 * @return m
 	 */
 	public static Matrix4f setIdentity(Matrix4f m) {
 		m.m00 = 1.0f;
@@ -58,13 +102,55 @@ public class Matrix4f {
 
 		return m;
 	}
-	
-	/*
-	 * @param src Source matrix
-	 * @param dest Destination maxtrix
-	 * @return Matrix4f
-	 * 
-	 * Copys matrix src to dest
+
+	/**
+	 * Set this matrix to 0.
+	 * @return this
+	 */
+	public Matrix setZero() {
+		return setZero(this);
+	}
+
+	/**
+	 * Set the given matrix to 0.
+	 * @param m The matrix to set to 0
+	 * @return m
+	 */
+	public static Matrix4f setZero(Matrix4f m) {
+		m.m00 = 0.0f;
+		m.m01 = 0.0f;
+		m.m02 = 0.0f;
+		m.m03 = 0.0f;
+		m.m10 = 0.0f;
+		m.m11 = 0.0f;
+		m.m12 = 0.0f;
+		m.m13 = 0.0f;
+		m.m20 = 0.0f;
+		m.m21 = 0.0f;
+		m.m22 = 0.0f;
+		m.m23 = 0.0f;
+		m.m30 = 0.0f;
+		m.m31 = 0.0f;
+		m.m32 = 0.0f;
+		m.m33 = 0.0f;
+
+		return m;
+	}
+
+	/**
+	 * Load from another matrix4f
+	 * @param src The source matrix
+	 * @return this
+	 */
+	public Matrix4f load(Matrix4f src) {
+		return load(src, this);
+	}
+
+	/**
+	 * Copy the source matrix to the destination matrix
+	 * @param src The source matrix
+	 * @param dest The destination matrix, or null of a new one is to be created
+	 * @return The copied matrix
 	 */
 	public static Matrix4f load(Matrix4f src, Matrix4f dest) {
 		if (dest == null)
@@ -88,14 +174,16 @@ public class Matrix4f {
 
 		return dest;
 	}
-	
-	/*
-	 * @param buf Float buffer to be loaded
-	 * @return Matrix4f
-	 * 
-	 * Loads a FloatBuffer to a Matrix4f
+
+	/**
+	 * Load from a float buffer. The buffer stores the matrix in column major
+	 * (OpenGL) order.
+	 *
+	 * @param buf A float buffer to read from
+	 * @return this
 	 */
-	public Matrix4f load(FloatBuffer buf) {
+	public Matrix load(FloatBuffer buf) {
+
 		m00 = buf.get();
 		m01 = buf.get();
 		m02 = buf.get();
@@ -115,14 +203,16 @@ public class Matrix4f {
 
 		return this;
 	}
-	
-	/*
-	 * @param buf Buffer to be loaded
-	 * @return Matrix4f
-	 * 
-	 * Loads and transposes a buffer to a Matrix4f
+
+	/**
+	 * Load from a float buffer. The buffer stores the matrix in row major
+	 * (maths) order.
+	 *
+	 * @param buf A float buffer to read from
+	 * @return this
 	 */
-	public Matrix4f loadTranspose(FloatBuffer buf) {
+	public Matrix loadTranspose(FloatBuffer buf) {
+
 		m00 = buf.get();
 		m10 = buf.get();
 		m20 = buf.get();
@@ -142,14 +232,81 @@ public class Matrix4f {
 
 		return this;
 	}
-	
-	/*
-	 * @param left First matrix
-	 * @param right Second matrix
-	 * @param dest Destination Matrix
-	 * @return Matrix4f
-	 * 
-	 * Adds two matrix4f
+
+	/**
+	 * Store this matrix in a float buffer. The matrix is stored in column
+	 * major (openGL) order.
+	 * @param buf The buffer to store this matrix in
+	 */
+	public Matrix store(FloatBuffer buf) {
+		buf.put(m00);
+		buf.put(m01);
+		buf.put(m02);
+		buf.put(m03);
+		buf.put(m10);
+		buf.put(m11);
+		buf.put(m12);
+		buf.put(m13);
+		buf.put(m20);
+		buf.put(m21);
+		buf.put(m22);
+		buf.put(m23);
+		buf.put(m30);
+		buf.put(m31);
+		buf.put(m32);
+		buf.put(m33);
+		return this;
+	}
+
+	/**
+	 * Store this matrix in a float buffer. The matrix is stored in row
+	 * major (maths) order.
+	 * @param buf The buffer to store this matrix in
+	 */
+	public Matrix storeTranspose(FloatBuffer buf) {
+		buf.put(m00);
+		buf.put(m10);
+		buf.put(m20);
+		buf.put(m30);
+		buf.put(m01);
+		buf.put(m11);
+		buf.put(m21);
+		buf.put(m31);
+		buf.put(m02);
+		buf.put(m12);
+		buf.put(m22);
+		buf.put(m32);
+		buf.put(m03);
+		buf.put(m13);
+		buf.put(m23);
+		buf.put(m33);
+		return this;
+	}
+
+	/**
+	 * Store the rotation portion of this matrix in a float buffer. The matrix is stored in column
+	 * major (openGL) order.
+	 * @param buf The buffer to store this matrix in
+	 */
+	public Matrix store3f(FloatBuffer buf) {
+		buf.put(m00);
+		buf.put(m01);
+		buf.put(m02);
+		buf.put(m10);
+		buf.put(m11);
+		buf.put(m12);
+		buf.put(m20);
+		buf.put(m21);
+		buf.put(m22);
+		return this;
+	}
+
+	/**
+	 * Add two matrices together and place the result in a third matrix.
+	 * @param left The left source matrix
+	 * @param right The right source matrix
+	 * @param dest The destination matrix, or null if a new one is to be created
+	 * @return the destination matrix
 	 */
 	public static Matrix4f add(Matrix4f left, Matrix4f right, Matrix4f dest) {
 		if (dest == null)
@@ -174,14 +331,13 @@ public class Matrix4f {
 
 		return dest;
 	}
-	
-	/*
-	 * @param left Matrix to be subtracted from
-	 * @param right Matrix to be subtracted
-	 * @param dest Destination matrix
-	 * @return Matrix4f
-	 * 
-	 * Subtracts two Matrix4f
+
+	/**
+	 * Subtract the right matrix from the left and place the result in a third matrix.
+	 * @param left The left source matrix
+	 * @param right The right source matrix
+	 * @param dest The destination matrix, or null if a new one is to be created
+	 * @return the destination matrix
 	 */
 	public static Matrix4f sub(Matrix4f left, Matrix4f right, Matrix4f dest) {
 		if (dest == null)
@@ -206,14 +362,13 @@ public class Matrix4f {
 
 		return dest;
 	}
-	
-	/*
-	 * @param left Left Matrix
-	 * @param right Right Matrix
-	 * @param dest Destination Matrix
-	 * @return Matrix4f
-	 * 
-	 * Multiplies two matrices
+
+	/**
+	 * Multiply the right matrix by the left and place the result in a third matrix.
+	 * @param left The left source matrix
+	 * @param right The right source matrix
+	 * @param dest The destination matrix, or null if a new one is to be created
+	 * @return the destination matrix
 	 */
 	public static Matrix4f mul(Matrix4f left, Matrix4f right, Matrix4f dest) {
 		if (dest == null)
@@ -256,13 +411,13 @@ public class Matrix4f {
 		return dest;
 	}
 
-	/*
-	 * @param left Left Matrix
-	 * @param right Right Vector4f
-	 * @param dest Destination Vector4f
-	 * @return Vector4f
-	 * 
-	 * Transforms Vector4f
+	/**
+	 * Transform a Vector by a matrix and return the result in a destination
+	 * vector.
+	 * @param left The left matrix
+	 * @param right The right vector
+	 * @param dest The destination vector, or null if a new one is to be created
+	 * @return the destination vector
 	 */
 	public static Vector4f transform(Matrix4f left, Vector4f right, Vector4f dest) {
 		if (dest == null)
@@ -280,15 +435,96 @@ public class Matrix4f {
 
 		return dest;
 	}
-	
-	/*
-	 * @param angle Defines angle to be rotated to
-	 * @param axis defines axis to be rotated on
-	 * @param src Source Matrix
-	 * @param dest Destination Matrix
-	 * @return Matrix4f
-	 * 
-	 * Rotates a matrix around an axis
+
+	/**
+	 * Transpose this matrix
+	 * @return this
+	 */
+	public Matrix transpose() {
+		return transpose(this);
+	}
+
+	/**
+	 * Translate this matrix
+	 * @param vec The vector to translate by
+	 * @return this
+	 */
+	public Matrix4f translate(Vector2f vec) {
+		return translate(vec, this);
+	}
+
+	/**
+	 * Translate this matrix
+	 * @param vec The vector to translate by
+	 * @return this
+	 */
+	public Matrix4f translate(Vector3f vec) {
+		return translate(vec, this);
+	}
+
+	/**
+	 * Scales this matrix
+	 * @param vec The vector to scale by
+	 * @return this
+	 */
+	public Matrix4f scale(Vector3f vec) {
+		return scale(vec, this, this);
+	}
+
+	/**
+	 * Scales the source matrix and put the result in the destination matrix
+	 * @param vec The vector to scale by
+	 * @param src The source matrix
+	 * @param dest The destination matrix, or null if a new matrix is to be created
+	 * @return The scaled matrix
+	 */
+	public static Matrix4f scale(Vector3f vec, Matrix4f src, Matrix4f dest) {
+		if (dest == null)
+			dest = new Matrix4f();
+		dest.m00 = src.m00 * vec.x;
+		dest.m01 = src.m01 * vec.x;
+		dest.m02 = src.m02 * vec.x;
+		dest.m03 = src.m03 * vec.x;
+		dest.m10 = src.m10 * vec.y;
+		dest.m11 = src.m11 * vec.y;
+		dest.m12 = src.m12 * vec.y;
+		dest.m13 = src.m13 * vec.y;
+		dest.m20 = src.m20 * vec.z;
+		dest.m21 = src.m21 * vec.z;
+		dest.m22 = src.m22 * vec.z;
+		dest.m23 = src.m23 * vec.z;
+		return dest;
+	}
+
+	/**
+	 * Rotates the matrix around the given axis the specified angle
+	 * @param angle the angle, in radians.
+	 * @param axis The vector representing the rotation axis. Must be normalized.
+	 * @return this
+	 */
+	public Matrix4f rotate(float angle, Vector3f axis) {
+		return rotate(angle, axis, this);
+	}
+
+	/**
+	 * Rotates the matrix around the given axis the specified angle
+	 * @param angle the angle, in radians.
+	 * @param axis The vector representing the rotation axis. Must be normalized.
+	 * @param dest The matrix to put the result, or null if a new matrix is to be created
+	 * @return The rotated matrix
+	 */
+	public Matrix4f rotate(float angle, Vector3f axis, Matrix4f dest) {
+		return rotate(angle, axis, this, dest);
+	}
+
+	/**
+	 * Rotates the source matrix around the given axis the specified angle and
+	 * put the result in the destination matrix.
+	 * @param angle the angle, in radians.
+	 * @param axis The vector representing the rotation axis. Must be normalized.
+	 * @param src The matrix to rotate
+	 * @param dest The matrix to put the result, or null if a new matrix is to be created
+	 * @return The rotated matrix
 	 */
 	public static Matrix4f rotate(float angle, Vector3f axis, Matrix4f src, Matrix4f dest) {
 		if (dest == null)
@@ -337,14 +573,23 @@ public class Matrix4f {
 		dest.m13 = t13;
 		return dest;
 	}
-	
-	/*
-	 * @param vec Vector3f controlling translation
-	 * @param src Source Matrix
-	 * @param dest Destination Matrix
-	 * @return Matrix4f
-	 * 
-	 * Translates a matrix in R3 space
+
+	/**
+	 * Translate this matrix and stash the result in another matrix
+	 * @param vec The vector to translate by
+	 * @param dest The destination matrix or null if a new matrix is to be created
+	 * @return the translated matrix
+	 */
+	public Matrix4f translate(Vector3f vec, Matrix4f dest) {
+		return translate(vec, this, dest);
+	}
+
+	/**
+	 * Translate the source matrix and stash the result in the destination matrix
+	 * @param vec The vector to translate by
+	 * @param src The source matrix
+	 * @param dest The destination matrix or null if a new matrix is to be created
+	 * @return The translated matrix
 	 */
 	public static Matrix4f translate(Vector3f vec, Matrix4f src, Matrix4f dest) {
 		if (dest == null)
@@ -357,14 +602,23 @@ public class Matrix4f {
 
 		return dest;
 	}
-	
-	/*
-	 * @param vec Vector2f controlling translation
-	 * @param src Source Matrix
-	 * @param dest Destination Matrix
-	 * @return Matrix4f
-	 * 
-	 * Translate a Matrix4f in R2 Space in the X and Y dimensions
+
+	/**
+	 * Translate this matrix and stash the result in another matrix
+	 * @param vec The vector to translate by
+	 * @param dest The destination matrix or null if a new matrix is to be created
+	 * @return the translated matrix
+	 */
+	public Matrix4f translate(Vector2f vec, Matrix4f dest) {
+		return translate(vec, this, dest);
+	}
+
+	/**
+	 * Translate the source matrix and stash the result in the destination matrix
+	 * @param vec The vector to translate by
+	 * @param src The source matrix
+	 * @param dest The destination matrix or null if a new matrix is to be created
+	 * @return The translated matrix
 	 */
 	public static Matrix4f translate(Vector2f vec, Matrix4f src, Matrix4f dest) {
 		if (dest == null)
@@ -377,13 +631,65 @@ public class Matrix4f {
 
 		return dest;
 	}
-	
-	/*
-	 * @return float
-	 * 
-	 * Calculates and returns Matrix's determinant value
+
+	/**
+	 * Transpose this matrix and place the result in another matrix
+	 * @param dest The destination matrix or null if a new matrix is to be created
+	 * @return the transposed matrix
 	 */
-	
+	public Matrix4f transpose(Matrix4f dest) {
+		return transpose(this, dest);
+	}
+
+	/**
+	 * Transpose the source matrix and place the result in the destination matrix
+	 * @param src The source matrix
+	 * @param dest The destination matrix or null if a new matrix is to be created
+	 * @return the transposed matrix
+	 */
+	public static Matrix4f transpose(Matrix4f src, Matrix4f dest) {
+		if (dest == null)
+		   dest = new Matrix4f();
+		float m00 = src.m00;
+		float m01 = src.m10;
+		float m02 = src.m20;
+		float m03 = src.m30;
+		float m10 = src.m01;
+		float m11 = src.m11;
+		float m12 = src.m21;
+		float m13 = src.m31;
+		float m20 = src.m02;
+		float m21 = src.m12;
+		float m22 = src.m22;
+		float m23 = src.m32;
+		float m30 = src.m03;
+		float m31 = src.m13;
+		float m32 = src.m23;
+		float m33 = src.m33;
+
+		dest.m00 = m00;
+		dest.m01 = m01;
+		dest.m02 = m02;
+		dest.m03 = m03;
+		dest.m10 = m10;
+		dest.m11 = m11;
+		dest.m12 = m12;
+		dest.m13 = m13;
+		dest.m20 = m20;
+		dest.m21 = m21;
+		dest.m22 = m22;
+		dest.m23 = m23;
+		dest.m30 = m30;
+		dest.m31 = m31;
+		dest.m32 = m32;
+		dest.m33 = m33;
+
+		return dest;
+	}
+
+	/**
+	 * @return the determinant of the matrix
+	 */
 	public float determinant() {
 		float f =
 			m00
@@ -408,28 +714,34 @@ public class Matrix4f {
 				- m11 * m20 * m32);
 		return f;
 	}
-	
-	/*
-	 * @param t00, t01, t02, t10, t11, t12, t20, t21, 22
-	 * @return float
-	 * 
-	 * Calculates the determinant of 3x3 portion of matrix
+
+	/**
+	 * Calculate the determinant of a 3x3 matrix
+	 * @return result
 	 */
+
 	private static float determinant3x3(float t00, float t01, float t02,
-			float t10, float t11, float t12,
-			float t20, float t21, float t22)
+				     float t10, float t11, float t12,
+				     float t20, float t21, float t22)
 	{
 		return   t00 * (t11 * t22 - t12 * t21)
-				+ t01 * (t12 * t20 - t10 * t22)
-				+ t02 * (t10 * t21 - t11 * t20);
+		       + t01 * (t12 * t20 - t10 * t22)
+		       + t02 * (t10 * t21 - t11 * t20);
 	}
-	
-	/*
-	 * @param src Source Matrix
-	 * @param dest Destination Matrix
-	 * @return Matrix4f
-	 * 
-	 * Calculates the inverse of the matrix
+
+	/**
+	 * Invert this matrix
+	 * @return this if successful, null otherwise
+	 */
+	public Matrix invert() {
+		return invert(this, this);
+	}
+
+	/**
+	 * Invert the source matrix and put the result in the destination
+	 * @param src The source matrix
+	 * @param dest The destination matrix, or null if a new matrix is to be created
+	 * @return The inverted matrix if successful, null otherwise
 	 */
 	public static Matrix4f invert(Matrix4f src, Matrix4f dest) {
 		float determinant = src.determinant();
@@ -487,14 +799,29 @@ public class Matrix4f {
 		} else
 			return null;
 	}
-	
-	/*
-	 * @param src Source Matrix
-	 * @param dest Destination Matrix
-	 * @return Matrix4f
-	 * 
-	 * Calculates the additive inverse of the Matrix.  Adding this to the initial matrix
-	 * will return a 4x4 matrix with values of 0
+
+	/**
+	 * Negate this matrix
+	 * @return this
+	 */
+	public Matrix negate() {
+		return negate(this);
+	}
+
+	/**
+	 * Negate this matrix and place the result in a destination matrix.
+	 * @param dest The destination matrix, or null if a new matrix is to be created
+	 * @return the negated matrix
+	 */
+	public Matrix4f negate(Matrix4f dest) {
+		return negate(this, dest);
+	}
+
+	/**
+	 * Negate this matrix and place the result in a destination matrix.
+	 * @param src The source matrix
+	 * @param dest The destination matrix, or null if a new matrix is to be created
+	 * @return The negated matrix
 	 */
 	public static Matrix4f negate(Matrix4f src, Matrix4f dest) {
 		if (dest == null)
@@ -519,5 +846,4 @@ public class Matrix4f {
 
 		return dest;
 	}
-
 }

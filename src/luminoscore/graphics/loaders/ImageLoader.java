@@ -24,7 +24,9 @@ public class ImageLoader {
 	//List containing textures
 	private List<Integer> textures = new ArrayList<Integer>();
 	
-	//Constructor
+	/*
+	 * Constructor
+	 */
 	public ImageLoader() {
 
 	}

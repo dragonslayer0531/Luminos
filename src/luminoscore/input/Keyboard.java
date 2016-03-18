@@ -81,9 +81,9 @@ public class Keyboard extends GLFWKeyCallback {
 	private static int[] keyDown = new int[KEY_LAST];
 	
 	/*
+	 * Constructor
 	 * Creates the Keyboard listener.  It is created when the window is created.
 	 */
-	
 	public Keyboard() {
 		for (int i = 0; i < keyState.length; i++) {
 			keyState[i] = -1;

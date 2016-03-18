@@ -13,7 +13,12 @@ public class TexturedModel {
 	private RawModel rm;
 	private ModelTexture mt;
 	
-	//Constructor
+	/*
+	 * @param rm Raw Model
+	 * @param mt Texture for the model
+	 * 
+	 * Constructor
+	 */
 	public TexturedModel(RawModel rm, ModelTexture mt) {
 		this.rm = rm;
 		this.mt = mt;

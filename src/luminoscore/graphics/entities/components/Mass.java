@@ -8,7 +8,9 @@ public class Mass extends Component {
 	 */
 	
 	/*
-	 * Constructor
+	 * @param mass Defines mass of component
+	 * 
+	 * Constructor using super class
 	 * Must have in order for physics to work
 	 */
 	public Mass(float mass) {

@@ -10,12 +10,20 @@ public class Vector3f {
 	//Constructor Fields
 	public float x, y, z;
 	
-	//Constructor
+	/*
+	 * Default Constructor
+	 */
 	public Vector3f() {
 		x = y = z = 0;
 	}
 	
-	//Constructor
+	/*
+	 * @param x Defines X
+	 * @param y Defines Y
+	 * @param z Defines Z
+	 * 
+	 * Constructor
+	 */
 	public Vector3f(float x, float y, float z) {
 		this.x = x;
 		this.y = y;
