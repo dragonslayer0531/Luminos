@@ -2,6 +2,7 @@ package luminoscore.graphics.terrains.plane;
 
 import luminoscore.graphics.loaders.VAOLoader;
 import luminoscore.graphics.models.RawModel;
+import luminoscore.graphics.terrains.NormalMap;
 import luminoscore.util.math.Vector3f;
 
 public class Terrain {
@@ -20,6 +21,7 @@ public class Terrain {
 	private float[][] heights;
 	private float[] normals;
 	private RawModel model;
+	private NormalMap normalMap;
 	
 	//Constructor Values
 	private float x, z;
@@ -83,6 +85,7 @@ public class Terrain {
 			indices[pointer++] = bottomRight;
  		}
 		
+		normalMap = new NormalMap(normals);
 		return loader.loadToVAO(vertices, textureCoords, normals, indices, 3);
 	}
 	
@@ -150,6 +153,14 @@ public class Terrain {
 
 	public float getSeed() {
 		return seed;
+	}
+	
+	public float[] getNormals() {
+		return normals;
+	}
+	
+	public NormalMap getNormalMap() {
+		return normalMap;
 	}
 
 }
