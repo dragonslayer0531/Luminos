@@ -1,5 +1,7 @@
 package luminoscore.util.math;
 
+import luminoscore.util.math.vector.Vector3f;
+
 public class Conversions {
 
 	/*

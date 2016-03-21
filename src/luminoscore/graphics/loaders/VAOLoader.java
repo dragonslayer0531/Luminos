@@ -12,6 +12,7 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import luminoscore.graphics.models.RawModel;
+import luminoscore.physics.collisions.collider.AABB;
 
 public class VAOLoader {
 	
@@ -53,6 +54,7 @@ public class VAOLoader {
 	public RawModel loadToVAO(float[] positions, int dimensions) {
 		int vaoID = createVAO();
 		storeDataInAttributeList(0, dimensions, positions);
+		unbindVAO();
 		return new RawModel(vaoID, positions.length);
 	}
 	
@@ -66,6 +68,7 @@ public class VAOLoader {
 		int vaoID = createVAO();
 		bindIndicesBuffer(indices);
 		storeDataInAttributeList(0, dimensions, positions);
+		unbindVAO();
 		return new RawModel(vaoID, positions.length);
 	}
 	
@@ -79,6 +82,7 @@ public class VAOLoader {
 		int vaoID = createVAO();
 		storeDataInAttributeList(0, dimensions, positions);
 		storeDataInAttributeList(1, 2, textures);
+		unbindVAO();
 		return new RawModel(vaoID, positions.length);
 	}
 	
@@ -94,6 +98,7 @@ public class VAOLoader {
 		bindIndicesBuffer(indices);
 		storeDataInAttributeList(0, dimensions, positions);
 		storeDataInAttributeList(1, 2, textures);
+		unbindVAO();
 		return new RawModel(vaoID, positions.length);
 	}
 	
@@ -110,6 +115,7 @@ public class VAOLoader {
 		storeDataInAttributeList(0, dimensions, positions);
 		storeDataInAttributeList(1, 2, textures);
 		storeDataInAttributeList(2, dimensions, normals);
+		unbindVAO();
 		return new RawModel(vaoID, positions.length);
 	}
 	
@@ -127,7 +133,35 @@ public class VAOLoader {
 		storeDataInAttributeList(0, dimensions, positions);
 		storeDataInAttributeList(1, 2, textures);
 		storeDataInAttributeList(2, dimensions, normals);
+		unbindVAO();
 		return new RawModel(vaoID, positions.length);
+	}
+	
+	/*
+	 * @param positions the float array containing vertices of a model
+	 * @param textures the float array containing texture coordinates
+	 * @param normals the float array containing the normal vector
+	 * @param indices the integer array containing the positions of the indices
+	 * @param dimensions contains the number of dimensions a model has
+	 * @param aabb contains AABB data of the entity
+	 * @return RawModel
+	 */
+	public RawModel loadToVAO(float[] positions, float textures[], float[] normals, int[] indices, int dimensions, AABB aabb) {
+		int vaoID = createVAO();
+		bindIndicesBuffer(indices);
+		storeDataInAttributeList(0, dimensions, positions);
+		storeDataInAttributeList(1, 2, textures);
+		storeDataInAttributeList(2, dimensions, normals);
+		unbindVAO();
+		return new RawModel(vaoID, positions.length, aabb);
+	}
+	
+	public int loadToVAO(float[] positions, float[] textures) {
+		int vaoID = createVAO();
+		storeDataInAttributeList(0, 2, positions);
+		storeDataInAttributeList(1, 2, textures);
+		unbindVAO();
+		return vaoID;
 	}
 	
 	/*
@@ -140,6 +174,10 @@ public class VAOLoader {
 		vaos.add(vaoID);
 		GL30.glBindVertexArray(vaoID);;
 		return vaoID;
+	}
+	
+	private void unbindVAO() {
+		GL30.glBindVertexArray(0);
 	}
 	
 	/*

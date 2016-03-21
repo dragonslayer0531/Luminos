@@ -1,7 +1,7 @@
 package luminoscore.graphics.entities.components;
 
 import luminoscore.graphics.entities.Entity;
-import luminoscore.util.math.Vector3f;
+import luminoscore.util.math.vector.Vector3f;
 
 public class Camera {
 	

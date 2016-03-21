@@ -1,6 +1,8 @@
-package luminoscore.util.math;
+package luminoscore.util.math.matrix;
 
 import luminoscore.graphics.entities.components.Camera;
+import luminoscore.util.math.vector.Vector2f;
+import luminoscore.util.math.vector.Vector3f;
 
 public class MatrixCreator {
 	

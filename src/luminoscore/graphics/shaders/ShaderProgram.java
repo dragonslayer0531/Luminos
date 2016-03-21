@@ -6,12 +6,13 @@ import java.io.IOException;
 import java.nio.FloatBuffer;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
-import luminoscore.util.math.Matrix4f;
-import luminoscore.util.math.Vector2f;
-import luminoscore.util.math.Vector3f;
-import luminoscore.util.math.Vector4f;
+import luminoscore.util.math.matrix.Matrix4f;
+import luminoscore.util.math.vector.Vector2f;
+import luminoscore.util.math.vector.Vector3f;
+import luminoscore.util.math.vector.Vector4f;
 
 public abstract class ShaderProgram {
 	
@@ -34,8 +35,16 @@ public abstract class ShaderProgram {
 	 * 
 	 * Constructor
 	 */
-	public ShaderProgram(String vertexFile, String fragmentFile) {
-		vertexShaderID = loadShader(vertexFile, GL20.GL_VERTEX_SHADER);
+	protected ShaderProgram(Shader shader) {
+		vertexShaderID = loadShader(shader.getVertexShader(), GL20.GL_VERTEX_SHADER);
+		fragmentShaderID = loadShader(shader.getFragmentShader(), GL20.GL_FRAGMENT_SHADER);
+		programID = GL20.glCreateProgram();
+		GL20.glAttachShader(programID, vertexShaderID);
+		GL20.glAttachShader(programID, fragmentShaderID);
+		bindAttributes();
+		GL20.glLinkProgram(programID);
+		GL20.glValidateProgram(programID);
+		getAllUniformLocations();
 	}
 	
 	/*
@@ -59,6 +68,12 @@ public abstract class ShaderProgram {
 		}
 		int shaderID = GL20.glCreateShader(type);
 		GL20.glShaderSource(shaderID, shaderSourceCode);
+		GL20.glCompileShader(shaderID);
+		if(GL20.glGetShaderi(shaderID, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
+			System.out.println(GL20.glGetShaderInfoLog(shaderID, 500));
+			System.err.println("Could not compile shader");
+			System.exit(-1);
+		}
 		return shaderID;
 	}
 	

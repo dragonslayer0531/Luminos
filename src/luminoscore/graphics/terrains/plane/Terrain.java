@@ -3,7 +3,8 @@ package luminoscore.graphics.terrains.plane;
 import luminoscore.graphics.loaders.VAOLoader;
 import luminoscore.graphics.models.RawModel;
 import luminoscore.graphics.terrains.NormalMap;
-import luminoscore.util.math.Vector3f;
+import luminoscore.graphics.terrains.TexturePack;
+import luminoscore.util.math.vector.Vector3f;
 
 public class Terrain {
 	
@@ -26,6 +27,7 @@ public class Terrain {
 	//Constructor Values
 	private float x, z;
 	private float seed;
+	private TexturePack texturePack;
 
 	/*
 	 * @param gridX Defines the grid location on the X axis
@@ -35,10 +37,11 @@ public class Terrain {
 	 * 
 	 * Constructor
 	 */
-	public Terrain(float gridX, float gridZ, int seed, VAOLoader loader) {
+	public Terrain(float gridX, float gridZ, int seed, VAOLoader loader, TexturePack texturePack) {
 		this.x = gridX * SIZE;
 		this.z = gridZ * SIZE;
 		this.model = generateTerrain(loader, new FractalNoise((int) gridX, (int) gridZ, VERTEX_COUNT, seed));
+		this.texturePack = texturePack;
 	}
 	
 	/*
@@ -161,6 +164,14 @@ public class Terrain {
 	
 	public NormalMap getNormalMap() {
 		return normalMap;
+	}
+
+	public TexturePack getTexturePack() {
+		return texturePack;
+	}
+
+	public void setTexturePack(TexturePack texturePack) {
+		this.texturePack = texturePack;
 	}
 
 }

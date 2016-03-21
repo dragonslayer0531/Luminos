@@ -1,4 +1,4 @@
-package luminoscore.util.math;
+package luminoscore.util.math.vector;
 
 public class Vector3f {
 	

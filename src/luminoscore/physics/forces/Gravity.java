@@ -3,7 +3,8 @@ package luminoscore.physics.forces;
 import luminoscore.graphics.entities.Entity;
 import luminoscore.graphics.entities.components.ComponentException;
 import luminoscore.graphics.entities.components.Mass;
-import luminoscore.util.math.Vector3f;
+import luminoscore.util.math.Algebra;
+import luminoscore.util.math.vector.Vector3f;
 
 public class Gravity {
 	
@@ -20,7 +21,7 @@ public class Gravity {
 	 */
 	public static double calculateGravitationalForce(Entity effected, Entity center) throws ComponentException {
 		double numerator = GRAVITY * (float) effected.getComponentValue(Mass.class) * (float) center.getComponentValue(Mass.class);
-		double denominator = Math.sqrt(Math.pow((effected.getPosition().x - center.getPosition().x), 2) + Math.pow(effected.getPosition().y - center.getPosition().y, 2) + Math.pow(effected.getPosition().z - center.getPosition().z, 2));
+		double denominator = Algebra.getDistance(effected.getPosition(), center.getPosition());
 		return numerator/denominator;
 	}
 	

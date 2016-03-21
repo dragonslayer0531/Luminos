@@ -1,6 +1,6 @@
 package luminoscore.graphics.entities;
 
-import luminoscore.util.math.Vector3f;
+import luminoscore.util.math.vector.Vector3f;
 
 public class Light {
 	

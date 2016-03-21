@@ -7,7 +7,7 @@ import luminoscore.graphics.entities.components.Component;
 import luminoscore.graphics.entities.components.ComponentException;
 import luminoscore.graphics.entities.components.Velocity;
 import luminoscore.graphics.models.TexturedModel;
-import luminoscore.util.math.Vector3f;
+import luminoscore.util.math.vector.Vector3f;
 
 public class Entity {
 	

@@ -29,10 +29,14 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package luminoscore.util.math;
+package luminoscore.util.math.matrix;
 
 import java.io.Serializable;
 import java.nio.FloatBuffer;
+
+import luminoscore.util.math.vector.Vector2f;
+import luminoscore.util.math.vector.Vector3f;
+import luminoscore.util.math.vector.Vector4f;
 
 /**
  * Holds a 4x4 float matrix.

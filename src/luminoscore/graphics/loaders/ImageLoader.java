@@ -92,7 +92,6 @@ public class ImageLoader {
 		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
 		
 		textures.add(textureID);
-		
 		return textureID;
 	}
 

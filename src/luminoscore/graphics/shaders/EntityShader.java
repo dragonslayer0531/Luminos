@@ -4,11 +4,11 @@ import java.util.List;
 
 import luminoscore.graphics.entities.Light;
 import luminoscore.graphics.entities.components.Camera;
-import luminoscore.util.math.Matrix4f;
-import luminoscore.util.math.MatrixCreator;
-import luminoscore.util.math.Vector2f;
-import luminoscore.util.math.Vector3f;
-import luminoscore.util.math.Vector4f;
+import luminoscore.util.math.matrix.Matrix4f;
+import luminoscore.util.math.matrix.MatrixCreator;
+import luminoscore.util.math.vector.Vector2f;
+import luminoscore.util.math.vector.Vector3f;
+import luminoscore.util.math.vector.Vector4f;
 
 public class EntityShader extends ShaderProgram {
 	
@@ -36,13 +36,12 @@ public class EntityShader extends ShaderProgram {
 	private int location_plane;
 	
 	/*
-	 * @param vertex Defines vertex shader location
-	 * @param fragment Defines fragment shader location
+	 * @param shader Defines the shader
 	 * 
 	 * Constructor using super class
 	 */
-	public EntityShader(String vertex, String fragment) {
-		super(vertex, fragment);
+	public EntityShader(Shader shader) {
+		super(shader);
 	}
 	
 	//Binds the location of the position, texture coordinates, and normals

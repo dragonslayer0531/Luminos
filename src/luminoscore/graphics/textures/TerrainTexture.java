@@ -20,7 +20,7 @@ public class TerrainTexture {
 	}
 	
 	//Getter Method
-	public int getVAO() {
+	public int getTextureID() {
 		return vao;
 	}
 
