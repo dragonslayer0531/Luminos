@@ -84,7 +84,7 @@ public class GUIText {
 		return this.vertexCount;
 	}
 
-	protected float getFontSize() {
+	public float getFontSize() {
 		return fontSize;
 	}
 

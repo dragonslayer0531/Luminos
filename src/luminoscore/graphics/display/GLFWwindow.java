@@ -23,6 +23,8 @@ import static org.lwjgl.opengl.GL11.GL_TRUE;
 import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
+import java.awt.Toolkit;
+
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
@@ -112,7 +114,18 @@ public class GLFWwindow {
 		glfwWindowHint(GLFW_RESIZABLE, resizable ? GL_TRUE : GL_FALSE);
 		
 		//Draw window
-		windowID = glfwCreateWindow(width, height, title, fullscreen ? glfwGetPrimaryMonitor() : NULL, NULL);
+		if(!fullscreen) {
+			windowID = glfwCreateWindow(width, height, title, fullscreen ? glfwGetPrimaryMonitor() : NULL, NULL);
+		} else {
+			Toolkit tk = Toolkit.getDefaultToolkit();
+			int w = (int) tk.getScreenSize().getWidth();
+			int h = (int) tk.getScreenSize().getHeight();
+			if(w != width || h != height) {
+				System.err.println("Could not use user defined parameters: Width - " + width + " Height - " + height + ". "
+						+ " Using system defined parameters: Width - " + w + " Height - " + h + ".");
+			}
+			windowID = glfwCreateWindow(w, h, title, fullscreen ? glfwGetPrimaryMonitor() : NULL, NULL);
+		}
 		
 		if(windowID == NULL) {
 			System.out.println("GLFW Window could not be initialized.");

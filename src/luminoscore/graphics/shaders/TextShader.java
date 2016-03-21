@@ -12,6 +12,7 @@ public class TextShader extends ShaderProgram {
 	
 	private int location_color;
 	private int location_translation;
+	private int location_font;
 
 	public TextShader(Shader shader) {
 		super(shader);
@@ -25,6 +26,7 @@ public class TextShader extends ShaderProgram {
 	protected void getAllUniformLocations() {
 		location_color = super.getUniformLocation("color");
 		location_translation = super.getUniformLocation("translation");
+		location_font = super.getUniformLocation("font");
 	}
 	
 	public void loadColor(Vector3f color) {
@@ -33,6 +35,10 @@ public class TextShader extends ShaderProgram {
 	
 	public void loadTranslation(Vector2f translation) {
 		super.load2DVector(location_translation, translation);
+	}
+	
+	public void loadFontSize(float font) {
+		super.loadFloat(location_font, font);
 	}
 
 }
