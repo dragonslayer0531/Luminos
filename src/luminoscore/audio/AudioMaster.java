@@ -4,79 +4,45 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.openal.AL10;
-import org.lwjgl.openal.ALContext;
-
-import luminoscore.util.math.vector.Vector3f;
+import org.lwjgl.openal.ALC;
+import org.lwjgl.util.WaveData;
 
 public class AudioMaster {
-
-	/*
-	 * Author: Nick Clark
-	 * Created On: 3/21/2016
-	 */
 	
-	//Data fields
-	private ALContext context;
-	private List<Integer> buffers;
-	
-	/*
-	 * Constructor
-	 */
+	private List<Integer> buffers = new ArrayList<Integer>();
+		
 	public AudioMaster() {
-		buffers = new ArrayList<Integer>();
+		
 	}
 	
-	//Initialized OpenAL context
 	public void init() {
-		context = ALContext.create();
-		context.makeCurrent();
+		ALC.create();
 	}
 	
-	//Default set listener data
-	public void setListenerData() {
-		AL10.alListener3f(AL10.AL_POSITION, 0, 0, 0);
+	public void dispose() {
+		for(Integer buffer : buffers) {
+			AL10.alDeleteBuffers(buffer);
+		}
+		ALC.destroy();
 	}
 	
-	/*
-	 * @param position Defines listener position
-	 * 
-	 * Sets listener position
-	 */
-	public void setListenerData(Vector3f position) {
-		AL10.alListener3f(AL10.AL_POSITION, position.x, position.y, position.z);
-	}
-	
-	/*
-	 * @param position Defines listener position
-	 * @param velocity Defines listener velocity
-	 * 
-	 * Sets listener position and velocity
-	 */
-	public void setListenerData(Vector3f position, Vector3f velocity) {
-		AL10.alListener3f(AL10.AL_POSITION, position.x, position.y, position.z);
-		AL10.alListener3f(AL10.AL_VELOCITY, velocity.x, velocity.y, velocity.z);
-	}
-	
-	/*
-	 * @param file Defines file to load
-	 * 
-	 * Loads a sound file to a AL10 Buffer
-	 */
-	public int loadSoundFile(String file) {
+	public int loadSource(String source) {
 		int buffer = AL10.alGenBuffers();
 		buffers.add(buffer);
-		WaveData waveFile = WaveData.create(file);
-		AL10.alBufferData(buffer, waveFile.getFormat(), waveFile.getData(), waveFile.getSamplerate());
-		waveFile.dispose();
+		
+		WaveData data = WaveData.create(source);
+		AL10.alBufferData(buffer, data.format, data.data, data.samplerate);
+		data.dispose();
+		
 		return buffer;
 	}
-
-	 //Destroys AudioMaster context and buffers
-	public void destroy() {
-		for(Integer i : buffers) {
-			AL10.alDeleteBuffers(i);
-		}
-		context.destroy();
+	
+	public void setListenerPosition(float x, float y, float z) {
+		AL10.alListener3f(AL10.AL_POSITION, x, y, z);
+	}
+	
+	public void setListenerVelocity(float dx, float dy, float dz) {
+		AL10.alListener3f(AL10.AL_VELOCITY, dx, dy, dz);
 	}
 
 }

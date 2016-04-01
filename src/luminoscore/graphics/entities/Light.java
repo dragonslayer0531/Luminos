@@ -1,42 +1,28 @@
 package luminoscore.graphics.entities;
 
-import luminoscore.util.math.vector.Vector3f;
+import org.lwjgl.util.vector.Vector3f;
 
 public class Light {
 	
-	/*
-	 * Author: Nick Clark
-	 * Created On: 3/18/2016
-	 */
+	private Vector3f position;
+	private Vector3f colour;
+	private Vector3f attenuation = new Vector3f(1, 0, 0);
 	
-	//Constructor Fields
-	private Vector3f position, color, attenuation = new Vector3f(1, 0, 0);
-	
-	/*
-	 * @param position Defines position of the light
-	 * @param color Defines the color of the light
-	 * 
-	 * Constructor One
-	 */
-	public Light(Vector3f position, Vector3f color) {
+	public Light(Vector3f position, Vector3f colour) {
 		this.position = position;
-		this.color = color;
+		this.colour = colour;
 	}
 	
-	/*
-	 * @param position Defines the position of the light
-	 * @param color Defines the color of the light
-	 * @param attenuation Defines the color of the light
-	 * 
-	 * Constructor Two
-	 */
-	public Light(Vector3f position, Vector3f color, Vector3f attenuation) {
+	public Light(Vector3f position, Vector3f colour, Vector3f attenuation) {
 		this.position = position;
-		this.color = color;
+		this.colour = colour;
 		this.attenuation = attenuation;
 	}
+	
+	public Vector3f getAttenuation(){
+		return attenuation;
+	}
 
-	//Getter-Setter Methods
 	public Vector3f getPosition() {
 		return position;
 	}
@@ -45,20 +31,13 @@ public class Light {
 		this.position = position;
 	}
 
-	public Vector3f getColor() {
-		return color;
+	public Vector3f getColour() {
+		return colour;
 	}
 
-	public void setColor(Vector3f color) {
-		this.color = color;
+	public void setColour(Vector3f colour) {
+		this.colour = colour;
 	}
-
-	public Vector3f getAttenuation() {
-		return attenuation;
-	}
-
-	public void setAttenuation(Vector3f attenuation) {
-		this.attenuation = attenuation;
-	}
+	
 
 }

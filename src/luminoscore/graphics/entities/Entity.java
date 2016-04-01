@@ -1,137 +1,318 @@
 package luminoscore.graphics.entities;
 
 import java.util.HashMap;
+import java.util.List;
 
-import luminoscore.graphics.entities.components.Camera;
+import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.util.vector.Vector3f;
+
+import luminoscore.graphics.display.GLFWWindow;
 import luminoscore.graphics.entities.components.Component;
-import luminoscore.graphics.entities.components.ComponentException;
-import luminoscore.graphics.entities.components.Velocity;
 import luminoscore.graphics.models.TexturedModel;
-import luminoscore.util.math.vector.Vector3f;
+import luminoscore.graphics.terrains.Terrain;
+import luminoscore.input.Keyboard;
 
 public class Entity {
-	
-	/*
-	 * Author: Nick Clark
-	 * Created On: 3/16/2016
-	 */
-	
-	//Component Mapping	
-	private HashMap<Class<?>, Component> components;
-	private Camera camera;
-	
-	//Constructor Fields
-	private Vector3f position;
-	private Vector3f rotation;
+
+	private Vector3f position, rotation;
 	private float scale;
-	private TexturedModel model;
-	
-	/*
-	 * @param position Defines the entity's position
-	 * @param rotation Defines the entity's rotation
-	 * @param scale Defines the scale of the entity
-	 * @param model Defines the model to be rendered
-	 * 
-	 * Constructor
-	 */
-	public Entity(Vector3f position, Vector3f rotation, float scale, TexturedModel model) {
+	private TexturedModel tm;
+	private Camera camera;
+
+	private Terrain terrain;
+
+	public float dx, dy, dz;
+	private float currentSpeed;
+	private float currentTurnSpeed;
+	private float upwardsSpeed;
+	private boolean isInAir = false;
+
+	private float RUN_SPEED = 40;
+
+	public static final float GRAVITY = -50; 
+	private static float JUMP_POWER = 18; 
+
+
+	private float WALK_MODIFICATION = 0.5f;
+	private float SPRINT_MODIFICATION = 1.5f;
+	private float CROUCH_MODIFICATION = 0.75f;
+	private float PRONE_MODIFICATION = 0.5f;
+
+	private enum MOVEMENT_STATE {
+		LAYING,
+		CROUCHING,
+		STANDING
+	}
+
+	private MOVEMENT_STATE state = MOVEMENT_STATE.STANDING;
+
+	private HashMap<Class<?>, Component> map = new HashMap<Class<?>, Component>();
+
+	public Entity(Vector3f position, Vector3f rotation, float scale, TexturedModel tm) {
 		this.position = position;
 		this.rotation = rotation;
 		this.scale = scale;
-		this.model = model;
+		this.tm = tm;
 	}
-	
-	/*
-	 * @param c Component to be added
-	 * @throws ComponentException
-	 * 
-	 * Adds an Entity Component to the HashMap
-	 */
-	public void addComponent(Component c) throws ComponentException {
-		if(components.containsKey(c.getClass())) {
-			throw new ComponentException("Component " + c + " is already instantiated in the object.  "
-					+ "Update the component or choose a different component type.");
-		} else {
-			components.put(c.getClass(), c);
-		}
-	}
-	
-	/*
-	 * @param c Component to be updated
-	 * @throws ComponentException
-	 * 
-	 * Updates an Entity Component in the HashMap
-	 */
-	public void updateComponent(Component c) throws ComponentException {
-		if(components.containsKey(c.getClass())) {
-			components.get(c.getClass()).setComponent(c);
-		} else {
-			addComponent(c);
-		}
-	}
-	
-	/*
-	 * @param c Component to be deleted
-	 * @throws ComponentException
-	 * 
-	 * Deletes an Entity Component from the HashMap
-	 */
-	public void deleteComponent(Component c) throws ComponentException {
-		if(components.containsKey(c.getClass())) {
-			components.remove(c.getClass(), c);
-		} else {
-			throw new ComponentException("Component " + c + " is not a part of this object.  ");
-		}
-	}
-	
-	/*
-	 * @param c Class of the component to return the value of
-	 * @throws ComponentException
-	 * @returns Object
-	 * 
-	 * Returns the value of the component
-	 */
-	public Object getComponentValue(Class<?> c) throws ComponentException {
-		if(components.containsKey(c)) {
-			return components.get(c).getComponent();
-		}
-		
-		throw new ComponentException("Component " + c + " is not a part of this object.  ");
-	}
-	
-	public boolean hasComponent(Class<?> c) {
-		if(components.containsKey(c)) {
-			return true;
-		}
-		return false;
-	}
-	
-	//Attaches Camera to the entity
+
 	public void attachCamera() {
 		this.camera = new Camera(this);
 	}
-	
-	//Uses user inputs to manipulate the position and rotation of the entity, as well as the position and rotation of the camera
-	public void move() {
-		Vector3f original = this.position;
+
+	/*
+	 * Allows LocalUser to move on the display with WASD control set up.  This 
+	 * method can be overridden by a user defined method.
+	 */
+
+	public void move(List<Terrain> terrains, GLFWWindow window) {
+		float y = this.position.y;
+		checkInputs(terrains, window);
+		rotate(new Vector2f(4f, .5f), window, false);
+		Vector3f.add(new Vector3f(0, window.getFrameTime() * currentTurnSpeed, 0), rotation, rotation);
+		rotation.y %= 360;
+		for(Terrain terrain : terrains) {
+			if(terrain.isOnTerrain(this)) this.terrain = terrain;
+		}
+		if (position.y < terrain.getHeightOfTerrain(position.x, position.z)) {
+			upwardsSpeed = 0;
+			isInAir = false;
+			position.y = terrain.getHeightOfTerrain(position.x, position.z);
+		}
+		upwardsSpeed += GRAVITY * window.getFrameTime();
+		Vector3f.add(position, new Vector3f(0, upwardsSpeed * window.getFrameTime(), 0), position);
+		float terrainHeight = terrain.getHeightOfTerrain(getPosition().x, getPosition().z);
+		if (position.y < terrainHeight) {
+			upwardsSpeed = 0;
+			isInAir = false;
+			position.y = terrainHeight;
+		}
 		camera.move();
-		//translate
-		//rotate
-		if(this.hasComponent(Velocity.class))
-			try {
-				this.updateComponent(new Velocity(Vector3f.sub(this.position, original)));
-			} catch (ComponentException e) {
-				e.printStackTrace();
-			}
-	}
- 	
-	//Getter-Setter Methods
-	public HashMap<Class<?>, Component> getComponents() {
-		return components;
+		dy = y - this.position.y;
 	}
 
-	public void setComponents(HashMap<Class<?>, Component> components) {
-		this.components = components;
+	/*
+	 * Checks keyboard inputs in order to determine the desired movement
+	 * and movement type by the user.
+	 */
+
+	private void checkInputs(List<Terrain> terrains, GLFWWindow window) {
+		switch(state) {
+		case STANDING:
+			if(Keyboard.isDown(Keyboard.KEY_W)) {
+				if(Keyboard.isDown(Keyboard.KEY_LEFT_SHIFT)) {
+					this.currentSpeed = RUN_SPEED * SPRINT_MODIFICATION;
+				} else if(Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
+					this.currentSpeed = RUN_SPEED * WALK_MODIFICATION;
+				} else {
+					this.currentSpeed = RUN_SPEED;
+				}
+				float distance = currentSpeed * window.getFrameTime();
+				dx = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
+				dz = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
+				Vector3f.add(position, new Vector3f(dx, 0, dz), position);
+			} else if(Keyboard.isDown(Keyboard.KEY_S)) {
+				if(Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
+					this.currentSpeed = -RUN_SPEED * WALK_MODIFICATION;
+				} else {
+					this.currentSpeed = -RUN_SPEED;
+				}
+				float distance = currentSpeed * window.getFrameTime();
+				dx = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
+				dz = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
+				Vector3f.add(position, new Vector3f(dx, 0, dz), position);
+			} else this.currentSpeed = 0;
+
+			if(Keyboard.isDown(Keyboard.KEY_A)) {
+				if (Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
+					this.currentSpeed = RUN_SPEED * .5f;
+				} else if (Keyboard.isDown(Keyboard.KEY_LEFT_SHIFT)) {
+					this.currentSpeed = RUN_SPEED * 1.5f;
+				} 
+				else this.currentSpeed = RUN_SPEED;
+
+				float distance = currentSpeed * window.getFrameTime();
+				dx = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
+				dz = (float) (-distance * Math.sin(Math.toRadians(rotation.y)));
+				Vector3f.add(position, new Vector3f(dx, 0, dz), position);
+			} else if(Keyboard.isDown(Keyboard.KEY_D)) {
+				if (Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
+					this.currentSpeed = RUN_SPEED * .5f;
+				} else if (Keyboard.isDown(Keyboard.KEY_LEFT_SHIFT)) {
+					this.currentSpeed = RUN_SPEED * 1.5f;
+				} 
+				else this.currentSpeed = RUN_SPEED;
+
+				float distance = currentSpeed * window.getFrameTime();
+				dx = (float) (-distance * Math.cos(Math.toRadians(rotation.y)));
+				dz = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
+				Vector3f.add(position, new Vector3f(dx, 0, dz), position);			
+			}
+			break;
+		case CROUCHING:
+			if(Keyboard.isDown(Keyboard.KEY_W)) {
+				if(Keyboard.isDown(Keyboard.KEY_LEFT_SHIFT)) {
+					this.currentSpeed = RUN_SPEED * SPRINT_MODIFICATION * CROUCH_MODIFICATION;
+				} else if(Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
+					this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * CROUCH_MODIFICATION;
+				} else {
+					this.currentSpeed = RUN_SPEED;
+				}
+				float distance = currentSpeed * window.getFrameTime();
+				dx = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
+				dz = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
+				Vector3f.add(position, new Vector3f(dx, 0, dz), position);
+			} else if(Keyboard.isDown(Keyboard.KEY_S)) {
+				if(Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
+					this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * CROUCH_MODIFICATION;
+				} else {
+					this.currentSpeed = RUN_SPEED;
+				}
+				float distance = currentSpeed * window.getFrameTime();
+				dx = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
+				dz = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
+				Vector3f.add(position, new Vector3f(dx, 0, dz), position);
+			} else this.currentSpeed = 0;
+
+			if(Keyboard.isDown(Keyboard.KEY_A)) {
+				if (Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
+					this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * CROUCH_MODIFICATION;
+				} else if (Keyboard.isDown(Keyboard.KEY_LEFT_SHIFT)) {
+					this.currentSpeed = RUN_SPEED * SPRINT_MODIFICATION * CROUCH_MODIFICATION;
+				} 
+				else this.currentSpeed = RUN_SPEED;
+
+				float distance = currentSpeed * window.getFrameTime();
+				dx = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
+				dz = (float) (-distance * Math.sin(Math.toRadians(rotation.y)));
+				Vector3f.add(position, new Vector3f(dx, 0, dz), position);
+			} else if(Keyboard.isDown(Keyboard.KEY_D)) {
+				if (Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
+					this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * CROUCH_MODIFICATION;
+				} else if (Keyboard.isDown(Keyboard.KEY_LEFT_SHIFT)) {
+					this.currentSpeed = RUN_SPEED * SPRINT_MODIFICATION * CROUCH_MODIFICATION;
+				} 
+				else this.currentSpeed = RUN_SPEED;
+
+				float distance = currentSpeed * window.getFrameTime();
+				dx = (float) (-distance * Math.cos(Math.toRadians(rotation.y)));
+				dz = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
+				Vector3f.add(position, new Vector3f(dx, 0, dz), position);
+			}
+			break;
+		case LAYING:
+			if(Keyboard.isDown(Keyboard.KEY_W)) {
+				if(Keyboard.isDown(Keyboard.KEY_LEFT_SHIFT)) {
+					this.currentSpeed = RUN_SPEED * SPRINT_MODIFICATION * PRONE_MODIFICATION;
+				} else if(Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
+					this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * PRONE_MODIFICATION;
+				} else {
+					this.currentSpeed = RUN_SPEED;
+				}
+				float distance = currentSpeed * window.getFrameTime();
+				dx = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
+				dz = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
+				Vector3f.add(position, new Vector3f(dx, 0, dz), position);
+			} else if(Keyboard.isDown(Keyboard.KEY_S)) {
+				if(Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
+					this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * PRONE_MODIFICATION;
+				} else {
+					this.currentSpeed = RUN_SPEED;
+				}
+				float distance = currentSpeed * window.getFrameTime();
+				dx = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
+				dz = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
+				Vector3f.add(position, new Vector3f(dx, 0, dz), position);
+			} else this.currentSpeed = 0;
+
+			if(Keyboard.isDown(Keyboard.KEY_A)) {
+				if (Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
+					this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * PRONE_MODIFICATION;
+				} else if (Keyboard.isDown(Keyboard.KEY_LEFT_SHIFT)) {
+					this.currentSpeed = RUN_SPEED * SPRINT_MODIFICATION * PRONE_MODIFICATION;
+				} 
+				else this.currentSpeed = RUN_SPEED;
+
+				float distance = currentSpeed * window.getFrameTime();
+				dx = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
+				dz = (float) (-distance * Math.sin(Math.toRadians(rotation.y)));
+				Vector3f.add(position, new Vector3f(dx, 0, dz), position);
+			} else if(Keyboard.isDown(Keyboard.KEY_D)) {
+				if (Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
+					this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * PRONE_MODIFICATION;
+				} else if (Keyboard.isDown(Keyboard.KEY_LEFT_SHIFT)) {
+					this.currentSpeed = RUN_SPEED * SPRINT_MODIFICATION * PRONE_MODIFICATION;
+				} 
+				else this.currentSpeed = RUN_SPEED;
+
+				float distance = currentSpeed * window.getFrameTime();
+				dx = (float) (-distance * Math.cos(Math.toRadians(rotation.y)));
+				dz = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
+				Vector3f.add(position, new Vector3f(dx, 0, dz), position);;
+			}
+			break;
+		}
+		
+		if(Keyboard.isPressed(Keyboard.KEY_SPACE)) {
+			jump();
+		}
+		
+	}
+
+	/*
+	 * Checks the mouse inputs to determine the rotation desired by the user.
+	 */
+
+	private void rotate(Vector2f sensitivity, GLFWWindow window, boolean invert) {
+
+		float angleChange = 0;
+		float pitchChange = 0;
+		angleChange = window.getDX() * 10 * sensitivity.x;
+		pitchChange = window.getDY() * .3f * sensitivity.y;
+
+		Camera.pitch %= 360;
+		if(Camera.pitch + pitchChange <= -90) Camera.pitch = -90 + (float) Math.abs(pitchChange);
+		else if(Camera.pitch + pitchChange >= 90) Camera.pitch = 90 - (float) Math.abs(pitchChange);
+		else if(Camera.pitch + pitchChange >= 270) Camera.pitch = 270 - (float) Math.abs(pitchChange);
+		else if(Camera.pitch + pitchChange <= -270) Camera.pitch = -270 + (float) Math.abs(pitchChange);
+		else {
+			Camera.pitch -= pitchChange;
+			this.currentTurnSpeed = -angleChange;
+		}
+
+	}
+
+	private void jump() {
+		if (!isInAir) {
+			this.upwardsSpeed = JUMP_POWER;
+			isInAir = true;
+		}
+	}
+
+	public void addComponent(Component comp) {
+		if(!map.containsKey(comp.getClass())) {
+			this.map.put(comp.getClass(), comp);
+		}
+	}
+	
+	public boolean hasComponent(Class<?> c) {
+		return map.containsKey(c);
+	}
+	
+	public void removeComponent(Component comp) {
+		if(!map.containsKey(comp.getClass())) {
+			this.map.remove(comp.getClass());
+		}
+	}
+
+	public Object getComponentValue(Class<?> c) {
+		if(map.containsKey(c)) {
+			return map.get(c).getComponent();
+		}
+		return null;
+	}
+
+	public Camera getCamera() {
+		return camera;
 	}
 
 	public Vector3f getPosition() {
@@ -159,11 +340,79 @@ public class Entity {
 	}
 
 	public TexturedModel getModel() {
-		return model;
+		return tm;
 	}
 
-	public void setModel(TexturedModel model) {
-		this.model = model;
+	public void setModel(TexturedModel tm) {
+		this.tm = tm;
+	}
+
+	public HashMap<Class<?>, Component> getMap() {
+		return map;
+	}
+
+	public void setMap(HashMap<Class<?>, Component> map) {
+		this.map = map;
+	}
+
+	public Terrain getTerrain() {
+		return terrain;
+	}
+
+	public void setTerrain(Terrain terrain) {
+		this.terrain = terrain;
+	}
+
+	public Vector3f getVelocity() {
+		return new Vector3f(dx, dy, dz);
+	}
+
+	public float getCurrentSpeed() {
+		return currentSpeed;
+	}
+
+	public void setCurrentSpeed(float currentSpeed) {
+		this.currentSpeed = currentSpeed;
+	}
+
+	public float getCurrentTurnSpeed() {
+		return currentTurnSpeed;
+	}
+
+	public void setCurrentTurnSpeed(float currentTurnSpeed) {
+		this.currentTurnSpeed = currentTurnSpeed;
+	}
+
+	public float getUpwardsSpeed() {
+		return upwardsSpeed;
+	}
+
+	public void setUpwardsSpeed(float upwardsSpeed) {
+		this.upwardsSpeed = upwardsSpeed;
+	}
+
+	public boolean isInAir() {
+		return isInAir;
+	}
+
+	public void setInAir(boolean isInAir) {
+		this.isInAir = isInAir;
+	}
+
+	public MOVEMENT_STATE getState() {
+		return state;
+	}
+
+	public void setState(MOVEMENT_STATE state) {
+		this.state = state;
+	}
+
+	public static float getGravity() {
+		return GRAVITY;
+	}
+
+	public void setCamera(Camera camera) {
+		this.camera = camera;
 	}
 
 }

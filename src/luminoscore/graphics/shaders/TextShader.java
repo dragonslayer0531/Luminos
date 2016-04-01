@@ -1,32 +1,27 @@
 package luminoscore.graphics.shaders;
 
-import luminoscore.util.math.vector.Vector2f;
-import luminoscore.util.math.vector.Vector3f;
+import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.util.vector.Vector3f;
 
 public class TextShader extends ShaderProgram {
-	
-	/*
-	 * Author: Nick Clark
-	 * Created On: 3/20/2016
-	 */
 	
 	private int location_color;
 	private int location_translation;
 	private int location_font;
-
-	public TextShader(Shader shader) {
-		super(shader);
+	
+	public TextShader(String VERT, String FRAG) {
+		super(VERT, FRAG);
 	}
-
-	protected void bindAttributes() {
-		super.bindAttribute(0, "position");
-		super.bindAttribute(1, "textureCoords");
-	}
-
+	
 	protected void getAllUniformLocations() {
 		location_color = super.getUniformLocation("color");
 		location_translation = super.getUniformLocation("translation");
 		location_font = super.getUniformLocation("font");
+	}
+	
+	protected void bindAttributes() {
+		super.bindAttribute(0, "position");
+		super.bindAttribute(1, "textureCoords");
 	}
 	
 	public void loadColor(Vector3f color) {
@@ -37,7 +32,7 @@ public class TextShader extends ShaderProgram {
 		super.load2DVector(location_translation, translation);
 	}
 	
-	public void loadFontSize(float font) {
+	public void loadFont(float font) {
 		super.loadFloat(location_font, font);
 	}
 

@@ -1,17 +1,9 @@
 package luminoscore.input;
 
-import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
-
 import org.lwjgl.glfw.GLFWKeyCallback;
+import static org.lwjgl.glfw.GLFW.*;
 
 public class Keyboard extends GLFWKeyCallback {
-	
-	/*
-	 * Author: Nick Clark
-	 * Created On: 3/16/2016
-	 */
-	
-	//Character Keys
 
 	public static final int KEY_SPACE = 0x20, KEY_APOSTROPHE = 0x27,
 			KEY_COMMA = 0x2C, KEY_MINUS = 0x2D,
@@ -32,8 +24,6 @@ public class Keyboard extends GLFWKeyCallback {
 			KEY_BACKSLASH = 0x5C, KEY_RIGHT_BRACKET = 0x5D,
 			KEY_GRAVE_ACCENT = 0x60, KEY_WORLD_1 = 0xA1,
 			KEY_WORLD_2 = 0xA2;
-	
-	//Non-character keys
 
 	public static final int KEY_ESCAPE = 0x100, KEY_ENTER = 0x101,
 			KEY_TAB = 0x102, KEY_BACKSPACE = 0x103,
@@ -67,7 +57,6 @@ public class Keyboard extends GLFWKeyCallback {
 			KEY_RIGHT_ALT = 0x15A, KEY_RIGHT_SUPER = 0x15B,
 			KEY_MENU = 0x15C, KEY_LAST = KEY_MENU;
 
-	//Other keys
 	public static final int MOD_SHIFT = 0x1;
 
 	public static final int MOD_CONTROL = 0x2;
@@ -76,64 +65,41 @@ public class Keyboard extends GLFWKeyCallback {
 
 	public static final int MOD_SUPER = 0x8;
 	
-	//Arrays containing the state of the keys
 	private static int[] keyState = new int[KEY_LAST];
 	private static int[] keyDown = new int[KEY_LAST];
-	
-	/*
-	 * Constructor
-	 * Creates the Keyboard listener.  It is created when the window is created.
-	 */
+
 	public Keyboard() {
 		for (int i = 0; i < keyState.length; i++) {
 			keyState[i] = -1;
 		}
 	}
-	
-	//Updates the key arrays to show that all keys are down
+
 	public void update() {
 		for (int i = 0; i < keyState.length; i++) {
 			keyState[i] = -1;
 		}
 	}
-	
-	/*
-	 * @param key an integer that is used to represent a key
-	 * @return boolean if key is down
-	 */
+
 	public static boolean isDown(int key) {
 		if(key <= KEY_LAST) {
 			return keyDown[key] == 1;
 		}
 		return false;
 	}
-	
-	/*
-	 * @param key an integer that is used to represent a key
-	 * @return boolean if key is pressed
-	 */
+
 	public static boolean isPressed(int key) {
 		if(key <= KEY_LAST) {
 			return keyState[key] == 1;
 		}
 		return false;
 	}
-	
-	/* 
-	 * @param key an integer that is used to represent a key
-	 * @returns boolean if key is released
-	 */
+
 	public static boolean isReleased(int key) {
 		if(key <= KEY_LAST) {
 			return keyState[key] == 0;
 		}
 		return false;
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.lwjgl.glfw.GLFWKeyCallback#invoke(long, int, int, int, int)
-	 */
 
 	public void invoke(long window, int key, int scancode, int action, int mods) {
 		if(key <= KEY_LAST) {
