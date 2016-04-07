@@ -1,5 +1,6 @@
 package luminoscore.graphics.entities;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class Entity {
 
 	private Vector3f position, rotation;
 	private float scale;
-	private TexturedModel tm;
+	private List<TexturedModel> models;
 	private Camera camera;
 
 	private Terrain terrain;
@@ -27,7 +28,7 @@ public class Entity {
 	private float upwardsSpeed;
 	private boolean isInAir = false;
 
-	private float RUN_SPEED = 40;
+	private float RUN_SPEED = 40 / 8;
 
 	public static final float GRAVITY = -50; 
 	private static float JUMP_POWER = 18; 
@@ -51,12 +52,16 @@ public class Entity {
 	public Entity(Vector3f position, Vector3f rotation, float scale, TexturedModel tm) {
 		this.position = position;
 		this.rotation = rotation;
-		this.scale = scale;
-		this.tm = tm;
+		this.scale = scale / 8;
+		this.models = new ArrayList<TexturedModel>();
+		models.add(tm);
 	}
-
-	public void attachCamera() {
-		this.camera = new Camera(this);
+	
+	public Entity(Vector3f position, Vector3f rotation, float scale, List<TexturedModel> models) {
+		this.position = position;
+		this.rotation = rotation;
+		this.scale = scale;
+		this.models = models;
 	}
 
 	/*
@@ -86,7 +91,6 @@ public class Entity {
 			isInAir = false;
 			position.y = terrainHeight;
 		}
-		camera.move();
 		dy = y - this.position.y;
 	}
 
@@ -252,7 +256,7 @@ public class Entity {
 			break;
 		}
 		
-		if(Keyboard.isPressed(Keyboard.KEY_SPACE)) {
+		if(Keyboard.isDown(Keyboard.KEY_SPACE)) {
 			jump();
 		}
 		
@@ -339,12 +343,8 @@ public class Entity {
 		this.scale = scale;
 	}
 
-	public TexturedModel getModel() {
-		return tm;
-	}
-
-	public void setModel(TexturedModel tm) {
-		this.tm = tm;
+	public List<TexturedModel> getModels() {
+		return models;
 	}
 
 	public HashMap<Class<?>, Component> getMap() {

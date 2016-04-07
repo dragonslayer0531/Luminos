@@ -8,8 +8,8 @@ import luminoscore.tools.Maths;
 
 public class WaterShader extends ShaderProgram {
 
-	private final static String VERTEX_FILE = "src/shaders/waterVertex.glsl";
-	private final static String FRAGMENT_FILE = "src/shaders/waterFragment.glsl";
+	private final static String VERTEX_FILE = "res/shaders/water.vert";
+	private final static String FRAGMENT_FILE = "res/shaders/water.frag";
 
 	private int location_modelMatrix;
 	private int location_viewMatrix;

@@ -19,7 +19,7 @@ public class SkyboxRenderer {
 	private static final String VERT = "res/shaders/skybox.vert";
 	private static final String FRAG = "res/shaders/skybox.frag";
 	
-	private static final float SIZE = 500f;
+	private static final float SIZE = 300f;
 	
 	private static final float[] VERTICES = {        
 	    -SIZE,  SIZE, -SIZE,

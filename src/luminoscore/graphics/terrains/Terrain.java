@@ -9,6 +9,7 @@ import javax.imageio.ImageIO;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
+import luminoscore.Debug;
 import luminoscore.graphics.entities.Entity;
 import luminoscore.graphics.loaders.Loader;
 import luminoscore.graphics.models.RawModel;
@@ -18,7 +19,7 @@ import luminoscore.tools.Maths;
 
 public class Terrain {
 
-	public static float SIZE = 800;
+	public static float SIZE = 100;
 	public static int VERTEX_COUNT = 32;
 	private static float MAX_HEIGHT = 40;
 	private static final float MAX_PIXEL_COLOUR = 256 * 256 * 256;
@@ -253,7 +254,7 @@ public class Terrain {
 			try {
 				image = ImageIO.read(new File("res/textures/" + heightMap + ".png"));
 			} catch (IOException e) {
-				e.printStackTrace();
+				Debug.addData(Terrain.class + " " + e.getMessage());
 			}
 			int VERTEX_COUNT = image.getHeight();
 			int count = VERTEX_COUNT * VERTEX_COUNT;

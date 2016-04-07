@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import luminoscore.Debug;
 import luminoscore.graphics.display.GLFWWindow;
 
 public class MetaFile {
@@ -69,7 +70,8 @@ public class MetaFile {
         String line = null;
         try {
             line = reader.readLine();
-        } catch (IOException e1) {
+        } catch (IOException e) {
+        	Debug.addData(MetaFile.class + " " + e.getMessage());
         }
         if (line == null) {
             return false;
@@ -118,7 +120,7 @@ public class MetaFile {
         try {
             reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Debug.addData(MetaFile.class + " " + e.getMessage());
         }
     }
  
@@ -132,8 +134,7 @@ public class MetaFile {
         try {
             reader = new BufferedReader(new FileReader(file));
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Couldn't read font meta file!");
+        	Debug.addData(MetaFile.class + " " + e.getMessage());
         }
     }
  

@@ -26,6 +26,7 @@ import org.lwjgl.opengl.GL30;
 
 import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
+import luminoscore.Debug;
 import luminoscore.graphics.models.RawModel;
 import luminoscore.graphics.textures.TextureData;
 
@@ -208,7 +209,7 @@ public class Loader {
 			in.close();
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.err.println("Tried to load texture " + fileName + ", didn't work");
+			Debug.addData(Loader.class + " Could not decode texture file: " + fileName);
 			System.exit(-1);
 		}
 		return new TextureData(buffer, width, height);

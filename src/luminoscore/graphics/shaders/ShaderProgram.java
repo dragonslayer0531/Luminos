@@ -13,6 +13,8 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
+import luminoscore.Debug;
+
 public abstract class ShaderProgram {
 	
 	private int programID;
@@ -106,6 +108,7 @@ public abstract class ShaderProgram {
 			}
 			reader.close();
 		} catch(IOException e) {
+			Debug.addData(ShaderProgram.class + " " + e.getMessage());
 			e.printStackTrace();
 			System.exit(-1);
 		}
@@ -113,8 +116,7 @@ public abstract class ShaderProgram {
 		GL20.glShaderSource(shaderID, shaderSource);
 		GL20.glCompileShader(shaderID);
 		if(GL20.glGetShaderi(shaderID, GL20.GL_COMPILE_STATUS )== GL11.GL_FALSE){
-			System.out.println(GL20.glGetShaderInfoLog(shaderID, 500));
-			System.err.println("Could not compile shader!");
+			Debug.addData(ShaderProgram.class + " " + GL20.glGetShaderInfoLog(shaderID, 500) + " Could not compile shader.");
 			System.exit(-1);
 		}
 		return shaderID;

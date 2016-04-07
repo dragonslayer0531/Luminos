@@ -36,6 +36,7 @@ import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
 
+import luminoscore.Debug;
 import luminoscore.input.Keyboard;
 import luminoscore.input.Mouse;
 import luminoscore.input.MousePosition;
@@ -105,21 +106,21 @@ public class GLFWWindow {
 	private void init() {
 		
 		if(glfwInit() != GL_TRUE) {
-			System.out.println("error");
+			Debug.addData(GLFWWindow.class + " Could not instantiate GLFW instance");
 		}
 		
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, GL_MAJOR);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, GL_MINOR);
 		glfwWindowHint(GLFW_VISIBLE, visible ? GL_TRUE : GL_FALSE);
 		glfwWindowHint(GLFW_RESIZABLE, resizable ? GL_TRUE : GL_FALSE);
-		glfwWindowHint(GLFW_STENCIL_BITS, 4);
+		glfwWindowHint(GLFW_STENCIL_BITS, 2);
 		glfwWindowHint(GLFW_SAMPLES, 4);
 		
 		window = glfwCreateWindow(width, height, title, fullscreen ? glfwGetPrimaryMonitor() : NULL, NULL);
 		if(window == NULL) {
-			System.out.println("error");
+			Debug.addData(GLFWWindow.class + "Could not create GLFW Window");
 		}
-				
+			
 		glfwMakeContextCurrent(window);
 		
 		//Create Callbacks
@@ -192,6 +193,7 @@ public class GLFWWindow {
 		keyboard.update();
 		glfwPollEvents();
 		frameRateCounter.calculate();
+//		System.out.println(getFPS());
 	}
 	
 	//Close screen
