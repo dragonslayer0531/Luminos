@@ -20,7 +20,7 @@ public class EntityRenderer {
 
 	private EntityShader shader;
 
-	public EntityRenderer(EntityShader shader, Matrix4f projectionMatrix) {
+	public EntityRenderer(EntityShader shader,Matrix4f projectionMatrix) {
 		this.shader = shader;
 		shader.start();
 		shader.loadProjectionMatrix(projectionMatrix);
@@ -67,7 +67,7 @@ public class EntityRenderer {
 
 	private void prepareInstance(Entity entity) {
 		Matrix4f transformationMatrix = Maths.createTransformationMatrix(entity.getPosition(),
-				entity.getRotation().x, entity.getRotation().y, entity.getRotation().z, entity.getScale());
+				entity.getRotation(), entity.getScale());
 		shader.loadTransformationMatrix(transformationMatrix);
 		shader.loadOffset(0, 0);
 	}
