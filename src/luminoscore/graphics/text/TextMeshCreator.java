@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import luminoscore.graphics.display.GLFWWindow;
-
 /**
  * 
  * @author Nick Clark
@@ -24,12 +22,11 @@ public class TextMeshCreator {
  
     /**
      * @param metaFile	Meta File to build with
-     * @param window	Window to load to
      * 
      * Constructor
      */
-    protected TextMeshCreator(File metaFile, GLFWWindow window) {
-        metaData = new MetaFile(metaFile, window);
+    protected TextMeshCreator(File metaFile) {
+        metaData = new MetaFile(metaFile);
     }
  
     /**

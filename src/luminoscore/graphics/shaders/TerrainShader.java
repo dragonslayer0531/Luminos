@@ -6,6 +6,7 @@ import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
+import luminoscore.GlobalLock;
 import luminoscore.graphics.entities.Camera;
 import luminoscore.graphics.entities.Light;
 import luminoscore.tools.Maths;
@@ -13,7 +14,7 @@ import luminoscore.tools.Maths;
 /**
  * 
  * @author Nick Clark
- * @version 1.0
+ * @version 1.1
  * 
  * Terrain Shader for Terrain Renderer
  *
@@ -54,9 +55,9 @@ public class TerrainShader extends ShaderProgram{
 	 * @see luminoscore.graphics.shaders.ShaderProgram#bindAttributes()
 	 */
 	protected void bindAttributes() {
-		super.bindAttribute(0, "position");
-		super.bindAttribute(1, "textureCoordinates");
-		super.bindAttribute(2, "normal");
+		super.bindAttribute(GlobalLock.POSITION, "position");
+		super.bindAttribute(GlobalLock.TEXTURES, "textureCoordinates");
+		super.bindAttribute(GlobalLock.NORMALS, "normal");
 	}
 
 	/*

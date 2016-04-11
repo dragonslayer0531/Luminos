@@ -5,6 +5,7 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
+import luminoscore.GlobalLock;
 import luminoscore.graphics.display.GLFWWindow;
 import luminoscore.graphics.entities.Camera;
 
@@ -20,7 +21,6 @@ import luminoscore.graphics.entities.Camera;
 public class MousePicker {
 	
 	private Vector3f currentRay;
-	private GLFWWindow window;
 	
 	private Matrix4f projectionMatrix, viewMatrix;
 	private Camera camera;
@@ -28,14 +28,12 @@ public class MousePicker {
 	/**
 	 * @param camera			Camera to cast from
 	 * @param projectionMatrix	Projection matrix of camera
-	 * @param window			Window to cast from
 	 * 
 	 * Constructor
 	 */
 	public MousePicker(Camera camera, Matrix4f projectionMatrix, GLFWWindow window) {
 		this.camera = camera;
 		this.projectionMatrix = projectionMatrix;
-		this.window = window;
 		this.viewMatrix = Maths.createViewMatrix(camera);
 	}
 	
@@ -107,8 +105,8 @@ public class MousePicker {
 	 * Normalizes mouse position coordinates
 	 */
 	private Vector2f getNormalizedCoords(float mouseX, float mouseY) {
-		float x = (2f * mouseX) / window.getWidth();
-		float y = (2f * mouseY) / window.getHeight();
+		float x = (2f * mouseX) / GlobalLock.WIDTH;
+		float y = (2f * mouseY) / GlobalLock.HEIGHT;
 		return new Vector2f(x, y);
 	}
 

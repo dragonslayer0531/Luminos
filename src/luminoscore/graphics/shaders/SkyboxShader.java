@@ -3,6 +3,7 @@ package luminoscore.graphics.shaders;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
+import luminoscore.GlobalLock;
 import luminoscore.graphics.display.GLFWWindow;
 import luminoscore.graphics.entities.Camera;
 import luminoscore.tools.Maths;
@@ -10,7 +11,7 @@ import luminoscore.tools.Maths;
 /**
  * 
  * @author Nick Clark
- * @version 1.0
+ * @version 1.1
  * 
  * Skybox Shader for Skybox Renderer
  *
@@ -109,7 +110,7 @@ public class SkyboxShader extends ShaderProgram {
      * @see luminoscore.graphics.shaders.ShaderProgram#bindAttributes()
      */
     protected void bindAttributes() {
-        super.bindAttribute(0, "position");
+        super.bindAttribute(GlobalLock.POSITION, "position");
     }
  
 }

@@ -7,7 +7,7 @@ import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL32;
 
-import luminoscore.graphics.display.GLFWWindow;
+import luminoscore.GlobalLock;
 
 /**
  * 
@@ -34,17 +34,14 @@ public class WaterFrameBuffers {
 	private int refractionTexture;
 	private int refractionDepthTexture;
 	
-	private GLFWWindow display;
-
 	/**
 	 * @param display	GLFWWindow to load to
 	 * 
 	 * Constructor
 	 */
-	public WaterFrameBuffers(GLFWWindow display) {
+	public WaterFrameBuffers() {
 		initialiseReflectionFrameBuffer();
 		initialiseRefractionFrameBuffer();
-		this.display = display;
 	}
 
 	/**
@@ -78,7 +75,7 @@ public class WaterFrameBuffers {
 	 */
 	public void unbindCurrentFrameBuffer() {
 		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
-		GL11.glViewport(0, 0, display.getWidth(), display.getHeight());
+		GL11.glViewport(0, 0, GlobalLock.WIDTH, GlobalLock.HEIGHT);
 	}
 
 	/**

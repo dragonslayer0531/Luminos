@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL32;
 
-import luminoscore.graphics.display.GLFWWindow;
+import luminoscore.GlobalLock;
 
 /**
  * 
@@ -29,14 +29,13 @@ public class ShadowFrameBuffer {
     /**
      * @param width		Defines width of shadow frame buffer
      * @param height	Defines height of shadow frame buffer
-     * @param window	Defines window of shadow frame buffer
      * 
      * Constructor
      */
-    public ShadowFrameBuffer(int width, int height, GLFWWindow window) {
+    public ShadowFrameBuffer(int width, int height) {
         this.WIDTH = width;
         this.HEIGHT = height;
-        initialiseFrameBuffer(window);
+        initialiseFrameBuffer();
     }
 
     /**
@@ -54,14 +53,12 @@ public class ShadowFrameBuffer {
         bindFrameBuffer(fbo, WIDTH, HEIGHT);
     }
 
-    /**
-     * @param window	Window to bind viewport of
-     * 
+    /** 
      * Unbinds frame buffer
      */
-    public void unbindFrameBuffer(GLFWWindow window) {
+    public void unbindFrameBuffer() {
         GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
-        GL11.glViewport(0, 0, window.getWidth(), window.getHeight());
+        GL11.glViewport(0, 0, GlobalLock.WIDTH, GlobalLock.HEIGHT);
     }
 
     /**
@@ -75,15 +72,13 @@ public class ShadowFrameBuffer {
 
 //*************************************Private Methods***************************************//
     
-    /**
-     * @param window	Window for frame buffer
-     * 
+    /** 
      * Initializes frame buffers
      */
-    private void initialiseFrameBuffer(GLFWWindow window) {
+    private void initialiseFrameBuffer() {
         fbo = createFrameBuffer();
         shadowMap = createDepthBufferAttachment(WIDTH, HEIGHT);
-        unbindFrameBuffer(window);
+        unbindFrameBuffer();
     }
     
     /**

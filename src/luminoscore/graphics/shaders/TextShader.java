@@ -3,10 +3,12 @@ package luminoscore.graphics.shaders;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
+import luminoscore.GlobalLock;
+
 /**
  * 
  * @author Nick Clark
- * @version 1.0
+ * @version 1.1
  * 
  * Text Shader for Text Renderer
  *
@@ -42,8 +44,8 @@ public class TextShader extends ShaderProgram {
 	 * @see luminoscore.graphics.shaders.ShaderProgram#bindAttributes()
 	 */
 	protected void bindAttributes() {
-		super.bindAttribute(0, "position");
-		super.bindAttribute(1, "textureCoords");
+		super.bindAttribute(GlobalLock.POSITION, "position");
+		super.bindAttribute(GlobalLock.TEXTURES, "textureCoords");
 	}
 	
 	/**

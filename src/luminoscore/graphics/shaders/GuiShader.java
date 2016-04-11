@@ -2,10 +2,12 @@ package luminoscore.graphics.shaders;
 
 import org.lwjgl.util.vector.Matrix4f;
 
+import luminoscore.GlobalLock;
+
 /**
  * 
  * @author Nick Clark
- * @version 1.0
+ * @version 1.1
  *
  * Gui Shader to use in GuiRenderer
  */
@@ -37,7 +39,7 @@ public class GuiShader extends ShaderProgram {
 	 * @see luminoscore.graphics.shaders.ShaderProgram#bindAttributes()
 	 */
 	protected void bindAttributes() {
-		super.bindAttribute(0, "position");
+		super.bindAttribute(GlobalLock.POSITION, "position");
 	}
 	
 	/**

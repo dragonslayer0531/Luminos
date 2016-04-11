@@ -18,7 +18,7 @@ import luminoscore.Debug;
 /**
  * 
  * @author Nick Clark
- * @version 1.0
+ * @version 1.1
  * 
  * Base shader program
  *
@@ -201,15 +201,15 @@ public abstract class ShaderProgram {
 			reader.close();
 		} catch(IOException e) {
 			Debug.addData(ShaderProgram.class + " " + e.getMessage());
-			e.printStackTrace();
-			System.exit(-1);
+			Debug.addData(e.getMessage());
+			Debug.print();
 		}
 		int shaderID = GL20.glCreateShader(type);
 		GL20.glShaderSource(shaderID, shaderSource);
 		GL20.glCompileShader(shaderID);
 		if(GL20.glGetShaderi(shaderID, GL20.GL_COMPILE_STATUS )== GL11.GL_FALSE){
-			Debug.addData(ShaderProgram.class + " " + GL20.glGetShaderInfoLog(shaderID, 500) + " Could not compile shader.");
-			System.exit(-1);
+			Debug.addData(ShaderProgram.class + " " + GL20.glGetShaderInfoLog(shaderID, 50000) + " Could not compile shader.");
+			Debug.print();
 		}
 		return shaderID;
 	}

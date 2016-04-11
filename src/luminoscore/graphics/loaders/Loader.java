@@ -31,7 +31,7 @@ import luminoscore.graphics.textures.TextureData;
 /**
  * 
  * @author Nick Clark
- * @version 1.0
+ * @version 1.1
  * 
  * Class that loads objects to the graphics card
  *
@@ -98,8 +98,7 @@ public class Loader {
 	 * 
 	 * Loads Positions, Texture Coordinates, Normals, and Indices to graphics card.  3D Coordinates.
 	 */
-	public RawModel loadToVAO(float[] positions, float[] textureCoords, float[] normals,
-			int[] indices) {
+	public RawModel loadToVAO(float[] positions, float[] textureCoords, float[] normals, int[] indices) {
 		int vaoID = createVAO();
 		bindIndicesBuffer(indices);
 		storeDataInAttributeList(0, 3, positions);
@@ -140,7 +139,8 @@ public class Loader {
 		try {
 			image = ImageIO.read(new File(fileName));
 		} catch (IOException e) {
-			System.out.println("error");
+			Debug.addData(Loader.class + " File not found: " + fileName);
+			Debug.addData(e.getMessage());
 		}
 
 		int[] pixels = new int[image.getWidth() * image.getHeight()];
@@ -319,9 +319,9 @@ public class Loader {
 			buffer.flip();
 			in.close();
 		} catch (Exception e) {
-			e.printStackTrace();
 			Debug.addData(Loader.class + " Could not decode texture file: " + fileName);
-			System.exit(-1);
+			Debug.addData(e.getMessage());
+			Debug.print();
 		}
 		return new TextureData(buffer, width, height);
 	}

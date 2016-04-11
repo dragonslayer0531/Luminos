@@ -33,6 +33,7 @@ public class Debug {
 	 */
 	public static void out() {
 		System.out.println(debug_data.toString());
+		System.exit(-1);
 	}
 	
 	/**
@@ -50,6 +51,7 @@ public class Debug {
 				e.printStackTrace();
 			}
 		}
+		System.exit(0);
 	}
 	
 //***********************************Private Methods*******************************************//

@@ -4,7 +4,7 @@ import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
-import luminoscore.graphics.display.GLFWWindow;
+import luminoscore.GlobalLock;
 import luminoscore.graphics.entities.Camera;
 import luminoscore.graphics.render.MasterRenderer;
 
@@ -35,14 +35,13 @@ public class ShadowBox {
     /**
      * @param lightViewMatrix	view matrix in the light position
      * @param camera			Camera to render with
-     * @param window 			Window to calculate width and height with
      * 
      * Constructor		
      */
-    public ShadowBox(Matrix4f lightViewMatrix, Camera camera, GLFWWindow window) {
+    public ShadowBox(Matrix4f lightViewMatrix, Camera camera) {
         this.lightViewMatrix = lightViewMatrix;
         this.cam = camera;
-        calculateWidthsAndHeights(window);
+        calculateWidthsAndHeights();
     }
  
     /**
@@ -201,26 +200,23 @@ public class ShadowBox {
     }
  
     /**
-     * @param window	GLFWWindow to use for aspect ratios
-     * 
      * Calculate width and height of shadow box
      */
-    private void calculateWidthsAndHeights(GLFWWindow window) {
+    private void calculateWidthsAndHeights() {
         farWidth = (float) (SHADOW_DISTANCE * Math.tan(Math.toRadians(MasterRenderer.FOV)));
         nearWidth = (float) (MasterRenderer.NEAR_PLANE
                 * Math.tan(Math.toRadians(MasterRenderer.FOV)));
-        farHeight = farWidth / getAspectRatio(window);
-        nearHeight = nearWidth / getAspectRatio(window);
+        farHeight = farWidth / getAspectRatio();
+        nearHeight = nearWidth / getAspectRatio();
     }
  
     /**
-     * @param window	GLFWWindow for aspect ratio
      * @return float	Aspect Ratio
      * 
      * Gets and calculates aspect ratio
      */
-    private float getAspectRatio(GLFWWindow window) {
-        return (float) window.getWidth() / window.getHeight();
+    private float getAspectRatio() {
+        return (float) GlobalLock.WIDTH / GlobalLock.HEIGHT;
     }
 
 }

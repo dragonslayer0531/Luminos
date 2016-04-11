@@ -7,17 +7,27 @@ import java.util.Map;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector4f;
 
+import luminoscore.GlobalLock;
 import luminoscore.graphics.display.GLFWWindow;
 import luminoscore.graphics.entities.Camera;
 import luminoscore.graphics.entities.Entity;
 import luminoscore.graphics.entities.Light;
 import luminoscore.graphics.loaders.Loader;
 import luminoscore.graphics.models.TexturedModel;
+import luminoscore.graphics.particles.Particle;
+import luminoscore.graphics.particles.ParticleMaster;
 import luminoscore.graphics.shaders.EntityShader;
 import luminoscore.graphics.shaders.TerrainShader;
+import luminoscore.graphics.shaders.WaterShader;
 import luminoscore.graphics.terrains.Terrain;
+import luminoscore.graphics.text.GUIText;
+import luminoscore.graphics.textures.GuiTexture;
+import luminoscore.graphics.water.WaterFrameBuffers;
+import luminoscore.graphics.water.WaterTile;
 import luminoscore.tools.DateUtils;
 import luminoscore.tools.Maths;
 
@@ -49,16 +59,19 @@ public class MasterRenderer {
 	private Matrix4f projectionMatrix;
 	private Matrix4f entityProjectionMatrix;
 	
-	private EntityShader shader = new EntityShader(ENTITY_VERT, ENTITY_FRAG);
-	private EntityRenderer renderer;
-	
+	private EntityRenderer entityRenderer;
+	private EntityShader entityShader = new EntityShader(ENTITY_VERT, ENTITY_FRAG);
+	private GuiRenderer guiRenderer;
+	private ParticleRenderer particleRenderer;
+	private ShadowMapMasterRenderer shadowRenderer;
+	private SkyboxRenderer skyboxRenderer;
 	private TerrainRenderer terrainRenderer;
 	private TerrainShader terrainShader = new TerrainShader(TERRAIN_VERT, TERRAIN_FRAG);
+	private TextRenderer textRenderer;
+	private WaterRenderer waterRenderer;
+	private WaterShader waterShader = new WaterShader();
 	
-	private SkyboxRenderer skyboxRenderer;
-	
-	private ShadowMapMasterRenderer shadowRenderer;
-	
+	private WaterFrameBuffers buffers;
 	private Map<TexturedModel, List<Entity>> entities = new HashMap<TexturedModel,List<Entity>>();
 	private List<Terrain> terrains = new ArrayList<Terrain>();
 	
@@ -67,20 +80,25 @@ public class MasterRenderer {
 	/**
 	 * @param loader	Passes loader used for rendering
 	 * @param camera	Camera used to create projection matrix of
-	 * @param display	Window used to get frame time of
 	 * 
 	 * Constructor used to create a Master Renderer
 	 */
-	public MasterRenderer(Loader loader, Camera camera, GLFWWindow display){
+	public MasterRenderer(Loader loader, Camera camera){
 		enableCulling();
-		createProjectionMatrix(display);
-		createEntityProjectionMatrix(display);
-		renderer = new EntityRenderer(shader, entityProjectionMatrix);
-		terrainRenderer = new TerrainRenderer(terrainShader, projectionMatrix);
+		createProjectionMatrix();
+		createEntityProjectionMatrix();
+		entityRenderer = new EntityRenderer(entityShader, entityProjectionMatrix);
+		guiRenderer = new GuiRenderer(loader);
+		particleRenderer = new ParticleRenderer(loader, entityProjectionMatrix);
+		shadowRenderer = new ShadowMapMasterRenderer(camera);		
 		skyboxRenderer = new SkyboxRenderer(loader, projectionMatrix);
+		terrainRenderer = new TerrainRenderer(terrainShader, projectionMatrix);
+		textRenderer = new TextRenderer(loader);
+		buffers = new WaterFrameBuffers();
+		waterRenderer = new WaterRenderer(loader, waterShader, projectionMatrix, buffers, "res/textures/waterdudv.png", "res/textures/waternormal.png");
+		
 		du = new DateUtils();
 		skyboxRenderer.prepare(du);
-		this.shadowRenderer = new ShadowMapMasterRenderer(camera, display);		
 	}
 	
 	/**
@@ -92,7 +110,7 @@ public class MasterRenderer {
 	 * 
 	 * Renders the entire 3D scene
 	 */
-	public void renderScene(List<Entity> entities, List<Terrain> terrains, List<Light> lights, Entity player, Camera camera, GLFWWindow window) {
+	public void renderScene(List<Entity> entities, List<Terrain> terrains, List<Light> lights, Entity player, Camera camera, Vector4f clipPlane, GLFWWindow window) {
 		for(Entity entity : entities) {
 			if(Maths.getDistance(entity.getPosition(), player.getPosition()) < 200) {
 				processEntity(entity);
@@ -104,7 +122,104 @@ public class MasterRenderer {
 		}
 		
 		processEntity(player);
-		render(lights, camera, window);
+		render(lights, camera, clipPlane, window);
+	}
+	
+	/**
+	 * @param guiTextures	GUI Textures to be rendered
+	 * 
+	 * Renders GUI Textures to screen
+	 */
+	public void renderGUI(List<GuiTexture> guiTextures) {
+		guiRenderer.render(guiTextures);
+	}
+	
+	/**
+	 * @param particles		Particles to be rendered
+	 * @param camera		Camera to render with
+	 * 
+	 * Renders particles through screen
+	 */
+	public void renderParticles(List<Particle> particles, Camera camera, GLFWWindow window) {
+		ParticleMaster.update(window);
+		particleRenderer.render(particles, camera);
+	}
+	
+	/**
+	 * @param particle		Particle to be added
+	 * 
+	 * Adds particle to ParticleMaster
+	 */
+	public void addParticle(Particle particle) {
+		ParticleMaster.addParticle(particle);
+	}
+	
+	/**
+	 * @param particles		Particles to be added
+	 * 
+	 * Adds particle list to ParticleMaster
+	 */
+	public void addParticles(List<Particle> particles) {
+		ParticleMaster.addAllParticles(particles);
+	}
+	
+	/**
+	 * Renders text to screen
+	 */
+	public void renderGuiText() {
+		textRenderer.render();
+	}
+	
+	/**
+	 * @param text	Text to be loaded
+	 * 
+	 * Loads text to renderer
+	 */
+	public void addText(GUIText text) {
+		textRenderer.loadText(text);
+	}
+	
+	/**
+	 * @param text	Text to be removed
+	 * 
+	 * Removes text from renderer
+	 */
+	public void removeText(GUIText text) {
+		textRenderer.removeText(text);
+	}
+	
+	/**
+	 * @param entities	Passed to renderScene
+	 * @param terrains	Passed to renderScene
+	 * @param lights	Passed to renderScene
+	 * @param player	Passed to renderScene
+	 * @param camera	Calculates FBOs and passed to renderScene
+	 * @param window	Passed to renderScene
+	 */
+	public void prepareWater(List<Entity> entities, List<Terrain> terrains, List<Light> lights, Entity player, Camera camera, GLFWWindow window) {
+		GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
+		buffers.bindReflectionFrameBuffer();
+		float distance = 2 * (camera.getPosition().y);
+		camera.getPosition().y = distance;
+		camera.invertPitch();
+		renderScene(entities, terrains, lights, player, camera, new Vector4f(0, 1, 0, 0), window);
+		camera.getPosition().y += distance;
+		camera.invertPitch();
+		buffers.bindRefractionFrameBuffer();
+		renderScene(entities, terrains, lights, player, camera, new Vector4f(0, -1, 0, 0), window);
+		GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
+		buffers.unbindCurrentFrameBuffer();
+	}
+	
+	/**
+	 * @param tiles		Tiles to be rendered
+	 * @param camera	Camera to use
+	 * @param light		Light to reflect
+	 * 
+	 * Renders water quads
+	 */
+	public void renderWater(List<WaterTile> tiles, Camera camera, Light light) {
+		waterRenderer.render(tiles, camera, light);
 	}
 	
 	/**
@@ -126,15 +241,17 @@ public class MasterRenderer {
 	 * 
 	 * Renders TexturedModel
 	 */
-	public void render(List<Light> lights,Camera camera, GLFWWindow window){
+	public void render(List<Light> lights, Camera camera, Vector4f clipPlane, GLFWWindow window){
 		prepare();
-		shader.start();
-		shader.loadSkyColour(RED, GREEN, BLUE);
-		shader.loadLights(lights);
-		shader.loadViewMatrix(camera);
-		renderer.render(entities);
-		shader.stop();
+		entityShader.start();
+		entityShader.loadClipPlane(clipPlane);
+		entityShader.loadSkyColour(RED, GREEN, BLUE);
+		entityShader.loadLights(lights);
+		entityShader.loadViewMatrix(camera);
+		entityRenderer.render(entities);
+		entityShader.stop();
 		terrainShader.start();
+		terrainShader.loadClipPlane(clipPlane);
 		terrainShader.loadSkyColour(RED, GREEN, BLUE);
 		terrainShader.loadLights(lights);
 		terrainShader.loadViewMatrix(camera);
@@ -201,9 +318,12 @@ public class MasterRenderer {
 	 * Cleans up all shaders used
 	 */
 	public void cleanUp(){
-		shader.cleanUp();
-		terrainShader.cleanUp();
+		entityShader.cleanUp();
+		guiRenderer.cleanUp();
+		particleRenderer.cleanUp();
 		shadowRenderer.cleanUp();
+		terrainShader.cleanUp();
+		textRenderer.cleanUp();
 	}
 	
 	/**
@@ -237,8 +357,8 @@ public class MasterRenderer {
 	 * 
 	 * Creates projection matrix for entities
 	 */
-	private void createEntityProjectionMatrix(GLFWWindow display) {
-		float aspectRatio = (float) display.getWidth() / (float) display.getHeight();
+	private void createEntityProjectionMatrix() {
+		float aspectRatio = (float) GlobalLock.WIDTH / (float) GlobalLock.HEIGHT;
 		float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))));
 		float x_scale = y_scale / aspectRatio;
 		float frustum_length = ENTITY_FAR_PLANE - NEAR_PLANE;
@@ -257,8 +377,8 @@ public class MasterRenderer {
 	 * 
 	 * Creates projection matrix for terrains and skybox
 	 */
-	private void createProjectionMatrix(GLFWWindow display) {
-		float aspectRatio = (float) display.getWidth() / (float) display.getHeight();
+	private void createProjectionMatrix() {
+		float aspectRatio = (float) GlobalLock.WIDTH / (float) GlobalLock.HEIGHT;
 		float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))));
 		float x_scale = y_scale / aspectRatio;
 		float frustum_length = FAR_PLANE - NEAR_PLANE;

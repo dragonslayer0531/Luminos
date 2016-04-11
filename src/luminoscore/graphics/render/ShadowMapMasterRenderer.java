@@ -49,17 +49,16 @@ public class ShadowMapMasterRenderer {
      * 
      * Constructor
      */
-    public ShadowMapMasterRenderer(Camera camera, GLFWWindow window) {
+    public ShadowMapMasterRenderer(Camera camera) {
         shader = new ShadowShader(VERT, FRAG);
-        shadowBox = new ShadowBox(lightViewMatrix, camera, window);
-        shadowFbo = new ShadowFrameBuffer(SHADOW_MAP_SIZE, SHADOW_MAP_SIZE, window);
+        shadowBox = new ShadowBox(lightViewMatrix, camera);
+        shadowFbo = new ShadowFrameBuffer(SHADOW_MAP_SIZE, SHADOW_MAP_SIZE);
         entityRenderer = new ShadowMapEntityRenderer(shader, projectionViewMatrix);
     }
 
     /**
      * @param entities		List of all rendered entities
      * @param sun			Focal light to render to shadow map
-     * @param window		Window used to finish rendering
      * 
      * Renders shadow map to buffer
      */
@@ -69,7 +68,7 @@ public class ShadowMapMasterRenderer {
         Vector3f lightDirection = new Vector3f(-sunPosition.x, -sunPosition.y, -sunPosition.z);
         prepare(lightDirection, shadowBox);
         entityRenderer.render(entities);
-        finish(window);
+        finish();
     }
 
     /**
@@ -125,14 +124,12 @@ public class ShadowMapMasterRenderer {
         shader.start();
     }
 
-    /**
-     * @param window	Defines window to unbind from
-     * 
+    /** 
      * Stops shader and unbinds FBO
      */
-    private void finish(GLFWWindow window) {
+    private void finish() {
         shader.stop();
-        shadowFbo.unbindFrameBuffer(window);
+        shadowFbo.unbindFrameBuffer();
     }
 
     /**

@@ -104,7 +104,7 @@ public class Entity {
 		for(Terrain terrain : terrains) {
 			if(terrain.isOnTerrain(this)) this.terrain = terrain;
 		}
-		if (position.y < terrain.getHeightOfTerrain(position.x, position.z)) {
+		if (position.y + .1f < terrain.getHeightOfTerrain(position.x, position.z)) {
 			upwardsSpeed = 0;
 			isInAir = false;
 			position.y = terrain.getHeightOfTerrain(position.x, position.z);
@@ -318,6 +318,11 @@ public class Entity {
 	 * Checks the keyboard inputs and calculates new camera position
 	 */
 	private void checkInputs(List<Terrain> terrains, GLFWWindow window) {
+		
+		if(Keyboard.isDown(Keyboard.KEY_SPACE)) {
+			jump();
+		}
+		
 		switch(state) {
 		case STANDING:
 			if(Keyboard.isDown(Keyboard.KEY_W)) {
@@ -472,10 +477,6 @@ public class Entity {
 				Vector3f.add(position, new Vector3f(dx, 0, dz), position);;
 			}
 			break;
-		}
-
-		if(Keyboard.isDown(Keyboard.KEY_SPACE)) {
-			jump();
 		}
 
 	}

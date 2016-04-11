@@ -29,8 +29,8 @@ import luminoscore.tools.Maths;
 
 public class WaterRenderer {
 
-	private static final String DUDV_MAP = "water_dudv";
-	private static final String NORMAL_MAP = "water_normal";
+	private final String DUDV_MAP;
+	private final String NORMAL_MAP;
 	private static final float WAVE_SPEED = 0.05f;
 	
 	private RawModel quad;
@@ -48,9 +48,11 @@ public class WaterRenderer {
 	 * 
 	 * Constructor
 	 */
-	public WaterRenderer(Loader loader, WaterShader shader, Matrix4f projectionMatrix, WaterFrameBuffers fbos) {
+	public WaterRenderer(Loader loader, WaterShader shader, Matrix4f projectionMatrix, WaterFrameBuffers fbos, String dudv, String normal) {
 		this.shader = shader;
 		this.fbos = fbos;
+		this.DUDV_MAP = dudv;
+		this.NORMAL_MAP = normal;
 		dudvTexture = loader.loadTexture(DUDV_MAP);
 		normalTexture = loader.loadTexture(NORMAL_MAP);
 		shader.start();
@@ -87,7 +89,7 @@ public class WaterRenderer {
 	public void renderTile(List<WaterTile> water, Camera camera, Light sun) {
 		prepareRender(camera, sun);
 		for(WaterTile tile : water) {
-			Matrix4f modelMatrix = Maths.createTransformationMatrix(new Vector3f(tile.getPosition().x, tile.getHeight(), tile.getPosition().y), 0, 0, 0, tile.getFloatScale());
+			Matrix4f modelMatrix = Maths.createTransformationMatrix(new Vector3f(tile.getX(), tile.getHeight(), tile.getZ()), 0, 0, 0, tile.getFloatScale());
 			shader.loadModelMatrix(modelMatrix);
 			GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, quad.getVertexCount());
 		}

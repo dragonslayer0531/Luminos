@@ -7,12 +7,10 @@ import static org.lwjgl.glfw.GLFW.GLFW_SAMPLES;
 import static org.lwjgl.glfw.GLFW.GLFW_STENCIL_BITS;
 import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
 import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
-import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowSize;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowTitle;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
@@ -27,6 +25,9 @@ import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
+
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -37,6 +38,8 @@ import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
 
 import luminoscore.Debug;
+import luminoscore.GlobalLock;
+import luminoscore.LuminosException;
 import luminoscore.input.Keyboard;
 import luminoscore.input.Mouse;
 import luminoscore.input.MousePosition;
@@ -44,7 +47,7 @@ import luminoscore.input.MousePosition;
 /**
  * 
  * @author Nick Clark
- * @version 1.0
+ * @version 1.1
  * 
  * The GLFWWindow class initializes GLFW and OpenGL contexts.
  *
@@ -94,10 +97,10 @@ public class GLFWWindow {
 	 * 
 	 * Constructor that initiates the GLFW and OpenGL contexts, as well as the window itself
 	 */
-	public GLFWWindow(String title, int width, int height, boolean vsync, boolean fullscreen, boolean visible, boolean resizable, boolean vismouse) {
+	public GLFWWindow(String title, boolean vsync, boolean fullscreen, boolean visible, boolean resizable, boolean vismouse) throws LuminosException {
 		this.title = title;
-		this.width = width;
-		this.height = height;
+		this.width = GlobalLock.WIDTH;
+		this.height = GlobalLock.HEIGHT;
 		this.vsync = vsync;
 		this.fullscreen = fullscreen;
 		this.visible = visible;
@@ -109,8 +112,13 @@ public class GLFWWindow {
 	
 	/**
 	 * Method that does full initialization of GLFW and OpenGL
+	 * @throws LuminosException 
 	 */
-	private void init() {
+	private void init() throws LuminosException {
+		
+		if(!GlobalLock.INITIATED) {
+			throw new LuminosException(GLFWWindow.class + " Luminos Engine has not been instantiated.  Closing...");
+		}
 		
 		if(glfwInit() != GL_TRUE) {
 			Debug.addData(GLFWWindow.class + " Could not instantiate GLFW instance");
@@ -123,9 +131,18 @@ public class GLFWWindow {
 		glfwWindowHint(GLFW_STENCIL_BITS, STENCIL_BITS);
 		glfwWindowHint(GLFW_SAMPLES, SAMPLES);
 		
-		window = glfwCreateWindow(width, height, title, fullscreen ? glfwGetPrimaryMonitor() : NULL, NULL);
+		if(fullscreen) {
+			Dimension dim = new Dimension((int) Toolkit.getDefaultToolkit().getScreenSize().getWidth(),  (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight());
+			window = glfwCreateWindow((int) dim.getWidth(), (int) dim.getHeight(), title, GL_TRUE, NULL);
+			GlobalLock.WIDTH = (int) dim.getWidth();
+			GlobalLock.HEIGHT = (int) dim.getHeight();
+		} else {
+			window = glfwCreateWindow(width, height, title, GL_FALSE, NULL);
+		}
+		
 		if(window == NULL) {
 			Debug.addData(GLFWWindow.class + "Could not create GLFW Window");
+			Debug.print();
 		}
 			
 		glfwMakeContextCurrent(window);
@@ -358,44 +375,6 @@ public class GLFWWindow {
 	public void setTitle(String title) {
 		this.title = title;
 		glfwSetWindowTitle(window, title);
-	}
-
-	/**
-	 * @return int			Width of the GLFWWindow instance
-	 * 
-	 * Gets the GLFWWindow's width
-	 */
-	public int getWidth() {
-		return width;
-	}
-
-	/**
-	 * @param width			Integer to be used as the width of the GLFWWindow instance
-	 * 
-	 * Sets the GLFWWindow's width
-	 */
-	public void setWidth(int width) {
-		this.width = width;
-		glfwSetWindowSize(window, width, height);
-	}
-
-	/**
-	 * @return int 			Height of the GLFWWindow instance
-	 * 
-	 * Gets the GLFWWindow's height
-	 */
-	public int getHeight() {
-		return height;
-	}
-
-	/**
-	 * @param height		Integer to be used as the height of the GLFWWindow instance
-	 * 
-	 * Sets the GLFWWindow's height
-	 */
-	public void setHeight(int height) {
-		this.height = height;
-		glfwSetWindowSize(window, width, height);
 	}
 
 	/**

@@ -10,6 +10,13 @@ import luminoscore.graphics.entities.Camera;
 
 public class Maths {
 
+	/**
+	 * @param translation	2D Translation
+	 * @param scale			2D Scale
+	 * @return Matrix4f		Transformation Matrix
+	 * 
+	 * Creates transformation matrix
+	 */
 	public static Matrix4f createTransformationMatrix(Vector2f translation, Vector2f scale) {
 		Matrix4f matrix = new Matrix4f();
 		matrix.setIdentity();
@@ -18,6 +25,16 @@ public class Maths {
 		return matrix;
 	}
 
+	/**
+	 * @param translation	3D Translation
+	 * @param rx			Rotation around X
+	 * @param ry			Rotation around Y
+	 * @param rz			Rotation around Z
+	 * @param scale			Uniform scale
+	 * @return Matrix4f		Transformation Matrix
+	 * 
+	 * Creates transformation matrix
+	 */
 	public static Matrix4f createTransformationMatrix(Vector3f translation, float rx, float ry,
 			float rz, float scale) {
 		Matrix4f matrix = new Matrix4f();
@@ -30,10 +47,28 @@ public class Maths {
 		return matrix;
 	}
 	
+	/**
+	 * @param translation	3D Translation
+	 * @param rotation		3D Rotation
+	 * @param scale			Uniform Scale
+	 * @return Matrix4f		Transformation Matrix
+	 * 
+	 * Creates transformation matrix
+	 */
 	public static Matrix4f createTransformationMatrix(Vector3f translation, Vector3f rotation, float scale) {
 		return Maths.createTransformationMatrix(translation, rotation.x, rotation.y, rotation.z, scale);
 	}
 	
+	/**
+	 * @param translation	3D Translation
+	 * @param rx			Rotation around X
+	 * @param ry			Rotation around Y
+	 * @param rz			Rotation around Z
+	 * @param scale			2D scale
+	 * @return Matrix4f		Transformation Matrix
+	 * 
+	 * Creates transformation matrix
+	 */
 	public static Matrix4f createWaterTransformationMatrix(Vector3f translation, float rx, float ry, float rz, Vector2f scale) {
 		Matrix4f matrix = new Matrix4f();
 		matrix.setIdentity();
@@ -45,6 +80,15 @@ public class Maths {
 		return matrix;
 	}
 
+	/**
+	 * @param p1		Value One
+	 * @param p2		Value Two
+	 * @param p3		Value Three
+	 * @param pos		Position inside values
+	 * @return float	Weighted value
+	 * 
+	 * Calculates barycenter of points
+	 */
 	public static float barryCentric(Vector3f p1, Vector3f p2, Vector3f p3, Vector2f pos) {
 		float det = (p2.z - p3.z) * (p1.x - p3.x) + (p3.x - p2.x) * (p1.z - p3.z);
 		float l1 = ((p2.z - p3.z) * (pos.x - p3.x) + (p3.x - p2.x) * (pos.y - p3.z)) / det;
@@ -53,6 +97,12 @@ public class Maths {
 		return l1 * p1.y + l2 * p2.y + l3 * p3.y;
 	}
 
+	/**
+	 * @param camera	Camera for view matrix
+	 * @return Matrix4f	View Matrix
+	 * 
+	 * Creates view matrix
+	 */
 	public static Matrix4f createViewMatrix(Camera camera) {
 		Matrix4f viewMatrix = new Matrix4f();
 		viewMatrix.setIdentity();
@@ -65,6 +115,13 @@ public class Maths {
 		return viewMatrix;
 	}
 
+	/**
+	 * @param pointOne	First Point
+	 * @param pointTwo	Second Point
+	 * @return float	Distance
+	 * 
+	 * Gets distance between two points
+	 */
 	public static float getDistance(Vector3f pointOne, Vector3f pointTwo) {
 		float distance = 0;
 
@@ -81,14 +138,21 @@ public class Maths {
 		return distance;
 	}
 	
-	public static Vector3f getFurthestPoint(Vector3f origin, List<Vector3f> point) {
-		float distance = getDistance(origin, point.get(0));
-		Vector3f positionVector = point.get(0);
+	/**
+	 * @param origin	Point of origin
+	 * @param points	Points to be checked
+	 * @return Vector3f	Furthest point
+	 * 
+	 * Determines furthest point from origin
+	 */
+	public static Vector3f getFurthestPoint(Vector3f origin, List<Vector3f> points) {
+		float distance = getDistance(origin, points.get(0));
+		Vector3f positionVector = points.get(0);
 		
-		for(int i = 0; i < point.size(); i++) {
-			if(getDistance(origin, point.get(i)) > distance) {
-				distance = getDistance(origin, point.get(i));
-				positionVector = point.get(i);
+		for(int i = 0; i < points.size(); i++) {
+			if(getDistance(origin, points.get(i)) > distance) {
+				distance = getDistance(origin, points.get(i));
+				positionVector = points.get(i);
 			}
 		}
 		
@@ -96,6 +160,13 @@ public class Maths {
 		
 	}
 	
+	/**
+	 * @param origin	Point of origin
+	 * @param points	Points to be checked	
+	 * @return Vector3f	Closest point
+	 * 
+	 * Determines closest point to origin
+	 */
 	public static Vector3f getClosestPoint(Vector3f origin, List<Vector3f> points) {
 		
 		float distance = getDistance(origin, points.get(0));
@@ -113,12 +184,20 @@ public class Maths {
 		
 	}
 	
+	/**
+	 * @param pos1		Position One
+	 * @param pos2		Position Two
+	 * @param pos3		Position Three
+	 * @return Vector3f	Normal of plane
+	 * 
+	 * Calculates the normal of the plane given by pos1, pos2, and pos3
+	 */
 	public static Vector3f getNormal(Vector3f pos1, Vector3f pos2, Vector3f pos3) {
 		
 		Vector3f normalVector = null;
 		
-		Vector3f vec1 = subtractVectors(pos2, pos1);
-		Vector3f vec2 = subtractVectors(pos3, pos1);
+		Vector3f vec1 = Vector3f.sub(pos2, pos1, null);
+		Vector3f vec2 = Vector3f.sub(pos3, pos1, null);
 		
 		normalVector = new Vector3f(vec1.x * vec2.x, vec1.y * vec2.y, vec1.z * vec2.z);
 		
@@ -127,37 +206,15 @@ public class Maths {
 		
 	}
 	
-	public static Vector3f normalizeVector(Vector3f vec1) {
-		
-		Vector3f normalizedVector = null;
-		Vector3f origin = new Vector3f(0, 0, 0);
-		
-		float distance = getDistance(origin, vec1);
-		
-		normalizedVector = new Vector3f((vec1.x / distance), (vec1.y / distance), (vec1.z / distance));
-		
-		return normalizedVector;
-		
-	}
-	
-	public static Vector3f addVectors(Vector3f one, Vector3f two) {
-		
-		Vector3f sum = new Vector3f((one.x + two.x), (one.y + two.y), (one.z + two.z));
-		
-		return sum;
-		
-	}
-	
-	public static Vector3f subtractVectors(Vector3f one, Vector3f two) {
-		
-		Vector3f dif = new Vector3f((one.x - two.x), (one.y - two.y), (one.z - two.z));
-		
-		return dif;
-		
-	}
-	
-	public static float FloatInterpolation(float a, float b, float f) {
-		//return (a * (1 - f)) + (b * f);
+	/**
+	 * @param a			First value
+	 * @param b			Second value
+	 * @param f			Blend value
+	 * @return float	Interpolated value
+	 * 
+	 * Calculates linear interpolation between values
+	 */
+	public static float LinearInterpolation(float a, float b, float f) {
 		float possible = (a + b + f) / 3;
 		if(Math.abs(possible) < 1) {
 			return possible;
@@ -166,14 +223,36 @@ public class Maths {
 		}
 	}
 	
+	/**
+	 * @param a			First value
+	 * @param b			Second value
+	 * @param blend		Blend value
+	 * @return float	Interpolated value
+	 * 
+	 * Calculates cosine interpolation between values
+	 */
 	public static float CosineInterpolation(float a, float b, float blend) {
 		double theta = blend * Math.PI;
 		float f = (float)(1f - Math.cos(theta)) * 0.5f;
 		return a * (1f - f) + b * f;
 	}
 	
+	/**
+	 * @param in		Middle value
+	 * @param param1	Lower bound
+	 * @param param2	Upper bound
+	 * @return boolean	Between upper and lower
+	 * 
+	 * Calculates if 
+	 */
 	public static boolean isBetween(float in, float param1, float param2) {
-		return (in >= param1 && in <= param2);
+		float one = param1;
+		float two = param2;
+		if(param1 > param2) {
+			one = param2;
+			two = param1;
+		}
+		return (in >= one && in <= two);
 	}
 
 }

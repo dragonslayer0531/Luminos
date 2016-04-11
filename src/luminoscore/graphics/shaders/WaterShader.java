@@ -2,6 +2,7 @@ package luminoscore.graphics.shaders;
 
 import org.lwjgl.util.vector.Matrix4f;
 
+import luminoscore.GlobalLock;
 import luminoscore.graphics.entities.Camera;
 import luminoscore.graphics.entities.Light;
 import luminoscore.tools.Maths;
@@ -9,7 +10,7 @@ import luminoscore.tools.Maths;
 /**
  * 
  * @author Nick Clark
- * @version 1.0
+ * @version 1.1
  * 
  * Water Shader for Water Renderer
  *
@@ -44,7 +45,7 @@ public class WaterShader extends ShaderProgram {
 	 * @see luminoscore.graphics.shaders.ShaderProgram#bindAttributes()
 	 */
 	protected void bindAttributes() {
-		bindAttribute(0, "position");
+		bindAttribute(GlobalLock.POSITION, "position");
 	}
 
 	/*

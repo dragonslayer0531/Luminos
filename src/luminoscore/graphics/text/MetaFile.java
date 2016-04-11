@@ -8,12 +8,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import luminoscore.Debug;
-import luminoscore.graphics.display.GLFWWindow;
+import luminoscore.GlobalLock;
 
 /**
  * 
  * @author Nick Clark
- * @version 1.0
+ * @version 1.1
  * 
  * Meta file of font
  *
@@ -47,12 +47,11 @@ public class MetaFile {
  
     /**
      * @param file		File to be loaded
-     * @param window	Window to be loaded to
      * 
      * Constructor
      */
-    protected MetaFile(File file, GLFWWindow window) {
-        this.aspectRatio = (double) window.getWidth() / (double) window.getHeight();
+    protected MetaFile(File file) {
+        this.aspectRatio = (double) GlobalLock.WIDTH / (double) GlobalLock.HEIGHT;
         openFile(file);
         loadPaddingData();
         loadLineSizes();
@@ -88,6 +87,7 @@ public class MetaFile {
             line = reader.readLine();
         } catch (IOException e) {
         	Debug.addData(MetaFile.class + " " + e.getMessage());
+        	Debug.print();
         }
         if (line == null) {
             return false;
@@ -134,6 +134,7 @@ public class MetaFile {
             reader.close();
         } catch (IOException e) {
             Debug.addData(MetaFile.class + " " + e.getMessage());
+            Debug.print();
         }
     }
  
@@ -147,6 +148,7 @@ public class MetaFile {
             reader = new BufferedReader(new FileReader(file));
         } catch (Exception e) {
         	Debug.addData(MetaFile.class + " " + e.getMessage());
+        	Debug.print();
         }
     }
  

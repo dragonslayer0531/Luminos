@@ -2,8 +2,6 @@ package luminoscore.graphics.text;
 
 import java.io.File;
 
-import luminoscore.graphics.display.GLFWWindow;
-
 /**
  * 
  * @author Nick Clark
@@ -25,9 +23,9 @@ public class FontType {
      * 
      * Constructor
      */
-    public FontType(int textureAtlas, File fontFile, GLFWWindow window) {
+    public FontType(int textureAtlas, File fontFile) {
         this.textureAtlas = textureAtlas;
-        this.loader = new TextMeshCreator(fontFile, window);
+        this.loader = new TextMeshCreator(fontFile);
     }
  
     /**
