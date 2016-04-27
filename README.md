@@ -1,2 +1,2 @@
 # Luminos
-Java/OpenGL Engine for Windows.
+Java/OpenGL Rendering Engine for Windows.
