@@ -24,7 +24,9 @@ public class Luminos {
 	 * Invokes Luminos instance
 	 */
 	public static Luminos createLuminosInstance() {
-		GlobalLock.INITIATED = true;
+		if(!GlobalLock.INITIATED) {
+			GlobalLock.INITIATED = true;
+		}
 		return new Luminos();
 	}
 	

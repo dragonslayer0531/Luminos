@@ -11,10 +11,14 @@ package luminoscore;
 
 public class GlobalLock {
 	
-	public static Boolean INITIATED = true;
+	public static Boolean INITIATED = false;
 	
 	public static Integer WIDTH = 1280;
 	public static Integer HEIGHT = 720;
+	
+	public static Integer SIZE = 100;
+	
+	public static Integer TEXTURE_SIZE = 256;
 	
 	public static Integer POSITION = 0;
 	public static Integer TEXTURES = 1;

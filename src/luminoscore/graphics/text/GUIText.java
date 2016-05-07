@@ -47,8 +47,8 @@ public class GUIText {
         this.lineMaxSize = maxLineLength;
         this.centerText = centered;
     }
- 
-    /**
+
+	/**
      * @return FontType 	Font used to render GUI Text instance
      * 
      * Gets font type of GUIText

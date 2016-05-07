@@ -1,9 +1,11 @@
 package luminoscore.graphics.particles;
 
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 import luminoscore.graphics.display.GLFWWindow;
 import luminoscore.graphics.entities.Entity;
+import luminoscore.graphics.textures.ParticleTexture;
 
 /**
  * 
@@ -22,8 +24,24 @@ public class Particle {
 	private float life;
 	private float rotation;
 	private float scale;
-	
+	private ParticleTexture texture;
 	private float elapsedTime = 0;
+	
+	private Vector2f offsetOne = new Vector2f();
+	private Vector2f offsetTwo = new Vector2f();
+	private float blend;
+
+	public Vector2f getOffsetOne() {
+		return offsetOne;
+	}
+
+	public Vector2f getOffsetTwo() {
+		return offsetTwo;
+	}
+
+	public float getBlend() {
+		return blend;
+	}
 
 	/**
 	 * @param position		Describes the original position
@@ -35,13 +53,34 @@ public class Particle {
 	 * 
 	 * Constructor
 	 */
-	public Particle(Vector3f position, Vector3f velocity, float grav, float life, float rotation, float scale) {
+	public Particle(ParticleTexture texture, Vector3f position, Vector3f velocity, float grav, float life, float rotation, float scale) {
+		this.texture = texture;
 		this.position = position;
 		this.velocity = velocity;
 		this.grav = grav;
 		this.life = life;
 		this.rotation = rotation;
 		this.scale = scale;
+	}
+
+	public Vector3f getVelocity() {
+		return velocity;
+	}
+
+	public float getGrav() {
+		return grav;
+	}
+
+	public float getLife() {
+		return life;
+	}
+
+	public ParticleTexture getTexture() {
+		return texture;
+	}
+
+	public float getElapsedTime() {
+		return elapsedTime;
 	}
 
 	/**
@@ -55,6 +94,7 @@ public class Particle {
 		Vector3f change = new Vector3f(velocity);
 		change.scale(window.getFrameTime());
 		Vector3f.add(change, position, position);
+		updateTextureCoordInfo();
 		elapsedTime += window.getFrameTime();
 		return elapsedTime < life;
 	}
@@ -84,6 +124,24 @@ public class Particle {
 	 */
 	public float getScale() {
 		return scale;
-	}	
+	}
+	
+	private void updateTextureCoordInfo() {
+		float lifeFactor = elapsedTime / life;
+		int stageCount = texture.getNumberOfRows() * texture.getNumberOfRows();
+		float atlasProgression = lifeFactor * stageCount;
+		int index1 = (int) Math.floor(atlasProgression);
+		int index2 = index1 < stageCount - 1 ? index1 + 1 : index1;
+		this.blend = atlasProgression % 1;
+		setTextureOffset(offsetOne, index1);
+		setTextureOffset(offsetTwo, index2);
+	}
+	
+	private void setTextureOffset(Vector2f offset, int index) {
+		int column = index % texture.getNumberOfRows();
+		int row = index / texture.getNumberOfRows();
+		offset.x = (float) column / texture.getNumberOfRows();
+		offset.y = (float) row / texture.getNumberOfRows();
+	}
 
 }

@@ -1,10 +1,14 @@
 package luminoscore.graphics.particles;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import luminoscore.graphics.display.GLFWWindow;
+import luminoscore.graphics.textures.ParticleTexture;
 
 /**
  * 
@@ -17,7 +21,7 @@ import luminoscore.graphics.display.GLFWWindow;
 
 public class ParticleMaster {
 	
-	private static List<Particle> particles = new ArrayList<Particle>();
+	public static Map<ParticleTexture, List<Particle>> particles = new HashMap<ParticleTexture, List<Particle>>();
 	
 	/**
 	 * @param particle	Particle to be added
@@ -25,7 +29,12 @@ public class ParticleMaster {
 	 * Adds particle to list
 	 */
 	public static void addParticle(Particle particle) {
-		particles.add(particle);
+		List<Particle> list = particles.get(particle.getTexture());
+		if(list == null) {
+			list = new ArrayList<Particle>();
+			particles.put(particle.getTexture(), list);
+		}
+		list.add(particle);
 	}
 	
 	/**
@@ -34,7 +43,9 @@ public class ParticleMaster {
 	 * Adds particles to list
 	 */
 	public static void addAllParticles(List<Particle> particles) {
-		ParticleMaster.particles.addAll(particles);
+		for(Particle particle : particles) {
+			ParticleMaster.addParticle(particle);
+		}
 	}
 	
 	/**
@@ -44,12 +55,21 @@ public class ParticleMaster {
 	 * Updates all particles in world
 	 */
 	public static void update(GLFWWindow window) {
-		Iterator<Particle> iterator = particles.iterator();
-		while(iterator.hasNext()) {
-			Particle p = iterator.next();
-			if(p.update(window)) {
-				iterator.remove();
+		Iterator<Entry<ParticleTexture, List<Particle>>> mapIterator = (Iterator<Entry<ParticleTexture, List<Particle>>>) particles.entrySet().iterator();
+		while(mapIterator.hasNext()) {
+			List<Particle> list = mapIterator.next().getValue();
+			Iterator<Particle> iterator = list.iterator();
+			while(iterator.hasNext()) {
+				Particle p = iterator.next();
+				boolean stillAlive = p.update(window);
+				if(!stillAlive) {
+					iterator.remove();
+					if(list.isEmpty()) {
+						mapIterator.remove();
+					}
+				}
 			}
+			
 		}
 	}
 

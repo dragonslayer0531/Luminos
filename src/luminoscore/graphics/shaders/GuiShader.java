@@ -14,16 +14,13 @@ import luminoscore.GlobalLock;
 
 public class GuiShader extends ShaderProgram {
 	
-	private static final String VERTEX_FILE = "res/shaders/gui.vert";
-	private static final String FRAGMENT_FILE = "res/shaders/gui.frag";
+	public static String VERT = "gui.vert";
+	public static String FRAG = "gui.frag";
 	
 	private int location_transformationMatrix;
 
-	/**
-	 * Constructor
-	 */
 	public GuiShader() {
-		super(VERTEX_FILE, FRAGMENT_FILE);
+		super(VERT, FRAG);
 	}
 	
 	/*

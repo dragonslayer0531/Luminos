@@ -28,13 +28,6 @@ public class AudioMaster {
 	}
 	
 	/**
-	 * Initializes OpenAL Context
-	 */
-	public void init() {
-		ALC.create();
-	}
-	
-	/**
 	 * Deletes audio buffers and closes OpenAL Context
 	 */
 	public void dispose() {

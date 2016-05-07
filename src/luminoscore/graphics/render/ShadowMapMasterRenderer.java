@@ -39,9 +39,6 @@ public class ShadowMapMasterRenderer {
     private Matrix4f offset = createOffset();
  
     private ShadowMapEntityRenderer entityRenderer;
-    
-    private static final String VERT = "res/shaders/shadow.vert";
-    private static final String FRAG = "res/shaders/shadow.frag";
 
     /**
      * @param camera	Camera to be passed to shadow box
@@ -50,7 +47,7 @@ public class ShadowMapMasterRenderer {
      * Constructor
      */
     public ShadowMapMasterRenderer(Camera camera) {
-        shader = new ShadowShader(VERT, FRAG);
+        shader = new ShadowShader();
         shadowBox = new ShadowBox(lightViewMatrix, camera);
         shadowFbo = new ShadowFrameBuffer(SHADOW_MAP_SIZE, SHADOW_MAP_SIZE);
         entityRenderer = new ShadowMapEntityRenderer(shader, projectionViewMatrix);

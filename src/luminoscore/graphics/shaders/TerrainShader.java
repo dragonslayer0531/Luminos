@@ -41,13 +41,16 @@ public class TerrainShader extends ShaderProgram{
 	private int location_shadowMap;
 	private int location_plane;
 	private int location_toShadowMapSpace;
+	
+	public static String VERT = "terrain.vert";
+	public static String FRAG = "terrain.frag";
 
 	/**
 	 * @param vert	Vertex shader file
 	 * @param frag	Fragment shader file
 	 */
-	public TerrainShader(String vert, String frag) {
-		super(vert, frag);
+	public TerrainShader() {
+		super(VERT, FRAG);
 	}
 
 	/*

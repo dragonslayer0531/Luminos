@@ -17,8 +17,8 @@ import luminoscore.tools.Maths;
  */
 public class WaterShader extends ShaderProgram {
 
-	private final static String VERTEX_FILE = "res/shaders/water.vert";
-	private final static String FRAGMENT_FILE = "res/shaders/water.frag";
+	public static String VERT = "water.vert";
+	public static String FRAG = "water.frag";
 
 	private int location_modelMatrix;
 	private int location_viewMatrix;
@@ -37,7 +37,7 @@ public class WaterShader extends ShaderProgram {
 	 * Constructor
 	 */
 	public WaterShader() {
-		super(VERTEX_FILE, FRAGMENT_FILE);
+		super(VERT, FRAG);
 	}
 
 	/*

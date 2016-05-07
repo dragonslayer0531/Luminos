@@ -37,13 +37,12 @@ public class EntityShader extends ShaderProgram {
 	private int location_numberOfRows;
 	private int location_offset;
 	private int location_plane;
+	
+	public static String VERT = "entity.vert";
+	public static String FRAG = "entity.frag";
 
-	/**
-	 * @param vert	Vertex Shader
-	 * @param frag	Fragment Shader
-	 */
-	public EntityShader(String vert, String frag) {
-		super(vert, frag);
+	public EntityShader() {
+		super(VERT, FRAG);
 	}
 
 	/*

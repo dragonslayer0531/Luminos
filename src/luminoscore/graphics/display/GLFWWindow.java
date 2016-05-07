@@ -27,6 +27,8 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
@@ -36,10 +38,14 @@ import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.util.vector.Vector2f;
 
 import luminoscore.Debug;
 import luminoscore.GlobalLock;
 import luminoscore.LuminosException;
+import luminoscore.graphics.loaders.Loader;
+import luminoscore.graphics.render.GuiRenderer;
+import luminoscore.graphics.textures.GuiTexture;
 import luminoscore.input.Keyboard;
 import luminoscore.input.Mouse;
 import luminoscore.input.MousePosition;
@@ -141,10 +147,10 @@ public class GLFWWindow {
 		}
 		
 		if(window == NULL) {
-			Debug.addData(GLFWWindow.class + "Could not create GLFW Window");
+			Debug.addData(GLFWWindow.class + " Could not create GLFW Window");
 			Debug.print();
 		}
-			
+		
 		glfwMakeContextCurrent(window);
 		
 		//Create Callbacks
@@ -178,7 +184,7 @@ public class GLFWWindow {
 		mouse.set(window);
 		
 		mouseX = mouseY = mouseDX = mouseDY = 0;
-		
+				
 		GLFW.glfwSetCursorPosCallback(window, cursorPosCallback = mousePosition = new MousePosition() {
 			
 			public void invoke(long window, double xpos, double ypos) {
@@ -201,6 +207,17 @@ public class GLFWWindow {
 		} else GLFW.glfwSetInputMode(window, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL);
 		
 		frameRateCounter = new FrameRateCounter();
+				
+		Loader loader = new Loader();
+		GuiRenderer gr = new GuiRenderer(loader);
+		GuiTexture logo = new GuiTexture(loader.loadTexture("res/textures/logo.png"), new Vector2f(0, 0), new Vector2f(1, 1));
+		List<GuiTexture> textures = new ArrayList<GuiTexture>();
+		textures.add(logo);
+		gr.render(textures);
+		gr.cleanUp();
+		textures.clear();
+		loader.cleanUp();
+		GLFW.glfwSwapBuffers(window);
 	}
 	
 	/**
@@ -215,8 +232,8 @@ public class GLFWWindow {
 	 */
 	public void update() {
 		frameRateCounter.start();
-		glfwSwapBuffers(window);
 		keyboard.update();
+		glfwSwapBuffers(window);
 		glfwPollEvents();
 		frameRateCounter.calculate();
 	}

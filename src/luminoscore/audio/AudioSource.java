@@ -18,8 +18,11 @@ public class AudioSource {
 	/**
 	 * Constructor
 	 */
-	public AudioSource() {
+	public AudioSource(float rolloff, float referenceDistance, float maxDistance) {
 		sourceID = AL10.alGenSources();
+		AL10.alSourcef(sourceID, AL10.AL_ROLLOFF_FACTOR, rolloff);
+		AL10.alSourcef(sourceID, AL10.AL_REFERENCE_DISTANCE, referenceDistance);
+		AL10.alSourcef(sourceID, AL10.AL_MAX_DISTANCE, 15);
 	}
 	
 	/**
