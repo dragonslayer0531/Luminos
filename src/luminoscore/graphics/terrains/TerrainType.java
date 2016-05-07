@@ -41,7 +41,7 @@ public class TerrainType {
 			data[2] = 0.05f;
 			break;
 		case HILLS:
-			data[0] = 150;
+			data[0] = 250;
 			data[1] = 6;
 			data[2] = .05f;
 			break;

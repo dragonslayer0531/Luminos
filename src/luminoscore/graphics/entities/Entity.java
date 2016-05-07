@@ -12,6 +12,9 @@ import luminoscore.graphics.entities.components.Component;
 import luminoscore.graphics.models.TexturedModel;
 import luminoscore.graphics.terrains.Terrain;
 import luminoscore.input.Keyboard;
+import luminoscore.input.XBOXController;
+import luminosutils.serialization.LArray;
+import luminosutils.serialization.LObject;
 
 /**
  * 
@@ -98,26 +101,26 @@ public class Entity {
 	public void move(List<Terrain> terrains, GLFWWindow window) {
 		float y = this.position.y;
 		checkInputs(terrains, window);
-		rotate(new Vector2f(4f, .5f), window, false);
+		rotate(new Vector2f(5f, 5f), window, false);
 		Vector3f.add(new Vector3f(0, window.getFrameTime() * currentTurnSpeed, 0), rotation, rotation);
 		rotation.y %= 360;
 		for(Terrain terrain : terrains) {
 			if(terrain.isOnTerrain(this)) this.terrain = terrain;
 		}
-		if (position.y + .1f < terrain.getHeightOfTerrain(position.x, position.z)) {
-			upwardsSpeed = 0;
-			isInAir = false;
-			position.y = terrain.getHeightOfTerrain(position.x, position.z);
-		}
+
 		upwardsSpeed += GRAVITY * window.getFrameTime();
 		Vector3f.add(position, new Vector3f(0, upwardsSpeed * window.getFrameTime(), 0), position);
 		float terrainHeight = terrain.getHeightOfTerrain(getPosition().x, getPosition().z);
-		if (position.y < terrainHeight) {
+		if (position.y < terrainHeight || position.y <= 0 || !isInAir) {
 			upwardsSpeed = 0;
 			isInAir = false;
 			position.y = terrainHeight;
 		}
 		dy = y - this.position.y;
+		
+		if(position.y < 0) {
+			position.y = 0;
+		}
 	}
 
 	/**
@@ -159,7 +162,7 @@ public class Entity {
 	 * Gets data contained by component
 	 */
 	public Object getComponentValue(Class<?> c) {
-		if(map.containsKey(c)) {
+		if(hasComponent(c)) {
 			return map.get(c);
 		}
 		return null;
@@ -308,9 +311,24 @@ public class Entity {
 	public void setCamera(Camera camera) {
 		this.camera = camera;
 	}
+	
+	/**
+	 * Gets the byte array associated with the entity
+	 * 
+	 * @return byte array associated with entity
+	 */
+	public byte[] getBytes() {
+		LObject object = new LObject("entity");
+		object.addArray(LArray.Float("position", new float[]{position.x, position.y, position.z}));
+		object.addArray(LArray.Float("rotation", new float[]{rotation.x, rotation.y, rotation.z}));
+		object.addArray(LArray.Float("scale", new float[]{scale}));
+		byte[] data = new byte[object.getSize()];
+		object.getBytes(data, 0);
+		return data;
+	}
 
 	//*******************************Private Methods*****************************//
-	
+
 	/**
 	 * @param terrains	Terrains to be moved across
 	 * @param window	Window to get frame time of
@@ -318,165 +336,182 @@ public class Entity {
 	 * Checks the keyboard inputs and calculates new camera position
 	 */
 	private void checkInputs(List<Terrain> terrains, GLFWWindow window) {
-		
+
 		if(Keyboard.isDown(Keyboard.KEY_SPACE)) {
 			jump();
 		}
-		
-		switch(state) {
-		case STANDING:
-			if(Keyboard.isDown(Keyboard.KEY_W)) {
-				if(Keyboard.isDown(Keyboard.KEY_LEFT_SHIFT)) {
-					this.currentSpeed = RUN_SPEED * SPRINT_MODIFICATION;
-				} else if(Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
-					this.currentSpeed = RUN_SPEED * WALK_MODIFICATION;
-				} else {
-					this.currentSpeed = RUN_SPEED;
+
+		if(!XBOXController.isControllerConnected()) {
+			switch(state) {
+			case STANDING:
+				if(Keyboard.isDown(Keyboard.KEY_W)) {
+					if(Keyboard.isDown(Keyboard.KEY_LEFT_SHIFT)) {
+						this.currentSpeed = RUN_SPEED * SPRINT_MODIFICATION;
+					} else if(Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
+						this.currentSpeed = RUN_SPEED * WALK_MODIFICATION;
+					} else {
+						this.currentSpeed = RUN_SPEED;
+					}
+					float distance = currentSpeed * window.getFrameTime();
+					dx = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
+					dz = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
+					Vector3f.add(position, new Vector3f(dx, 0, dz), position);
+				} else if(Keyboard.isDown(Keyboard.KEY_S)) {
+					if(Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
+						this.currentSpeed = -RUN_SPEED * WALK_MODIFICATION;
+					} else {
+						this.currentSpeed = -RUN_SPEED;
+					}
+					float distance = currentSpeed * window.getFrameTime();
+					dx = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
+					dz = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
+					Vector3f.add(position, new Vector3f(dx, 0, dz), position);
+				} else this.currentSpeed = 0;
+
+				if(Keyboard.isDown(Keyboard.KEY_A)) {
+					if (Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
+						this.currentSpeed = RUN_SPEED * .5f;
+					} else if (Keyboard.isDown(Keyboard.KEY_LEFT_SHIFT)) {
+						this.currentSpeed = RUN_SPEED * 1.5f;
+					} 
+					else this.currentSpeed = RUN_SPEED;
+
+					float distance = currentSpeed * window.getFrameTime();
+					dx = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
+					dz = (float) (-distance * Math.sin(Math.toRadians(rotation.y)));
+					Vector3f.add(position, new Vector3f(dx, 0, dz), position);
+				} else if(Keyboard.isDown(Keyboard.KEY_D)) {
+					if (Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
+						this.currentSpeed = RUN_SPEED * .5f;
+					} else if (Keyboard.isDown(Keyboard.KEY_LEFT_SHIFT)) {
+						this.currentSpeed = RUN_SPEED * 1.5f;
+					} 
+					else this.currentSpeed = RUN_SPEED;
+
+					float distance = currentSpeed * window.getFrameTime();
+					dx = (float) (-distance * Math.cos(Math.toRadians(rotation.y)));
+					dz = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
+					Vector3f.add(position, new Vector3f(dx, 0, dz), position);			
 				}
-				float distance = currentSpeed * window.getFrameTime();
-				dx = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
-				dz = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
-				Vector3f.add(position, new Vector3f(dx, 0, dz), position);
-			} else if(Keyboard.isDown(Keyboard.KEY_S)) {
-				if(Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
-					this.currentSpeed = -RUN_SPEED * WALK_MODIFICATION;
-				} else {
-					this.currentSpeed = -RUN_SPEED;
+				break;
+			case CROUCHING:
+				if(Keyboard.isDown(Keyboard.KEY_W)) {
+					if(Keyboard.isDown(Keyboard.KEY_LEFT_SHIFT)) {
+						this.currentSpeed = RUN_SPEED * SPRINT_MODIFICATION * CROUCH_MODIFICATION;
+					} else if(Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
+						this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * CROUCH_MODIFICATION;
+					} else {
+						this.currentSpeed = RUN_SPEED;
+					}
+					float distance = currentSpeed * window.getFrameTime();
+					dx = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
+					dz = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
+					Vector3f.add(position, new Vector3f(dx, 0, dz), position);
+				} else if(Keyboard.isDown(Keyboard.KEY_S)) {
+					if(Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
+						this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * CROUCH_MODIFICATION;
+					} else {
+						this.currentSpeed = RUN_SPEED;
+					}
+					float distance = currentSpeed * window.getFrameTime();
+					dx = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
+					dz = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
+					Vector3f.add(position, new Vector3f(dx, 0, dz), position);
+				} else this.currentSpeed = 0;
+
+				if(Keyboard.isDown(Keyboard.KEY_A)) {
+					if (Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
+						this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * CROUCH_MODIFICATION;
+					} else if (Keyboard.isDown(Keyboard.KEY_LEFT_SHIFT)) {
+						this.currentSpeed = RUN_SPEED * SPRINT_MODIFICATION * CROUCH_MODIFICATION;
+					} 
+					else this.currentSpeed = RUN_SPEED;
+
+					float distance = currentSpeed * window.getFrameTime();
+					dx = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
+					dz = (float) (-distance * Math.sin(Math.toRadians(rotation.y)));
+					Vector3f.add(position, new Vector3f(dx, 0, dz), position);
+				} else if(Keyboard.isDown(Keyboard.KEY_D)) {
+					if (Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
+						this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * CROUCH_MODIFICATION;
+					} else if (Keyboard.isDown(Keyboard.KEY_LEFT_SHIFT)) {
+						this.currentSpeed = RUN_SPEED * SPRINT_MODIFICATION * CROUCH_MODIFICATION;
+					} 
+					else this.currentSpeed = RUN_SPEED;
+
+					float distance = currentSpeed * window.getFrameTime();
+					dx = (float) (-distance * Math.cos(Math.toRadians(rotation.y)));
+					dz = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
+					Vector3f.add(position, new Vector3f(dx, 0, dz), position);
 				}
-				float distance = currentSpeed * window.getFrameTime();
-				dx = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
-				dz = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
-				Vector3f.add(position, new Vector3f(dx, 0, dz), position);
-			} else this.currentSpeed = 0;
+				break;
+			case LAYING:
+				if(Keyboard.isDown(Keyboard.KEY_W)) {
+					if(Keyboard.isDown(Keyboard.KEY_LEFT_SHIFT)) {
+						this.currentSpeed = RUN_SPEED * SPRINT_MODIFICATION * PRONE_MODIFICATION;
+					} else if(Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
+						this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * PRONE_MODIFICATION;
+					} else {
+						this.currentSpeed = RUN_SPEED;
+					}
+					float distance = currentSpeed * window.getFrameTime();
+					dx = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
+					dz = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
+					Vector3f.add(position, new Vector3f(dx, 0, dz), position);
+				} else if(Keyboard.isDown(Keyboard.KEY_S)) {
+					if(Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
+						this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * PRONE_MODIFICATION;
+					} else {
+						this.currentSpeed = RUN_SPEED;
+					}
+					float distance = currentSpeed * window.getFrameTime();
+					dx = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
+					dz = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
+					Vector3f.add(position, new Vector3f(dx, 0, dz), position);
+				} else this.currentSpeed = 0;
 
-			if(Keyboard.isDown(Keyboard.KEY_A)) {
-				if (Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
-					this.currentSpeed = RUN_SPEED * .5f;
-				} else if (Keyboard.isDown(Keyboard.KEY_LEFT_SHIFT)) {
-					this.currentSpeed = RUN_SPEED * 1.5f;
-				} 
-				else this.currentSpeed = RUN_SPEED;
+				if(Keyboard.isDown(Keyboard.KEY_A)) {
+					if (Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
+						this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * PRONE_MODIFICATION;
+					} else if (Keyboard.isDown(Keyboard.KEY_LEFT_SHIFT)) {
+						this.currentSpeed = RUN_SPEED * SPRINT_MODIFICATION * PRONE_MODIFICATION;
+					} 
+					else this.currentSpeed = RUN_SPEED;
 
-				float distance = currentSpeed * window.getFrameTime();
-				dx = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
-				dz = (float) (-distance * Math.sin(Math.toRadians(rotation.y)));
-				Vector3f.add(position, new Vector3f(dx, 0, dz), position);
-			} else if(Keyboard.isDown(Keyboard.KEY_D)) {
-				if (Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
-					this.currentSpeed = RUN_SPEED * .5f;
-				} else if (Keyboard.isDown(Keyboard.KEY_LEFT_SHIFT)) {
-					this.currentSpeed = RUN_SPEED * 1.5f;
-				} 
-				else this.currentSpeed = RUN_SPEED;
+					float distance = currentSpeed * window.getFrameTime();
+					dx = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
+					dz = (float) (-distance * Math.sin(Math.toRadians(rotation.y)));
+					Vector3f.add(position, new Vector3f(dx, 0, dz), position);
+				} else if(Keyboard.isDown(Keyboard.KEY_D)) {
+					if (Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
+						this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * PRONE_MODIFICATION;
+					} else if (Keyboard.isDown(Keyboard.KEY_LEFT_SHIFT)) {
+						this.currentSpeed = RUN_SPEED * SPRINT_MODIFICATION * PRONE_MODIFICATION;
+					} 
+					else this.currentSpeed = RUN_SPEED;
 
-				float distance = currentSpeed * window.getFrameTime();
-				dx = (float) (-distance * Math.cos(Math.toRadians(rotation.y)));
-				dz = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
-				Vector3f.add(position, new Vector3f(dx, 0, dz), position);			
+					float distance = currentSpeed * window.getFrameTime();
+					dx = (float) (-distance * Math.cos(Math.toRadians(rotation.y)));
+					dz = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
+					Vector3f.add(position, new Vector3f(dx, 0, dz), position);
+				}
+				break;
 			}
-			break;
-		case CROUCHING:
-			if(Keyboard.isDown(Keyboard.KEY_W)) {
-				if(Keyboard.isDown(Keyboard.KEY_LEFT_SHIFT)) {
-					this.currentSpeed = RUN_SPEED * SPRINT_MODIFICATION * CROUCH_MODIFICATION;
-				} else if(Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
-					this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * CROUCH_MODIFICATION;
-				} else {
-					this.currentSpeed = RUN_SPEED;
-				}
-				float distance = currentSpeed * window.getFrameTime();
-				dx = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
-				dz = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
-				Vector3f.add(position, new Vector3f(dx, 0, dz), position);
-			} else if(Keyboard.isDown(Keyboard.KEY_S)) {
-				if(Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
-					this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * CROUCH_MODIFICATION;
-				} else {
-					this.currentSpeed = RUN_SPEED;
-				}
-				float distance = currentSpeed * window.getFrameTime();
-				dx = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
-				dz = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
-				Vector3f.add(position, new Vector3f(dx, 0, dz), position);
-			} else this.currentSpeed = 0;
-
-			if(Keyboard.isDown(Keyboard.KEY_A)) {
-				if (Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
-					this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * CROUCH_MODIFICATION;
-				} else if (Keyboard.isDown(Keyboard.KEY_LEFT_SHIFT)) {
-					this.currentSpeed = RUN_SPEED * SPRINT_MODIFICATION * CROUCH_MODIFICATION;
-				} 
-				else this.currentSpeed = RUN_SPEED;
-
-				float distance = currentSpeed * window.getFrameTime();
-				dx = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
-				dz = (float) (-distance * Math.sin(Math.toRadians(rotation.y)));
-				Vector3f.add(position, new Vector3f(dx, 0, dz), position);
-			} else if(Keyboard.isDown(Keyboard.KEY_D)) {
-				if (Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
-					this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * CROUCH_MODIFICATION;
-				} else if (Keyboard.isDown(Keyboard.KEY_LEFT_SHIFT)) {
-					this.currentSpeed = RUN_SPEED * SPRINT_MODIFICATION * CROUCH_MODIFICATION;
-				} 
-				else this.currentSpeed = RUN_SPEED;
-
-				float distance = currentSpeed * window.getFrameTime();
-				dx = (float) (-distance * Math.cos(Math.toRadians(rotation.y)));
-				dz = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
-				Vector3f.add(position, new Vector3f(dx, 0, dz), position);
-			}
-			break;
-		case LAYING:
-			if(Keyboard.isDown(Keyboard.KEY_W)) {
-				if(Keyboard.isDown(Keyboard.KEY_LEFT_SHIFT)) {
-					this.currentSpeed = RUN_SPEED * SPRINT_MODIFICATION * PRONE_MODIFICATION;
-				} else if(Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
-					this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * PRONE_MODIFICATION;
-				} else {
-					this.currentSpeed = RUN_SPEED;
-				}
-				float distance = currentSpeed * window.getFrameTime();
-				dx = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
-				dz = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
-				Vector3f.add(position, new Vector3f(dx, 0, dz), position);
-			} else if(Keyboard.isDown(Keyboard.KEY_S)) {
-				if(Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
-					this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * PRONE_MODIFICATION;
-				} else {
-					this.currentSpeed = RUN_SPEED;
-				}
-				float distance = currentSpeed * window.getFrameTime();
-				dx = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
-				dz = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
-				Vector3f.add(position, new Vector3f(dx, 0, dz), position);
-			} else this.currentSpeed = 0;
-
-			if(Keyboard.isDown(Keyboard.KEY_A)) {
-				if (Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
-					this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * PRONE_MODIFICATION;
-				} else if (Keyboard.isDown(Keyboard.KEY_LEFT_SHIFT)) {
-					this.currentSpeed = RUN_SPEED * SPRINT_MODIFICATION * PRONE_MODIFICATION;
-				} 
-				else this.currentSpeed = RUN_SPEED;
-
-				float distance = currentSpeed * window.getFrameTime();
-				dx = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
-				dz = (float) (-distance * Math.sin(Math.toRadians(rotation.y)));
-				Vector3f.add(position, new Vector3f(dx, 0, dz), position);
-			} else if(Keyboard.isDown(Keyboard.KEY_D)) {
-				if (Keyboard.isDown(Keyboard.KEY_LEFT_CONTROL)) {
-					this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * PRONE_MODIFICATION;
-				} else if (Keyboard.isDown(Keyboard.KEY_LEFT_SHIFT)) {
-					this.currentSpeed = RUN_SPEED * SPRINT_MODIFICATION * PRONE_MODIFICATION;
-				} 
-				else this.currentSpeed = RUN_SPEED;
-
-				float distance = currentSpeed * window.getFrameTime();
-				dx = (float) (-distance * Math.cos(Math.toRadians(rotation.y)));
-				dz = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
-				Vector3f.add(position, new Vector3f(dx, 0, dz), position);;
-			}
-			break;
+			
+		} else {
+			currentSpeed = XBOXController.getVerticalAxis(XBOXController.GLFW_JOYSTICK_1) * RUN_SPEED;
+			float distance = currentSpeed * window.getFrameTime();
+			if(XBOXController.isButtonDown(XBOXController.XBOX_LEFT_STICK)) distance *= SPRINT_MODIFICATION;
+			dx = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
+			dz = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
+			Vector3f.add(position, new Vector3f(dx, 0, dz), position);
+			currentSpeed = XBOXController.getHorizontalAxis(XBOXController.GLFW_JOYSTICK_1) * RUN_SPEED;
+			distance = -currentSpeed * window.getFrameTime();
+			dx = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
+			dz = (float) (-distance * Math.sin(Math.toRadians(rotation.y)));
+			Vector3f.add(position, new Vector3f(dx, 0, dz), position);
+			
+			if(XBOXController.isButtonDown(XBOXController.XBOX_A)) jump();
 		}
 
 	}
@@ -490,23 +525,39 @@ public class Entity {
 	 */
 	private void rotate(Vector2f sensitivity, GLFWWindow window, boolean invert) {
 
-		float angleChange = 0;
-		float pitchChange = 0;
-		angleChange = window.getDX() * 10 * sensitivity.x;
-		if(invert) {
-			pitchChange = window.getDY() * .3f * -sensitivity.y;
-		} else {
-			pitchChange = window.getDY() * .3f * sensitivity.y;
-		}
+		if(!XBOXController.isControllerConnected()) {
+			float angleChange = 0;
+			float pitchChange = 0;
+			angleChange = window.getDX() * 7.5f * sensitivity.x;
+			if(invert) {
+				pitchChange = window.getDY() * .05f * -sensitivity.y;
+			} else {
+				pitchChange = window.getDY() * .05f * sensitivity.y;
+			}
 
-		Camera.pitch %= 360;
-		if(Camera.pitch + pitchChange <= -90) Camera.pitch = -90 + (float) Math.abs(pitchChange);
-		else if(Camera.pitch + pitchChange >= 90) Camera.pitch = 90 - (float) Math.abs(pitchChange);
-		else if(Camera.pitch + pitchChange >= 270) Camera.pitch = 270 - (float) Math.abs(pitchChange);
-		else if(Camera.pitch + pitchChange <= -270) Camera.pitch = -270 + (float) Math.abs(pitchChange);
-		else {
-			Camera.pitch -= pitchChange;
-			this.currentTurnSpeed = -angleChange;
+			Camera.pitch %= 360;
+			if(Camera.pitch + pitchChange <= -90) Camera.pitch = -90 + (float) Math.abs(pitchChange);
+			else if(Camera.pitch + pitchChange >= 90) Camera.pitch = 90 - (float) Math.abs(pitchChange);
+			else if(Camera.pitch + pitchChange >= 270) Camera.pitch = 270 - (float) Math.abs(pitchChange);
+			else if(Camera.pitch + pitchChange <= -270) Camera.pitch = -270 + (float) Math.abs(pitchChange);
+			else {
+				Camera.pitch -= pitchChange;
+				this.currentTurnSpeed = -angleChange;
+			}
+		} else {
+			float angleChange = 0;
+			float pitchChange = 0;
+			angleChange = XBOXController.getHorizontalAxisLook(XBOXController.GLFW_JOYSTICK_1) * 80 * sensitivity.x;
+			pitchChange = XBOXController.getVerticalAxisLook(XBOXController.GLFW_JOYSTICK_1) * .5f * sensitivity.y;
+			Camera.pitch %= 360;
+			if(Camera.pitch + pitchChange <= -90) Camera.pitch = -90 + (float) Math.abs(pitchChange);
+			else if(Camera.pitch + pitchChange >= 90) Camera.pitch = 90 - (float) Math.abs(pitchChange);
+			else if(Camera.pitch + pitchChange >= 270) Camera.pitch = 270 - (float) Math.abs(pitchChange);
+			else if(Camera.pitch + pitchChange <= -270) Camera.pitch = -270 + (float) Math.abs(pitchChange);
+			else {
+				Camera.pitch -= pitchChange;
+				this.currentTurnSpeed = -angleChange;
+			}			
 		}
 
 	}

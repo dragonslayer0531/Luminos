@@ -1,13 +1,15 @@
 package luminoscore.graphics.shaders;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.FloatBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL32;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
@@ -27,6 +29,7 @@ public abstract class ShaderProgram {
 	
 	private int programID;
 	private int vertexShaderID;
+	private int geometryShaderID;
 	private int fragmentShaderID;
 	
 	private static FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
@@ -42,6 +45,19 @@ public abstract class ShaderProgram {
 		fragmentShaderID = loadShader(fragmentFile,GL20.GL_FRAGMENT_SHADER);
 		programID = GL20.glCreateProgram();
 		GL20.glAttachShader(programID, vertexShaderID);
+		GL20.glAttachShader(programID, fragmentShaderID);
+		bindAttributes();
+		GL20.glLinkProgram(programID);
+		GL20.glValidateProgram(programID);
+		getAllUniformLocations();
+	}
+	
+	public ShaderProgram(String vertexFile, String geometryFile, String fragmentFile) {
+		vertexShaderID = loadShader(vertexFile,GL20.GL_VERTEX_SHADER);
+		geometryShaderID = loadShader(geometryFile, GL32.GL_GEOMETRY_SHADER);
+		fragmentShaderID = loadShader(fragmentFile,GL20.GL_FRAGMENT_SHADER);
+		GL20.glAttachShader(programID, vertexShaderID);
+		GL20.glAttachShader(programID, geometryShaderID);
 		GL20.glAttachShader(programID, fragmentShaderID);
 		bindAttributes();
 		GL20.glLinkProgram(programID);
@@ -186,14 +202,15 @@ public abstract class ShaderProgram {
 	/**
 	 * @param file	Shader file to load
 	 * @param type	Type of shader to load
-	 * @return int	ID of shader
+	 * @return      ID of shader
 	 * 
 	 * Loads shader to GPU
 	 */
 	private static int loadShader(String file, int type){
 		StringBuilder shaderSource = new StringBuilder();
+		InputStream isr = Class.class.getResourceAsStream("/" + file);
 		try{
-			BufferedReader reader = new BufferedReader(new FileReader(file));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(isr));
 			String line;
 			while((line = reader.readLine())!=null){
 				shaderSource.append(line).append("//\n");

@@ -3,6 +3,7 @@ package luminoscore.graphics.terrains;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -10,12 +11,15 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 import luminoscore.Debug;
+import luminoscore.GlobalLock;
 import luminoscore.graphics.entities.Entity;
 import luminoscore.graphics.loaders.Loader;
 import luminoscore.graphics.models.RawModel;
+import luminoscore.graphics.textures.ProceduralTerrainTexture;
 import luminoscore.graphics.textures.TerrainTexture;
 import luminoscore.graphics.textures.TerrainTexturePack;
 import luminoscore.tools.Maths;
+import luminoscore.tools.algorithms.FractalNoise;
 
 /**
  * 
@@ -28,7 +32,7 @@ import luminoscore.tools.Maths;
 
 public class Terrain {
 
-	public static float SIZE = 100;
+	public static float SIZE = GlobalLock.SIZE;
 	public static int VERTEX_COUNT = 32;
 	private static float MAX_HEIGHT = 40;
 	private static final float MAX_PIXEL_COLOUR = 256 * 256 * 256;
@@ -56,9 +60,8 @@ public class Terrain {
 		this.texturePack = texturePack;
 		this.x = gridX * SIZE;
 		this.z = gridZ * SIZE;
-		this.blendMap = blendMap;
-		this.model = generateTerrain(loader, new PerlinNoise((int) gridX, (int) gridZ, VERTEX_COUNT, seed, TerrainType.Type.HILLS));
-
+		this.model = generateTerrain(loader, new FractalNoise((int) gridX, (int) gridZ, VERTEX_COUNT, seed, TerrainType.Type.HILLS));
+		this.blendMap = new TerrainTexture(loader.loadTexture(ProceduralTerrainTexture.generateTerrainMap(this)));
 	}
 
 	/**
@@ -76,7 +79,17 @@ public class Terrain {
 		this.z = gridZ * SIZE;
 		this.model = generateTerrain(loader, heightMap);
 	}
-
+	
+	public Terrain(RawModel model, float[][] heights, List<String> textures, BufferedImage blendMap, Loader loader) {
+		this.model = model;
+		this.heights = heights;
+		this.texturePack = new TerrainTexturePack(new TerrainTexture(loader.loadTexture(textures.get(0))), 
+				new TerrainTexture(loader.loadTexture(textures.get(1))), 
+				new TerrainTexture(loader.loadTexture(textures.get(2))), 
+				new TerrainTexture(loader.loadTexture(textures.get(3))));
+		this.blendMap = new TerrainTexture(loader.loadTexture(blendMap));
+	}
+		
 	/**
 	 * @param pos		Position to calculate with
 	 * @return boolean	Inside terrain bounds
@@ -197,7 +210,7 @@ public class Terrain {
 	 * 
 	 * Generates raw model of terrain
 	 */
-	private RawModel generateTerrain(Loader loader, PerlinNoise noise) {
+	private RawModel generateTerrain(Loader loader, FractalNoise noise) {
 		int count = (int) Math.pow(VERTEX_COUNT, 2);
 		heights = new float[VERTEX_COUNT][VERTEX_COUNT];
 		float[] vertices = new float[count * 3];
@@ -239,6 +252,7 @@ public class Terrain {
 				indices[pointer++] = bottomRight;
 			}
 		}
+		
 		return loader.loadToVAO(vertices, textureCoords, normals, indices);
 	}
 
@@ -314,12 +328,16 @@ public class Terrain {
 	 * @param noise
 	 * @return
 	 */
-	public float getHeight(int x, int z, PerlinNoise noise) {
+	public float getHeight(int x, int z, FractalNoise noise) {
 		return noise.generateHeight(x, z);
 	}
 	
 	public float[] getNormals() {
 		return normals;
+	}
+	
+	public float[][] getHeights() {
+		return heights;
 	}
 
 //**************************************************Private Methods*********************************************//
@@ -350,7 +368,7 @@ public class Terrain {
 	 * 
 	 * Calculates normal vector
 	 */
-	private Vector3f calculateNormal(int x, int z, PerlinNoise noise) {
+	private Vector3f calculateNormal(int x, int z, FractalNoise noise) {
 		float heightL = getHeight(x - 1, z, noise);
 		float heightR = getHeight(x + 1, z, noise);
 		float heightD = getHeight(x, z - 1, noise);

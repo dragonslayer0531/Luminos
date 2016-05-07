@@ -2,6 +2,7 @@ package luminoscore.graphics.render;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -9,6 +10,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
 import luminoscore.GlobalLock;
@@ -43,30 +45,25 @@ import luminoscore.tools.Maths;
 public class MasterRenderer {
 	
 	public static final float FOV = 60;
-	public static final float NEAR_PLANE = 0.1f;
+	public static final float NEAR_PLANE = 0.15f;
 	private static final float FAR_PLANE = 600f;
-	private static final float ENTITY_FAR_PLANE = 500f;
+	private static final float ENTITY_FAR_PLANE = 1000f;
 	
 	private static final float RED = 0.1f;
 	private static final float GREEN = 0.4f;
 	private static final float BLUE = 0.2f;
 	
-	private static final String ENTITY_VERT = "res/shaders/entity.vert";
-	private static final String ENTITY_FRAG = "res/shaders/entity.frag";
-	private static final String TERRAIN_VERT = "res/shaders/terrain.vert";
-	private static final String TERRAIN_FRAG = "res/shaders/terrain.frag";
-	
 	private Matrix4f projectionMatrix;
 	private Matrix4f entityProjectionMatrix;
 	
 	private EntityRenderer entityRenderer;
-	private EntityShader entityShader = new EntityShader(ENTITY_VERT, ENTITY_FRAG);
+	private EntityShader entityShader = new EntityShader();
 	private GuiRenderer guiRenderer;
 	private ParticleRenderer particleRenderer;
 	private ShadowMapMasterRenderer shadowRenderer;
 	private SkyboxRenderer skyboxRenderer;
 	private TerrainRenderer terrainRenderer;
-	private TerrainShader terrainShader = new TerrainShader(TERRAIN_VERT, TERRAIN_FRAG);
+	private TerrainShader terrainShader = new TerrainShader();
 	private TextRenderer textRenderer;
 	private WaterRenderer waterRenderer;
 	private WaterShader waterShader = new WaterShader();
@@ -110,15 +107,23 @@ public class MasterRenderer {
 	 * 
 	 * Renders the entire 3D scene
 	 */
-	public void renderScene(List<Entity> entities, List<Terrain> terrains, List<Light> lights, Entity player, Camera camera, Vector4f clipPlane, GLFWWindow window) {
-		for(Entity entity : entities) {
-			if(Maths.getDistance(entity.getPosition(), player.getPosition()) < 200) {
-				processEntity(entity);
+	public void renderScene(Iterator<Entity> entities, Iterator<Terrain> terrains, List<Light> lights, Entity player, Camera camera, Vector4f clipPlane, GLFWWindow window) {
+		if(entities != null) {
+			while(entities.hasNext()) {
+				Entity entity = entities.next();
+				if(Maths.getDistance(entity.getPosition(), player.getPosition()) < 300) {
+					processEntity(entity);
+				}
 			}
 		}
 		
-		for(Terrain terrain : terrains) {
-			processTerrain(terrain);
+		if(terrains != null) {
+			while(terrains.hasNext()) {
+				Terrain terrain = terrains.next();
+				if(Maths.getDistance(new Vector3f(terrain.getX(), player.getPosition().y, terrain.getZ()), player.getPosition()) < 500) {
+					processTerrain(terrain);
+				}
+			}
 		}
 		
 		processEntity(player);
@@ -140,9 +145,9 @@ public class MasterRenderer {
 	 * 
 	 * Renders particles through screen
 	 */
-	public void renderParticles(List<Particle> particles, Camera camera, GLFWWindow window) {
+	public void renderParticles(Camera camera, GLFWWindow window) {
 		ParticleMaster.update(window);
-		particleRenderer.render(particles, camera);
+		particleRenderer.render(ParticleMaster.particles, camera);
 	}
 	
 	/**
@@ -196,17 +201,17 @@ public class MasterRenderer {
 	 * @param camera	Calculates FBOs and passed to renderScene
 	 * @param window	Passed to renderScene
 	 */
-	public void prepareWater(List<Entity> entities, List<Terrain> terrains, List<Light> lights, Entity player, Camera camera, GLFWWindow window) {
+	public void prepareWater(List<Terrain> terrains, List<Light> lights, Entity player, Camera camera, GLFWWindow window) {
 		GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 		buffers.bindReflectionFrameBuffer();
 		float distance = 2 * (camera.getPosition().y);
-		camera.getPosition().y = distance;
+		camera.getPosition().y -= distance;
 		camera.invertPitch();
-		renderScene(entities, terrains, lights, player, camera, new Vector4f(0, 1, 0, 0), window);
+		renderScene(null, terrains.iterator(), lights, player, camera, new Vector4f(0, 1, 0, 1), window);
 		camera.getPosition().y += distance;
 		camera.invertPitch();
 		buffers.bindRefractionFrameBuffer();
-		renderScene(entities, terrains, lights, player, camera, new Vector4f(0, -1, 0, 0), window);
+		renderScene(null, terrains.iterator(), lights, player, camera, new Vector4f(0, -1, 0, 0), window);
 		GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
 		buffers.unbindCurrentFrameBuffer();
 	}

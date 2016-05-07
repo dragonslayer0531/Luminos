@@ -31,7 +31,7 @@ public class WaterRenderer {
 
 	private final String DUDV_MAP;
 	private final String NORMAL_MAP;
-	private static final float WAVE_SPEED = 0.05f;
+	private static final float WAVE_SPEED = 0.2f;
 	
 	private RawModel quad;
 	private WaterShader shader;
@@ -72,6 +72,7 @@ public class WaterRenderer {
 	public void render(List<WaterTile> water, Camera camera, Light sun) {
 		prepareRender(camera, sun); 
 		for (WaterTile tile : water) {
+			if(Maths.getDistance(new Vector3f(tile.getX(), 0, tile.getZ()), camera.getPosition()) > 500) continue;
 			Matrix4f modelMatrix = Maths.createWaterTransformationMatrix(new Vector3f(tile.getX(), tile.getHeight(), tile.getZ()), 0, 0, 0, tile.getScale());
 			shader.loadModelMatrix(modelMatrix);
 			GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, quad.getVertexCount());

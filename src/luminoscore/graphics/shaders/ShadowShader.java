@@ -16,12 +16,11 @@ import luminoscore.GlobalLock;
 public class ShadowShader extends ShaderProgram {
 
     private int location_mvpMatrix;
-	
-    /**
-     * @param VERT	Vertex Shader file
-     * @param FRAG	Fragment Shader file
-     */
-	public ShadowShader(String VERT, String FRAG) {
+    
+    public static String VERT = "shadow.vert";
+    public static String FRAG = "shadow.frag";
+    
+	public ShadowShader() {
         super(VERT, FRAG);
     }
  

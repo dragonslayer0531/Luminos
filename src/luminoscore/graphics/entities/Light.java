@@ -2,6 +2,9 @@ package luminoscore.graphics.entities;
 
 import org.lwjgl.util.vector.Vector3f;
 
+import luminosutils.serialization.LArray;
+import luminosutils.serialization.LObject;
+
 /**
  * 
  * @author Nick Clark
@@ -65,6 +68,21 @@ public class Light {
 	 */
 	public Vector3f getColour() {
 		return colour;
-	}	
+	}
+	
+	/**
+	 * Gets byte array associated with light
+	 * 
+	 * @return byte array associated with light
+	 */
+	public byte[] getBytes() {
+		LObject object = new LObject("light");
+		object.addArray(LArray.Float("position", new float[]{position.x, position.y, position.z}));
+		object.addArray(LArray.Float("attenuation", new float[]{attenuation.x, attenuation.y, attenuation.z}));
+		object.addArray(LArray.Float("color", new float[]{colour.x, colour.y, colour.z}));
+		byte[] data = new byte[object.getSize()];
+		object.getBytes(data, 0);
+		return data;
+	}
 
 }

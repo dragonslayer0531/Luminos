@@ -13,7 +13,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 public class Camera {
 	
-	private static float distanceFromPlayer = 3f;
+	private static float distanceFromPlayer = -.05f;
 	private float angleAroundPlayer = 0;
 	
 	private Vector3f position = new Vector3f(0, 0, 0);
@@ -103,7 +103,7 @@ public class Camera {
 		float offsetZ = (float) (horizDistance * Math.cos(Math.toRadians(theta)));
 		position.x = player.getPosition().x - offsetX;
 		position.z = player.getPosition().z - offsetZ;
-		position.y = player.getPosition().y + verticDistance + .5f;
+		position.y = player.getPosition().y + verticDistance + 1f;
 	}
 	
 	/**

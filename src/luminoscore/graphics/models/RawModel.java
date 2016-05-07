@@ -12,16 +12,28 @@ public class RawModel {
 	
 	private int vaoID;
 	private int vertexCount;
+	private Mesh mesh;
 	
 	/**
 	 * @param vaoID			GPU vertex array object pointer
 	 * @param vertexCount	Vertex count of model
+	 * @param mesh			{@link Mesh} of model
 	 * 
 	 * Constructor used to hold data for rendering
 	 */
-	public RawModel(int vaoID, int vertexCount){
+	public RawModel(int vaoID, int vertexCount, Mesh mesh){
 		this.vaoID = vaoID;
 		this.vertexCount = vertexCount;
+		this.mesh = mesh;
+	}
+	
+	/**
+	 * @param vaoID			GPU vertex array object pointer
+	 * @param vertexCount	Vertex count of model
+	 */ 
+	public RawModel(int vaoID, int vertexCount) {
+		this.vaoID = vaoID;
+		this.vertexCount = vertexCount;		
 	}
 
 	/**
@@ -40,6 +52,15 @@ public class RawModel {
 	 */
 	public int getVertexCount() {
 		return vertexCount;
+	}
+	
+	/**
+	 * Gets the mesh of the model
+	 * 
+	 * @return mesh of model
+	 */
+	public Mesh getMesh() {
+		return mesh;
 	}
 
 }

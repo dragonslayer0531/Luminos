@@ -19,13 +19,16 @@ public class TextShader extends ShaderProgram {
 	private int location_translation;
 	private int location_font;
 	
+	public static String VERT = "text.vert";
+	public static String FRAG = "text.frag";
+	
 	/**
 	 * @param VERT	Vertex shader file
 	 * @param FRAG	Fragment shader file
 	 * 
 	 * Constructor
 	 */
-	public TextShader(String VERT, String FRAG) {
+	public TextShader() {
 		super(VERT, FRAG);
 	}
 	

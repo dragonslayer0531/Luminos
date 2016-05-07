@@ -27,9 +27,6 @@ import luminoscore.graphics.text.TextMeshData;
 
 public class TextRenderer {
 	
-	private static final String VERT = "res/shaders/text.vert";
-	private static final String FRAG = "res/shaders/text.frag";
-	
 	private Loader loader;
 	
 	private TextShader shader;
@@ -41,7 +38,7 @@ public class TextRenderer {
 	 * Constructor
 	 */
 	public TextRenderer(Loader loader) {
-		this.shader = new TextShader(VERT, FRAG);
+		this.shader = new TextShader();
 		this.loader = loader;
 	}
 	

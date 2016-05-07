@@ -1,6 +1,7 @@
 package luminoscore.graphics.shaders;
 
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector2f;
 
 import luminoscore.GlobalLock;
 
@@ -15,15 +16,15 @@ import luminoscore.GlobalLock;
 
 public class ParticleShader extends ShaderProgram {
 	
-	private static final String VERT = "res/shaders/particle.vert";
-	private static final String FRAG = "res/shaders/particle.frag";
+	public static String VERT = "particle.vert";
+	public static String FRAG = "particle.frag";
 	
 	private int location_modelViewMatrix;
 	private int location_projectionMatrix;
+	private int location_texOffset1;
+	private int location_texOffset2;
+	private int location_texCoordInfo;
 
-	/**
-	 * Construcor
-	 */
 	public ParticleShader() {
 		super(VERT, FRAG);
 	}
@@ -35,6 +36,15 @@ public class ParticleShader extends ShaderProgram {
 	protected void getAllUniformLocations() {
 		location_modelViewMatrix = super.getUniformLocation("modelViewMatrix");
 		location_projectionMatrix = super.getUniformLocation("projectionMatrix");
+		location_texOffset1 = super.getUniformLocation("texOffset1");
+		location_texOffset2 = super.getUniformLocation("texOffset2");
+		location_texCoordInfo = super.getUniformLocation("texCoordInfo");
+	}
+	
+	public void loadTextureCoordInfo(Vector2f offset1, Vector2f offset2, float numRows, float blend) {
+		super.load2DVector(location_texOffset1, offset1);
+		super.load2DVector(location_texOffset2, offset2);
+		super.load2DVector(location_texCoordInfo, new Vector2f(numRows, blend));
 	}
 
 	/*

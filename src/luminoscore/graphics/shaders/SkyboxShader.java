@@ -28,7 +28,11 @@ public class SkyboxShader extends ShaderProgram {
     private int location_cubeMap2;
     private int location_blendFactor;
     
-    private float rotation = 0;
+    private float rotation = 0.05f;
+    
+	
+	public static String VERT = "skybox.vert";
+	public static String FRAG = "skybox.frag";
      
     /**
      * @param vert	Vertex shader file
@@ -36,8 +40,8 @@ public class SkyboxShader extends ShaderProgram {
      * 
      * Constructor
      */
-    public SkyboxShader(String vert, String frag) {
-        super(vert, frag);
+    public SkyboxShader() {
+        super(VERT, FRAG);
     }
     
     /**

@@ -1,6 +1,8 @@
-package luminoscore.graphics.terrains;
+package luminoscore.tools.algorithms;
 
 import java.util.Random;
+
+import luminoscore.graphics.terrains.TerrainType;
 
 /**
  * 
@@ -11,14 +13,14 @@ import java.util.Random;
  *
  */
 
-public class PerlinNoise {
+public class FractalNoise {
 	
 	private int seed;
 	private Random random = new Random();
 	private int xOffset = 0;
 	private int zOffset = 0;
 	
-	private float amplitude = 50;
+	private float amplitude = 100;
 	private float octaves = 4;
 	private float roughness = .1f;
 	
@@ -27,7 +29,7 @@ public class PerlinNoise {
 	 * 
 	 * Constructor
 	 */
-	public PerlinNoise(int seed) {
+	public FractalNoise(int seed) {
 		this.seed = seed;
 	}
 	
@@ -40,7 +42,7 @@ public class PerlinNoise {
 	 * 
 	 * Constructor
 	 */
-	public PerlinNoise(int gridX, int gridZ, int vertexCount, int seed, TerrainType.Type type) {
+	public FractalNoise(int gridX, int gridZ, int vertexCount, int seed, TerrainType.Type type) {
         this.seed = seed;
         xOffset = gridX * (vertexCount-1);
         zOffset = gridZ * (vertexCount-1);
@@ -65,7 +67,11 @@ public class PerlinNoise {
 			float amp = (float) Math.pow(roughness, i) * amplitude;
 			total += getInterpolatedNoise((x + xOffset) * freq, (z + zOffset) * freq) * amp;
 		}
-		return total;
+
+		float max = amplitude * 2;
+		float cur = total + amplitude;
+		float blend = cur / max;
+		return total * blend;
 	}
 	
 //**************************************************Private Methods**********************************************//
