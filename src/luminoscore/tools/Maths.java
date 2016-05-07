@@ -255,22 +255,31 @@ public class Maths {
 		return (in >= one && in <= two);
 	}
 	
-	/**
-	 * Calculates the integer equivalent of a color
-	 * 
-	 * @param color		Vector3f holding color data
-	 * @return			int value of color
-	 */
 	public static int rgbToInt(Vector3f color) {
-		assert color.x < 255 && color.y < 255 && color.z < 255;
 		int red = (int) color.x;
 		int green = (int) color.y;
 		int blue = (int) color.z;
-		
-		return ((red & 0xFF) << 16 |
-				(green & 0xFF) << 8 |
-				(blue & 0xFF) << 0);
+		if((red & 255) != red || (green & 255) != green || (blue & 255) != blue)
+			throw new IllegalArgumentException("RGB input invalid");
+		return (red << 16) | (green << 8) | blue;
 	}
+	
+//	/**
+//	 * Calculates the integer equivalent of a color
+//	 * 
+//	 * @param color		Vector3f holding color data
+//	 * @return			int value of color
+//	 */
+//	public static int rgbToInt(Vector3f color) {
+//		assert color.x < 255 && color.y < 255 && color.z < 255;
+//		int red = (int) color.x;
+//		int green = (int) color.y;
+//		int blue = (int) color.z;
+//		
+//		return ((red & 0xFF) << 16 |
+//				(green & 0xFF) << 8 |
+//				(blue & 0xFF) << 0);
+//	}
 	
 	/**
 	 * Calculates the integer equivalent of a color
