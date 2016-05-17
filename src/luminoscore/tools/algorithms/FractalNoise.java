@@ -3,6 +3,7 @@ package luminoscore.tools.algorithms;
 import java.util.Random;
 
 import luminoscore.graphics.terrains.TerrainType;
+import luminoscore.tools.Maths;
 
 /**
  * 
@@ -25,22 +26,22 @@ public class FractalNoise {
 	private float roughness = .1f;
 	
 	/**
-	 * @param seed	Seed to be used in random
-	 * 
 	 * Constructor
+	 * 
+	 * @param seed	Seed to be used in random
 	 */
 	public FractalNoise(int seed) {
 		this.seed = seed;
 	}
 	
 	/**
+	 * Constructor
+	 * 
 	 * @param gridX			Terrain Grid X Begin
 	 * @param gridZ			Terrain Grid Z Begin
 	 * @param vertexCount	Vertex Count of Noise
 	 * @param seed			Seed used by random
 	 * @param type			Type of terrain
-	 * 
-	 * Constructor
 	 */
 	public FractalNoise(int gridX, int gridZ, int vertexCount, int seed, TerrainType.Type type) {
         this.seed = seed;
@@ -53,11 +54,11 @@ public class FractalNoise {
     }
 	
 	/**
+	 * Calculates height at given point
+	 * 
 	 * @param x			X value of generation
 	 * @param z			Z value of generation
-	 * @return float	Generated height
-	 * 
-	 * Calculates height at given point
+	 * @return 			Generated height
 	 */
 	public float generateHeight(int x, int z) {
 		float total = 0;
@@ -77,9 +78,11 @@ public class FractalNoise {
 //**************************************************Private Methods**********************************************//
 	
 	/**
+	 * Interpolates noise values
+	 * 
 	 * @param x			X value of interpolation
 	 * @param z			Z value of interpolation
-	 * @return float	Calculates interpolated noise
+	 * @return 	Calculates interpolated noise
 	 */
 	private float getInterpolatedNoise(float x, float z) {
 		int intX = (int) x;
@@ -92,31 +95,17 @@ public class FractalNoise {
 		float v3 = getSmoothNoise(intX, intZ + 1);
 		float v4 = getSmoothNoise(intX + 1, intZ + 1);
 		
-		float i1 = interpolate(v1, v2, fracX);
-		float i2 = interpolate(v3, v4, fracX);
-		return interpolate(i1, i2, fracZ);
+		float i1 = Maths.CosineInterpolation(v1, v2, fracX);
+		float i2 = Maths.CosineInterpolation(v3, v4, fracX);
+		return Maths.CosineInterpolation(i1, i2, fracZ);
 	}
 	
 	/**
-	 * @param a			Left side value
-	 * @param b			Right side value
-	 * @param blend		Blend factor
-	 * @return float	Result of interpolation
+	 * Calculates smoothed noise
 	 * 
-	 * Interpolates between two points
-	 */
-	private float interpolate(float a, float b, float blend) {
-		double theta = blend * Math.PI;
-		float f = (float)(1f - Math.cos(theta)) * 0.5f;
-		return a * (1f - f) + b * f;
-	}
-	
-	/**
 	 * @param x			x value to calculate
 	 * @param z			z value to calculate
-	 * @return float	smoothed noise value
-	 * 
-	 * Calculates smoothed noise
+	 * @return 			Smoothed noise value
 	 */
 	private float getSmoothNoise(int x, int z) {
 		float corners = (getNoise(x - 1, z - 1) + 
@@ -132,11 +121,11 @@ public class FractalNoise {
 	}
 	
 	/**
+	 * Calculates absolute noise value
+	 * 
 	 * @param x			x value to calculate
 	 * @param z			z value to calculate
-	 * @return float 	pure noise value
-	 * 
-	 * Calculates absolute noise value
+	 * @return 		 	Pure noise value
 	 */
 	private float getNoise(int x, int z) {
 		random.setSeed(Math.abs(x * 49632) + Math.abs(z * 325176) + seed);

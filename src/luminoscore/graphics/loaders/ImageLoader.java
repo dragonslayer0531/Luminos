@@ -1,14 +1,9 @@
 package luminoscore.graphics.loaders;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.imageio.ImageIO;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.EXTTextureFilterAnisotropic;
@@ -19,10 +14,7 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL30;
 
-import de.matthiasmann.twl.utils.PNGDecoder;
-import de.matthiasmann.twl.utils.PNGDecoder.Format;
-import luminoscore.Debug;
-import luminoscore.graphics.textures.TextureData;
+import luminoscore.graphics.loaders.LuminosImage.Format;
 
 /**
  * 
@@ -42,10 +34,10 @@ public class ImageLoader {
 	}
 	
 	/**
-	 * @param fileName 		PNG file
-	 * @return int			integer describing the PNG index on the GPU
+	 * Loads buffered image to graphics card
 	 * 
-	 * Loads PNG to graphics card
+	 * @param bImage 		Buffered image describing the image
+	 * @return 				Integer describing the image's location on the GPU
 	 */	
 	protected int loadTexture(BufferedImage bImage) {
 		BufferedImage image = bImage;
@@ -93,38 +85,20 @@ public class ImageLoader {
 		return textureID;
 	}
 	
+	/**
+	 * Loads a PNG File to the graphics card
+	 * 
+	 * @param fileName	Location of the PNG file
+	 * @return			Integer describing the location of the image on the GPU
+	 */
 	protected int loadTexture(String fileName) {
-		BufferedImage image = null;
-
-		try {
-			image = ImageIO.read(new File(fileName));
-		} catch (IOException e) {
-			Debug.addData(Loader.class + " File not found: " + fileName);
-			Debug.addData(e.getMessage());
-		}
-
-		int[] pixels = new int[image.getWidth() * image.getHeight()];
-		image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
-
-		ByteBuffer buffer = BufferUtils.createByteBuffer(image.getWidth() * image.getHeight() * 4); //4 for RGBA, 3 for RGB
-
-		for(int y = 0; y < image.getHeight(); y++){
-			for(int x = 0; x < image.getWidth(); x++){
-				int pixel = pixels[y * image.getWidth() + x];
-				buffer.put((byte) ((pixel >> 16) & 0xFF));
-				buffer.put((byte) ((pixel >> 8) & 0xFF));
-				buffer.put((byte) (pixel & 0xFF));
-				buffer.put((byte) ((pixel >> 24) & 0xFF));
-			}
-		}
-
-		buffer.flip();
+		LuminosImage image = LuminosImage.loadImage(fileName, Format.RGBA);
 
 		int textureID = GL11.glGenTextures();
 		
 		GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
-		GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, -1f);
+		GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, -.6f);
 		
 		if(GL.getCapabilities().GL_EXT_texture_filter_anisotropic) {
 			float amount = Math.min(4f, GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
@@ -140,15 +114,17 @@ public class ImageLoader {
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 
-		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
+		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, image.getBuffer());
 				
 		textures.add(textureID);
 		return textureID;
 	}
 	
 	/**
-	 * @param textureFiles		array of strings pointing to files for the cube map
-	 * @return int				integer describing the cube map index on the graphics card
+	 * Loads cube map of PNG files to GPU
+	 * 
+	 * @param textureFiles		Array of strings pointing to files for the cube map
+	 * @return 					Integer describing the cube map index on the graphics card
 	 */
 	protected int loadCubeMap(String[] textureFiles) {
 		int texID = GL11.glGenTextures();
@@ -156,8 +132,8 @@ public class ImageLoader {
 		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, texID);
 
 		for (int i = 0; i < textureFiles.length; i++) {
-			TextureData data = decodeTextureFile("res/skybox/" + textureFiles[i] + ".png");
-			GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL11.GL_RGBA, data.getWidth(), data.getHeight(), 0,
+			LuminosImage data = LuminosImage.loadImage(textureFiles[i], Format.RGBA);
+			GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, data.getFormat().getGLImageFormat(), data.getWidth(), data.getHeight(), 0,
 					GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, data.getBuffer());
 		}
 		
@@ -174,33 +150,6 @@ public class ImageLoader {
 		for(int texture : textures) {
 			GL11.glDeleteTextures(texture);
 		}
-	}
-
-	/**
-	 * @param fileName			PNG file to be decoded
-	 * @return TextureData		Texture Data holding the buffer from the file
-	 * 
-	 * Loads PNG file to TextureData for cube map
-	 */
-	private TextureData decodeTextureFile(String fileName) {
-		int width = 0;
-		int height = 0;
-		ByteBuffer buffer = null;
-		try {
-			FileInputStream in = new FileInputStream(fileName);
-			PNGDecoder decoder = new PNGDecoder(in);
-			width = decoder.getWidth();
-			height = decoder.getHeight();
-			buffer = ByteBuffer.allocateDirect(4 * width * height);
-			decoder.decode(buffer, width * 4, Format.RGBA);
-			buffer.flip();
-			in.close();
-		} catch (Exception e) {
-			Debug.addData(Loader.class + " Could not decode texture file: " + fileName);
-			Debug.addData(e.getMessage());
-			Debug.print();
-		}
-		return new TextureData(buffer, width, height);
 	}
 
 }

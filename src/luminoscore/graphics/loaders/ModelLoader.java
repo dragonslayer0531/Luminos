@@ -15,20 +15,20 @@ import org.lwjgl.util.vector.Vector3f;
 import luminoscore.graphics.models.Mesh;
 import luminoscore.graphics.models.RawModel;
 
+/**
+ * 
+ * Loads model data to GPU
+ * 
+ * @author Nick Clark
+ * @version 1.0
+ * 
+ */
+
 public class ModelLoader {
 	
 
 	private List<Integer> vaos = new ArrayList<Integer>();
 	private List<Integer> vbos = new ArrayList<Integer>();
-	
-	/**
-	 * 
-	 * Loads model data to GPU
-	 * 
-	 * @author Nick Clark
-	 * @version 1.0
-	 * 
-	 */
 	
 	protected ModelLoader() {}
 	
@@ -101,20 +101,21 @@ public class ModelLoader {
 	 * @param positions		floats used to describe the positions of the vertices
 	 * @param textureCoords	floats used to describe the texture coordinates of the vertices
 	 * @param normals		floats used to describe the normal vectors of the vertices
-	 * @param mesh			Mesh used to describe the positions of the vertices
+	 * @param vertices		Vector3f used to describe the positions of the vertices
+	 * @param normalArray 	Vector3f used to describe the normal vector of a vertex
 	 * @param indices		integers used to describe the order of vertices
 	 * @return RawModel		RawModel containing GPU data on the vertices.
 	 * 
 	 * Loads Positions, Texture Coordinates, Normals, and Indices to graphics card.  3D Coordinates.
 	 */
-	protected RawModel loadToVAO(float[] positions, float[] textureCoords, float[] normals, List<Vector3f> vertices, int[] indices) {
+	protected RawModel loadToVAO(float[] positions, float[] textureCoords, float[] normals, List<Vector3f> vertices, List<Vector3f> normalArray, int[] indices) {
 		int vaoID = createVAO();
 		bindIndicesBuffer(indices);
 		storeDataInAttributeList(0, 3, positions);
 		storeDataInAttributeList(1, 2, textureCoords);
 		storeDataInAttributeList(2, 3, normals);
 		unbindVAO();
-		return new RawModel(vaoID, indices.length, new Mesh(vertices));
+		return new RawModel(vaoID, indices.length, new Mesh(vertices, normalArray));
 	}
 	
 	/**

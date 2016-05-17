@@ -99,19 +99,19 @@ public class MasterRenderer {
 	}
 	
 	/**
+	 * Renders the entire 3D scene
+	 * 
 	 * @param entities		Entities to be rendered
 	 * @param terrains		Terrains to be rendered
 	 * @param lights		Lights to be passed into shader
 	 * @param player		Player to be rendered
 	 * @param camera		Camera to be renderer
-	 * 
-	 * Renders the entire 3D scene
 	 */
-	public void renderScene(Iterator<Entity> entities, Iterator<Terrain> terrains, List<Light> lights, Entity player, Camera camera, Vector4f clipPlane, GLFWWindow window) {
+	public void renderScene(Iterator<Entity> entities, Iterator<Terrain> terrains, List<Light> lights, Vector3f focalPoint, Camera camera, Vector4f clipPlane, GLFWWindow window) {
 		if(entities != null) {
 			while(entities.hasNext()) {
 				Entity entity = entities.next();
-				if(Maths.getDistance(entity.getPosition(), player.getPosition()) < 300) {
+				if(Maths.getDistance(entity.getPosition(), focalPoint) < 300) {
 					processEntity(entity);
 				}
 			}
@@ -120,30 +120,29 @@ public class MasterRenderer {
 		if(terrains != null) {
 			while(terrains.hasNext()) {
 				Terrain terrain = terrains.next();
-				if(Maths.getDistance(new Vector3f(terrain.getX(), player.getPosition().y, terrain.getZ()), player.getPosition()) < 500) {
+				if(Maths.getDistance(new Vector3f(terrain.getX(), focalPoint.y, terrain.getZ()), focalPoint) < 500) {
 					processTerrain(terrain);
 				}
 			}
 		}
 		
-		processEntity(player);
 		render(lights, camera, clipPlane, window);
 	}
 	
 	/**
-	 * @param guiTextures	GUI Textures to be rendered
-	 * 
 	 * Renders GUI Textures to screen
+	 * 
+	 * @param guiTextures	GUI Textures to be rendered
 	 */
 	public void renderGUI(List<GuiTexture> guiTextures) {
 		guiRenderer.render(guiTextures);
 	}
 	
 	/**
-	 * @param particles		Particles to be rendered
-	 * @param camera		Camera to render with
-	 * 
 	 * Renders particles through screen
+	 * 
+	 * @param camera		{@link Camera} to render with
+	 * @param particles		{@link Particle}s to be rendered
 	 */
 	public void renderParticles(Camera camera, GLFWWindow window) {
 		ParticleMaster.update(window);
@@ -151,18 +150,18 @@ public class MasterRenderer {
 	}
 	
 	/**
-	 * @param particle		Particle to be added
-	 * 
 	 * Adds particle to ParticleMaster
+	 * 
+	 * @param particle		{@link Particle} to be added
 	 */
 	public void addParticle(Particle particle) {
 		ParticleMaster.addParticle(particle);
 	}
 	
 	/**
-	 * @param particles		Particles to be added
-	 * 
 	 * Adds particle list to ParticleMaster
+	 * 
+	 * @param particles		{@link Particle}s to be added
 	 */
 	public void addParticles(List<Particle> particles) {
 		ParticleMaster.addAllParticles(particles);
@@ -176,52 +175,54 @@ public class MasterRenderer {
 	}
 	
 	/**
-	 * @param text	Text to be loaded
+	 * Loads {@link GUIText} to renderer
 	 * 
-	 * Loads text to renderer
+	 * @param text	GUIText to be loaded 
 	 */
 	public void addText(GUIText text) {
 		textRenderer.loadText(text);
 	}
 	
 	/**
-	 * @param text	Text to be removed
+	 * Removes {@link GUIText} from renderer
 	 * 
-	 * Removes text from renderer
+	 * @param text	GUIText to be removed
 	 */
 	public void removeText(GUIText text) {
 		textRenderer.removeText(text);
 	}
 	
 	/**
+	 * Prepares water for rendering
+	 * 
 	 * @param entities	Passed to renderScene
 	 * @param terrains	Passed to renderScene
 	 * @param lights	Passed to renderScene
-	 * @param player	Passed to renderScene
+	 * @param focalPoint	Passed to renderScene
 	 * @param camera	Calculates FBOs and passed to renderScene
 	 * @param window	Passed to renderScene
 	 */
-	public void prepareWater(List<Terrain> terrains, List<Light> lights, Entity player, Camera camera, GLFWWindow window) {
+	public void prepareWater(List<Entity> entities, List<Terrain> terrains, List<Light> lights, Vector3f focalPoint, Camera camera, GLFWWindow window) {
 		GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 		buffers.bindReflectionFrameBuffer();
 		float distance = 2 * (camera.getPosition().y);
 		camera.getPosition().y -= distance;
 		camera.invertPitch();
-		renderScene(null, terrains.iterator(), lights, player, camera, new Vector4f(0, 1, 0, 1), window);
+		renderScene(entities.iterator(), terrains.iterator(), lights, focalPoint, camera, new Vector4f(0, 1, 0, 1), window);
 		camera.getPosition().y += distance;
 		camera.invertPitch();
 		buffers.bindRefractionFrameBuffer();
-		renderScene(null, terrains.iterator(), lights, player, camera, new Vector4f(0, -1, 0, 0), window);
+		renderScene(entities.iterator(), terrains.iterator(), lights, focalPoint, camera, new Vector4f(0, -1, 0, 0), window);
 		GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
 		buffers.unbindCurrentFrameBuffer();
 	}
 	
 	/**
+	 * Renders {@link WaterTile}s
+	 * 
 	 * @param tiles		Tiles to be rendered
 	 * @param camera	Camera to use
 	 * @param light		Light to reflect
-	 * 
-	 * Renders water quads
 	 */
 	public void renderWater(List<WaterTile> tiles, Camera camera, Light light) {
 		waterRenderer.render(tiles, camera, light);
@@ -240,11 +241,10 @@ public class MasterRenderer {
 	}
 	
 	/**
+	 * Renders {@link Entity}
 	 * 
 	 * @param lights	Passes lights to shaders
 	 * @param camera	Camera to create transformation matrix of
-	 * 
-	 * Renders TexturedModel
 	 */
 	public void render(List<Light> lights, Camera camera, Vector4f clipPlane, GLFWWindow window){
 		prepare();
@@ -268,18 +268,18 @@ public class MasterRenderer {
 	}
 	
 	/**
-	 * @param terrain		Terrain to be processed
+	 * Adds {@link Terrain} to list of terrains
 	 * 
-	 * Adds terrain to list of terrains
+	 * @param terrain		Terrain to be processed 
 	 */
 	public void processTerrain(Terrain terrain){
 		terrains.add(terrain);
 	}
 	
 	/**
-	 * @param entity 		Entity to be processed
+	 * Processes {@link Entity}
 	 * 
-	 * Processed entity
+	 * @param entity 		Entity to be processed 
 	 */
 	public void processEntity(Entity entity){
 		List<TexturedModel> entityModels = entity.getModels();
@@ -296,11 +296,11 @@ public class MasterRenderer {
 	}
 	
 	/**
+	 * Render a shadow map
+	 * 
 	 * @param entityList	Entities to have shadows
 	 * @param sun			Focal light
 	 * @param display		Window to get PoV and Aspect Ratio of
-	 * 
-	 * Render a shadow map
 	 */
 	public void renderShadowMap(List<Entity> entityList, Light sun, GLFWWindow display) {
 		for(Entity entity : entityList) {
@@ -311,9 +311,9 @@ public class MasterRenderer {
 	}
 	
 	/**
-	 * @return int	ID of shadow map
-	 * 
 	 * Gets the ID of the shadow map
+	 * 
+	 * @return ID of shadow map
 	 */
 	public int getShadowMapTexture() {
 		return shadowRenderer.getShadowMap();
@@ -358,9 +358,9 @@ public class MasterRenderer {
 //*******************************Private Methods*************************************//
 	
 	/**
-	 * @param display	Used to calculate aspect ratio
-	 * 
 	 * Creates projection matrix for entities
+	 * 
+	 * @param display	Used to calculate aspect ratio
 	 */
 	private void createEntityProjectionMatrix() {
 		float aspectRatio = (float) GlobalLock.WIDTH / (float) GlobalLock.HEIGHT;
@@ -378,9 +378,9 @@ public class MasterRenderer {
 	}
 	
 	/**
-	 * @param display  Used to calculate aspect ratio
-	 * 
 	 * Creates projection matrix for terrains and skybox
+	 * 
+	 * @param display  Used to calculate aspect ratio
 	 */
 	private void createProjectionMatrix() {
 		float aspectRatio = (float) GlobalLock.WIDTH / (float) GlobalLock.HEIGHT;
@@ -398,3 +398,4 @@ public class MasterRenderer {
 	}
 	
 }
+

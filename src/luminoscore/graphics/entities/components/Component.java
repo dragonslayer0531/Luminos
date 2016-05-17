@@ -14,18 +14,18 @@ public class Component {
 	private Object o;
 
 	/**
-	 * @param o		Object to be wrapped into a component
-	 * 
 	 * Constructor that wraps object
+	 * 
+	 * @param o		Object to be wrapped into a component
 	 */
 	public Component(Object o) {
 		this.o = o;
 	}
 	
 	/**
-	 * @return Object	Object wrapped by component
-	 * 
 	 * Gets the object wrapped by the component
+	 * 
+	 * @return Object	Object wrapped by component 
 	 */
 	public Object getComponent() {
 		return o;

@@ -16,12 +16,12 @@ public class WaterTile {
 	private Vector2f scale;
 	
 	/**
+	 * Constructor
+	 * 
 	 * @param centerX	Center of tile, X
 	 * @param centerZ	Center of tile, Z
 	 * @param height	Y Value of tile
 	 * @param scale		Scale of tile
-	 * 
-	 * Constructor
 	 */
 	public WaterTile(float centerX, float centerZ, float height, Vector2f scale) {
 		this.x = centerX;
@@ -33,11 +33,11 @@ public class WaterTile {
 	private float scale_float;
 	
 	/**
+	 * Constructor
+	 * 
 	 * @param position	Center of tile
 	 * @param height	Height of tile
 	 * @param scale		Scale of tile
-	 * 
-	 * Constructor
 	 */
 	public WaterTile(Vector2f position, float height, float scale) {
 		this.x = position.x;
@@ -47,45 +47,45 @@ public class WaterTile {
 	}
 
 	/**
-	 * @return float	Height
-	 * 
 	 * Gets height of tile
+	 * 
+	 * @return	Height
 	 */
 	public float getHeight() {
 		return height;
 	}
 
 	/**
-	 * @return float 	X
-	 * 
 	 * Gets X coordinate
+	 * 
+	 * @return 	X
 	 */
 	public float getX() {
 		return x;
 	}
 
 	/**
-	 * @return float	Z
-	 * 
 	 * Gets Z coordinate
+	 * 
+	 * @return	Z
 	 */
 	public float getZ() {
 		return z;
 	}
 	
 	/**
-	 * @return Vector2f	scale
-	 * 
 	 * Gets scale
+	 * 
+	 * @return	scale
 	 */
 	public Vector2f getScale() {
 		return scale;
 	}
 	
 	/**
-	 * @return float	scale
-	 * 
 	 * Gets scale
+	 * 
+	 * @return	scale
 	 */
 	public float getFloatScale() {
 		return scale_float;

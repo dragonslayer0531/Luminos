@@ -15,10 +15,10 @@ public class TextMeshData {
     private float[] textureCoords;
      
     /**
+     * Constructor
+     * 
      * @param vertexPositions	Vertex positions of mesh
      * @param textureCoords		Texture coordinates of mesh
-     * 
-     * Constructor
      */
     protected TextMeshData(float[] vertexPositions, float[] textureCoords){
         this.vertexPositions = vertexPositions;
@@ -26,27 +26,27 @@ public class TextMeshData {
     }
  
     /**
-     * @return float[]	Vertex Positions
-     * 
      * Gets vertex positions
+     * 
+     * @return Vertex Positions
      */
     public float[] getVertexPositions() {
         return vertexPositions;
     }
  
     /**
-     * @return float[]	Texture Coordinates
-     * 
      * Gets texture coordinates
+     * 
+     * @return Texture Coordinates
      */
     public float[] getTextureCoords() {
         return textureCoords;
     }
  
     /**
-     * @return int	Vertex Count
-     * 
      * Gets vertex count
+     * 
+     * @return Vertex Count
      */
     public int getVertexCount() {
         return vertexPositions.length/2;

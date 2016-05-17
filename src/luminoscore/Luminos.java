@@ -19,24 +19,33 @@ public class Luminos {
 	private Luminos() {}
 	
 	/**
-	 * @return Luminos	New Luminos Instance
+	 * Invokes a new Luminos instance
 	 * 
-	 * Invokes Luminos instance
+	 * @return		New Luminos Instance
 	 */
 	public static Luminos createLuminosInstance() {
 		if(!GlobalLock.INITIATED) {
 			GlobalLock.INITIATED = true;
 		}
+		
 		return new Luminos();
 	}
 	
 	/**
-	 * @param windowID		Window ID
-	 * 
 	 * Sets the window ID
+	 * 
+	 * @param windowID		Window ID
 	 */
 	public void setWindowID(long windowID) {
 		this.windowID = windowID;
+	}
+
+	/**
+	 * Closes the instance
+	 */
+	public void close() {
+		GlobalLock.INITIATED = false;
+		GlobalLock.printToFile("config.xml");
 	}
 
 }

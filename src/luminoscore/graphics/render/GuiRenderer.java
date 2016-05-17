@@ -28,9 +28,9 @@ public class GuiRenderer {
 	private GuiShader shader;
 	
 	/**
-	 * @param loader 	Loader to use in rendering
-	 * 
 	 * Constructor of GuiRenderer
+	 * 
+	 * @param loader 	Loader to use in rendering
 	 */
 	public GuiRenderer(Loader loader){
 		float[] positions = {-1, 1, -1, -1, 1, 1, 1, -1};
@@ -39,9 +39,9 @@ public class GuiRenderer {
 	}
 	
 	/**
-	 * @param guis		List GuiTextures to be rendered
-	 * 
 	 * Renders GuiTextures to screen
+	 * 
+	 * @param guis		List of {@link GuiTexture}s to be rendered
 	 */
 	public void render(List<GuiTexture> guis){
 		

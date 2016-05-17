@@ -19,35 +19,76 @@ public class XBOXController {
 	XBOX_LEFT_STICK = 0x8,
 	XBOX_RIGHT_STICK = 0x9;
 	
-	public static float getHorizontalAxis(int controllerID) {
-		return GLFW.glfwGetJoystickAxes(controllerID).get(0);
+	/**
+	 * Gets the horizontal movement of the controller
+	 * 
+	 * @return	Horizontal movement
+	 */
+	public static float getHorizontalAxis() {
+		return GLFW.glfwGetJoystickAxes(GLFW_JOYSTICK_1).get(0);
 	}
 	
-	public static float getVerticalAxis(int controllerID) {
-		return GLFW.glfwGetJoystickAxes(controllerID).get(1);
+	/**
+	 * Gets the vertical movement of the controller
+	 * 
+	 * @return	Vertical movement
+	 */
+	public static float getVerticalAxis() {
+		return GLFW.glfwGetJoystickAxes(GLFW_JOYSTICK_1).get(1);
 	}
 	
-	public static float getHorizontalAxisLook(int controllerID) {
-		return GLFW.glfwGetJoystickAxes(controllerID).get(2);
+	/**
+	 * Gets the horizontal look axis
+	 * 
+	 * @return	Horizontal look movement
+	 */
+	public static float getHorizontalAxisLook() {
+		return GLFW.glfwGetJoystickAxes(GLFW_JOYSTICK_1).get(2);
 	}
 	
-	public static float getVerticalAxisLook(int controllerID) {
-		return GLFW.glfwGetJoystickAxes(controllerID).get(3);
+	/**
+	 * Gets the vertical look axis
+	 * 
+	 * @return	Vertical look movement
+	 */
+	public static float getVerticalAxisLook() {
+		return GLFW.glfwGetJoystickAxes(GLFW_JOYSTICK_1).get(3);
 	}
 	
+	/**
+	 * Gets if the button is down
+	 * 
+	 * @param buttonID	ID of button
+	 * @return			Is the button down
+	 */
 	public static boolean isButtonDown(int buttonID) {
 		if(!XBOXController.isControllerConnected()) return false;
 		return GLFW.glfwGetJoystickButtons(XBOXController.GLFW_JOYSTICK_1).get(buttonID) == 1;
 	}
 	
+	/**
+	 * Gets the depression amount of the left trigger
+	 * 
+	 * @return The amount that the left trigger is pressed
+	 */
 	public static float leftTriggerPower() {
 		return (GLFW.glfwGetJoystickAxes(XBOXController.GLFW_JOYSTICK_1).get(4) + 1) / 2;
 	}
 	
+	/**
+	 * Gets the depression amount of the right trigger
+	 * 
+	 * @return The amount that the right trigger is pressed
+	 */
 	public static float rightTriggerPower() {
 		return (GLFW.glfwGetJoystickAxes(XBOXController.GLFW_JOYSTICK_1).get(5) + 1) / 2;
 	}
 
+	/**
+	 * Gets if the controller is connected
+	 * 
+	 * @return	Is the controller connected
+	 */
 	public static boolean isControllerConnected() {
 		return GLFW.glfwJoystickPresent(XBOXController.GLFW_JOYSTICK_1) == 1;
 	}

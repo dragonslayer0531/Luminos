@@ -17,10 +17,10 @@ public class TexturedModel {
 	private ModelTexture texture;
 
 	/**
-	 * @param model		RawModel describing the vertices
-	 * @param texture	ModelTexture describing the texture
-	 * 
 	 * Constructor wrapping models and textures
+	 * 
+	 * @param model		{@link RawModel} describing the vertices
+	 * @param texture	{@link ModelTexture} describing the texture
 	 */
 	public TexturedModel(RawModel model, ModelTexture texture){
 		this.rawModel = model;
@@ -28,18 +28,18 @@ public class TexturedModel {
 	}
 
 	/**
-	 * @return RawModel		Model of the TexturedModel
+	 * Gets the instance's {@link RawModel}
 	 * 
-	 * Gets the TexturedModel's RawModel
+	 * @return Model of the TexturedModel
 	 */
 	public RawModel getRawModel() {
 		return rawModel;
 	}
 
 	/**
-	 * @return ModelTexture	Texture for the model to use
-	 * 
 	 * Gets the TexturedModel's ModelTexture
+	 * 
+	 * @return Texture for the model to use
 	 */
 	public ModelTexture getTexture() {
 		return texture;

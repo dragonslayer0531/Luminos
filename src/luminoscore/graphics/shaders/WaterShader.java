@@ -79,37 +79,37 @@ public class WaterShader extends ShaderProgram {
 	}
 	
 	/**
-	 * @param sun	Focal light of scene
+	 * Loads {@link Light} to shader
 	 * 
-	 * Loads light to shader
+	 * @param sun	Focal light of scene 
 	 */
 	public void loadLight(Light sun) {
-		super.loadVector(location_lightColor, sun.getColour());
+		super.loadVector(location_lightColor, sun.getColor());
 		super.loadVector(location_lightPosition, sun.getPosition());
 	}
 
 	/**
-	 * @param projection	Projection matrix
-	 * 
 	 * Loads projection matrix to shader
+	 * 
+	 * @param projection	Projection matrix
 	 */
 	public void loadProjectionMatrix(Matrix4f projection) {
 		loadMatrix(location_projectionMatrix, projection);
 	}
 	
 	/**
-	 * @param factor	Movement factor of water
-	 * 
 	 * Loads movement factor of water
+	 * 
+	 * @param factor	Movement factor of water
 	 */
 	public void loadMoveFactor(float factor) {
 		super.loadFloat(location_moveFactor, factor);
 	}
 
 	/**
-	 * @param camera	Camera to calculate view matrix of
-	 * 
 	 * Load view matrix to shader
+	 * 
+	 * @param camera	Camera to calculate view matrix of
 	 */
 	public void loadViewMatrix(Camera camera){
 		Matrix4f viewMatrix = Maths.createViewMatrix(camera);
@@ -118,9 +118,9 @@ public class WaterShader extends ShaderProgram {
 	}
 
 	/**
-	 * @param modelMatrix	Model matrix
-	 * 
 	 * Loads model matrix to shader
+	 * 
+	 * @param modelMatrix	Model matrix
 	 */
 	public void loadModelMatrix(Matrix4f modelMatrix){
 		loadMatrix(location_modelMatrix, modelMatrix);

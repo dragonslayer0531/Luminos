@@ -30,14 +30,14 @@ public class GUIText {
     private boolean centerText = false;
  
     /**
+     * Constructor
+     * 
      * @param text				String defining rendered text
      * @param fontSize			Float of font size (1 Default)
      * @param font				Font to be used
      * @param position			Position of text in screen space
      * @param maxLineLength		Maximum length of line (Screen Space)
      * @param centered			Centered on screen
-     * 
-     * Constructor
      */
     public GUIText(String text, float fontSize, FontType font, Vector2f position, float maxLineLength, boolean centered) {
         this.textString = text;
@@ -49,66 +49,66 @@ public class GUIText {
     }
 
 	/**
-     * @return FontType 	Font used to render GUI Text instance
-     * 
-     * Gets font type of GUIText
+	 * Gets {@link FontType} of GUIText
+	 * 
+     * @return Font used to render GUI Text instance
      */
     public FontType getFont() {
         return font;
     }
  
     /**
+     * Sets color of GUI Text
+     * 
      * @param r	R value
      * @param g	G value
      * @param b B value
-     * 
-     * Sets color of GUI Text
      */
     public void setColor(float r, float g, float b) {
         colour.set(r, g, b);
     }
  
     /**
-     * @return Vector3f		Text color
-     * 
      * Gets color of text
+     * 
+     * @return Text color
      */
     public Vector3f getColor() {
         return colour;
     }
  
     /**
-     * @return int	Number lines of text
-     * 
      * Gets number of lines of text
+     * 
+     * @return Number lines of text
      */
     public int getNumberOfLines() {
         return numberOfLines;
     }
  
     /**
-     * @return Vector2f	Screen position (top left corner)
-     * 
      * Gets screen position
+     * 
+     * @return Screen position (top left corner)
      */
     public Vector2f getPosition() {
         return position;
     }
  
     /**
-     * @return int GPU ID of mesh
+     * Gets mesh's GPU ID
      * 
-     * Gets mesh GPU ID
+     * @return GPU ID of mesh 
      */
     public int getMesh() {
         return textMeshVao;
     }
  
     /**
+     * Sets mesh data
+     * 
      * @param vao			VAO ID of Mesh
      * @param verticesCount	Vertices of mesh
-     * 
-     * Sets mesh data
      */
     public void setMeshInfo(int vao, int verticesCount) {
         this.textMeshVao = vao;
@@ -116,54 +116,54 @@ public class GUIText {
     }
  
     /**
-     * @return int	Vertex Count
-     * 
      * Gets vertex count
+     * 
+     * @return Vertex Count
      */
     public int getVertexCount() {
         return this.vertexCount;
     }
  
     /**
-     * @return float	Font Size
-     * 
      * Gets font size
+     * 
+     * @return Font Size
      */
     protected float getFontSize() {
         return fontSize;
     }
  
     /**
-     * @param number	Number of line in mesh
-     * 
      * Sets number of lines in mesh
+     * 
+     * @param number	Number of line in mesh
      */
     protected void setNumberOfLines(int number) {
         this.numberOfLines = number;
     }
  
     /**
-     * @return boolean	Text center alignment
-     * 
      * Gets if the mesh is centered
+     * 
+     * @return Text center alignment
      */
     protected boolean isCentered() {
         return centerText;
     }
  
     /**
-     * @return float	Max line size
-     * 
      * Gets max line size
+     * 
+     * @return Max line size
      */
     protected float getMaxLineSize() {
         return lineMaxSize;
     }
  
     /**
-     * @return String	Text to be rendered
-     * 
      * Gets text string of GUI Text
+     * 
+     * @return Text to be rendered
      */
     protected String getTextString() {
         return textString;

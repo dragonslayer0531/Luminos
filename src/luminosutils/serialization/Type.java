@@ -1,5 +1,14 @@
 package luminosutils.serialization;
 
+/**
+ * 
+ * @author Nick Clark
+ * @version 1.0
+ * 
+ * Holds data types and sizes
+ *
+ */
+
 public class Type {
 
 	public static final byte UNKNOWN 	= 0;
@@ -11,6 +20,13 @@ public class Type {
 	public static final byte FLOAT		= 6;
 	public static final byte DOUBLE		= 7;
 	public static final byte BOOLEAN	= 8;
+	
+	/**
+	 * Gets the size of the data
+	 * 
+	 * @param type	Byte identifying the type
+	 * @return		The size of the data type
+	 */
 	
 	public static int getSize(byte type) {
 		switch (type) {

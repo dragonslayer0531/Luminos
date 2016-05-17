@@ -38,11 +38,11 @@ public class DateUtils {
 	}
 	
 	/**
-	 * @return float	Total Time
-	 * 
 	 * Gets total time
+	 * 
+	 * @return Current Time
 	 */
-	public float getTotalTime() {
+	public float getCurrentTime() {
 		realTime();
 		return totalTime;
 	}

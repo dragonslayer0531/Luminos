@@ -41,10 +41,10 @@ public class ShadowMapMasterRenderer {
     private ShadowMapEntityRenderer entityRenderer;
 
     /**
+     * Constructor
+     * 
      * @param camera	Camera to be passed to shadow box
      * @param window	Window to be used for creation of FBO and Shadow Box
-     * 
-     * Constructor
      */
     public ShadowMapMasterRenderer(Camera camera) {
         shader = new ShadowShader();
@@ -54,10 +54,10 @@ public class ShadowMapMasterRenderer {
     }
 
     /**
+     * Renders shadow map to buffer
+     * 
      * @param entities		List of all rendered entities
      * @param sun			Focal light to render to shadow map
-     * 
-     * Renders shadow map to buffer
      */
     public void render(Map<TexturedModel, List<Entity>> entities, Light sun, GLFWWindow window) {
         shadowBox.update();
@@ -69,9 +69,9 @@ public class ShadowMapMasterRenderer {
     }
 
     /**
-     * @return Matrix4f ShadowMapSpaceMatrix
-     * 
      * Gets the shadow map space matrix
+     * 
+     * @return ShadowMapSpaceMatrix
      */
     public Matrix4f getToShadowMapSpaceMatrix() {
         return Matrix4f.mul(offset, projectionViewMatrix, null);
@@ -86,18 +86,18 @@ public class ShadowMapMasterRenderer {
     }
     
     /**
-     * @return int Shadow Map GPU index
-     * 
      * Gets the index of the shadow map on the GPU
+     * 
+     * @return Shadow Map GPU index
      */
     public int getShadowMap() {
         return shadowFbo.getShadowMap();
     }
 
     /**
-     * @return Matrix4f	Light Space Transformation Matrix
-     * 
      * Returns the light view matrix
+     * 
+     * @return Light Space Transformation Matrix
      */
     public Matrix4f getLightSpaceTransform() {
         return lightViewMatrix;
@@ -106,10 +106,10 @@ public class ShadowMapMasterRenderer {
 //***************************Private Methods****************************//
     
     /**
+     * Prepares entities for rendering to shadow buffer
+     * 
      * @param lightDirection	Direction the light is from the point
      * @param box				ShadowBox that the entities are inside of
-     * 
-     * Prepares entities for rendering to shadow buffer
      */
     private void prepare(Vector3f lightDirection, ShadowBox box) {
         updateOrthoProjectionMatrix(box.getWidth(), box.getHeight(), box.getLength());
@@ -130,10 +130,10 @@ public class ShadowMapMasterRenderer {
     }
 
     /**
+     * Updates the orientation and position of the light view matrix
+     * 
      * @param direction		Direction the light view matrix is facing
      * @param center		Center of the light view matrix
-     * 
-     * Updates the orientation and position of the light view matrix
      */
     private void updateLightViewMatrix(Vector3f direction, Vector3f center) {
         direction.normalise();
@@ -149,11 +149,11 @@ public class ShadowMapMasterRenderer {
     }
 
     /**
+     * Updates the shadow map's orthographic projection matrix
+     * 
      * @param width		Width of orthographic projection matrix
      * @param height	Height of orthographic projection matrix
-     * @param length	Length of orthographic projection matrix
-     * 
-     * Updates the shadow map's orthographic projection matrix
+     * @param length	Length of orthographic projection matrix 
      */
     private void updateOrthoProjectionMatrix(float width, float height, float length) {
         projectionMatrix.setIdentity();
@@ -164,9 +164,9 @@ public class ShadowMapMasterRenderer {
     }
 
     /**
-     * @return Matrix4f		Offset of orthographic projection matrix
-     * 
      * Adds offset to view matrix
+     * 
+     * @return Offset of orthographic projection matrix
      */
     private static Matrix4f createOffset() {
         Matrix4f offset = new Matrix4f();

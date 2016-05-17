@@ -23,9 +23,6 @@ public class TextShader extends ShaderProgram {
 	public static String FRAG = "text.frag";
 	
 	/**
-	 * @param VERT	Vertex shader file
-	 * @param FRAG	Fragment shader file
-	 * 
 	 * Constructor
 	 */
 	public TextShader() {
@@ -52,27 +49,27 @@ public class TextShader extends ShaderProgram {
 	}
 	
 	/**
-	 * @param color	Color of text
-	 * 
 	 * Loads color of text to shader
+	 * 
+	 * @param color	Color of text
 	 */
 	public void loadColor(Vector3f color) {
 		super.loadVector(location_color, color);
 	}
 	
 	/**
-	 * @param translation	Position of text
-	 * 
 	 * Loads position of text to shader
+	 * 
+	 * @param translation	Position of text
 	 */
 	public void loadTranslation(Vector2f translation) {
 		super.load2DVector(location_translation, translation);
 	}
 	
 	/**
-	 * @param font	Font GPU ID
-	 * 
 	 * Loads font ID to shader
+	 * 
+	 * @param font	Font GPU ID
 	 */
 	public void loadFont(float font) {
 		super.loadFloat(location_font, font);

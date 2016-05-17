@@ -24,9 +24,9 @@ public class ParticleMaster {
 	public static Map<ParticleTexture, List<Particle>> particles = new HashMap<ParticleTexture, List<Particle>>();
 	
 	/**
-	 * @param particle	Particle to be added
+	 * Adds {@link Particle} to list
 	 * 
-	 * Adds particle to list
+	 * @param particle	Particle to be added
 	 */
 	public static void addParticle(Particle particle) {
 		List<Particle> list = particles.get(particle.getTexture());
@@ -38,9 +38,9 @@ public class ParticleMaster {
 	}
 	
 	/**
-	 * @param particles	Particles to be added
+	 * Adds {@link Particle}s to list
 	 * 
-	 * Adds particles to list
+	 * @param particles	Particles to be added
 	 */
 	public static void addAllParticles(List<Particle> particles) {
 		for(Particle particle : particles) {
@@ -49,10 +49,9 @@ public class ParticleMaster {
 	}
 	
 	/**
-	 * @param particles	List of particles in the world
-	 * @param window	Window to get frame time of
-	 * 
 	 * Updates all particles in world
+	 * 
+	 * @param window	{@link GLFWWindow} to get frame time of
 	 */
 	public static void update(GLFWWindow window) {
 		Iterator<Entry<ParticleTexture, List<Particle>>> mapIterator = (Iterator<Entry<ParticleTexture, List<Particle>>>) particles.entrySet().iterator();

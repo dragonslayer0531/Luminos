@@ -23,18 +23,18 @@ public class MousePosition extends GLFWCursorPosCallback {
 	}
 	
 	/**
-	 * @return double	X position
-	 * 
 	 * Gets x position of mouse
+	 * 
+	 * @return	X position
 	 */
 	public static double getX() {
 		return x;
 	}
 	
 	/**
-	 * @return double	Y Position
-	 * 
 	 * Gets y position of mouse
+	 * 
+	 * @return	Y Position
 	 */
 	public static double getY() {
 		return y;

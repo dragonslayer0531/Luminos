@@ -20,11 +20,11 @@ import luminoscore.GlobalLock;
 
 public class WaterFrameBuffers {
 
-	protected static final int REFLECTION_WIDTH = 320;
-	private static final int REFLECTION_HEIGHT = 180;
+	protected static final int REFLECTION_WIDTH = GlobalLock.WATER_FBO_REFLEC_WIDTH;
+	private static final int REFLECTION_HEIGHT = GlobalLock.WATER_FBO_REFLEC_HEIGHT;
 	
-	protected static final int REFRACTION_WIDTH = 1280;
-	private static final int REFRACTION_HEIGHT = 720;
+	protected static final int REFRACTION_WIDTH = GlobalLock.WATER_FBO_REFRAC_WIDTH;
+	private static final int REFRACTION_HEIGHT = GlobalLock.WATER_FBO_REFRAC_HEIGHT;
 
 	private int reflectionFrameBuffer;
 	private int reflectionTexture;
@@ -35,9 +35,9 @@ public class WaterFrameBuffers {
 	private int refractionDepthTexture;
 	
 	/**
-	 * @param display	GLFWWindow to load to
-	 * 
 	 * Constructor
+	 * 
+	 * @param display	{@link GLFWWindow} to load to
 	 */
 	public WaterFrameBuffers() {
 		initialiseReflectionFrameBuffer();
@@ -79,27 +79,27 @@ public class WaterFrameBuffers {
 	}
 
 	/**
-	 * @return int	Reflection Texture ID
-	 * 
 	 * Gets reflection texture
+	 * 
+	 * @return	Reflection Texture ID
 	 */
 	public int getReflectionTexture() {
 		return reflectionTexture;
 	}
 	
 	/**
-	 * @return int	Refraction Texture ID
-	 * 
 	 * Gets refraction texture
+	 * 
+	 * @return	Refraction Texture ID
 	 */
 	public int getRefractionTexture() {
 		return refractionTexture;
 	}
 	
 	/**
-	 * @return int 	Refraction Depth Texture ID
-	 * 
 	 * Gets refraction depth texture
+	 * 
+	 * @return 	Refraction Depth Texture ID
 	 */
 	public int getRefractionDepthTexture() {
 		return refractionDepthTexture;
@@ -128,11 +128,11 @@ public class WaterFrameBuffers {
 	}
 	
 	/**
+	 * Binds frame buffer
+	 * 
 	 * @param frameBuffer	Frame Buffer ID
 	 * @param width			Frame Buffer Width
 	 * @param height		Frame Buffer Height
-	 * 
-	 * Binds frame buffer
 	 */
 	private void bindFrameBuffer(int frameBuffer, int width, int height){
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);//To make sure the texture isn't bound
@@ -141,9 +141,9 @@ public class WaterFrameBuffers {
 	}
 
 	/**
-	 * @return int	VAO ID of Frame Buffer
-	 * 
 	 * Creates frame buffer
+	 * 
+	 * @return	VAO ID of Frame Buffer
 	 */
 	private int createFrameBuffer() {
 		int frameBuffer = GL30.glGenFramebuffers();
@@ -153,11 +153,11 @@ public class WaterFrameBuffers {
 	}
 
 	/**
+	 * Creates texture attachment
+	 * 
 	 * @param width		Width of attachment
 	 * @param height	Height of attachment
-	 * @return int		GPU ID of texture attachment
-	 * 
-	 * Creates texture attachment
+	 * @return 	GPU ID of texture attachment
 	 */
 	private int createTextureAttachment(int width, int height) {
 		int texture = GL11.glGenTextures();
@@ -172,11 +172,11 @@ public class WaterFrameBuffers {
 	}
 	
 	/**
+	 * Creates depth texture attachment
+	 * 
 	 * @param width		Width of depth attachment
 	 * @param height	Height of depth attachment
-	 * @return int 		GPU ID of texture attachment
-	 * 
-	 * Creates depth texture attachment
+	 * @return 			GPU ID of texture attachment
 	 */
 	private int createDepthTextureAttachment(int width, int height){
 		int texture = GL11.glGenTextures();
@@ -191,11 +191,11 @@ public class WaterFrameBuffers {
 	}
 
 	/**
+	 * Creates depth buffer attachment
+	 * 
 	 * @param width		Width of depth buffer
 	 * @param height	Height of depth buffer
 	 * @return			GPU ID of buffer
-	 * 
-	 * Creates depth buffer attachment
 	 */
 	private int createDepthBufferAttachment(int width, int height) {
 		int depthBuffer = GL30.glGenRenderbuffers();
