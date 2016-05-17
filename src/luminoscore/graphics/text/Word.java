@@ -5,10 +5,10 @@ import java.util.List;
 
 /**
  * 
+ * Word of GUI Text
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Word of GUI Text
  *
  */
 
@@ -19,18 +19,18 @@ public class Word {
     private double fontSize;
      
     /**
-     * @param fontSize	Double of font size
-     * 
      * Constructor
+     * 
+     * @param fontSize	Double of font size
      */
     protected Word(double fontSize){
         this.fontSize = fontSize;
     }
      
     /**
-     * @param character	Character to add
-     * 
      * Adds character to word
+     * 
+     * @param character	Character to add
      */
     protected void addCharacter(Character character){
         characters.add(character);
@@ -38,18 +38,18 @@ public class Word {
     }
      
     /**
-     * @return List<Character>	Characters in word
-     * 
      * Gets characters in word
+     * 
+     * @return Characters in word
      */
     protected List<Character> getCharacters(){
         return characters;
     }
      
     /**
-     * @return double	Width of word
-     * 
      * Gets width of word
+     * 
+     * @return	Width of word
      */
     protected double getWordWidth(){
         return width;

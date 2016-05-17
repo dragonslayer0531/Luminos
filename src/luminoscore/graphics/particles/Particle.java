@@ -9,10 +9,10 @@ import luminoscore.graphics.textures.ParticleTexture;
 
 /**
  * 
+ * Describes 2D particle used for particle effects
+ *
  * @author Nick Clark
  * @version 1.0
- *
- * Describes 2D particle used for particle effects
  * 
  */
 
@@ -44,14 +44,15 @@ public class Particle {
 	}
 
 	/**
+	 * Constructor
+	 * 
+	 * @param texture		GPU index of the {@link ParticleTexture}
 	 * @param position		Describes the original position
 	 * @param velocity		Describes the original velocity
 	 * @param grav			Describes the gravitational effect
 	 * @param life			Describes the lifespan of the particle
 	 * @param rotation		Describes the original rotation
 	 * @param scale			Describes the original scale
-	 * 
-	 * Constructor
 	 */
 	public Particle(ParticleTexture texture, Vector3f position, Vector3f velocity, float grav, float life, float rotation, float scale) {
 		this.texture = texture;
@@ -63,31 +64,57 @@ public class Particle {
 		this.scale = scale;
 	}
 
+	/**
+	 * Gets the particle's velocity
+	 * 
+	 * @return Velocity of particle
+	 */
 	public Vector3f getVelocity() {
 		return velocity;
 	}
 
+	/**
+	 * Gets the particle's gravitational proportion
+	 * 
+	 * @return gravitational effect
+	 */
 	public float getGrav() {
 		return grav;
 	}
 
+	/**
+	 * Gets the particle's life span
+	 * 
+	 * @return Life span of particle
+	 */
 	public float getLife() {
 		return life;
 	}
 
+	
+	/**
+	 * Gets the texture of the particle
+	 * 
+	 * @return Particle's texture
+	 */
 	public ParticleTexture getTexture() {
 		return texture;
 	}
 
+	/**
+	 * Gets the time the particle has been alive
+	 * 
+	 * @return Time particle has been alive
+	 */
 	public float getElapsedTime() {
 		return elapsedTime;
 	}
 
 	/**
-	 * @param window	Window to get the frame time of
-	 * @return boolean 	Whether the particle is alive
-	 * 
 	 * Updates particle position and velocity
+	 * 
+	 * @param window	{@link GLFWWindow} to get the frame time of
+	 * @return boolean 	Whether the particle is alive
 	 */
 	public boolean update(GLFWWindow window) {
 		velocity.y += Entity.GRAVITY * grav * window.getFrameTime();
@@ -100,32 +127,38 @@ public class Particle {
 	}
 	
 	/**
-	 * @return Vector3f 	Vector describing world position
-	 * 
 	 * Gets particles's position
+	 * 
+	 * @return Vector describing world position 
 	 */
 	public Vector3f getPosition() {
 		return position;
 	}
 
 	/**
-	 * @return Vector3f 	Vector describing the velocity
+	 * Get's particles rotation
 	 * 
-	 * Get's particles
+	 * @return Vector describing the velocity
 	 */
 	public float getRotation() {
 		return rotation;
 	}
 
 	/**
-	 * @return float		Float describing size of particle
-	 * 
 	 * Gets particle's scale
+	 * 
+	 * @return Float describing size of particle
+	 * 
 	 */
 	public float getScale() {
 		return scale;
 	}
+
+//***************************************Private Methods**************************************//
 	
+	/**
+	 * Updates the texture coordinates of the particle
+	 */
 	private void updateTextureCoordInfo() {
 		float lifeFactor = elapsedTime / life;
 		int stageCount = texture.getNumberOfRows() * texture.getNumberOfRows();
@@ -137,6 +170,12 @@ public class Particle {
 		setTextureOffset(offsetTwo, index2);
 	}
 	
+	/**
+	 * Sets the texture offsets
+	 * 
+	 * @param offset	Previous offset
+	 * @param index		Current position
+	 */
 	private void setTextureOffset(Vector2f offset, int index) {
 		int column = index % texture.getNumberOfRows();
 		int row = index / texture.getNumberOfRows();

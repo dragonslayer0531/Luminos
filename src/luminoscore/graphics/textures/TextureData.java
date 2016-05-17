@@ -4,10 +4,10 @@ import java.nio.ByteBuffer;
 
 /**
  * 
+ * Texture Data of Buffers
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Texture Data of Buffers
  *
  */
 
@@ -18,11 +18,11 @@ public class TextureData {
 	private ByteBuffer buffer;
 	
 	/**
+	 * Constructor
+	 * 
 	 * @param buffer	ByteBuffer to use
 	 * @param width		Width of image
 	 * @param height	Height of image
-	 * 
-	 * Constructor
 	 */
 	public TextureData(ByteBuffer buffer, int width, int height){
 		this.buffer = buffer;
@@ -31,27 +31,27 @@ public class TextureData {
 	}
 	
 	/**
-	 * @return int	Width
-	 * 
 	 * Gets width
+	 * 
+	 * @return	Width
 	 */
 	public int getWidth(){
 		return width;
 	}
 	
 	/**
-	 * @return int	Height
-	 * 
 	 * Gets height
+	 * 
+	 * @return	Height
 	 */
 	public int getHeight(){
 		return height;
 	}
 	
 	/**
-	 * @return int	Buffer
-	 * 
 	 * Gets buffer
+	 * 
+	 * @return	Buffer
 	 */
 	public ByteBuffer getBuffer(){
 		return buffer;
