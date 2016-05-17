@@ -8,10 +8,10 @@ import static luminosutils.serialization.SerializationUtils.writeBytes;
 
 /**
  * 
+ * Luminos String data
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Luminos String data
  *
  */
 

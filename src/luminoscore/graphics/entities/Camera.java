@@ -4,10 +4,10 @@ import org.lwjgl.util.vector.Vector3f;
 
 /**
  * 
+ * The Camera determines the view matrix of the GL Viewport
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * The Camera determines the view matrix of the GL Viewport
  *
  */
 
@@ -28,7 +28,7 @@ public class Camera {
 	/**
 	 * Constructor determining the positioning of the Camera
 	 * 
-	 * @param player	Determines the focal {@link entity} of the camera
+	 * @param player	Determines the focal {@link Entity} of the camera
 	 */
 	public Camera(Entity player){
 		this.player = player;

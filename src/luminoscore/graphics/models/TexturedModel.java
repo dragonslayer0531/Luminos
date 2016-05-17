@@ -4,10 +4,10 @@ import luminoscore.graphics.textures.ModelTexture;
 
 /**
  * 
+ * Wraps raw model and model texture
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Wraps raw model and model texture
  *
  */
 

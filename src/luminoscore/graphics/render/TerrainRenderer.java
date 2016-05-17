@@ -17,10 +17,10 @@ import luminoscore.tools.Maths;
 
 /**
  * 
+ * Renders terrains
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Renders terrains
  *
  */
 public class TerrainRenderer {

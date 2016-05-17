@@ -2,6 +2,15 @@ package luminoscore.input;
 
 import org.lwjgl.glfw.GLFW;
 
+/**
+ * 
+ * XBOXController listener
+ * 
+ * @author Nick Clark
+ * @version 1.0
+ *
+ */
+
 public class XBOXController {
 	
 	public static final int

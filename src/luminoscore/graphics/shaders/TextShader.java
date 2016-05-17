@@ -7,10 +7,10 @@ import luminoscore.GlobalLock;
 
 /**
  * 
+ * Text Shader for Text Renderer
+ * 
  * @author Nick Clark
  * @version 1.1
- * 
- * Text Shader for Text Renderer
  *
  */
 public class TextShader extends ShaderProgram {

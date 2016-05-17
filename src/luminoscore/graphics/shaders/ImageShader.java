@@ -2,6 +2,15 @@ package luminoscore.graphics.shaders;
 
 import luminoscore.GlobalLock;
 
+/**
+ * 
+ * Creates Image Shader for Image Renderer
+ * 
+ * @author Nick Clark
+ * @version 1.0
+ *
+ */
+
 public class ImageShader extends ShaderProgram {
 
 	public static String vertexFile = "image.vert";

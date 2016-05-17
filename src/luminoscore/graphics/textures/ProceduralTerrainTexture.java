@@ -10,10 +10,10 @@ import luminoscore.tools.Maths;
 
 /**
  * 
+ * Creates the procedural texture
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Creates the procedural texture
  *
  */
 

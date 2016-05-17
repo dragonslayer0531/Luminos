@@ -13,10 +13,10 @@ import static luminosutils.serialization.SerializationUtils.writeBytes;
 
 /**
  * 
+ * Holds field data
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Holds field data
  *
  */
 

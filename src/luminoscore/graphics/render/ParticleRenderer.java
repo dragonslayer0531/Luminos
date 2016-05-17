@@ -20,10 +20,10 @@ import luminoscore.tools.Maths;
 
 /**
  * 
+ * Renders particle effects
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Renders particle effects
  *
  */
 

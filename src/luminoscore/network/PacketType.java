@@ -2,10 +2,10 @@ package luminoscore.network;
 
 /**
  * 
+ * Holds the type of the packet
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Holds the type of the packet
  *
  */
 
@@ -31,7 +31,7 @@ public enum PacketType {
 	/**
 	 * Gets the ID of the packet type
 	 * 
-	 * @return
+	 * @return	Byte ID of packet
 	 */
 	public int getID() {
 		return id;

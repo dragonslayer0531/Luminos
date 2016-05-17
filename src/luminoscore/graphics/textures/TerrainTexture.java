@@ -2,10 +2,10 @@ package luminoscore.graphics.textures;
 
 /**
  * 
+ * Texture used for terrains
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Texture used for terrains
  *
  */
 

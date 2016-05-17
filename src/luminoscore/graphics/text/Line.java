@@ -5,10 +5,10 @@ import java.util.List;
 
 /**
  * 
+ * Line of GUI Text
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Line of GUI Text
  *
  */
 

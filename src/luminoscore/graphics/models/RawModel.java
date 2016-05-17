@@ -2,10 +2,11 @@ package luminoscore.graphics.models;
 
 /**
  * 
+ * Class that wraps the VAO ID from the GPU and the objects Vertex count
+ *
  * @author Nick Clark
  * @version 1.0
- *
- * Class that wraps the VAO ID from the GPU and the objects Vertex count
+ * 
  */
 
 public class RawModel {

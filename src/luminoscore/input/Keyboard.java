@@ -5,10 +5,10 @@ import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * 
+ * Keyboard Listener
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Keyboard Listener
  *
  */
 

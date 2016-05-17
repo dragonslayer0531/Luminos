@@ -18,15 +18,23 @@ import org.w3c.dom.Element;
 
 /**
  * 
+ * Holds global data for loading to the configuration
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Holds global data for loading to the configuration
  *
  */
 
 public class GlobalLock {
 	
+	/**
+	 * 
+	 * Enumeration of Luminos Supported Graphics APIs
+	 * 
+	 * @author Nick Clark
+	 * @version 1.0
+	 *
+	 */
 	public enum GraphicsAPI {
 		GLFW,
 		VULKAN

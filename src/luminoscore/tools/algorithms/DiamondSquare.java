@@ -6,6 +6,8 @@ import luminoscore.GlobalLock;
 
 /**
  * 
+ * Performs the Diamond-Square algorithm
+ * 
  * @author Nick Clark
  * @version 1.0
  *

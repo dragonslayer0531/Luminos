@@ -13,10 +13,10 @@ import luminoscore.tools.Maths;
 
 /**
  * 
+ * Terrain Shader for Terrain Renderer
+ * 
  * @author Nick Clark
  * @version 1.1
- * 
- * Terrain Shader for Terrain Renderer
  *
  */
 

@@ -2,10 +2,10 @@ package luminosutils.serialization;
 
 /**
  * 
+ * Base abstract class for all other Luminos Serialization Objects
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Base abstract class for all other Luminos Serialization Objects
  *
  */
 

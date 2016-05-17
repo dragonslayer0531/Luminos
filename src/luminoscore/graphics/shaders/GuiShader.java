@@ -6,10 +6,10 @@ import luminoscore.GlobalLock;
 
 /**
  * 
+ * Gui Shader to use in GuiRenderer
+ *
  * @author Nick Clark
  * @version 1.1
- *
- * Gui Shader to use in GuiRenderer
  */
 
 public class GuiShader extends ShaderProgram {

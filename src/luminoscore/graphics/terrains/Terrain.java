@@ -23,10 +23,10 @@ import luminoscore.tools.algorithms.FractalNoise;
 
 /**
  * 
+ * Terrain class
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Terrain class
  *
  */
 

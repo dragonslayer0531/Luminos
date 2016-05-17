@@ -2,10 +2,10 @@ package luminosutils.serialization;
 
 /**
  * 
+ * Holds data types and sizes
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Holds data types and sizes
  *
  */
 

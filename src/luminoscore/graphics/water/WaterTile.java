@@ -4,6 +4,8 @@ import org.lwjgl.util.vector.Vector2f;
 
 /**
  * 
+ * Holds data for the water tile
+ * 
  * @author Nick Clark
  * @version 1.0
  *

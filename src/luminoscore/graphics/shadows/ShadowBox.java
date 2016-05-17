@@ -10,10 +10,10 @@ import luminoscore.graphics.render.MasterRenderer;
 
 /**
  * 
+ * Box defining where shadows are rendered in the scene
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Box defining where shadows are rendered in the scene
  *
  */
 

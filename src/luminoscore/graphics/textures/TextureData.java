@@ -4,10 +4,10 @@ import java.nio.ByteBuffer;
 
 /**
  * 
+ * Texture Data of Buffers
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Texture Data of Buffers
  *
  */
 

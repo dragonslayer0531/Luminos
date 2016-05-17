@@ -2,10 +2,10 @@ package luminosutils.serialization;
 
 /**
  * 
+ * Contains the ID of container types
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Contains the ID of container types
  *
  */
 

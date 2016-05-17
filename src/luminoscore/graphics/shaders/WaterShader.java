@@ -9,10 +9,10 @@ import luminoscore.tools.Maths;
 
 /**
  * 
+ * Water Shader for Water Renderer
+ * 
  * @author Nick Clark
  * @version 1.1
- * 
- * Water Shader for Water Renderer
  *
  */
 public class WaterShader extends ShaderProgram {

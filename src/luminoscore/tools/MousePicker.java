@@ -6,15 +6,14 @@ import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
 import luminoscore.GlobalLock;
-import luminoscore.graphics.display.GLFWWindow;
 import luminoscore.graphics.entities.Camera;
 
 /**
  * 
+ * Creates mouse picker
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Creates mouse picker
  *
  */
 
@@ -31,7 +30,7 @@ public class MousePicker {
 	 * @param camera			Camera to cast from
 	 * @param projectionMatrix	Projection matrix of camera
 	 */
-	public MousePicker(Camera camera, Matrix4f projectionMatrix, GLFWWindow window) {
+	public MousePicker(Camera camera, Matrix4f projectionMatrix) {
 		this.camera = camera;
 		this.projectionMatrix = projectionMatrix;
 		this.viewMatrix = Maths.createViewMatrix(camera);

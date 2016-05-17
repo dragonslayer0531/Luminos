@@ -2,10 +2,10 @@ package luminoscore.graphics.entities.components;
 
 /**
  * 
+ * Class of component that can be added to entity.  Used as a super class for custom components.
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Class of component that can be added to entity.  Used as a super class for custom components.
  * 
  */
 

@@ -4,10 +4,10 @@ import org.lwjgl.glfw.GLFWCursorPosCallback;
 
 /**
  * 
+ * Mouse Position Listener
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Mouse Position Listener
  *
  */
 

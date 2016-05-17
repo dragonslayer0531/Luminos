@@ -10,10 +10,10 @@ import luminoscore.tools.Maths;
 
 /**
  * 
+ * Skybox Shader for Skybox Renderer
+ * 
  * @author Nick Clark
  * @version 1.1
- * 
- * Skybox Shader for Skybox Renderer
  *
  */
 
@@ -54,6 +54,7 @@ public class SkyboxShader extends ShaderProgram {
      * Loads view matrix to shader
      * 
      * @param camera	Camera to create view matrix of
+     * @param window	{@link GLFWWindow} to get the frame time of
      */
     public void loadViewMatrix(Camera camera, GLFWWindow window){
         Matrix4f matrix = Maths.createViewMatrix(camera);

@@ -6,10 +6,10 @@ import org.lwjgl.BufferUtils;
 
 /**
  * 
+ * Packet of data
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Packet of data
  *
  */
 

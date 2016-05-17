@@ -10,6 +10,15 @@ import java.net.UnknownHostException;
 import luminoscore.Debug;
 import luminoscore.GlobalLock;
 
+/**
+ * 
+ * UDP Server of engine
+ * 
+ * @author Nick Clark
+ * @version 1.0
+ *
+ */
+
 public class LuminosServer extends Thread {
 
 	private int port = 1331;

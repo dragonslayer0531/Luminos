@@ -6,10 +6,10 @@ import org.lwjgl.util.vector.Vector3f;
 
 /**
  * 
+ * Contains the mesh data of the model
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Contains the mesh data of the model
  *
  */
 

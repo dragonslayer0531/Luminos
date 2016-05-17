@@ -18,10 +18,10 @@ import luminoscore.graphics.loaders.LuminosImage.Format;
 
 /**
  * 
+ * Loads images to GPU
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Loads images to GPU
  *
  */
 

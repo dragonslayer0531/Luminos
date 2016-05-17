@@ -13,16 +13,12 @@ import luminoscore.graphics.models.TexturedModel;
 import luminoscore.graphics.terrains.Terrain;
 import luminoscore.input.Keyboard;
 import luminoscore.input.XBOXController;
-import luminosutils.serialization.LArray;
-import luminosutils.serialization.LField;
-import luminosutils.serialization.LObject;
 
 /**
+ * The entity is a wrapper for positions, rotations, scales, models, and other various data
  * 
  * @author Nick Clark
  * @version 1.0
- * 
- * The entity is a wrapper for positions, rotations, scales, models, and other various data
  *
  */
 public class Entity {
@@ -311,21 +307,6 @@ public class Entity {
 	 */
 	public void setCamera(Camera camera) {
 		this.camera = camera;
-	}
-	
-	/**
-	 * Serializes the entity into bytes that can be read by the {@link SerializationUtils} class
-	 * 
-	 * @return Array of bytes that describe the entity
-	 */
-	public byte[] getBytes() {
-		LObject object = new LObject("entity");
-		object.addArray(LArray.Float("pos", new float[] {position.x, position.y, position.z}));
-		object.addArray(LArray.Float("rot", new float[] {rotation.x, rotation.y, rotation.z}));
-		object.addField(LField.Float("scale", scale));
-		byte[] data = new byte[object.getSize()];
-		object.getBytes(data, 0);
-		return data;
 	}
 	
 	//*******************************Private Methods*****************************//

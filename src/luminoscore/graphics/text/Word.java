@@ -5,10 +5,10 @@ import java.util.List;
 
 /**
  * 
+ * Word of GUI Text
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Word of GUI Text
  *
  */
 

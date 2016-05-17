@@ -2,10 +2,10 @@ package luminoscore.graphics.textures;
 
 /**
  * 
+ * Texture Used in Model
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Texture Used in Model
  *
  */
 

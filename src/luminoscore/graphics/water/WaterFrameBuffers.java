@@ -11,10 +11,10 @@ import luminoscore.GlobalLock;
 
 /**
  * 
+ * Water Frame Buffer Objects
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Water Frame Buffer Objects
  *
  */
 
@@ -36,8 +36,6 @@ public class WaterFrameBuffers {
 	
 	/**
 	 * Constructor
-	 * 
-	 * @param display	{@link GLFWWindow} to load to
 	 */
 	public WaterFrameBuffers() {
 		initialiseReflectionFrameBuffer();

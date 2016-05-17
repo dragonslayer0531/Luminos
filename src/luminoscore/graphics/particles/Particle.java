@@ -9,10 +9,10 @@ import luminoscore.graphics.textures.ParticleTexture;
 
 /**
  * 
+ * Describes 2D particle used for particle effects
+ *
  * @author Nick Clark
  * @version 1.0
- *
- * Describes 2D particle used for particle effects
  * 
  */
 
@@ -46,6 +46,7 @@ public class Particle {
 	/**
 	 * Constructor
 	 * 
+	 * @param texture		GPU index of the {@link ParticleTexture}
 	 * @param position		Describes the original position
 	 * @param velocity		Describes the original velocity
 	 * @param grav			Describes the gravitational effect

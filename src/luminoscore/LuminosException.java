@@ -2,10 +2,10 @@ package luminoscore;
 
 /**
  * 
+ * Custom Luminos Engine Exception
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Custom Luminos Engine Exception
  *
  */
 

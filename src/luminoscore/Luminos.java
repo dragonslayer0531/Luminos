@@ -2,10 +2,10 @@ package luminoscore;
 
 /**
  * 
+ * Instantiates Luminos Instance
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Instantiates Luminos Instance
  *
  */
 

@@ -11,10 +11,10 @@ import luminoscore.graphics.shaders.ImageShader;
 
 /**
  * 
+ * Renders an image to a screen
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Renders an image to a screen
  *
  */
 

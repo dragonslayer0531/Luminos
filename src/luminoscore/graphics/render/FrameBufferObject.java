@@ -9,6 +9,15 @@ import org.lwjgl.opengl.GL30;
 
 import luminoscore.GlobalLock;
 
+/**
+ * 
+ * Creates Frame Buffer Objects to be rendered to
+ * 
+ * @author Nick Clark
+ * @version 1.0
+ *
+ */
+
 public class FrameBufferObject {
 
 	public static final int NONE = 0;
@@ -47,7 +56,7 @@ public class FrameBufferObject {
 	 * @param width				the width of the FBO.
 	 * @param height			the height of the FBO.
 	 * @param depthBufferType 	an int indicating the type of depth buffer attachment that this FBO should use.
-	 * @param useMultisamples	a boolean indicating whether the frame buffer object is to use multisampling       
+	 * @param useMultisample	a boolean indicating whether the frame buffer object is to use multisampling       
 	 */
 	public FrameBufferObject(int width, int height, int depthBufferType, boolean useMultisample) {
 		this.width = width;

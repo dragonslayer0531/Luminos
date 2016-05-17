@@ -12,10 +12,10 @@ import luminoscore.GlobalLock;
 
 /**
  * 
+ * Creates shadow frame buffer
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Creates shadow frame buffer
  *
  */
 

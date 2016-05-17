@@ -12,10 +12,10 @@ import luminoscore.GlobalLock;
 
 /**
  * 
+ * Meta file of font
+ * 
  * @author Nick Clark
  * @version 1.1
- * 
- * Meta file of font
  *
  */
 

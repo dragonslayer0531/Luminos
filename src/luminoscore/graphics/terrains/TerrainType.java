@@ -2,10 +2,10 @@ package luminoscore.graphics.terrains;
 
 /**
  * 
+ * Terrain class holding a terrain type
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Terrain class holding a terrain type
  *
  */
 

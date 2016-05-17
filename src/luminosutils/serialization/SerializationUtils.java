@@ -4,10 +4,10 @@ import java.nio.ByteBuffer;
 
 /**
  * 
+ * Holds utility data for the serialization of primitives
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Holds utility data for the serialization of primitives
  *
  */
 
@@ -262,7 +262,7 @@ public class SerializationUtils {
 	 * 
 	 * @param dest		Array to write to
 	 * @param pointer	Integer describing where to start writing
-	 * @param value		String to write to destination array
+	 * @param string		String to write to destination array
 	 * @return			Final pointer position
 	 */
 	public static int writeBytes(byte[] dest, int pointer, String string) {
@@ -474,6 +474,7 @@ public class SerializationUtils {
 	 * 
 	 * @param src		Array to read from
 	 * @param pointer	Integer describing where to read from
+	 * @param length	Length of the string to read
 	 * @return			String equivalent of the data read
 	 */
 	public static String readString(byte[] src, int pointer, int length) {

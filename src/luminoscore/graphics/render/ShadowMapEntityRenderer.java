@@ -16,10 +16,10 @@ import luminoscore.tools.Maths;
 
 /**
  * 
+ * Renders shadow maps for entities
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Renders shadow maps for entities
  *
  */
 

@@ -10,10 +10,10 @@ import java.util.List;
 
 /**
  * 
+ * Luminos Object data
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Luminos Object data
  *
  */
 

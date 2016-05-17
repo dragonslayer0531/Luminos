@@ -16,10 +16,10 @@ import luminoscore.tools.DateUtils;
 
 /**
  * 
+ * Renderer for skybox
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Renderer for skybox
  *
  */
 
@@ -115,6 +115,7 @@ public class SkyboxRenderer {
 	 * @param r			R value of sky background
 	 * @param g			G value of sky background
 	 * @param b			B value of sky background
+	 * @param window 	{@link GLFWWindow} to get frametime of
 	 */
 	public void render(Camera camera, float r, float g, float b, GLFWWindow window){
 		shader.start();

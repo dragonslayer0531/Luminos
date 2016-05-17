@@ -4,10 +4,10 @@ import java.io.File;
 
 /**
  * 
+ * Font Type Wrapper
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Font Type Wrapper
  *
  */
 
@@ -21,7 +21,6 @@ public class FontType {
      * 
      * @param textureAtlas	Texture Atlas of Font
      * @param fontFile		Font file name
-     * @param window		Window to render to
      */
     public FontType(int textureAtlas, File fontFile) {
         this.textureAtlas = textureAtlas;

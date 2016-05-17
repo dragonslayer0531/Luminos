@@ -2,15 +2,16 @@ package luminoscore;
 
 import java.io.FileNotFoundException;
 
+import java.io.PrintWriter;
+
 /**
+ * 
+ * Custom Luminos Debugger
  * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Creates Debug Data
- * 
+ *
  */
-import java.io.PrintWriter;
 
 public class Debug {
 	

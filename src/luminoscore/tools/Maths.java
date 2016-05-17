@@ -8,6 +8,15 @@ import org.lwjgl.util.vector.Vector3f;
 
 import luminoscore.graphics.entities.Camera;
 
+/**
+ * 
+ * Complex math calculations for the engine.
+ * 
+ * @author Nick Clark
+ * @version 1.0
+ *
+ */
+
 public class Maths {
 
 	/**
@@ -93,9 +102,9 @@ public class Maths {
 		matrix.m00 = point.x;
 		matrix.m11 = point.y;
 		matrix.m22 = point.z;
-		Matrix4f.rotate(rotation.x, new Vector3f(1, 0, 0), matrix, matrix);
-		Matrix4f.rotate(rotation.y, new Vector3f(0, 1, 0), matrix, matrix);
-		Matrix4f.rotate(rotation.z, new Vector3f(0, 0, 1), matrix, matrix);
+		Matrix4f.rotate((float) Math.toRadians(rotation.x), new Vector3f(1, 0, 0), matrix, matrix);
+		Matrix4f.rotate((float) Math.toRadians(rotation.y), new Vector3f(0, 1, 0), matrix, matrix);
+		Matrix4f.rotate((float) Math.toRadians(rotation.z), new Vector3f(0, 0, 1), matrix, matrix);
 		return new Vector3f(matrix.m00, matrix.m11, matrix.m22);
 	}
 	
@@ -104,6 +113,7 @@ public class Maths {
 	 * 
 	 * @param one		Point vector one
 	 * @param two		Point vector two
+	 * @param error		Value of difference allowed to pass
 	 * @return			Are the points similar within the error
 	 */
 	public static boolean checkEquivalence(Vector3f one, Vector3f two, float error) {

@@ -12,10 +12,10 @@ import luminoscore.graphics.textures.ParticleTexture;
 
 /**
  * 
+ * Static class for performing world-wide particle tasks
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Static class for performing world-wide particle tasks
  *
  */
 

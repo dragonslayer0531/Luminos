@@ -9,10 +9,10 @@ import org.lwjgl.util.WaveData;
 
 /**
  * 
+ * Creates audio master
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Creates audio master
  *
  */
 

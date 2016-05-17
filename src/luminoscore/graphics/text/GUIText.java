@@ -5,10 +5,10 @@ import org.lwjgl.util.vector.Vector3f;
 
 /**
  * 
+ * GUI Text
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * GUI Text
  *
  */
 

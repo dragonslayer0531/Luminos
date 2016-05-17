@@ -9,10 +9,10 @@ import luminoscore.graphics.models.RawModel;
 
 /**
  * 
+ * Class that loads objects to the graphics card
+ * 
  * @author Nick Clark
  * @version 1.1
- * 
- * Class that loads objects to the graphics card
  *
  */
 

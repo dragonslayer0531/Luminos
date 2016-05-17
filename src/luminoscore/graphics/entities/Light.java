@@ -4,10 +4,10 @@ import org.lwjgl.util.vector.Vector3f;
 
 /**
  * 
+ * The light is a wrapper for position, color, and attenuation
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * The light is a wrapper for position, color, and attenuation
  *
  */
 public class Light {

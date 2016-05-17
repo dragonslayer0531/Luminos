@@ -4,10 +4,10 @@ import org.lwjgl.openal.AL10;
 
 /**
  * 
+ * Audio source holder
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Audio source holder
  *
  */
 
@@ -17,6 +17,10 @@ public class AudioSource {
 	
 	/**
 	 * Constructor
+	 * 
+	 * @param rolloff				Roll off factor for audio source
+	 * @param referenceDistance		Reference distance of audio source
+	 * @param maxDistance			Maximum hearing range of audio source
 	 */
 	public AudioSource(float rolloff, float referenceDistance, float maxDistance) {
 		sourceID = AL10.alGenSources();

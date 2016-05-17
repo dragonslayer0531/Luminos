@@ -16,10 +16,10 @@ import luminoscore.tools.Maths;
 
 /**
  * 
+ * Allows for the rendering of 2D GUIs
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Allows for the rendering of 2D GUIs
  *
  */
 public class GuiRenderer {

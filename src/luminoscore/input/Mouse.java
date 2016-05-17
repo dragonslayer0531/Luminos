@@ -6,10 +6,10 @@ import org.lwjgl.glfw.GLFWMouseButtonCallback;
 
 /**
  * 
+ * Mouse Listener
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Mouse Listener
  *
  */
 

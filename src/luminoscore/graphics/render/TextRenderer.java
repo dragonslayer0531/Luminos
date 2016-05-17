@@ -18,10 +18,10 @@ import luminoscore.graphics.text.TextMeshData;
 
 /**
  * 
+ * Renders text to screen
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Renders text to screen
  *
  */
 

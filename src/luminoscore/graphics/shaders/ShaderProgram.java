@@ -19,10 +19,10 @@ import luminoscore.Debug;
 
 /**
  * 
+ * Base shader program
+ * 
  * @author Nick Clark
  * @version 1.1
- * 
- * Base shader program
  *
  */
 public abstract class ShaderProgram {

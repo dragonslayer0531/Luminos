@@ -35,10 +35,10 @@ import luminoscore.tools.Maths;
 
 /**
  * 
+ * Renders Terrains and Entities
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Renders Terrains and Entities
  *
  */
 
@@ -104,8 +104,10 @@ public class MasterRenderer {
 	 * @param entities		Entities to be rendered
 	 * @param terrains		Terrains to be rendered
 	 * @param lights		Lights to be passed into shader
-	 * @param player		Player to be rendered
+	 * @param focalPoint	Location of camera focus
 	 * @param camera		Camera to be renderer
+	 * @param clipPlane		Plane to clip all rendering beyond
+	 * @param window		{@link GLFWWindow} to get frame time of
 	 */
 	public void renderScene(Iterator<Entity> entities, Iterator<Terrain> terrains, List<Light> lights, Vector3f focalPoint, Camera camera, Vector4f clipPlane, GLFWWindow window) {
 		if(entities != null) {
@@ -142,7 +144,7 @@ public class MasterRenderer {
 	 * Renders particles through screen
 	 * 
 	 * @param camera		{@link Camera} to render with
-	 * @param particles		{@link Particle}s to be rendered
+	 * @param window		{@link GLFWWindow} to get frame time of
 	 */
 	public void renderParticles(Camera camera, GLFWWindow window) {
 		ParticleMaster.update(window);
@@ -245,6 +247,8 @@ public class MasterRenderer {
 	 * 
 	 * @param lights	Passes lights to shaders
 	 * @param camera	Camera to create transformation matrix of
+	 * @param clipPlane	Plane to clip all rendering beyond
+	 * @param window	{@link GLFWWindow} to get frame time of
 	 */
 	public void render(List<Light> lights, Camera camera, Vector4f clipPlane, GLFWWindow window){
 		prepare();
@@ -300,13 +304,12 @@ public class MasterRenderer {
 	 * 
 	 * @param entityList	Entities to have shadows
 	 * @param sun			Focal light
-	 * @param display		Window to get PoV and Aspect Ratio of
 	 */
-	public void renderShadowMap(List<Entity> entityList, Light sun, GLFWWindow display) {
+	public void renderShadowMap(List<Entity> entityList, Light sun) {
 		for(Entity entity : entityList) {
 			processEntity(entity);
 		}
-		shadowRenderer.render(entities, sun, display);
+		shadowRenderer.render(entities, sun);
 		entities.clear();
 	}
 	

@@ -53,10 +53,10 @@ import luminoscore.input.MousePosition;
 
 /**
  * 
+ * The GLFWWindow class initializes GLFW and OpenGL contexts.
+ * 
  * @author Nick Clark
  * @version 1.1
- * 
- * The GLFWWindow class initializes GLFW and OpenGL contexts.
  *
  */
 
@@ -93,14 +93,12 @@ public class GLFWWindow {
 	/**
 	 * 
 	 * @param title 		Sets the GLFW Window's title
-	 * @param width 		Sets the width value of the window and of the OpenGL Viewport
-	 * @param height	   	Sets the height value of the window and of the OpenGL Viewport
 	 * @param vsync			Determines whether the window utilizes Vertical Synchronization
-	 * @param fullscreen 	Determines whether the window and OpenGL Viewport is fullscreen.  
-	 * 							Overrides the Width and Height if true
+	 * @param fullscreen 	Determines whether the window and OpenGL Viewport is fullscreen.  Overrides the Width and Height if true
 	 * @param visible		Determines if the window is visible on load
 	 * @param resizable		Determines if the window is resizable
 	 * @param vismouse		Determines if the mouse is visible when window is in focus
+	 * @throws LuminosException
 	 * 
 	 * Constructor that initiates the GLFW and OpenGL contexts, as well as the window itself
 	 */

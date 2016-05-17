@@ -2,10 +2,10 @@ package luminoscore.graphics.text;
 
 /**
  * 
+ * Text Mesh Data of File
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Text Mesh Data of File
  *
  */
 

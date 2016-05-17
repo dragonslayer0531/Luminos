@@ -8,7 +8,6 @@ import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
-import luminoscore.graphics.display.GLFWWindow;
 import luminoscore.graphics.entities.Camera;
 import luminoscore.graphics.entities.Entity;
 import luminoscore.graphics.entities.Light;
@@ -19,10 +18,10 @@ import luminoscore.graphics.shadows.ShadowFrameBuffer;
 
 /**
  * 
+ * Master renderer for all shadows
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Master renderer for all shadows
  *
  */
 
@@ -44,7 +43,6 @@ public class ShadowMapMasterRenderer {
      * Constructor
      * 
      * @param camera	Camera to be passed to shadow box
-     * @param window	Window to be used for creation of FBO and Shadow Box
      */
     public ShadowMapMasterRenderer(Camera camera) {
         shader = new ShadowShader();
@@ -59,7 +57,7 @@ public class ShadowMapMasterRenderer {
      * @param entities		List of all rendered entities
      * @param sun			Focal light to render to shadow map
      */
-    public void render(Map<TexturedModel, List<Entity>> entities, Light sun, GLFWWindow window) {
+    public void render(Map<TexturedModel, List<Entity>> entities, Light sun) {
         shadowBox.update();
         Vector3f sunPosition = sun.getPosition();
         Vector3f lightDirection = new Vector3f(-sunPosition.x, -sunPosition.y, -sunPosition.z);

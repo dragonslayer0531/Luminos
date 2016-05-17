@@ -7,10 +7,10 @@ import luminoscore.GlobalLock;
 
 /**
  * 
+ * Particle Shader for Particle Renderer
+ * 
  * @author Nick Clark
  * @version 1.1
- * 
- * Particle Shader for Particle Renderer
  *
  */
 

@@ -15,10 +15,10 @@ import static luminosutils.serialization.SerializationUtils.writeBytes;
 
 /**
  * 
+ * Luminos Array Object
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Luminos Array Object
  *
  */
 

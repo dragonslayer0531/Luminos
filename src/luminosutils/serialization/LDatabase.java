@@ -18,10 +18,10 @@ import luminoscore.Debug;
 
 /**
  * 
+ * Creates a database for serialization
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Creates a database for serialization
  *
  */
 

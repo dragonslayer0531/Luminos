@@ -7,10 +7,10 @@ import luminoscore.tools.Maths;
 
 /**
  * 
+ * Performs the fractal noise algorithm
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Fractal Noise generator
  *
  */
 

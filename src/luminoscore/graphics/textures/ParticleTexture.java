@@ -2,10 +2,10 @@ package luminoscore.graphics.textures;
 
 /**
  * 
+ * Texture to use for particle
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Texture to use for particle
  *
  */
 

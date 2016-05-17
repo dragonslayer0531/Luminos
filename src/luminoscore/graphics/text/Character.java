@@ -2,10 +2,10 @@ package luminoscore.graphics.text;
 
 /**
  * 
+ * Character data for GUI Text
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Character data for GUI Text
  *
  */
 

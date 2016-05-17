@@ -15,10 +15,10 @@ import luminoscore.graphics.textures.TextureData;
 
 /**
  * 
+ * Decodes PNG images and contains the formats of different images
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Decodes PNG images and contains the formats of different images
  *
  */
 

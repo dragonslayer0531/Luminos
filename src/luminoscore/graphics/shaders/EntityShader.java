@@ -14,10 +14,10 @@ import luminoscore.tools.Maths;
 
 /**
  * 
+ * Entity Shader to use in Entity Renderer
+ * 
  * @author Nick Clark
  * @version 1.1
- * 
- * Entity Shader to use in Entity Renderer
  *
  */
 public class EntityShader extends ShaderProgram {

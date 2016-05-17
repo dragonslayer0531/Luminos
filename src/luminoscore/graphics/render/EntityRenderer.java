@@ -18,10 +18,10 @@ import luminoscore.tools.Maths;
 
 /**
  * 
+ * Allows for rendering of entities
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Allows for rendering of entities
  *
  */
 
@@ -32,7 +32,7 @@ public class EntityRenderer {
 	/**
 	 * Constructor of EntityRenderer
 	 * 
-	 * @param shader			{@link ShaderProgram} that is used for rendering entities
+	 * @param shader			{@link EntityShader} that is used for rendering entities
 	 * @param projectionMatrix	Projection Matrix that is used to draw the screen
 	 */
 	public EntityRenderer(EntityShader shader, Matrix4f projectionMatrix) {

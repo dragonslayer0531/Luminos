@@ -2,10 +2,10 @@ package luminoscore.graphics.display;
 
 /**
  * 
+ * The protected class keeping track of FPS
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * The protected class keeping track of FPS
  *
  */
 

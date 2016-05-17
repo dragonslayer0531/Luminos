@@ -6,10 +6,10 @@ import java.util.List;
 
 /**
  * 
+ * Creates Mesh of Text
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Creates Mesh of Text
  *
  */
 

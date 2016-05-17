@@ -12,10 +12,10 @@ import luminoscore.GlobalLock;
 
 /**
  * 
+ * UDP Client of engine
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * UDP Client of engine
  *
  */
 
