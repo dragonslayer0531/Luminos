@@ -18,10 +18,10 @@ import luminoscore.graphics.text.TextMeshData;
 
 /**
  * 
+ * Renders text to screen
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Renders text to screen
  *
  */
 
@@ -33,9 +33,9 @@ public class TextRenderer {
 	private Map<FontType, List<GUIText>> texts = new HashMap<FontType, List<GUIText>>();
 	
 	/**
-	 * @param loader	Defines loader to render with
-	 * 
 	 * Constructor
+	 * 
+	 * @param loader	Defines loader to render with
 	 */
 	public TextRenderer(Loader loader) {
 		this.shader = new TextShader();
@@ -65,9 +65,9 @@ public class TextRenderer {
 	}
 	
 	/**
-	 * @param text	GUIText to load to GPU
-	 * 
 	 * Loads text to GPU
+	 * 
+	 * @param text	GUIText to load to GPU
 	 */
 	public void loadText(GUIText text) {
 		FontType font = text.getFont();
@@ -83,9 +83,9 @@ public class TextRenderer {
 	}
 	
 	/**
-	 * @param text	GUIText to remove from GPU
-	 * 
 	 * Removes text from GPU
+	 * 
+	 * @param text	GUIText to remove from GPU
 	 */
 	public void removeText(GUIText text) {
 		List<GUIText> textBatch = texts.get(text.getFont());
@@ -107,9 +107,9 @@ public class TextRenderer {
 	}
 	
 	/**
-	 * @param text	GUIText to be rendered
-	 * 
 	 * Renders individual GUIText
+	 * 
+	 * @param text	GUIText to be rendered
 	 */
 	private void renderText(GUIText text) {
 		GL30.glBindVertexArray(text.getMesh());

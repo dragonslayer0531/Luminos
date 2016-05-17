@@ -17,10 +17,10 @@ import luminoscore.tools.Maths;
 
 /**
  * 
+ * Renders terrains
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Renders terrains
  *
  */
 public class TerrainRenderer {
@@ -28,10 +28,10 @@ public class TerrainRenderer {
 	private TerrainShader shader;
 
 	/**
+	 * Constructor
+	 * 
 	 * @param shader			Shader Program that is used to render terrains
 	 * @param projectionMatrix	Projectioon matrix used to render terrains
-	 * 
-	 * Constructor
 	 */
 	public TerrainRenderer(TerrainShader shader, Matrix4f projectionMatrix) {
 		this.shader = shader;
@@ -42,10 +42,10 @@ public class TerrainRenderer {
 	}
 
 	/**
+	 * Renders terrains
+	 * 
 	 * @param terrains		List of terrains to be rendered
 	 * @param toShadowSpace	Loads shadow space to shader
-	 * 
-	 * Renders terrains
 	 */
 	public void render(List<Terrain> terrains, Matrix4f toShadowSpace) {
 		shader.loadToShadowSpaceMatrix(toShadowSpace);
@@ -61,9 +61,9 @@ public class TerrainRenderer {
 //**********************************Private Methods*****************************************//	
 	
 	/**
-	 * @param terrain  Terrain to be prepared
-	 * 
 	 * Prepares terrains for rendering
+	 * 
+	 * @param terrain  Terrain to be prepared
 	 */
 	private void prepareTerrain(Terrain terrain) {
 		RawModel rawModel = terrain.getModel();
@@ -76,9 +76,9 @@ public class TerrainRenderer {
 	}
 	
 	/**
-	 * @param terrain	Reference to textures to be bound
-	 * 
 	 * Binds textures
+	 * 
+	 * @param terrain	Reference to textures to be bound
 	 */
 	private void bindTextures(Terrain terrain){
 		TerrainTexturePack texturePack = terrain.getTexturePack();
@@ -105,9 +105,9 @@ public class TerrainRenderer {
 	}
 
 	/**
-	 * @param terrain	Terrain to calculate Model Matrix of
-	 * 
 	 * Loads model matrix to shader
+	 * 
+	 * @param terrain	Terrain to calculate Model Matrix of
 	 */
 	private void loadModelMatrix(Terrain terrain) {
 		Matrix4f transformationMatrix = Maths.createTransformationMatrix(

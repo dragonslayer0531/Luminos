@@ -13,10 +13,10 @@ import luminoscore.tools.Maths;
 
 /**
  * 
+ * Terrain Shader for Terrain Renderer
+ * 
  * @author Nick Clark
  * @version 1.1
- * 
- * Terrain Shader for Terrain Renderer
  *
  */
 
@@ -46,8 +46,7 @@ public class TerrainShader extends ShaderProgram{
 	public static String FRAG = "terrain.frag";
 
 	/**
-	 * @param vert	Vertex shader file
-	 * @param frag	Fragment shader file
+	 * Constructor
 	 */
 	public TerrainShader() {
 		super(VERT, FRAG);
@@ -106,30 +105,30 @@ public class TerrainShader extends ShaderProgram{
 	}
 	
 	/**
-	 * @param matrix	Shadow Space Matrix
-	 * 
 	 * Loads shadow space matrix to shader
+	 * 
+	 * @param matrix	Shadow Space Matrix
 	 */
 	public void loadToShadowSpaceMatrix(Matrix4f matrix) {
 		super.loadMatrix(location_toShadowMapSpace, matrix);
 	}
 	
 	/**
+	 * Loads sky color
+	 * 
 	 * @param r	R color of sky
 	 * @param g	G color of sky
 	 * @param b	B color of sky
-	 * 
-	 * Loads sky color
 	 */
 	public void loadSkyColour(float r, float g, float b){
 		super.loadVector(location_skyColour, new Vector3f(r,g,b));
 	}
 	
 	/**
+	 * Loads shine values to shader
+	 * 
 	 * @param damper		Damper value
 	 * @param reflectivity	Reflectivity value
-	 * 
-	 * Loads shine values to shader
 	 */
 	public void loadShineVariables(float damper,float reflectivity){
 		super.loadFloat(location_shineDamper, damper);
@@ -137,24 +136,24 @@ public class TerrainShader extends ShaderProgram{
 	}
 	
 	/**
-	 * @param matrix	Transformation matrix
-	 * 
 	 * Loads transformation matrix to shader
+	 * 
+	 * @param matrix	Transformation matrix
 	 */
 	public void loadTransformationMatrix(Matrix4f matrix){
 		super.loadMatrix(location_transformationMatrix, matrix);
 	}
 	
 	/**
-	 * @param lights	List of lights
-	 * 
 	 * Loads lights to shader
+	 * 
+	 * @param lights	List of {@link Light}s
 	 */
 	public void loadLights(List<Light> lights){
 		for(int i=0;i<MAX_LIGHTS;i++){
 			if(i<lights.size()){
 				super.loadVector(location_lightPosition[i], lights.get(i).getPosition());
-				super.loadVector(location_lightColour[i], lights.get(i).getColour());
+				super.loadVector(location_lightColour[i], lights.get(i).getColor());
 				super.loadVector(location_attenuation[i], lights.get(i).getAttenuation());
 			}else{
 				super.loadVector(location_lightPosition[i], new Vector3f(0, 0, 0));
@@ -165,9 +164,9 @@ public class TerrainShader extends ShaderProgram{
 	}
 	
 	/**
-	 * @param camera	Camera to load view matrix of
-	 * 
 	 * Loads view matrix to shader
+	 * 
+	 * @param camera	Camera to load view matrix of
 	 */
 	public void loadViewMatrix(Camera camera){
 		Matrix4f viewMatrix = Maths.createViewMatrix(camera);
@@ -175,18 +174,18 @@ public class TerrainShader extends ShaderProgram{
 	}
 	
 	/**
-	 * @param projection	Projection matrix
-	 * 
 	 * Loads projection matrix to shader
+	 * 
+	 * @param projection	Projection matrix
 	 */
 	public void loadProjectionMatrix(Matrix4f projection){
 		super.loadMatrix(location_projectionMatrix, projection);
 	}
 	
 	/**
-	 * @param clipPlane	Clipping plane
-	 * 
 	 * Loads clip plane to shader
+	 * 
+	 * @param clipPlane	Clipping plane
 	 */
 	public void loadClipPlane(Vector4f clipPlane) {
 		super.load4DVector(location_plane, clipPlane);

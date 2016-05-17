@@ -1,6 +1,5 @@
 package luminoscore.graphics.textures;
 
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 import org.lwjgl.util.vector.Vector3f;
@@ -9,7 +8,23 @@ import luminoscore.GlobalLock;
 import luminoscore.graphics.terrains.Terrain;
 import luminoscore.tools.Maths;
 
+/**
+ * 
+ * Creates the procedural texture
+ * 
+ * @author Nick Clark
+ * @version 1.0
+ *
+ */
+
 public class ProceduralTerrainTexture {
+	
+	/**
+	 * Generates a blend map for the texture
+	 * 
+	 * @param terrain	Terrain to create texture for
+	 * @return			Blend map of terrain
+	 */
 	
 	public static BufferedImage generateTerrainMap(Terrain terrain) {
 		BufferedImage image = new BufferedImage(GlobalLock.TEXTURE_SIZE, GlobalLock.TEXTURE_SIZE, BufferedImage.TYPE_INT_RGB);

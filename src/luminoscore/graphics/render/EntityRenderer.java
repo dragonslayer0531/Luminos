@@ -18,10 +18,10 @@ import luminoscore.tools.Maths;
 
 /**
  * 
+ * Allows for rendering of entities
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Allows for rendering of entities
  *
  */
 
@@ -30,10 +30,10 @@ public class EntityRenderer {
 	private EntityShader shader;
 
 	/**
-	 * @param shader			Shader Program that is used for rendering entities
-	 * @param projectionMatrix	Projection Matrix that is used to draw the screen
-	 * 
 	 * Constructor of EntityRenderer
+	 * 
+	 * @param shader			{@link EntityShader} that is used for rendering entities
+	 * @param projectionMatrix	Projection Matrix that is used to draw the screen
 	 */
 	public EntityRenderer(EntityShader shader, Matrix4f projectionMatrix) {
 		this.shader = shader;
@@ -75,10 +75,10 @@ public class EntityRenderer {
 		GL20.glEnableVertexAttribArray(2);
 		ModelTexture texture = model.getTexture();
 		shader.loadNumberOfRows(texture.getNumberOfRows());
-		if(texture.isHasTransparency()){
+		if(texture.hasTransparency()){
 			MasterRenderer.disableCulling();
 		}
-		shader.loadFakeLightingVariable(texture.isUseFakeLighting());
+		shader.loadFakeLightingVariable(texture.usesFakeLighting());
 		shader.loadShineVariables(texture.getShineDamper(), texture.getReflectivity());
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getID());
