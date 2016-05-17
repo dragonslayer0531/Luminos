@@ -12,10 +12,10 @@ import luminoscore.GlobalLock;
 
 /**
  * 
+ * Creates shadow frame buffer
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Creates shadow frame buffer
  *
  */
 
@@ -27,10 +27,10 @@ public class ShadowFrameBuffer {
     private int shadowMap;
 
     /**
+     * Constructor
+     * 
      * @param width		Defines width of shadow frame buffer
      * @param height	Defines height of shadow frame buffer
-     * 
-     * Constructor
      */
     public ShadowFrameBuffer(int width, int height) {
         this.WIDTH = width;
@@ -62,9 +62,9 @@ public class ShadowFrameBuffer {
     }
 
     /**
-     * @return int	Shadow Map ID
-     * 
      * Gets shadow map ID
+     * 
+     * @return Shadow Map ID
      */
     public int getShadowMap() {
         return shadowMap;
@@ -82,11 +82,11 @@ public class ShadowFrameBuffer {
     }
     
     /**
+     * Binds frame buffer to texture
+     * 
      * @param frameBuffer	Frame Buffer ID
      * @param width			Width of frame buffer
      * @param height		Height of frame buffer
-     * 
-     * Binds frame buffer to texture
      */
     private static void bindFrameBuffer(int frameBuffer, int width, int height) {
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
@@ -95,8 +95,9 @@ public class ShadowFrameBuffer {
     }
 
     /**
-     * @return int	ID of frame buffer
      * Create frame buffer object
+     * 
+     * @return 	ID of frame buffer
      */
     private static int createFrameBuffer() {
         int frameBuffer = GL30.glGenFramebuffers();
@@ -106,11 +107,11 @@ public class ShadowFrameBuffer {
     }
 
     /**
+     * Creates a depth buffer attachment
+     * 
      * @param width		Width of depth buffer
      * @param height	Height of depth buffer
-     * @return int		Depth buffer attachment ID
-     * 
-     * Creates a depth buffer attachment
+     * @return 			Depth buffer attachment ID
      */
     private static int createDepthBufferAttachment(int width, int height) {
         int texture = GL11.glGenTextures();

@@ -2,10 +2,10 @@ package luminoscore.graphics.text;
 
 /**
  * 
+ * Character data for GUI Text
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Character data for GUI Text
  *
  */
 
@@ -23,6 +23,8 @@ public class Character {
     private double xAdvance;
  
     /**
+     * Constructor
+     * 
      * @param id				ASCII ID of Character
      * @param xTextureCoord		X Texture Coordinate of Character
      * @param yTextureCoord		Y Texture Coordinate of Character
@@ -33,8 +35,6 @@ public class Character {
      * @param sizeX				Size of Character, X
      * @param sizeY				Size of Character, Y
      * @param xAdvance			X distance between characters
-     * 
-     * Constructor
      */
     protected Character(int id, double xTextureCoord, double yTextureCoord, double xTexSize, double yTexSize,
             double xOffset, double yOffset, double sizeX, double sizeY, double xAdvance) {
@@ -51,90 +51,90 @@ public class Character {
     }
  
     /**
-     * @return int	ID
-     * 
      * Gets character ID
+     * 
+     * @return ASCII ID
      */
     protected int getId() {
         return id;
     }
  
     /**
-     * @return double 	X Texture Coordinate
-     * 
      * Gets the X Texture Coordinate
+     * 
+     * @return 	X Texture Coordinate 
      */
     protected double getxTextureCoord() {
         return xTextureCoord;
     }
  
     /**
-     * @return double	Y Texture Coordinate
-     * 
      * Gets the Y Texture Coordinate
+     * 
+     * @return Y Texture Coordinate 
      */
     protected double getyTextureCoord() {
         return yTextureCoord;
     }
  
     /**
-     * @return double	X Maximum Texture Coordinate
-     * 
      * Gets the maximum texture coordinate on the X axis
+     * 
+     * @return X Maximum Texture Coordinate
      */
     protected double getXMaxTextureCoord() {
         return xMaxTextureCoord;
     }
  
     /**
-     * @return double	Y Maximum Texture Coordinate
-     * 
      * Gets the maximum texture coordinate on the Y axis
+     * 
+     * @return Y Maximum Texture Coordinate
      */
     protected double getYMaxTextureCoord() {
         return yMaxTextureCoord;
     }
  
     /**
-     * @return double	X Offset
-     * 
      * Gets the x offset of texture
+     * 
+     * @return	X Offset
      */
     protected double getxOffset() {
         return xOffset;
     }
  
     /**
-     * @return double	Y Offset
-     * 
      * Gets the y offset of texture
+     * 
+     * @return 	Y Offset
      */
     protected double getyOffset() {
         return yOffset;
     }
  
     /**
-     * @return double	Size of texture, Width
-     * 
      * Gets width of texture
+     * 
+     * @return Size of texture, Width
      */
     protected double getSizeX() {
         return sizeX;
     }
  
     /**
-     * @return double	Size of texture, height
-     * 
      * Gets height of texture
+     * 
+     * @return Size of texture, height
      */
     protected double getSizeY() {
         return sizeY;
     }
  
     /**
-     * @return double	X Advance
-     * 
      * Gets the X Advance of texture
+     * 
+     * @return X Advance
      */
     protected double getxAdvance() {
         return xAdvance;

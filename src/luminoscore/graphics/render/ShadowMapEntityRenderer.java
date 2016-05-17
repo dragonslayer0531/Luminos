@@ -16,10 +16,10 @@ import luminoscore.tools.Maths;
 
 /**
  * 
+ * Renders shadow maps for entities
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Renders shadow maps for entities
  *
  */
 
@@ -29,10 +29,10 @@ public class ShadowMapEntityRenderer {
 	private ShadowShader shader;
 
 	/**
+	 * Constructor
+	 * 
 	 * @param shader				Defines shader to use
 	 * @param projectionViewMatrix	Defines projectionView matrix for rendering
-	 * 
-	 * Constructor
 	 */
 	protected ShadowMapEntityRenderer(ShadowShader shader, Matrix4f projectionViewMatrix) {
 		this.shader = shader;
@@ -40,9 +40,9 @@ public class ShadowMapEntityRenderer {
 	}
 
 	/**
-	 * @param entities	Defines entities to render to shadowo map
-	 * 
 	 * Renders shadow map to buffer
+	 * 
+	 * @param entities	Defines entities to render to shadowo map
 	 */
 	protected void render(Map<TexturedModel, List<Entity>> entities) {
 		for (TexturedModel model : entities.keySet()) {
@@ -61,9 +61,9 @@ public class ShadowMapEntityRenderer {
 //*************************************Private Methods********************************//
 	
 	/**
-	 * @param rawModel		RawModel to be bound
-	 * 
 	 * Binds raw model to GPU
+	 * 
+	 * @param rawModel		RawModel to be bound
 	 */
 	private void bindModel(RawModel rawModel) {
 		GL30.glBindVertexArray(rawModel.getVaoID());
@@ -71,9 +71,9 @@ public class ShadowMapEntityRenderer {
 	}
 
 	/**
-	 * @param entity		Entity to be prepared
-	 * 
 	 * Prepares entity to be rendered
+	 * 
+	 * @param entity		Entity to be prepared
 	 */
 	private void prepareInstance(Entity entity) {
 		Matrix4f modelMatrix = Maths.createTransformationMatrix(entity.getPosition(),

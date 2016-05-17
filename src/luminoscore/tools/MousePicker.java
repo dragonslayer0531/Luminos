@@ -6,15 +6,14 @@ import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
 import luminoscore.GlobalLock;
-import luminoscore.graphics.display.GLFWWindow;
 import luminoscore.graphics.entities.Camera;
 
 /**
  * 
+ * Creates mouse picker
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Creates mouse picker
  *
  */
 
@@ -26,21 +25,21 @@ public class MousePicker {
 	private Camera camera;
 	
 	/**
+	 * Constructor
+	 * 
 	 * @param camera			Camera to cast from
 	 * @param projectionMatrix	Projection matrix of camera
-	 * 
-	 * Constructor
 	 */
-	public MousePicker(Camera camera, Matrix4f projectionMatrix, GLFWWindow window) {
+	public MousePicker(Camera camera, Matrix4f projectionMatrix) {
 		this.camera = camera;
 		this.projectionMatrix = projectionMatrix;
 		this.viewMatrix = Maths.createViewMatrix(camera);
 	}
 	
 	/**
-	 * @return Vector3f	Current Ray
-	 * 
 	 * Gets ray from mouse
+	 * 
+	 * @return	Current Ray
 	 */
 	public Vector3f getCurrentRay() {
 		return currentRay;
@@ -57,9 +56,9 @@ public class MousePicker {
 //*************************************************Private Methods***********************************************//
 	
 	/**
-	 * @return Vector3f ray
-	 * 
 	 * Calculates ray
+	 * 
+	 * @return Mouse's ray
 	 */
 	private Vector3f calculateRay() {
 		float mouseX = 0;
@@ -72,10 +71,10 @@ public class MousePicker {
 	}
 	
 	/**
-	 * @param eyeCoords	Eye coordinates
-	 * @return Vector3f	World Coordinates
-	 * 
 	 * Converts Eye Coordinates to World Coordinates
+	 * 
+	 * @param eyeCoords	Eye coordinates
+	 * @return 	World Coordinates
 	 */
 	private Vector3f toWorldCoords(Vector4f eyeCoords) {
 		Matrix4f invertedView = Matrix4f.invert(viewMatrix, null);
@@ -86,10 +85,10 @@ public class MousePicker {
 	}
 	
 	/**
-	 * @param clipCoords	Clip coordinates of ray
-	 * @return Vector4f		Eye coordinates
-	 * 
 	 * Calculates Eye Coordinates from Clip Coordinates
+	 * 
+	 * @param clipCoords	Clip coordinates of ray
+	 * @return 				Eye coordinates
 	 */
 	private Vector4f toEyeCoords(Vector4f clipCoords) {
 		Matrix4f invertedProjection = Matrix4f.invert(projectionMatrix, null);
@@ -98,11 +97,11 @@ public class MousePicker {
 	}
 	
 	/**
+	 * Normalizes mouse position coordinates
+	 * 
 	 * @param mouseX	X position of mouse
 	 * @param mouseY	Y position of mouse
-	 * @return Vector2f	Normalzied Coords
-	 * 
-	 * Normalizes mouse position coordinates
+	 * @return 			Normalzied Coords
 	 */
 	private Vector2f getNormalizedCoords(float mouseX, float mouseY) {
 		float x = (2f * mouseX) / GlobalLock.WIDTH;

@@ -4,10 +4,10 @@ import org.lwjgl.util.vector.Vector2f;
 
 /**
  * 
+ * GUI Texture
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * GUI Texture
  *
  */
 
@@ -18,11 +18,11 @@ public class GuiTexture {
 	private Vector2f scale;
 	
 	/**
+	 * Constructor
+	 * 
 	 * @param texture	GPU texture ID
 	 * @param position	Position of GUI
-	 * @param scale		Scale of Entity
-	 * 
-	 * Constructor
+	 * @param scale		Scale of texture
 	 */
 	public GuiTexture(int texture, Vector2f position, Vector2f scale) {
 		this.texture = texture;
@@ -31,27 +31,26 @@ public class GuiTexture {
 	}
 
 	/**
-	 * @return int GPU Texture ID
-	 * 
 	 * Gets texture ID of GUI Texture
+	 * @return  GPU Texture ID
 	 */
 	public int getTexture() {
 		return texture;
 	}
 
 	/**
-	 * @return Vector2f	Position of GUI Texture
-	 * 
 	 * Gets position of GUI Texture
+	 * 
+	 * @return Position of GUI Texture 
 	 */
 	public Vector2f getPosition() {
 		return position;
 	}
 
 	/**
-	 * @return Vector2f	Scale of GUI Texture
-	 * 
 	 * Gets scale of GUI Texture
+	 * 
+	 * @return Vector2f	Scale of GUI Texture 
 	 */
 	public Vector2f getScale() {
 		return scale;

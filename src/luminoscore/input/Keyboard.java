@@ -5,10 +5,10 @@ import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * 
+ * Keyboard Listener
+ * 
  * @author Nick Clark
  * @version 1.0
- * 
- * Keyboard Listener
  *
  */
 
@@ -96,10 +96,10 @@ public class Keyboard extends GLFWKeyCallback {
 	}
 
 	/**
-	 * @param key		KEY CODE
-	 * @return boolean 	Is Down
-	 * 
 	 * Checks if key is down
+	 * 
+	 * @param key		KEY CODE
+	 * @return 	Is Down
 	 */
 	public static boolean isDown(int key) {
 		if(key <= KEY_LAST) {
@@ -109,10 +109,10 @@ public class Keyboard extends GLFWKeyCallback {
 	}
 
 	/**
-	 * @param key		KEY CODE
-	 * @return boolean	Is pressed
-	 * 
 	 * Checks if key is pressed
+	 * 
+	 * @param key		KEY CODE
+	 * @return	Is pressed
 	 */
 	public static boolean isPressed(int key) {
 		if(key <= KEY_LAST) {
@@ -122,10 +122,10 @@ public class Keyboard extends GLFWKeyCallback {
 	}
 
 	/**
+	 * Checks if key is released
+	 * 
 	 * @param key		KEY CODE
 	 * @return			Is released
-	 * 
-	 * Checks if key is released
 	 */
 	public static boolean isReleased(int key) {
 		if(key <= KEY_LAST) {

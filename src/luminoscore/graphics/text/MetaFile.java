@@ -12,10 +12,10 @@ import luminoscore.GlobalLock;
 
 /**
  * 
+ * Meta file of font
+ * 
  * @author Nick Clark
  * @version 1.1
- * 
- * Meta file of font
  *
  */
 
@@ -46,9 +46,9 @@ public class MetaFile {
     private Map<String, String> values = new HashMap<String, String>();
  
     /**
-     * @param file		File to be loaded
-     * 
      * Constructor
+     * 
+     * @param file		File to be loaded
      */
     protected MetaFile(File file) {
         this.aspectRatio = (double) GlobalLock.WIDTH / (double) GlobalLock.HEIGHT;
@@ -61,14 +61,20 @@ public class MetaFile {
     }
  
     /**
-     * @return double	Space width
-     * 
      * Gets space width
+     * 
+     * @return	Space width
      */
     protected double getSpaceWidth() {
         return spaceWidth;
     }
  
+    /**
+     * Gets character
+     * 
+     * @param ascii	Character's ASCII ID
+     * @return	Character to be retreived
+     */
     protected Character getCharacter(int ascii) {
         return metaData.get(ascii);
     }
@@ -76,9 +82,9 @@ public class MetaFile {
 //******************************************Private Methods*****************************************//
     
     /**
-     * @return boolean	Is line processable
-     * 
      * Gets and processes line
+     * 
+     * @return Is line processable
      */
     private boolean processNextLine() {
         values.clear();
@@ -102,20 +108,20 @@ public class MetaFile {
     }
  
     /**
-     * @param variable	Variable to get
-     * @return int		Variable value
-     * 
      * Gets	value of variable
+     * 
+     * @param variable	Variable to get
+     * @return 			Variable value
      */
     private int getValueOfVariable(String variable) {
         return Integer.parseInt(values.get(variable));
     }
  
     /**
-     * @param variable	Variable to get
-     * @return	int[]	Variable values
-     * 
      * Gets value of variables
+     * 
+     * @param variable	Variable to get
+     * @return		Variable values
      */
     private int[] getValuesOfVariable(String variable) {
         String[] numbers = values.get(variable).split(NUMBER_SEPARATOR);
@@ -139,9 +145,9 @@ public class MetaFile {
     }
  
     /**
-     * @param file	File to open
-     * 
      * Opens file
+     * 
+     * @param file	File to open
      */
     private void openFile(File file) {
         try {
@@ -173,9 +179,9 @@ public class MetaFile {
     }
  
     /**
-     * @param imageWidth	Width of Font File Image
-     * 
      * Loads character data to meta file
+     * 
+     * @param imageWidth	Width of Font File Image
      */
     private void loadCharacterData(int imageWidth) {
         processNextLine();
@@ -189,10 +195,10 @@ public class MetaFile {
     }
  
     /**
+     * Gets Character from ID file
+     * 
      * @param imageSize		Size of font file image
      * @return Character	Character data
-     * 
-     * Gets Character from ID file
      */
     private Character loadCharacter(int imageSize) {
         int id = getValueOfVariable("id");
