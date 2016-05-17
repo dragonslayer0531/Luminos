@@ -12,10 +12,10 @@ import luminoscore.graphics.textures.ParticleTexture;
 
 /**
  * 
- * Static class for performing world-wide particle tasks
- * 
  * @author Nick Clark
  * @version 1.0
+ * 
+ * Static class for performing world-wide particle tasks
  *
  */
 
@@ -24,9 +24,9 @@ public class ParticleMaster {
 	public static Map<ParticleTexture, List<Particle>> particles = new HashMap<ParticleTexture, List<Particle>>();
 	
 	/**
-	 * Adds {@link Particle} to list
-	 * 
 	 * @param particle	Particle to be added
+	 * 
+	 * Adds particle to list
 	 */
 	public static void addParticle(Particle particle) {
 		List<Particle> list = particles.get(particle.getTexture());
@@ -38,9 +38,9 @@ public class ParticleMaster {
 	}
 	
 	/**
-	 * Adds {@link Particle}s to list
-	 * 
 	 * @param particles	Particles to be added
+	 * 
+	 * Adds particles to list
 	 */
 	public static void addAllParticles(List<Particle> particles) {
 		for(Particle particle : particles) {
@@ -49,9 +49,10 @@ public class ParticleMaster {
 	}
 	
 	/**
-	 * Updates all particles in world
+	 * @param particles	List of particles in the world
+	 * @param window	Window to get frame time of
 	 * 
-	 * @param window	{@link GLFWWindow} to get frame time of
+	 * Updates all particles in world
 	 */
 	public static void update(GLFWWindow window) {
 		Iterator<Entry<ParticleTexture, List<Particle>>> mapIterator = (Iterator<Entry<ParticleTexture, List<Particle>>>) particles.entrySet().iterator();

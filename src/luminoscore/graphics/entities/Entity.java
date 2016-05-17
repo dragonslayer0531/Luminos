@@ -13,12 +13,15 @@ import luminoscore.graphics.models.TexturedModel;
 import luminoscore.graphics.terrains.Terrain;
 import luminoscore.input.Keyboard;
 import luminoscore.input.XBOXController;
+import luminosutils.serialization.LArray;
+import luminosutils.serialization.LObject;
 
 /**
- * The entity is a wrapper for positions, rotations, scales, models, and other various data
  * 
  * @author Nick Clark
  * @version 1.0
+ * 
+ * The entity is a wrapper for positions, rotations, scales, models, and other various data
  *
  */
 public class Entity {
@@ -39,10 +42,11 @@ public class Entity {
 	private static float RUN_SPEED = 5;
 
 	public static final float GRAVITY = -50; 
-	private static float JUMP_POWER = 9;
+	private static float JUMP_POWER = 9; 
+
 
 	private static float WALK_MODIFICATION = 0.5f;
-	private static float SPRINT_MODIFICATION = 1.75f;
+	private static float SPRINT_MODIFICATION = 1.5f;
 	private static float CROUCH_MODIFICATION = 0.75f;
 	private static float PRONE_MODIFICATION = 0.5f;
 
@@ -57,13 +61,12 @@ public class Entity {
 	private HashMap<Class<?>, Object> map = new HashMap<Class<?>, Object>();
 
 	/**
-	 * Constructor one of the entity
-	 * 
 	 * @param position		Initial position of the entity
 	 * @param rotation		Initial rotation of the entity
 	 * @param scale			Initial scale of the entity
 	 * @param tm			Initial TexturedModel of the entity
 	 * 
+	 * Constructor one of the entity
 	 */
 	public Entity(Vector3f position, Vector3f rotation, float scale, TexturedModel tm) {
 		this.position = position;
@@ -74,12 +77,12 @@ public class Entity {
 	}
 
 	/**
-	 * Constructor two of the entity.  Used when an entity needs multiple models
-	 * 
 	 * @param position		Initial position of the entity
 	 * @param rotation		Initial rotation of the entity
 	 * @param scale			Initial scale of the entity
-	 * @param models		Initial List of {@link TexturedModel}s of the entity
+	 * @param models		Initial List of TexturedModels of the entity
+	 * 
+	 * Constructor two of the entity.  Used when an entity needs multiple models
 	 */
 	public Entity(Vector3f position, Vector3f rotation, float scale, List<TexturedModel> models) {
 		this.position = position;
@@ -90,10 +93,10 @@ public class Entity {
 
 
 	/**
-	 * Moves the entity given terrain collision detection
-	 * 
-	 * @param terrains		List of {@link Terrain} for collision detection against
+	 * @param terrains		List of terrains for collision detection against
 	 * @param window		GLFWWindow used to determine frame time of
+	 * 
+	 * Moves the entity given terrain collision detection
 	 */
 	public void move(List<Terrain> terrains, GLFWWindow window) {
 		float y = this.position.y;
@@ -121,9 +124,9 @@ public class Entity {
 	}
 
 	/**
-	 * Adds {@link Component} to entity's hashmap
-	 * 
 	 * @param comp		Component to be added to the entity
+	 * 
+	 * Adds component to entity
 	 */
 	public void addComponent(Component comp) {
 		if(!map.containsKey(comp.getClass())) {
@@ -132,19 +135,19 @@ public class Entity {
 	}
 
 	/**
-	 * Evaluates if entity contains class of {@link Component}
-	 * 
 	 * @param c			Class of component to be evaluated
-	 * @return Evaluation of entity containing component
+	 * @return boolean	Evaluation of entity containing component
+	 * 
+	 * Evaluates if entity contains class of component
 	 */
 	public boolean hasComponent(Class<?> c) {
 		return map.containsKey(c);
 	}
 
 	/**
-	 * Removes {@link Component} from entity
-	 * 
 	 * @param c			Class of component to be removed
+	 * 
+	 * Removes component from entity
 	 */
 	public void removeComponent(Class<?> c) {
 		if(!map.containsKey(c)) {
@@ -153,10 +156,10 @@ public class Entity {
 	}
 
 	/**
-	 * Gets data contained by component
-	 * 
 	 * @param c			Class of component to be evaluated
-	 * @return Value of component data
+	 * @return Object	Value of component data
+	 * 
+	 * Gets data contained by component
 	 */
 	public Object getComponentValue(Class<?> c) {
 		if(hasComponent(c)) {
@@ -166,54 +169,54 @@ public class Entity {
 	}
 
 	/**
-	 * Gets the camera attached to the entity
+	 * @return			Camera attached to entity
 	 * 
-	 * @return	Camera attached to entity
+	 * Gets the camera attached to the entity
 	 */
 	public Camera getCamera() {
 		return camera;
 	}
 
 	/**
-	 * Gets the position of the entity		
+	 * @return Vector3f	Position of entity
 	 * 
-	 * @return Position of entity
+	 * Gets the position of the entity		
 	 */
 	public Vector3f getPosition() {
 		return position;
 	}
 
 	/**
-	 * Sets the position of the entity
-	 * 
 	 * @param position	Position of entity
+	 * 
+	 * Sets the position of the entity
 	 */
 	public void setPosition(Vector3f position) {
 		this.position = position;
 	}
 
 	/**
-	 * Gets the rotation of the entity
+	 * @return Vector3f Rotation of entity
 	 * 
-	 * @return Rotation of entity
+	 * Gets the rotation of the entity
 	 */
 	public Vector3f getRotation() {
 		return rotation;
 	}
 
 	/**
-	 * Sets the rotation of the entity
-	 * 
 	 * @param rotation	Rotation of entity
+	 * 
+	 * Sets the rotation of the entity
 	 */
 	public void setRotation(Vector3f rotation) {
 		this.rotation = rotation;
 	}
 
 	/**
-	 * Gets the scale of the entity
+	 * @return float 	Scale of entity
 	 * 
-	 * @return Scale of entity
+	 * Gets the scale of the entity
 	 */
 	public float getScale() {
 		return scale;
@@ -229,45 +232,45 @@ public class Entity {
 	}
 
 	/**
-	 * Gets the List of {@link TexturedModel}s used by the entity
+	 * @return List<TexturedModel> TexturedModels used by entity
 	 * 
-	 * @return TexturedModels used by entity
+	 * Gets the textured models used by the entity
 	 */
 	public List<TexturedModel> getModels() {
 		return models;
 	}
 
 	/**
-	 * Gets the terrain on which the entity lies
+	 * @return Terrain	Terrain on which the entity lies
 	 * 
-	 * @return Terrain on which the entity lies
+	 * Gets the terrain on which the entity lies
 	 */
 	public Terrain getTerrain() {
 		return terrain;
 	}
 
 	/**
-	 * Gets the velocity of the entity
+	 * @return Vector3f	Velocity of entity
 	 * 
-	 * @return Velocity of entity
+	 * Gets the velocity of the entity
 	 */
 	public Vector3f getVelocity() {
 		return new Vector3f(dx, dy, dz);
 	}
 
 	/**
-	 * Gets the current speed of the entity
+	 * @return float	Current speed of entity
 	 * 
-	 * @return Current speed of entity
+	 * Gets the current speed of the entity
 	 */
 	public float getCurrentSpeed() {
 		return currentSpeed;
 	}
 
 	/**
-	 * Gets the current turn speed of the entity
+	 * @return float 	Current turn speed of entity
 	 * 
-	 * @return Current turn speed of entity
+	 * Gets the current turn speed of the entity
 	 */
 	public float getCurrentTurnSpeed() {
 		return currentTurnSpeed;
@@ -301,21 +304,36 @@ public class Entity {
 	}
 
 	/**
-	 * Gets the {@link Camera} attached to the entity
-	 * 
 	 * @param camera	Camera attached to entity
+	 * 
+	 * Gets the camera attached to the entity
 	 */
 	public void setCamera(Camera camera) {
 		this.camera = camera;
 	}
 	
+	/**
+	 * Gets the byte array associated with the entity
+	 * 
+	 * @return byte array associated with entity
+	 */
+	public byte[] getBytes() {
+		LObject object = new LObject("entity");
+		object.addArray(LArray.Float("position", new float[]{position.x, position.y, position.z}));
+		object.addArray(LArray.Float("rotation", new float[]{rotation.x, rotation.y, rotation.z}));
+		object.addArray(LArray.Float("scale", new float[]{scale}));
+		byte[] data = new byte[object.getSize()];
+		object.getBytes(data, 0);
+		return data;
+	}
+
 	//*******************************Private Methods*****************************//
 
 	/**
-	 * Checks the keyboard inputs and calculates new camera position
-	 * 
 	 * @param terrains	Terrains to be moved across
 	 * @param window	Window to get frame time of
+	 * 
+	 * Checks the keyboard inputs and calculates new camera position
 	 */
 	private void checkInputs(List<Terrain> terrains, GLFWWindow window) {
 
@@ -481,13 +499,13 @@ public class Entity {
 			}
 			
 		} else {
-			currentSpeed = XBOXController.getVerticalAxis() * RUN_SPEED;
+			currentSpeed = XBOXController.getVerticalAxis(XBOXController.GLFW_JOYSTICK_1) * RUN_SPEED;
 			float distance = currentSpeed * window.getFrameTime();
 			if(XBOXController.isButtonDown(XBOXController.XBOX_LEFT_STICK)) distance *= SPRINT_MODIFICATION;
 			dx = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
 			dz = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
 			Vector3f.add(position, new Vector3f(dx, 0, dz), position);
-			currentSpeed = XBOXController.getHorizontalAxis() * RUN_SPEED;
+			currentSpeed = XBOXController.getHorizontalAxis(XBOXController.GLFW_JOYSTICK_1) * RUN_SPEED;
 			distance = -currentSpeed * window.getFrameTime();
 			dx = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
 			dz = (float) (-distance * Math.sin(Math.toRadians(rotation.y)));
@@ -499,11 +517,11 @@ public class Entity {
 	}
 
 	/**
-	 * Calculates pitch of attached camera
-	 * 
 	 * @param sensitivity	Camera rotation sensitivity
 	 * @param window		Window to get frame time and mouse of
 	 * @param invert		Determines the inversion of movement on the Y-Axis
+	 * 
+	 * Calculates pitch of attached camera
 	 */
 	private void rotate(Vector2f sensitivity, GLFWWindow window, boolean invert) {
 
@@ -529,8 +547,8 @@ public class Entity {
 		} else {
 			float angleChange = 0;
 			float pitchChange = 0;
-			angleChange = XBOXController.getHorizontalAxisLook() * 80 * sensitivity.x;
-			pitchChange = XBOXController.getVerticalAxisLook() * .5f * sensitivity.y;
+			angleChange = XBOXController.getHorizontalAxisLook(XBOXController.GLFW_JOYSTICK_1) * 80 * sensitivity.x;
+			pitchChange = XBOXController.getVerticalAxisLook(XBOXController.GLFW_JOYSTICK_1) * .5f * sensitivity.y;
 			Camera.pitch %= 360;
 			if(Camera.pitch + pitchChange <= -90) Camera.pitch = -90 + (float) Math.abs(pitchChange);
 			else if(Camera.pitch + pitchChange >= 90) Camera.pitch = 90 - (float) Math.abs(pitchChange);

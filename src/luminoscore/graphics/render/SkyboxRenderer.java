@@ -16,10 +16,10 @@ import luminoscore.tools.DateUtils;
 
 /**
  * 
- * Renderer for skybox
- * 
  * @author Nick Clark
  * @version 1.0
+ * 
+ * Renderer for skybox
  *
  */
 
@@ -71,8 +71,8 @@ public class SkyboxRenderer {
 	     SIZE, -SIZE,  SIZE
 	};
 	
-	private static String[] TEXTURE_FILES = {"res/skybox/right.png", "res/skybox/left.png", "res/skybox/top.png", "res/skybox/bottom.png", "res/skybox/back.png", "res/skybox/front.png"};
-	private static String[] NIGHT_TEXTURE_FILES = {"res/skybox/nightRight.png", "res/skybox/nightLeft.png", "res/skybox/nightTop.png", "res/skybox/nightBottom.png", "res/skybox/nightBack.png", "res/skybox/nightFront.png"};
+	private static String[] TEXTURE_FILES = {"right", "left", "top", "bottom", "back", "front"};
+	private static String[] NIGHT_TEXTURE_FILES = {"nightRight", "nightLeft", "nightTop", "nightBottom", "nightBack", "nightFront"};
 	
 	private RawModel cube;
 	private int texture;
@@ -83,10 +83,10 @@ public class SkyboxRenderer {
 	
 	
 	/**
-	 * Constructor
-	 * 
 	 * @param loader			Loader used for rendering
 	 * @param projectionMatrix	Projection matrix of skybox
+	 * 
+	 * Constructor
 	 */
 	public SkyboxRenderer(Loader loader, Matrix4f projectionMatrix){
 		cube = loader.loadToVAO(VERTICES, 3);
@@ -100,22 +100,21 @@ public class SkyboxRenderer {
 	}
 	
 	/**
-	 * Adds DateUtils to Skybox Renderer
-	 * 
 	 * @param du	DateUtils for rendering of mixed
+	 * 
+	 * Adds DateUtils to Skybox Renderer
 	 */
 	public void prepare(DateUtils du) {
 		this.du = du;
 	}
 	
 	/**
-	 * Render skybox
-	 * 
 	 * @param camera	Camera to be projected from
 	 * @param r			R value of sky background
 	 * @param g			G value of sky background
 	 * @param b			B value of sky background
-	 * @param window 	{@link GLFWWindow} to get frametime of
+	 * 
+	 * Render skybox
 	 */
 	public void render(Camera camera, float r, float g, float b, GLFWWindow window){
 		shader.start();
@@ -141,7 +140,7 @@ public class SkyboxRenderer {
 		int texture1;
 		int texture2;
 		float blendFactor;
-		totalTime = du.getCurrentTime();
+		totalTime = du.getTotalTime();
 		if(totalTime >= 72000000 && totalTime < 25200000){
 			texture1 = nightTexture;
 			texture2 = nightTexture;

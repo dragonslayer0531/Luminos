@@ -10,10 +10,10 @@ import luminoscore.tools.Maths;
 
 /**
  * 
- * Skybox Shader for Skybox Renderer
- * 
  * @author Nick Clark
  * @version 1.1
+ * 
+ * Skybox Shader for Skybox Renderer
  *
  */
 
@@ -34,7 +34,10 @@ public class SkyboxShader extends ShaderProgram {
 	public static String VERT = "skybox.vert";
 	public static String FRAG = "skybox.frag";
      
-    /** 
+    /**
+     * @param vert	Vertex shader file
+     * @param frag	Fragment shader file
+     * 
      * Constructor
      */
     public SkyboxShader() {
@@ -42,19 +45,18 @@ public class SkyboxShader extends ShaderProgram {
     }
     
     /**
-     * Loads projection matrix to shader
-     * 
      * @param matrix	Projection Matrix
+     * 
+     * Loads projection matrix to shader
      */
     public void loadProjectionMatrix(Matrix4f matrix){
         super.loadMatrix(location_projectionMatrix, matrix);
     }
     
     /**
-     * Loads view matrix to shader
-     * 
      * @param camera	Camera to create view matrix of
-     * @param window	{@link GLFWWindow} to get the frame time of
+     * 
+     * Loads view matrix to shader
      */
     public void loadViewMatrix(Camera camera, GLFWWindow window){
         Matrix4f matrix = Maths.createViewMatrix(camera);
@@ -67,11 +69,11 @@ public class SkyboxShader extends ShaderProgram {
     }
     
     /**
-     * Loads fog to shader
-     * 
      * @param r	R value of fog
      * @param g	G value of fog
      * @param b	B value of fog
+     * 
+     * Loads fog to shader
      */
     public void loadFogColour(float r, float g, float b){
     	super.loadVector(location_fogColour, new Vector3f(r, g, b));
@@ -86,9 +88,9 @@ public class SkyboxShader extends ShaderProgram {
     }
     
     /**
-     * Loads blend factor to shader
-     * 
      * @param blend	Blend Factor
+     * 
+     * Loads blend factor to shader
      */
     public void loadBlendFactor(float blend){
     	super.loadFloat(location_blendFactor, blend);

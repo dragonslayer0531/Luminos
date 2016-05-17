@@ -20,10 +20,10 @@ import luminoscore.tools.Maths;
 
 /**
  * 
- * Renders particle effects
- * 
  * @author Nick Clark
  * @version 1.0
+ * 
+ * Renders particle effects
  *
  */
 
@@ -35,8 +35,6 @@ public class ParticleRenderer {
 	private ParticleShader shader;
 	
 	/**
-	 * Constructor
-	 * 
 	 * @param loader			Defines loader to use
 	 * @param projectionMatrix	Defines projection matrix
 	 */
@@ -50,8 +48,6 @@ public class ParticleRenderer {
 	}
 	
 	/**
-	 * Renders particles to world
-	 * 
 	 * @param particles			Defines particles to render
 	 * @param camera			Defines camera to get view matrix of
 	 */
@@ -105,12 +101,13 @@ public class ParticleRenderer {
 //*******************************Private Methods*****************************************//
 	
 	/**
-	 * Creates MV Matrix for particle
 	 * 
 	 * @param position		Position of particle
 	 * @param rotation		Rotation of particle
 	 * @param scale			Scale of particle
 	 * @param viewMatrix	View matrix of camera
+	 * 
+	 * Creates MV Matrix for particle
 	 */
 	private void updateModelViewMatrix(Vector3f position, float rotation, float scale, Matrix4f viewMatrix) {
 		Matrix4f modelMatrix = new Matrix4f();

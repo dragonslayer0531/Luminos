@@ -2,10 +2,10 @@ package luminoscore.graphics.textures;
 
 /**
  * 
- * Texture Used in Model
- * 
  * @author Nick Clark
  * @version 1.0
+ * 
+ * Texture Used in Model
  *
  */
 
@@ -22,108 +22,108 @@ public class ModelTexture {
 	private int numberOfRows = 1;
 	
 	/**
-	 * Constructor
-	 * 
 	 * @param texture	GPU ID
+	 * 
+	 * Constructor
 	 */
 	public ModelTexture(int texture){
 		this.textureID = texture;
 	}
 		
 	/**
-	 * Get row count
+	 * @return int	Row count
 	 * 
-	 * @return	Row count
+	 * Get row count
 	 */
 	public int getNumberOfRows() {
 		return numberOfRows;
 	}
 
 	/**
-	 * Set number of rows
-	 * 
 	 * @param numberOfRows	Number of rows
+	 * 
+	 * Set number of rows
 	 */
 	public void setNumberOfRows(int numberOfRows) {
 		this.numberOfRows = numberOfRows;
 	}
 
 	/**
-	 * Get if uses transparency
+	 * @return boolean	Has transparency
 	 * 
-	 * @return	Has transparency
+	 * Get if uses transparency
 	 */
-	public boolean hasTransparency() {
+	public boolean isHasTransparency() {
 		return hasTransparency;
 	}
 
 	/**
-	 * Gets if uses fake lighting
+	 * @return boolean Uses fake lighting
 	 * 
-	 * @return Uses fake lighting
+	 * Gets if uses fake lighting
 	 */
-	public boolean usesFakeLighting() {
+	public boolean isUseFakeLighting() {
 		return useFakeLighting;
 	}
 
 	/**
-	 * Sets fake lighting usage
-	 * 
 	 * @param useFakeLighting	Use fake lighting
+	 * 
+	 * Sets fake lighting usage
 	 */
 	public void setUseFakeLighting(boolean useFakeLighting) {
 		this.useFakeLighting = useFakeLighting;
 	}
 
 	/**
-	 * Sets transparency usage
-	 * 
 	 * @param hasTransparency	Transparent
+	 * 
+	 * Sets transparency usage
 	 */
 	public void setHasTransparency(boolean hasTransparency) {
 		this.hasTransparency = hasTransparency;
 	}
 
 	/**
-	 * Gets VAO ID
+	 * @return int	VAO ID
 	 * 
-	 * @return VAO ID
+	 * Gets VAO ID
 	 */
 	public int getID(){
 		return textureID;
 	}
 
 	/**
-	 * Gets the power of the shine damper
+	 * @return float	Shine Damper
 	 * 
-	 * @return Shine Damper
+	 * Gets the power of the shine damper
 	 */
 	public float getShineDamper() {
 		return shineDamper;
 	}
 
 	/**
-	 * Sets the power of the shine damper
-	 * 
 	 * @param shineDamper	Shine Damper
+	 * 
+	 * Sets the power of the shine damper
 	 */
 	public void setShineDamper(float shineDamper) {
 		this.shineDamper = shineDamper;
 	}
 
 	/**
-	 * Gets the power of reflection
-	 * 
 	 * @return reflectivity	Power of reflection
+	 * 
+	 * Gets the power of reflection
 	 */
 	public float getReflectivity() {
 		return reflectivity;
 	}
 
 	/**
-	 * Sets the power of reflection
-	 * 
 	 * @param reflectivity	Power of reflection
+	 * 
+	 * Sets the power of reflection
 	 */
 	public void setReflectivity(float reflectivity) {
 		this.reflectivity = reflectivity;

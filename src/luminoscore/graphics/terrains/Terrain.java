@@ -23,10 +23,10 @@ import luminoscore.tools.algorithms.FractalNoise;
 
 /**
  * 
- * Terrain class
- * 
  * @author Nick Clark
  * @version 1.0
+ * 
+ * Terrain class
  *
  */
 
@@ -48,8 +48,6 @@ public class Terrain {
 	private float[] normals;
 
 	/**
-	 * Constructor
-	 * 
 	 * @param gridX			Terrain Grid X Position
 	 * @param gridZ			Terrain Grid Z Position
 	 * @param seed			PerlinNoise seed
@@ -58,6 +56,7 @@ public class Terrain {
 	 * @param texturePack	Texture Pack to use
 	 */
 	public Terrain(float gridX, float gridZ, int seed, Loader loader, TerrainTexture blendMap, TerrainTexturePack texturePack) {
+
 		this.texturePack = texturePack;
 		this.x = gridX * SIZE;
 		this.z = gridZ * SIZE;
@@ -66,8 +65,6 @@ public class Terrain {
 	}
 
 	/**
-	 * Constructor
-	 * 
 	 * @param gridX			Terrain Grid X Position
 	 * @param gridZ			Terrain Grid Z Position
 	 * @param loader		Loader to use
@@ -83,15 +80,6 @@ public class Terrain {
 		this.model = generateTerrain(loader, heightMap);
 	}
 	
-	/**
-	 * Constructor
-	 * 
-	 * @param model			RawModel describing terrain
-	 * @param heights		2 dimensional array describing height values
-	 * @param textures		2 dimensional array describing texture coordinates
-	 * @param blendMap		BufferedImage to use as blend map
-	 * @param loader		Loader to use when rendering terrain
-	 */
 	public Terrain(RawModel model, float[][] heights, List<String> textures, BufferedImage blendMap, Loader loader) {
 		this.model = model;
 		this.heights = heights;
@@ -103,10 +91,10 @@ public class Terrain {
 	}
 		
 	/**
-	 * Calculates whether the location is within a terrain's bounds
-	 * 
 	 * @param pos		Position to calculate with
-	 * @return 			Inside terrain bounds
+	 * @return boolean	Inside terrain bounds
+	 * 
+	 * Calculates whether the location is within a terrain's bounds
 	 */
 	public boolean isOnTerrain(Vector3f pos) {
 		float xMin = this.getX();
@@ -120,66 +108,66 @@ public class Terrain {
 	}
 
 	/**
-	 * Calculates whether the entity is within a terrain's bounds
-	 * 
 	 * @param entity	Entity to calculate with
-	 * @return 			Inside terrain bounds
+	 * @return boolean	Inside terrain bounds
+	 * 
+	 * Calculates whether the entity is within a terrain's bounds
 	 */
 	public boolean isOnTerrain(Entity entity) {
 		return isOnTerrain(entity.getPosition());
 	}
 
 	/**
-	 * Get world x coordinate of terrain
+	 * @return float X
 	 * 
-	 * @return x value of terrain
+	 * Get world x coordinate of terrain
 	 */
 	public float getX() {
 		return x;
 	}
 
 	/**
-	 * Get world z coordinate of terrain
+	 * @return float Z
 	 * 
-	 * @return z value of terrain
+	 * Get world z coordinate of terrain
 	 */
 	public float getZ() {
 		return z;
 	}
 
 	/**
-	 * Get terrain's model
+	 * @return RawModel	model of terrain
 	 * 
-	 * @return model describing terrain
+	 * Get terrain's model
 	 */
 	public RawModel getModel() {
 		return model;
 	}
 
 	/**
-	 * Gets the terrain's texture pack
+	 * @return TerrainTexturePack	texture pack used by terrain
 	 * 
-	 * @return texture pack used by terrain
+	 * Gets the terrain's texture pack
 	 */
 	public TerrainTexturePack getTexturePack() {
 		return texturePack;
 	}
 
 	/**
-	 * Gets blend map texture
+	 * @return TerrainTexture	blend map used by terrain
 	 * 
-	 * @return blend map used by terrain
+	 * Gets blend map texture
 	 */
 	public TerrainTexture getBlendMap() {
 		return blendMap;
 	}
 
 	/**
-	 * Gets height of terrain
-	 * 
 	 * @param worldX	World X Coordinate
 	 * @param worldZ	World Z Coordinate
-	 * @return 			Height of terrain at given point
+	 * @return float	Height of terrain at given point
+	 * 
+	 * Gets height of terrain
 	 */
 	public float getHeightOfTerrain(float worldX, float worldZ) {
 		float terrainX = worldX - this.x;
@@ -216,11 +204,11 @@ public class Terrain {
 	}
 
 	/**
-	 * Generates raw model of terrain
-	 * 
 	 * @param loader	Loader to be used
 	 * @param noise		Fractal Noise to be used in terrain height generation
-	 * @return 			Model of terrain
+	 * @return RawModel	Model of terrian
+	 * 
+	 * Generates raw model of terrain
 	 */
 	private RawModel generateTerrain(Loader loader, FractalNoise noise) {
 		int count = (int) Math.pow(VERTEX_COUNT, 2);
@@ -269,11 +257,11 @@ public class Terrain {
 	}
 
 	/**
-	 * Creates model of terrain
-	 * 
 	 * @param loader		Loader to be used
 	 * @param heightMap		Heightmap file to be used
-	 * @return 				Model describing the terrain
+	 * @return RawModel		Model of terrain
+	 * 
+	 * Creates model of terrain
 	 */
 	private RawModel generateTerrain(Loader loader, String heightMap) {
 
@@ -326,40 +314,28 @@ public class Terrain {
 	}
 
 	/**
-	 * Gets scale of terrain
+	 * @return float scale
 	 * 
-	 * @return Scale of terrain
+	 * Gets scale of terrain
 	 */
 	public float getScale() {
 		return SIZE;
 	}
 	
 	/**
-	 * Generates height value
-	 * 
-	 * @param x		X value of height
-	 * @param z		Z value of height
-	 * @param noise	FractalNoise to use in generation
-	 * @return		Height value of given x, z
+	 * @param x
+	 * @param z
+	 * @param noise
+	 * @return
 	 */
 	public float getHeight(int x, int z, FractalNoise noise) {
 		return noise.generateHeight(x, z);
 	}
 	
-	/**
-	 * Gets the normals of the terrain
-	 * 
-	 * @return	Normal vectors of terrain
-	 */
 	public float[] getNormals() {
 		return normals;
 	}
 	
-	/**
-	 * Gets the height array of the terrain
-	 * 
-	 * @return 2 dimensional array of heights
-	 */
 	public float[][] getHeights() {
 		return heights;
 	}
@@ -367,12 +343,12 @@ public class Terrain {
 //**************************************************Private Methods*********************************************//
 	
 	/**
-	 * Calculates normal vector
-	 * 
 	 * @param x		    X coordinate
 	 * @param z		    Z coordinate
 	 * @param image 	Image to use
-	 * @return Normal vector
+	 * @return Vector3f	Normal
+	 * 
+	 * Calculates normal vector
 	 */
 	private Vector3f calculateNormal(int x, int z, BufferedImage image){
 		float heightL = getHeight(x-1, z, image);
@@ -385,13 +361,12 @@ public class Terrain {
 	}
 
 	/**
-	 * Calculates normal vector
-	 * 
 	 * @param x			X coordinate
 	 * @param z			Z coordinate
 	 * @param noise		Noise to use
-	 * @return Normal vector
+	 * @return Vector3f	Normal
 	 * 
+	 * Calculates normal vector
 	 */
 	private Vector3f calculateNormal(int x, int z, FractalNoise noise) {
 		float heightL = getHeight(x - 1, z, noise);
@@ -403,12 +378,12 @@ public class Terrain {
 	}
 
 	/**
-	 * Calculates height of pixel
-	 * 
 	 * @param x			X coordinate
 	 * @param z			Z coordinate
 	 * @param image		Image to use
-	 * @return 			Height at pixel
+	 * @return float	Height
+	 * 
+	 * Calculates height of pixel
 	 */
 	private float getHeight(int x, int z, BufferedImage image){
 		if(x<0 || x>=image.getHeight() || z<0 || z>=image.getHeight()){

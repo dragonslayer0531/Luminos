@@ -2,10 +2,10 @@ package luminoscore.graphics.text;
 
 /**
  * 
- * Text Mesh Data of File
- * 
  * @author Nick Clark
  * @version 1.0
+ * 
+ * Text Mesh Data of File
  *
  */
 
@@ -15,10 +15,10 @@ public class TextMeshData {
     private float[] textureCoords;
      
     /**
-     * Constructor
-     * 
      * @param vertexPositions	Vertex positions of mesh
      * @param textureCoords		Texture coordinates of mesh
+     * 
+     * Constructor
      */
     protected TextMeshData(float[] vertexPositions, float[] textureCoords){
         this.vertexPositions = vertexPositions;
@@ -26,27 +26,27 @@ public class TextMeshData {
     }
  
     /**
-     * Gets vertex positions
+     * @return float[]	Vertex Positions
      * 
-     * @return Vertex Positions
+     * Gets vertex positions
      */
     public float[] getVertexPositions() {
         return vertexPositions;
     }
  
     /**
-     * Gets texture coordinates
+     * @return float[]	Texture Coordinates
      * 
-     * @return Texture Coordinates
+     * Gets texture coordinates
      */
     public float[] getTextureCoords() {
         return textureCoords;
     }
  
     /**
-     * Gets vertex count
+     * @return int	Vertex Count
      * 
-     * @return Vertex Count
+     * Gets vertex count
      */
     public int getVertexCount() {
         return vertexPositions.length/2;

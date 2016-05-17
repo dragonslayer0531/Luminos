@@ -4,10 +4,10 @@ import luminoscore.graphics.textures.ModelTexture;
 
 /**
  * 
- * Wraps raw model and model texture
- * 
  * @author Nick Clark
  * @version 1.0
+ * 
+ * Wraps raw model and model texture
  *
  */
 
@@ -17,10 +17,10 @@ public class TexturedModel {
 	private ModelTexture texture;
 
 	/**
-	 * Constructor wrapping models and textures
+	 * @param model		RawModel describing the vertices
+	 * @param texture	ModelTexture describing the texture
 	 * 
-	 * @param model		{@link RawModel} describing the vertices
-	 * @param texture	{@link ModelTexture} describing the texture
+	 * Constructor wrapping models and textures
 	 */
 	public TexturedModel(RawModel model, ModelTexture texture){
 		this.rawModel = model;
@@ -28,18 +28,18 @@ public class TexturedModel {
 	}
 
 	/**
-	 * Gets the instance's {@link RawModel}
+	 * @return RawModel		Model of the TexturedModel
 	 * 
-	 * @return Model of the TexturedModel
+	 * Gets the TexturedModel's RawModel
 	 */
 	public RawModel getRawModel() {
 		return rawModel;
 	}
 
 	/**
-	 * Gets the TexturedModel's ModelTexture
+	 * @return ModelTexture	Texture for the model to use
 	 * 
-	 * @return Texture for the model to use
+	 * Gets the TexturedModel's ModelTexture
 	 */
 	public ModelTexture getTexture() {
 		return texture;

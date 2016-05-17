@@ -20,10 +20,10 @@ import luminoscore.tools.Maths;
 
 /**
  * 
- * Renders water
- * 
  * @author Nick Clark
  * @version 1.0
+ * 
+ * Renders water
  *
  */
 
@@ -41,14 +41,12 @@ public class WaterRenderer {
 	private int dudvTexture, normalTexture;
 
 	/**
-	 * Constructor
-	 * 
 	 * @param loader			Loader used to render
 	 * @param shader			Shader Program used to render
 	 * @param projectionMatrix	Projection matrix passed to shader
 	 * @param fbos				WaterFrameBuffers
-	 * @param dudv				DUDV map location
-	 * @param normal			Normal map location
+	 * 
+	 * Constructor
 	 */
 	public WaterRenderer(Loader loader, WaterShader shader, Matrix4f projectionMatrix, WaterFrameBuffers fbos, String dudv, String normal) {
 		this.shader = shader;
@@ -65,11 +63,11 @@ public class WaterRenderer {
 	}
 
 	/**
-	 * Renders scaled water
-	 * 
 	 * @param water		Water Tiles to be rendered
 	 * @param camera	Camera to use in rendering
 	 * @param sun		Primary light source
+	 * 
+	 * Renders scaled water
 	 */
 	public void render(List<WaterTile> water, Camera camera, Light sun) {
 		prepareRender(camera, sun); 
@@ -83,11 +81,11 @@ public class WaterRenderer {
 	}
 	
 	/**
-	 * Renders equilateral water
+	 * @param water
+	 * @param camera
+	 * @param sun
 	 * 
-	 * @param water		Water tiles to render to scene
-	 * @param camera	{@link Camera} to render through
-	 * @param sun		Focal {@link Light} of the scene
+	 * Renders equilateral water
 	 */
 	public void renderTile(List<WaterTile> water, Camera camera, Light sun) {
 		prepareRender(camera, sun);
@@ -101,10 +99,10 @@ public class WaterRenderer {
 //**************************************Private Methods********************************************//
 	
 	/**
-	 * Prepare to render
-	 * 
 	 * @param camera	Camera to prepare with
 	 * @param sun		Focal light
+	 * 
+	 * Prepare to render
 	 */
 	private void prepareRender(Camera camera, Light sun){
 		shader.start();
@@ -125,6 +123,7 @@ public class WaterRenderer {
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, normalTexture);
 		GL13.glActiveTexture(GL13.GL_TEXTURE4);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, fbos.getRefractionDepthTexture());
+		
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	}
@@ -140,9 +139,9 @@ public class WaterRenderer {
 	}
 
 	/**
-	 * Binds VAO
-	 * 
 	 * @param loader	Defines loader to use
+	 * 
+	 * Binds VAO
 	 */
 	private void setUpVAO(Loader loader) {
 		float[] vertices = { -1, -1, -1, 1, 1, -1, 1, -1, -1, 1, 1, 1 };

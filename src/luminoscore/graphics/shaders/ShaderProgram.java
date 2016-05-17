@@ -19,10 +19,10 @@ import luminoscore.Debug;
 
 /**
  * 
- * Base shader program
- * 
  * @author Nick Clark
  * @version 1.1
+ * 
+ * Base shader program
  *
  */
 public abstract class ShaderProgram {
@@ -35,10 +35,10 @@ public abstract class ShaderProgram {
 	private static FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
 	
 	/**
-	 * Constructor
-	 * 
 	 * @param vertexFile	Vertex shader file
 	 * @param fragmentFile	Fragment shader file
+	 * 
+	 * Constructor file
 	 */
 	public ShaderProgram(String vertexFile,String fragmentFile){
 		vertexShaderID = loadShader(vertexFile,GL20.GL_VERTEX_SHADER);
@@ -52,13 +52,6 @@ public abstract class ShaderProgram {
 		getAllUniformLocations();
 	}
 	
-	/**
-	 * Constructor
-	 * 
-	 * @param vertexFile	Vertex shader file
-	 * @param geometryFile	Geometry shader file
-	 * @param fragmentFile	Fragment shader file
-	 */
 	public ShaderProgram(String vertexFile, String geometryFile, String fragmentFile) {
 		vertexShaderID = loadShader(vertexFile,GL20.GL_VERTEX_SHADER);
 		geometryShaderID = loadShader(geometryFile, GL32.GL_GEOMETRY_SHADER);
@@ -78,10 +71,10 @@ public abstract class ShaderProgram {
 	protected abstract void getAllUniformLocations();
 	
 	/**
-	 * Gets uniform location of variable
-	 * 
 	 * @param uniformName	Shader uniform variable
-	 * @return 	Shader variable location
+	 * @return int			Shader variable location
+	 * 
+	 * Gets uniform location of variable
 	 */
 	protected int getUniformLocation(String uniformName){
 		return GL20.glGetUniformLocation(programID,uniformName);
@@ -119,70 +112,70 @@ public abstract class ShaderProgram {
 	protected abstract void bindAttributes();
 	
 	/**
-	 * Binds variable location
-	 * 
 	 * @param attribute		Attribute to be bound
 	 * @param variableName	Variable name to be bound
+	 * 
+	 * Binds variable location
 	 */
 	protected void bindAttribute(int attribute, String variableName){
 		GL20.glBindAttribLocation(programID, attribute, variableName);
 	}
 	
 	/**
-	 * Loads float to shader
-	 * 
 	 * @param location	Location of variable to be bound
 	 * @param value		Value of variable to be bound
+	 * 
+	 * Loads float to shader
 	 */
 	protected void loadFloat(int location, float value){
 		GL20.glUniform1f(location, value);
 	}
 	
 	/**
-	 * Loads integer to shader
-	 * 
 	 * @param location	Location of variable to be bound
 	 * @param value		Value of variable to be bound
+	 * 
+	 * Loads integer to shader
 	 */
 	protected void loadInt(int location, int value){
 		GL20.glUniform1i(location, value);
 	}
 	
 	/**
-	 * Loads Vector3f to shader
-	 * 
 	 * @param location	Location of variable to be bound
 	 * @param vector	Value of variable to be bound
+	 * 
+	 * Loads Vector3f to shader
 	 */
 	protected void loadVector(int location, Vector3f vector){
 		GL20.glUniform3f(location,vector.x,vector.y,vector.z);
 	}
 	
 	/**
-	 * Loads Vector4f to shader
-	 * 
 	 * @param location	Location of variable to be bound
 	 * @param vector	Value of variable to be bound
+	 * 
+	 * Loads Vector4f to shader
 	 */
 	protected void load4DVector(int location, Vector4f vector){
 		GL20.glUniform4f(location, vector.x, vector.y, vector.z, vector.w);
 	}
 	
 	/**
-	 * Loads Vector2D to shader
-	 * 
 	 * @param location	Location of variable to be bound
 	 * @param vector	Value of variable to be bound
+	 * 
+	 * Loads Vector2D to shader
 	 */
 	protected void load2DVector(int location, Vector2f vector){
 		GL20.glUniform2f(location,vector.x,vector.y);
 	}
 	
 	/**
-	 * Loads Boolean to shader
-	 * 
 	 * @param location	Location of variable to be bound
 	 * @param value		Value of variable to be bound
+	 * 
+	 * Loads Boolean to shader
 	 */
 	protected void loadBoolean(int location, boolean value){
 		float toLoad = 0;
@@ -193,10 +186,10 @@ public abstract class ShaderProgram {
 	}
 	
 	/**
-	 * Loads Matrix4f to shader
-	 * 
 	 * @param location	Location of variable to be bound
 	 * @param matrix	Value of variable to be bound
+	 * 
+	 * Loads Matrix4f to shader
 	 */
 	protected void loadMatrix(int location, Matrix4f matrix){
 		matrix.store(matrixBuffer);
@@ -207,11 +200,11 @@ public abstract class ShaderProgram {
 //*******************************Private Methods**********************************//
 	
 	/**
-	 * Loads shader to GPU
-	 * 
 	 * @param file	Shader file to load
 	 * @param type	Type of shader to load
 	 * @return      ID of shader
+	 * 
+	 * Loads shader to GPU
 	 */
 	private static int loadShader(String file, int type){
 		StringBuilder shaderSource = new StringBuilder();

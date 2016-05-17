@@ -2,10 +2,10 @@ package luminoscore.graphics.textures;
 
 /**
  * 
- * Texture Pack for Terrains
- * 
  * @author Nick Clark
  * @version 1.0
+ * 
+ * Texture Pack for Terrains
  *
  */
 
@@ -17,12 +17,12 @@ public class TerrainTexturePack {
 	private TerrainTexture bTexture;
 	
 	/**
-	 * Constructor
-	 * 
 	 * @param backgroundTexture	Color: (0, 0, 0)
 	 * @param rTexture			Color: (1, 0, 0)
 	 * @param gTexture			Color: (0, 1, 0)
 	 * @param bTexture			Color: (0, 0, 1)
+	 * 
+	 * Constructor
 	 */
 	public TerrainTexturePack(TerrainTexture backgroundTexture, TerrainTexture rTexture, TerrainTexture gTexture, TerrainTexture bTexture) {
 		this.backgroundTexture = backgroundTexture;
@@ -32,39 +32,40 @@ public class TerrainTexturePack {
 	}
 
 	/**
-	 * Gets background texture
+	 * @return TerrainTexture	Black texture
 	 * 
-	 * @return	Black texture
+	 * Gets background texture
 	 */
 	public TerrainTexture getBackgroundTexture() {
 		return backgroundTexture;
 	}
 
 	/**
-	 * Gets R Texture
+	 * @return TerrainTexture	Red Texture
 	 * 
-	 * @return	Red Texture
+	 * Gets R Texture
 	 */
 	public TerrainTexture getrTexture() {
 		return rTexture;
 	}
 
 	/**
-	 * Gets G Texture
+	 * @return	TerrainTexture	Green Texture
 	 * 
-	 * @return	Green Texture
+	 * Gets G Texture
 	 */
 	public TerrainTexture getgTexture() {
 		return gTexture;
 	}
 
 	/**
-	 * Gets B Texture
+	 * @return	TerrainTexture	Blue Texture
 	 * 
-	 * @return	Blue Texture
+	 * Gets B Texture
 	 */
 	public TerrainTexture getbTexture() {
 		return bTexture;
 	}
+
 
 }

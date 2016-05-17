@@ -5,10 +5,10 @@ import java.util.Calendar;
 
 /**
  * 
- * Sets up date utilities for client
- * 
  * @author Nick Clark
  * @version 1.0
+ * 
+ * Sets up date utilities for client
  *
  */
 
@@ -38,11 +38,11 @@ public class DateUtils {
 	}
 	
 	/**
-	 * Gets total time
+	 * @return float	Total Time
 	 * 
-	 * @return Current Time
+	 * Gets total time
 	 */
-	public float getCurrentTime() {
+	public float getTotalTime() {
 		realTime();
 		return totalTime;
 	}

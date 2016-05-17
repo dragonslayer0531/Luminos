@@ -4,10 +4,10 @@ import org.lwjgl.util.vector.Vector3f;
 
 /**
  * 
- * The Camera determines the view matrix of the GL Viewport
- * 
  * @author Nick Clark
  * @version 1.0
+ * 
+ * The Camera determines the view matrix of the GL Viewport
  *
  */
 
@@ -26,9 +26,9 @@ public class Camera {
 	private Entity player;
 	
 	/**
-	 * Constructor determining the positioning of the Camera
+	 * @param player	Determines the focal {@link entity} of the camera
 	 * 
-	 * @param player	Determines the focal {@link Entity} of the camera
+	 * Constructor determining the positioning of the Camera
 	 */
 	public Camera(Entity player){
 		this.player = player;
@@ -47,36 +47,36 @@ public class Camera {
 	}
 
 	/**
-	 * Gets the position of the camera
+	 * @return Vector3f 	Value containing the positon of the camera
 	 * 
-	 * @return Value containing the positon of the camera
+	 * Gets the position of the camera
 	 */
 	public Vector3f getPosition() {
 		return position;
 	}
 
 	/**
-	 * Gets the pitch of the camera
-	 * 
 	 * @return float		Value containing the pitch rotation of the camera
+	 * 
+	 * Gets the pitch of the camera
 	 */
 	public float getPitch() {
 		return pitch;
 	}
 
 	/**
-	 * Gets the yaw of the camera
+	 * @return float		Value containing the yaw rotation of the camera
 	 * 
-	 * @return float		Value containing the yaw rotation of the camera 
+	 * Gets the yaw of the camera
 	 */
 	public float getYaw() {
 		return yaw;
 	}
 
 	/**
-	 * Gets the roll of the camera
-	 * 
 	 * @return float		Value containing the roll rotation of the camera
+	 * 
+	 * Gets the roll of the camera
 	 */
 	public float getRoll() {
 		return roll;
@@ -92,10 +92,10 @@ public class Camera {
 	//**********************************Private Methods*******************************************//
 	
 	/**
-	 * Calculates the camera's rotation and position
-	 * 
 	 * @param horizDistance  	Horizontal distance between camera and entity
 	 * @param verticDistance	Vertical distance between camera and entity
+	 * 
+	 * Calculates the camera's rotation and position
 	 */
 	private void calculateCameraPosition(float horizDistance, float verticDistance){
 		float theta = player.getRotation().y + angleAroundPlayer;
@@ -107,18 +107,18 @@ public class Camera {
 	}
 	
 	/**
-	 * Calculates the X offset of the camera
+	 * @return float			X offset of camera
 	 * 
-	 * @return X offset of camera
+	 * Calculates the X offset of the camera
 	 */
 	private float calculateHorizontalDistance(){
 		return (float) (distanceFromPlayer * Math.cos(Math.toRadians(pitch)));
 	}
 	
 	/**
-	 * Calculate the Z offset of the camera
+	 * @return float			Z offset of camera
 	 * 
-	 * @return Z offset of camera
+	 * Calculate the Z offset of the camera
 	 */
 	private float calculateVerticalDistance(){
 		return (float) (distanceFromPlayer * Math.sin(Math.toRadians(pitch)));

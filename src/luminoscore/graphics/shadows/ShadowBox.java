@@ -10,10 +10,10 @@ import luminoscore.graphics.render.MasterRenderer;
 
 /**
  * 
- * Box defining where shadows are rendered in the scene
- * 
  * @author Nick Clark
  * @version 1.0
+ * 
+ * Box defining where shadows are rendered in the scene
  *
  */
 
@@ -33,10 +33,10 @@ public class ShadowBox {
     private float farHeight, farWidth, nearHeight, nearWidth;
  
     /**
-     * Constructor		
-     * 
      * @param lightViewMatrix	view matrix in the light position
-     * @param camera			{@link Camera} to render with
+     * @param camera			Camera to render with
+     * 
+     * Constructor		
      */
     public ShadowBox(Matrix4f lightViewMatrix, Camera camera) {
         this.lightViewMatrix = lightViewMatrix;
@@ -93,9 +93,9 @@ public class ShadowBox {
     }
  
     /**
-     * Gets and calculates the center of the shadow box
-     * 
      * @return Vector3f		Center of ShadowBox
+     * 
+     * Gets and calculates the center of the shadow box
      */
     public Vector3f getCenter() {
         float x = (minX + maxX) / 2f;
@@ -108,27 +108,27 @@ public class ShadowBox {
     }
  
     /**
-     * Gets width of box
+     * @return float	width
      * 
-     * @return width
+     * Gets width of box
      */
     public float getWidth() {
         return maxX - minX;
     }
  
     /**
-     * Gets height of box
+     * @return float	height
      * 
-     * @return height
+     * Gets height of box
      */
     public float getHeight() {
         return maxY - minY;
     }
  
     /**
-     * Gets length of box
-     * 
      * @return float	length
+     * 
+     * Gets length of box
      */
     public float getLength() {
         return maxZ - minZ;
@@ -137,13 +137,13 @@ public class ShadowBox {
 //***************************************Private Methods**************************************//
     
     /**
-     * Gets the frustum vertices
-     * 
      * @param rotation		Defines rotation of frustum
      * @param forwardVector	Defines forward vector of box
      * @param centerNear	Defines the center near position of box
      * @param centerFar		Defines the center far position of box
-     * @return 	Array of Vector4f defining frustum vertices
+     * @return Vector4f[] 	Array of Vector4f defining frustum vertices
+     * 
+     * Gets the frustum vertices
      */
     private Vector4f[] calculateFrustumVertices(Matrix4f rotation, Vector3f forwardVector,
             Vector3f centerNear, Vector3f centerFar) {
@@ -172,12 +172,12 @@ public class ShadowBox {
     }
  
     /**
-     * Calculates Light Space Frustum Corners
-     * 
      * @param startPoint	Start point of frustum
      * @param direction		Direction of frustum
      * @param width			Width of frustum
-     * @return			 	Light Space Frustum Corner
+     * @return	Vector4f 	Light Space Frustum Corner
+     * 
+     * Calculates Ligh Space Frustum Corners
      */
     private Vector4f calculateLightSpaceFrustumCorner(Vector3f startPoint, Vector3f direction, float width) {
         Vector3f point = Vector3f.add(startPoint,
@@ -188,9 +188,9 @@ public class ShadowBox {
     }
  
     /**
-     * Gets and calculates camera rotation matrix
-     * 
      * @return Matrix4f	Camera Rotation Matrix
+     * 
+     * Gets and calculates camera rotation matrix
      */
     private Matrix4f calculateCameraRotationMatrix() {
         Matrix4f rotation = new Matrix4f();
@@ -211,9 +211,9 @@ public class ShadowBox {
     }
  
     /**
-     * Gets and calculates aspect ratio
+     * @return float	Aspect Ratio
      * 
-     * @return	Aspect Ratio
+     * Gets and calculates aspect ratio
      */
     private float getAspectRatio() {
         return (float) GlobalLock.WIDTH / GlobalLock.HEIGHT;

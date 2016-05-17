@@ -2,69 +2,87 @@ package luminoscore.graphics.entities;
 
 import org.lwjgl.util.vector.Vector3f;
 
+import luminosutils.serialization.LArray;
+import luminosutils.serialization.LObject;
+
 /**
- * 
- * The light is a wrapper for position, color, and attenuation
  * 
  * @author Nick Clark
  * @version 1.0
+ * 
+ * The light is a wrapper for position, color, and attenuation
  *
  */
 public class Light {
 	
 	private Vector3f position;
-	private Vector3f color;
+	private Vector3f colour;
 	private Vector3f attenuation = new Vector3f(1, 0, 0);
 	
 	/**
-	 * Constructor using position and color
+	 * @param position
+	 * @param colour
 	 * 
-	 * @param position		Initial position of the light
-	 * @param color			Initial color of the light
+	 * Constructor using position and color
 	 */
-	public Light(Vector3f position, Vector3f color) {
+	public Light(Vector3f position, Vector3f colour) {
 		this.position = position;
-		this.color = color;
+		this.colour = colour;
 	}
 	
 	/**
-	 * Constructor using position, color, and attenuation
+	 * @param position
+	 * @param colour
+	 * @param attenuation
 	 * 
-	 * @param position		Initial position of the light
-	 * @param color			Initial color of the light
-	 * @param attenuation	Initial attenuation of the light
+	 * Constructor using position, color, and attenuation
 	 */
-	public Light(Vector3f position, Vector3f color, Vector3f attenuation) {
+	public Light(Vector3f position, Vector3f colour, Vector3f attenuation) {
 		this.position = position;
-		this.color = color;
+		this.colour = colour;
 		this.attenuation = attenuation;
 	}
 	
 	/**
-	 * Gets the attenuation of the light instance
+	 * @return Vector3f		Attenuation of light
 	 * 
-	 * @return Attenuation of light 
+	 * Gets the attenuation of the light instance
 	 */
 	public Vector3f getAttenuation(){
 		return attenuation;
 	}
 
 	/**
-	 * Gets the position of the light instance
+	 * @return Vector3f		Position of light
 	 * 
-	 * @return Position of light
+	 * Gets the position of the light instance
 	 */
 	public Vector3f getPosition() {
 		return position;
 	}
 
 	/**
-	 * Gets the color of the light instance
+	 * @return Vector3f 	Color of light
 	 * 
-	 * @return Color of light
+	 * Gets the color of the light instance
 	 */
-	public Vector3f getColor() {
-		return color;
+	public Vector3f getColour() {
+		return colour;
+	}
+	
+	/**
+	 * Gets byte array associated with light
+	 * 
+	 * @return byte array associated with light
+	 */
+	public byte[] getBytes() {
+		LObject object = new LObject("light");
+		object.addArray(LArray.Float("position", new float[]{position.x, position.y, position.z}));
+		object.addArray(LArray.Float("attenuation", new float[]{attenuation.x, attenuation.y, attenuation.z}));
+		object.addArray(LArray.Float("color", new float[]{colour.x, colour.y, colour.z}));
+		byte[] data = new byte[object.getSize()];
+		object.getBytes(data, 0);
+		return data;
 	}
 
 }
