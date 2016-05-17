@@ -4,10 +4,10 @@ import java.io.File;
 
 /**
  * 
- * Font Type Wrapper
- * 
  * @author Nick Clark
  * @version 1.0
+ * 
+ * Font Type Wrapper
  *
  */
 
@@ -17,10 +17,11 @@ public class FontType {
     private TextMeshCreator loader;
 
     /**
-     * Constructor
-     * 
      * @param textureAtlas	Texture Atlas of Font
      * @param fontFile		Font file name
+     * @param window		Window to render to
+     * 
+     * Constructor
      */
     public FontType(int textureAtlas, File fontFile) {
         this.textureAtlas = textureAtlas;
@@ -28,19 +29,17 @@ public class FontType {
     }
  
     /**
-     * Gets the GPU ID of the texture atlas
+     * @return int	Texture atlas ID
      * 
-     * @return Texture atlas ID
+     * Gets the GPU ID of the texture atlas
      */
     public int getTextureAtlas() {
         return textureAtlas;
     }
  
     /**
-     * Creates text mesh data
-     * 
      * @param text	GUI Text to render
-     * @return		text mesh data of font
+     * @return		Creates text mesh data
      */
     public TextMeshData loadText(GUIText text) {
         return loader.createTextMesh(text);

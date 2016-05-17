@@ -2,16 +2,15 @@ package luminoscore;
 
 import java.io.FileNotFoundException;
 
-import java.io.PrintWriter;
-
 /**
- * 
- * Custom Luminos Debugger
  * 
  * @author Nick Clark
  * @version 1.0
- *
+ * 
+ * Creates Debug Data
+ * 
  */
+import java.io.PrintWriter;
 
 public class Debug {
 	
@@ -21,9 +20,9 @@ public class Debug {
 	private static StringBuilder debug_data = new StringBuilder();
 	
 	/**
-	 * Append string to debug buffer
-	 * 
 	 * @param string	String to be added
+	 * 
+	 * Append string to debug buffer
 	 */
 	public static void addData(String string) {
 		debug_data.append(string + System.lineSeparator());
@@ -58,9 +57,9 @@ public class Debug {
 //***********************************Private Methods*******************************************//
 	
 	/**
-	 * Retreives Runtime Environment Data
+	 * @return String	Runtime Environment Data
 	 * 
-	 * @return Runtime Environment Data
+	 * Retreives Runtime Environment Data
 	 */
 	private static String getEnvironmentData() {
 		StringBuilder data = new StringBuilder();

@@ -2,10 +2,10 @@ package luminoscore.graphics.terrains;
 
 /**
  * 
- * Terrain class holding a terrain type
- * 
  * @author Nick Clark
  * @version 1.0
+ * 
+ * Terrain class holding a terrain type
  *
  */
 
@@ -14,7 +14,7 @@ public class TerrainType {
 	/**
 	 * Enumeration of Terrain Types
 	 */
-	public enum Type {
+	public static enum Type {
 		FLAT,
 		PLAINS,
 		HILLS,
@@ -22,10 +22,10 @@ public class TerrainType {
 	}
 	
 	/**
-	 * Gets the data from the terrain type
-	 * 
 	 * @param type		Type of terrain	
 	 * @return float[]	Data on terrain type
+	 * 
+	 * Gets the data from the terrain type
 	 */
 	public static float[] getData(Type type) {
 		float data[] = new float[3];

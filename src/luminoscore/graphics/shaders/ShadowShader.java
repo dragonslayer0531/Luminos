@@ -6,10 +6,10 @@ import luminoscore.GlobalLock;
 
 /**
  * 
- * Shadow Shader for Shadow Renderers
- *
  * @author Nick Clark
  * @version 1.1
+ *
+ * Shadow Shader for Shadow Renderers
  *
  */
 
@@ -33,9 +33,9 @@ public class ShadowShader extends ShaderProgram {
     }
      
     /**
-     * Loads Model View Projection matrix to shader
+     * @param mvpMatrix
      * 
-     * @param mvpMatrix		Model View Projection matrix	
+     * Loads Model View Projection matrix to shader
      */
     public void loadMvpMatrix(Matrix4f mvpMatrix){
         super.loadMatrix(location_mvpMatrix, mvpMatrix);

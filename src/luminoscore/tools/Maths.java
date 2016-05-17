@@ -8,23 +8,14 @@ import org.lwjgl.util.vector.Vector3f;
 
 import luminoscore.graphics.entities.Camera;
 
-/**
- * 
- * Complex math calculations for the engine.
- * 
- * @author Nick Clark
- * @version 1.0
- *
- */
-
 public class Maths {
 
 	/**
-	 * Creates transformation matrix
-	 * 
 	 * @param translation	2D Translation
 	 * @param scale			2D Scale
-	 * @return 				Transformation Matrix
+	 * @return Matrix4f		Transformation Matrix
+	 * 
+	 * Creates transformation matrix
 	 */
 	public static Matrix4f createTransformationMatrix(Vector2f translation, Vector2f scale) {
 		Matrix4f matrix = new Matrix4f();
@@ -35,14 +26,14 @@ public class Maths {
 	}
 
 	/**
-	 * Creates transformation matrix
-	 * 
 	 * @param translation	3D Translation
 	 * @param rx			Rotation around X
 	 * @param ry			Rotation around Y
 	 * @param rz			Rotation around Z
 	 * @param scale			Uniform scale
-	 * @return 				Transformation Matrix
+	 * @return Matrix4f		Transformation Matrix
+	 * 
+	 * Creates transformation matrix
 	 */
 	public static Matrix4f createTransformationMatrix(Vector3f translation, float rx, float ry,
 			float rz, float scale) {
@@ -57,26 +48,26 @@ public class Maths {
 	}
 	
 	/**
-	 * Creates transformation matrix
-	 * 
 	 * @param translation	3D Translation
 	 * @param rotation		3D Rotation
 	 * @param scale			Uniform Scale
-	 * @return 				Transformation Matrix
+	 * @return Matrix4f		Transformation Matrix
+	 * 
+	 * Creates transformation matrix
 	 */
 	public static Matrix4f createTransformationMatrix(Vector3f translation, Vector3f rotation, float scale) {
 		return Maths.createTransformationMatrix(translation, rotation.x, rotation.y, rotation.z, scale);
 	}
 	
 	/**
-	 * Creates transformation matrix
-	 * 
 	 * @param translation	3D Translation
 	 * @param rx			Rotation around X
 	 * @param ry			Rotation around Y
 	 * @param rz			Rotation around Z
 	 * @param scale			2D scale
-	 * @return 				Transformation Matrix
+	 * @return Matrix4f		Transformation Matrix
+	 * 
+	 * Creates transformation matrix
 	 */
 	public static Matrix4f createWaterTransformationMatrix(Vector3f translation, float rx, float ry, float rz, Vector2f scale) {
 		Matrix4f matrix = new Matrix4f();
@@ -90,45 +81,13 @@ public class Maths {
 	}
 
 	/**
-	 * Rotates a point around the origin
-	 * 
-	 * @param point			Location vector to rotate
-	 * @param rotation		Rotation vector
-	 * @return				Location vector of rotated point vector
-	 */
-	public static Vector3f rotate(Vector3f point, Vector3f rotation) {
-		Matrix4f matrix = new Matrix4f();
-		matrix.setIdentity();
-		matrix.m00 = point.x;
-		matrix.m11 = point.y;
-		matrix.m22 = point.z;
-		Matrix4f.rotate((float) Math.toRadians(rotation.x), new Vector3f(1, 0, 0), matrix, matrix);
-		Matrix4f.rotate((float) Math.toRadians(rotation.y), new Vector3f(0, 1, 0), matrix, matrix);
-		Matrix4f.rotate((float) Math.toRadians(rotation.z), new Vector3f(0, 0, 1), matrix, matrix);
-		return new Vector3f(matrix.m00, matrix.m11, matrix.m22);
-	}
-	
-	/**
-	 * Checks the equivalence of two point vectors
-	 * 
-	 * @param one		Point vector one
-	 * @param two		Point vector two
-	 * @param error		Value of difference allowed to pass
-	 * @return			Are the points similar within the error
-	 */
-	public static boolean checkEquivalence(Vector3f one, Vector3f two, float error) {
-		if(one.x - two.x < error || one.y - two.y < error || one.z - two.z < error) return true;
-		return false;
-	}
-
-	/**
-	 * Calculates barycenter of points
-	 * 
 	 * @param p1		Value One
 	 * @param p2		Value Two
 	 * @param p3		Value Three
 	 * @param pos		Position inside values
-	 * @return 			Weighted value
+	 * @return float	Weighted value
+	 * 
+	 * Calculates barycenter of points
 	 */
 	public static float barryCentric(Vector3f p1, Vector3f p2, Vector3f p3, Vector2f pos) {
 		float det = (p2.z - p3.z) * (p1.x - p3.x) + (p3.x - p2.x) * (p1.z - p3.z);
@@ -139,10 +98,10 @@ public class Maths {
 	}
 
 	/**
-	 * Creates view matrix of {@link Camera}
-	 * 
 	 * @param camera	Camera for view matrix
-	 * @return 			View Matrix
+	 * @return Matrix4f	View Matrix
+	 * 
+	 * Creates view matrix
 	 */
 	public static Matrix4f createViewMatrix(Camera camera) {
 		Matrix4f viewMatrix = new Matrix4f();
@@ -157,11 +116,11 @@ public class Maths {
 	}
 
 	/**
-	 * Gets distance between two points
-	 * 
 	 * @param pointOne	First Point
 	 * @param pointTwo	Second Point
-	 * @return 			Distance
+	 * @return float	Distance
+	 * 
+	 * Gets distance between two points
 	 */
 	public static float getDistance(Vector3f pointOne, Vector3f pointTwo) {
 		float distance = 0;
@@ -180,11 +139,11 @@ public class Maths {
 	}
 	
 	/**
-	 * Determines furthest point from origin
-	 * 
 	 * @param origin	Point of origin
 	 * @param points	Points to be checked
-	 * @return 			Furthest point
+	 * @return Vector3f	Furthest point
+	 * 
+	 * Determines furthest point from origin
 	 */
 	public static Vector3f getFurthestPoint(Vector3f origin, List<Vector3f> points) {
 		float distance = getDistance(origin, points.get(0));
@@ -202,11 +161,11 @@ public class Maths {
 	}
 	
 	/**
-	 * Determines closest point to origin
-	 * 
 	 * @param origin	Point of origin
 	 * @param points	Points to be checked	
-	 * @return 			Closest point
+	 * @return Vector3f	Closest point
+	 * 
+	 * Determines closest point to origin
 	 */
 	public static Vector3f getClosestPoint(Vector3f origin, List<Vector3f> points) {
 		
@@ -226,12 +185,12 @@ public class Maths {
 	}
 	
 	/**
-	 * Calculates the normal of the plane given by pos1, pos2, and pos3
-	 * 
 	 * @param pos1		Position One
 	 * @param pos2		Position Two
 	 * @param pos3		Position Three
-	 * @return 			Normal of plane
+	 * @return Vector3f	Normal of plane
+	 * 
+	 * Calculates the normal of the plane given by pos1, pos2, and pos3
 	 */
 	public static Vector3f getNormal(Vector3f pos1, Vector3f pos2, Vector3f pos3) {
 		
@@ -248,12 +207,12 @@ public class Maths {
 	}
 	
 	/**
-	 * Calculates linear interpolation between values
-	 * 
 	 * @param a			First value
 	 * @param b			Second value
 	 * @param f			Blend value
-	 * @return 			Interpolated value
+	 * @return float	Interpolated value
+	 * 
+	 * Calculates linear interpolation between values
 	 */
 	public static float LinearInterpolation(float a, float b, float f) {
 		float possible = (a + b + f) / 3;
@@ -265,12 +224,12 @@ public class Maths {
 	}
 	
 	/**
-	 * Calculates cosine interpolation between values
-	 * 
 	 * @param a			First value
 	 * @param b			Second value
 	 * @param blend		Blend value
-	 * @return ``		Interpolated value
+	 * @return float	Interpolated value
+	 * 
+	 * Calculates cosine interpolation between values
 	 */
 	public static float CosineInterpolation(float a, float b, float blend) {
 		double theta = blend * Math.PI;
@@ -279,12 +238,12 @@ public class Maths {
 	}
 	
 	/**
-	 * Checks if a value is between two bounds 
-	 * 
 	 * @param in		Middle value
 	 * @param param1	Lower bound
 	 * @param param2	Upper bound
-	 * @return 			Is between upper and lower
+	 * @return boolean	Between upper and lower
+	 * 
+	 * Calculates if 
 	 */
 	public static boolean isBetween(float in, float param1, float param2) {
 		float one = param1;
@@ -297,18 +256,20 @@ public class Maths {
 	}
 	
 	/**
-	 * Converts a three component RGB value to its integer equivalent
+	 * Calculates the integer equivalent of a color
 	 * 
-	 * @param color		0-255 float values for each component
-	 * @return			Integer value of the color
+	 * @param color		Vector3f holding color data
+	 * @return			int value of color
 	 */
 	public static int rgbToInt(Vector3f color) {
+		assert color.x < 255 && color.y < 255 && color.z < 255;
 		int red = (int) color.x;
 		int green = (int) color.y;
 		int blue = (int) color.z;
-		if((red & 255) != red || (green & 255) != green || (blue & 255) != blue)
-			throw new IllegalArgumentException("RGB input invalid");
-		return (red << 16) | (green << 8) | blue;
+		
+		return ((red & 0xFF) << 16 |
+				(green & 0xFF) << 8 |
+				(blue & 0xFF) << 0);
 	}
 	
 	/**

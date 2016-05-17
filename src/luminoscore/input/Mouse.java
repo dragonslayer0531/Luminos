@@ -6,10 +6,10 @@ import org.lwjgl.glfw.GLFWMouseButtonCallback;
 
 /**
  * 
- * Mouse Listener
- * 
  * @author Nick Clark
  * @version 1.0
+ * 
+ * Mouse Listener
  *
  */
 
@@ -45,10 +45,10 @@ public class Mouse extends GLFWMouseButtonCallback {
 	}
 
 	/**
-	 * Gets if button is down	
-	 * 
 	 * @param key		KEY CODE
-	 * @return	Is down
+	 * @return boolean	Is down
+	 * 
+	 * Gets if button is down	
 	 */
 	public static boolean isDown(int key) {
 		if (key <= MOUSE_BUTTON_LAST) {
@@ -58,10 +58,10 @@ public class Mouse extends GLFWMouseButtonCallback {
 	}
 
 	/**
-	 * Gets if button is pressed
-	 * 
 	 * @param key		KEY CODE
-	 * @return	Is pressed
+	 * @return boolean	Is pressed
+	 * 
+	 * Gets if button is pressed
 	 */
 	public static boolean isPressed(int key) {
 		if (key <= MOUSE_BUTTON_LAST) {
@@ -71,10 +71,10 @@ public class Mouse extends GLFWMouseButtonCallback {
 	}
 
 	/**
-	 * Gets if button is released
-	 * 
 	 * @param key		KEY CODE
-	 * @return	Is released
+	 * @return boolean	Is released
+	 * 
+	 * Gets if button is released
 	 */
 	public static boolean isReleased(int key) {
 		if (key <= MOUSE_BUTTON_LAST) {

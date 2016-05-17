@@ -2,10 +2,10 @@ package luminoscore.graphics.textures;
 
 /**
  * 
- * Texture used for terrains
- * 
  * @author Nick Clark
  * @version 1.0
+ * 
+ * Texture used for terrains
  *
  */
 
@@ -14,21 +14,23 @@ public class TerrainTexture {
 	private int textureID;
 
 	/**
-	 * Constructor
-	 * 
 	 * @param textureID	GPU ID of Texture
+	 * 
+	 * Constructor
 	 */
 	public TerrainTexture(int textureID) {
 		this.textureID = textureID;
 	}
 
 	/**
-	 * Gets Texture ID
+	 * @return int	Texture ID
 	 * 
-	 * @return Texture ID
+	 * Gets Texture ID
 	 */
 	public int getTextureID() {
 		return textureID;
 	}
 	
+	
+
 }

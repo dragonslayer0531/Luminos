@@ -9,10 +9,10 @@ import luminoscore.tools.Maths;
 
 /**
  * 
- * Water Shader for Water Renderer
- * 
  * @author Nick Clark
  * @version 1.1
+ * 
+ * Water Shader for Water Renderer
  *
  */
 public class WaterShader extends ShaderProgram {
@@ -79,37 +79,37 @@ public class WaterShader extends ShaderProgram {
 	}
 	
 	/**
-	 * Loads {@link Light} to shader
+	 * @param sun	Focal light of scene
 	 * 
-	 * @param sun	Focal light of scene 
+	 * Loads light to shader
 	 */
 	public void loadLight(Light sun) {
-		super.loadVector(location_lightColor, sun.getColor());
+		super.loadVector(location_lightColor, sun.getColour());
 		super.loadVector(location_lightPosition, sun.getPosition());
 	}
 
 	/**
-	 * Loads projection matrix to shader
-	 * 
 	 * @param projection	Projection matrix
+	 * 
+	 * Loads projection matrix to shader
 	 */
 	public void loadProjectionMatrix(Matrix4f projection) {
 		loadMatrix(location_projectionMatrix, projection);
 	}
 	
 	/**
-	 * Loads movement factor of water
-	 * 
 	 * @param factor	Movement factor of water
+	 * 
+	 * Loads movement factor of water
 	 */
 	public void loadMoveFactor(float factor) {
 		super.loadFloat(location_moveFactor, factor);
 	}
 
 	/**
-	 * Load view matrix to shader
-	 * 
 	 * @param camera	Camera to calculate view matrix of
+	 * 
+	 * Load view matrix to shader
 	 */
 	public void loadViewMatrix(Camera camera){
 		Matrix4f viewMatrix = Maths.createViewMatrix(camera);
@@ -118,9 +118,9 @@ public class WaterShader extends ShaderProgram {
 	}
 
 	/**
-	 * Loads model matrix to shader
-	 * 
 	 * @param modelMatrix	Model matrix
+	 * 
+	 * Loads model matrix to shader
 	 */
 	public void loadModelMatrix(Matrix4f modelMatrix){
 		loadMatrix(location_modelMatrix, modelMatrix);

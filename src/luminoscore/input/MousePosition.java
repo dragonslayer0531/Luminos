@@ -4,10 +4,10 @@ import org.lwjgl.glfw.GLFWCursorPosCallback;
 
 /**
  * 
- * Mouse Position Listener
- * 
  * @author Nick Clark
  * @version 1.0
+ * 
+ * Mouse Position Listener
  *
  */
 
@@ -23,18 +23,18 @@ public class MousePosition extends GLFWCursorPosCallback {
 	}
 	
 	/**
-	 * Gets x position of mouse
+	 * @return double	X position
 	 * 
-	 * @return	X position
+	 * Gets x position of mouse
 	 */
 	public static double getX() {
 		return x;
 	}
 	
 	/**
-	 * Gets y position of mouse
+	 * @return double	Y Position
 	 * 
-	 * @return	Y Position
+	 * Gets y position of mouse
 	 */
 	public static double getY() {
 		return y;

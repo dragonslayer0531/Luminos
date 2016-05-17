@@ -6,138 +6,95 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 import luminoscore.Debug;
-import luminoscore.GlobalLock;
-
-/**
- * 
- * UDP Server of engine
- * 
- * @author Nick Clark
- * @version 1.0
- *
- */
+import luminosutils.serialization.SerializationUtils;
 
 public class LuminosServer extends Thread {
 
-	private int port = 1331;
-	private DatagramSocket clientSocket;
-	private InetAddress serverAddress;
+	private static int port;
+	private static boolean running = true;
+	private static InetAddress address;
+	private static DatagramSocket serverSocket;
 	
-	/**
-	 * Constructor
-	 * 
-	 * @param address	Address of server
-	 */
-	public LuminosServer(InetAddress address) {
-		this.serverAddress = address;
+	private static List<InetAddress> clients = new ArrayList<InetAddress>();
+	
+	public LuminosServer(int port) {
+		LuminosServer.port = port;
 	}
 	
-	/**
-	 * Constructor
-	 * 
-	 * @param address	Address of server
-	 * @param port		Port of server
-	 */
-	public LuminosServer(InetAddress address, int port) {
-		this.serverAddress = address;
-		this.port = port;
-	}
-	
-	/**
-	 * Constructor
-	 * 
-	 * @param address	Address of server
-	 */
-	public LuminosServer(String address) {
-		try {
-			this.serverAddress = InetAddress.getByName(address);
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * Constructor
-	 * 
-	 * @param address	Address of server
-	 * @param port		Port of server
-	 */
-	public LuminosServer(String address, int port) {
-		try {
-			this.serverAddress = InetAddress.getByName(address);
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-		this.port = port;
-	}
-
-	/**
-	 * Starts thread
-	 */
 	public void run() {
 		
 		try {
-			clientSocket = new DatagramSocket(port);
+			serverSocket = new DatagramSocket();
+			address = InetAddress.getLocalHost();
+		} catch (UnknownHostException e) {
+			Debug.addData(e.getMessage());
+			Debug.print();
 		} catch (SocketException e) {
 			Debug.addData(e.getMessage());
 			Debug.print();
 		}
 		
-		while(GlobalLock.INITIATED) {
-			receiveData();
+		while(running) {
+			/*
+			 * SERVER RUNNING
+			 * PLAYER CONNECTIONS/DISCONNECTIONS
+			 * ENTITY PLACEMENT/DESTRUCTION
+			 * TEXT HANDLING
+			 * 
+			 * if(Client Connects) {
+			 * 		Add client to list
+			 * }
+			 * 
+			 * if(Receives packet) {
+			 * 		Read Packet
+			 * 		Handle Packet Data
+			 * }
+			 */
 		}
 		
 	}
 
-	/**
-	 * Sends the data
-	 * 
-	 * @param data to send
-	 */
-	public void sendData(byte[] data) {
-		DatagramPacket packet = new DatagramPacket(data, data.length);
-		try {
-			clientSocket.send(packet);
-		} catch (IOException e) {
-			Debug.addData(e.getMessage());
-		}
-	}
-	
-	/**
-	 * Receives data
-	 * 
-	 * @return	data received
-	 */
-	public byte[] receiveData() {
-		byte[] data = new byte[1024];
-		DatagramPacket packet = new DatagramPacket(data, data.length);
-		try {
-			clientSocket.receive(packet);
-		} catch (IOException e) {
-			Debug.addData(e.getMessage());
-			return new byte[1024];
-		}
-		return data;
-	}
-	
-	/**
-	 * Gets the Server's DatagramSocket
-	 * 
-	 * @return	Server's DatagramSocket
-	 */
-	public DatagramSocket getServerSocket() {
-		return clientSocket;
+	public static boolean isRunning() {
+		return running;
 	}
 
-	/**
-	 * Gets the Server's Address
-	 * 
-	 * @return 	Server's Address
-	 */
-	public InetAddress getServerAddress() {
-		return serverAddress;
+	public static void setRunning(boolean running) {
+		LuminosServer.running = running;
+	}
+
+	public static int getPort() {
+		return port;
+	}
+
+	public static InetAddress getAddress() {
+		return address;
+	}
+	
+	private Packet readPacket(DatagramPacket packet) {
+		byte[] raw = packet.getData();
+		byte[] type = new byte[] {raw[0], raw[1]};
+		byte[] data = new byte[raw.length - type.length];
+		for(int pointer = type.length; pointer < data.length; pointer++) data[pointer] = raw[pointer + data.length];
+		return new Packet(PacketType.getPacketType(SerializationUtils.readInt(type, 0)), data);
+	} 
+	
+	private void sendData(InetAddress client, int port, Packet packet) {
+		DatagramPacket data = new DatagramPacket(packet.getBytes(), packet.getSize(), client, port);
+		try {
+			serverSocket.send(data);
+		} catch (IOException e) {
+			Debug.addData(e.getMessage());
+		}
+	}
+	
+	private void sendDataToAll(int port, Packet packet) {
+		for(InetAddress address : clients) {
+			sendData(address, port, packet);
+		}
 	}
 
 }

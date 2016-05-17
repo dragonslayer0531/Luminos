@@ -2,10 +2,10 @@ package luminoscore.graphics.entities.components;
 
 /**
  * 
- * Class of component that can be added to entity.  Used as a super class for custom components.
- * 
  * @author Nick Clark
  * @version 1.0
+ * 
+ * Class of component that can be added to entity.  Used as a super class for custom components.
  * 
  */
 
@@ -14,18 +14,18 @@ public class Component {
 	private Object o;
 
 	/**
-	 * Constructor that wraps object
-	 * 
 	 * @param o		Object to be wrapped into a component
+	 * 
+	 * Constructor that wraps object
 	 */
 	public Component(Object o) {
 		this.o = o;
 	}
 	
 	/**
-	 * Gets the object wrapped by the component
+	 * @return Object	Object wrapped by component
 	 * 
-	 * @return Object	Object wrapped by component 
+	 * Gets the object wrapped by the component
 	 */
 	public Object getComponent() {
 		return o;

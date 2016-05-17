@@ -6,10 +6,10 @@ import java.util.List;
 
 /**
  * 
- * Creates Mesh of Text
- * 
  * @author Nick Clark
  * @version 1.0
+ * 
+ * Creates Mesh of Text
  *
  */
 
@@ -21,20 +21,19 @@ public class TextMeshCreator {
     private MetaFile metaData;
  
     /**
-     * Constructor
-     * 
      * @param metaFile	Meta File to build with
+     * 
+     * Constructor
      */
     protected TextMeshCreator(File metaFile) {
         metaData = new MetaFile(metaFile);
     }
  
     /**
-     * Creates text mesh
-     * 
      * @param text			Text to have meshed
-     * @return Mesh Data of text
+     * @return TextMeshData	Data of text
      * 
+     * Creates text mesh
      */
     protected TextMeshData createTextMesh(GUIText text) {
         List<Line> lines = createStructure(text);
@@ -45,10 +44,10 @@ public class TextMeshCreator {
 //*****************************************Private Methods**********************************************//    
     
     /**
-     * Creates structure of mesh
-     * 
      * @param text			Text to create structure of
-     * @return {@link Line}s in structure
+     * @retun List<Line>	Lines the have structure of
+     * 
+     * Creates structure of mesh
      */
     private List<Line> createStructure(GUIText text) {
         char[] chars = text.getTextString().toCharArray();
@@ -75,12 +74,12 @@ public class TextMeshCreator {
     }
  
     /**
-     * Completes the structure of mesh
-     * 
      * @param lines			Lines to render
      * @param currentLine	Current line of creation
      * @param currentWord	Current word of creation
      * @param text			Text to be added
+     * 
+     * Completes the structure of mesh
      */
     private void completeStructure(List<Line> lines, Line currentLine, Word currentWord, GUIText text) {
         boolean added = currentLine.attemptToAddWord(currentWord);
@@ -93,11 +92,11 @@ public class TextMeshCreator {
     }
  
     /**
-     * Creates quad for text mesh
-     * 
      * @param text			Text to create quad for
      * @param lines			Lines to draw quad on
-     * @return Quad for text mesh
+     * @return TextMeshData	Quad for text mesh
+     * 
+     * Creates quad for text mesh
      */
     private TextMeshData createQuadVertices(GUIText text, List<Line> lines) {
         text.setNumberOfLines(lines.size());
@@ -125,13 +124,13 @@ public class TextMeshCreator {
     }
  
     /**
-     * Adds vertices for character
-     * 
      * @param cursorX		X Cursor Position
      * @param cursorY		Y Cursor Position
      * @param character		Character rendered
      * @param fontSize		Font size of character
      * @param vertices		Vertices of entity
+     * 
+     * Adds vertices for character
      */
     private void addVerticesForCharacter(double cursorX, double cursorY, Character character, double fontSize,
             List<Float> vertices) {
@@ -147,13 +146,13 @@ public class TextMeshCreator {
     }
  
     /**
-     * Adds vertices to mesh
-     * 
      * @param vertices	Vertices of quad
      * @param x			X value of quad
      * @param y			Y value of quad
      * @param maxX		X Max value of quad
      * @param maxY		Y Max value of quadd
+     * 
+     * Adds vertices to mesh
      */
     private static void addVertices(List<Float> vertices, double x, double y, double maxX, double maxY) {
         vertices.add((float) x);
@@ -171,13 +170,13 @@ public class TextMeshCreator {
     }
  
     /**
-     * Adds Texture Coordinates to mesh
-     * 
      * @param texCoords	Texture Coords to add
      * @param x			X Coords to add
      * @param y			Y Coords to add
      * @param maxX		X Max coords to add
      * @param maxY		Y Max coords to add
+     * 
+     * Adds Texture Coordinates to mesh
      */
     private static void addTexCoords(List<Float> texCoords, double x, double y, double maxX, double maxY) {
         texCoords.add((float) x);
@@ -195,11 +194,10 @@ public class TextMeshCreator {
     }
  
     /**
-     * Converts list of floats to float array
-     * 
      * @param listOfFloats	Float List
-     * @return Float array converted
+     * @return float[]		Float array converted
      * 
+     * Converts list of floats to float array
      */
     private static float[] listToArray(List<Float> listOfFloats) {
         float[] array = new float[listOfFloats.size()];

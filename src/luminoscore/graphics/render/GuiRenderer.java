@@ -16,10 +16,10 @@ import luminoscore.tools.Maths;
 
 /**
  * 
- * Allows for the rendering of 2D GUIs
- * 
  * @author Nick Clark
  * @version 1.0
+ * 
+ * Allows for the rendering of 2D GUIs
  *
  */
 public class GuiRenderer {
@@ -28,9 +28,9 @@ public class GuiRenderer {
 	private GuiShader shader;
 	
 	/**
-	 * Constructor of GuiRenderer
-	 * 
 	 * @param loader 	Loader to use in rendering
+	 * 
+	 * Constructor of GuiRenderer
 	 */
 	public GuiRenderer(Loader loader){
 		float[] positions = {-1, 1, -1, -1, 1, 1, 1, -1};
@@ -39,9 +39,9 @@ public class GuiRenderer {
 	}
 	
 	/**
-	 * Renders GuiTextures to screen
+	 * @param guis		List GuiTextures to be rendered
 	 * 
-	 * @param guis		List of {@link GuiTexture}s to be rendered
+	 * Renders GuiTextures to screen
 	 */
 	public void render(List<GuiTexture> guis){
 		

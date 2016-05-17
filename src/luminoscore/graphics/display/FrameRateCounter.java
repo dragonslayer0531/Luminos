@@ -2,10 +2,10 @@ package luminoscore.graphics.display;
 
 /**
  * 
- * The protected class keeping track of FPS
- * 
  * @author Nick Clark
  * @version 1.0
+ * 
+ * The protected class keeping track of FPS
  *
  */
 
@@ -49,18 +49,18 @@ public class FrameRateCounter {
 	}
 	
 	/**
-	 * Gets the frames per second count
+	 * @return int		Value of FPS
 	 * 
-	 * @return Value of FPS 
+	 * Gets the frames per second count
 	 */
 	protected int getFPS() {
 		return fps;
 	}
 	
 	/**
-	 * Gets the length of time per frame
+	 * @return float 	Value of seconds per frame
 	 * 
-	 * @return Value of seconds per frame
+	 * Gets the length of time per frame
 	 */
 	protected float getFrameTime() {
 		return frameTimeCount;

@@ -9,10 +9,10 @@ import org.lwjgl.util.WaveData;
 
 /**
  * 
- * Creates audio master
- * 
  * @author Nick Clark
  * @version 1.0
+ * 
+ * Creates audio master
  *
  */
 
@@ -38,10 +38,10 @@ public class AudioMaster {
 	}
 	
 	/**
-	 * Loads source to sound card
-	 * 
 	 * @param source	String containing data of source
-	 * @return Integer referencing index of Sound Card
+	 * @return int		Integer referencing index of Sound Card
+	 * 
+	 * Loads source to sound card
 	 */
 	public int loadSource(String source) {
 		int buffer = AL10.alGenBuffers();
@@ -55,22 +55,22 @@ public class AudioMaster {
 	}
 	
 	/**
-	 * Sets listener position
-	 * 
 	 * @param x		X Location of listening device
 	 * @param y		Y Location of listening device
 	 * @param z		Z Location of listening device
+	 * 
+	 * Sets listener position
 	 */
 	public void setListenerPosition(float x, float y, float z) {
 		AL10.alListener3f(AL10.AL_POSITION, x, y, z);
 	}
 	
 	/**
-	 * Sets listener velocity
-	 * 
 	 * @param dx	X Movement of listening device
 	 * @param dy	Y Movement of listening device
 	 * @param dz	Z Movement of listening device
+	 * 
+	 * Sets listener velocity
 	 */
 	public void setListenerVelocity(float dx, float dy, float dz) {
 		AL10.alListener3f(AL10.AL_VELOCITY, dx, dy, dz);

@@ -5,10 +5,10 @@ import java.util.List;
 
 /**
  * 
- * Line of GUI Text
- * 
  * @author Nick Clark
  * @version 1.0
+ * 
+ * Line of GUI Text
  *
  */
 
@@ -21,11 +21,11 @@ public class Line {
     private double currentLineLength = 0;
  
     /**
-     * Constructor
-     * 
      * @param spaceWidth	Space width of line
      * @param fontSize		Font size of GUI Text
      * @param maxLength		Maximum length of line
+     * 
+     * Constructor
      */
     protected Line(double spaceWidth, double fontSize, double maxLength) {
         this.spaceSize = spaceWidth * fontSize;
@@ -33,9 +33,9 @@ public class Line {
     }
  
     /**
-     * Attempts to add word to line
-     * 
      * @param word	Word to be added
+     * 
+     * Attempts to add word to line
      */
     protected boolean attemptToAddWord(Word word) {
         double additionalLength = word.getWordWidth();
@@ -50,27 +50,27 @@ public class Line {
     }
  
     /**
-     * Gets max line length
+     * @return double	Max line length
      * 
-     * @return	Max line length
+     * Gets max line length
      */
     protected double getMaxLength() {
         return maxLength;
     }
  
     /**
-     * Gets the current line length
+     * @return double	Current line length
      * 
-     * @return 	Current line length
+     * Gets the current line length
      */
     protected double getLineLength() {
         return currentLineLength;
     }
  
     /**
-     * Gets words in line
+     * @return List<Word>	Words in line
      * 
-     * @return	Words in line
+     * Gets words in line
      */
     protected List<Word> getWords() {
         return words;
