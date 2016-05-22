@@ -18,6 +18,8 @@ public class Debug {
 	public static boolean DEBUG = true;
 	public static boolean PRINT_TO_FILE = true;
 	
+	private static final String NEW_LINE = System.lineSeparator();
+	
 	private static StringBuilder debug_data = new StringBuilder();
 	
 	/**
@@ -26,7 +28,7 @@ public class Debug {
 	 * @param string	String to be added
 	 */
 	public static void addData(String string) {
-		if(DEBUG) debug_data.append(string + System.lineSeparator());
+		if(DEBUG) debug_data.append(string + NEW_LINE);
 	}
 	
 	/**
@@ -41,7 +43,7 @@ public class Debug {
 	 * Prints to file
 	 */
 	public static void print() {
-		if(debug_data.length() != 0) {
+		if(debug_data.toString() == null) {
 			try {
 				PrintWriter pw = new PrintWriter("DEBUG" + ManagementFactory.getRuntimeMXBean().getName() + ".lof");
 				pw.write(getEnvironmentData());
@@ -58,7 +60,7 @@ public class Debug {
 //***********************************Private Methods*******************************************//
 	
 	/**
-	 * Retreives Runtime Environment Data
+	 * Retrieves Runtime Environment Data
 	 * 
 	 * @return Runtime Environment Data
 	 */
@@ -66,15 +68,15 @@ public class Debug {
 		StringBuilder data = new StringBuilder();
 		
 		data.append(System.getProperty("os.name"));
-		data.append(System.lineSeparator());
+		data.append(NEW_LINE);
 		data.append("MaxMem " + Runtime.getRuntime().maxMemory());
-		data.append(System.lineSeparator());
+		data.append(NEW_LINE);
 		data.append("UsedMem " + Runtime.getRuntime().totalMemory());
-		data.append(System.lineSeparator());
+		data.append(NEW_LINE);
 		data.append("ActiveThreadCount " + Thread.activeCount());
-		data.append(System.lineSeparator());
+		data.append(NEW_LINE);
 		data.append("CurrentThread " + Thread.currentThread());
-		data.append(System.lineSeparator());
+		data.append(NEW_LINE);
 		
 		return data.toString();
 	}

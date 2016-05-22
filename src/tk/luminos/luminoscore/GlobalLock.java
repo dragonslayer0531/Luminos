@@ -16,6 +16,8 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import tk.luminos.luminoscore.input.Keyboard;
+
 /**
  * 
  * Holds global data for loading to the configuration
@@ -69,6 +71,14 @@ public class GlobalLock {
 	public static Integer TEXTURES = 1;
 	public static Integer NORMALS = 2;
 	
+	public static Integer FORWARD = Keyboard.KEY_W;
+	public static Integer BACKWARD = Keyboard.KEY_S;
+	public static Integer LEFT = Keyboard.KEY_A;
+	public static Integer RIGHT = Keyboard.KEY_D;
+	public static Integer SPRINT = Keyboard.KEY_LEFT_SHIFT;
+	public static Integer WALK = Keyboard.KEY_LEFT_CONTROL;
+	public static Integer JUMP = Keyboard.KEY_SPACE;
+	
 	private static final String FORMAT = "format";
 	private static final String BOOLEAN = "bool";
 	private static final String INT = "int";
@@ -104,8 +114,46 @@ public class GlobalLock {
 		engine_data.appendChild(doc.createTextNode(VERSION));
 		root.appendChild(engine_data);
 		
+		Element input = doc.createElement("input_methods");
+		root.appendChild(input);
+		
 		Element world = doc.createElement("world");
 		root.appendChild(world);
+		
+		Element forward = doc.createElement("forward_key_binding");
+		forward.setAttribute(FORMAT, INT);
+		forward.setAttribute("key", FORWARD.toString());
+		input.appendChild(forward);
+		
+		Element backward = doc.createElement("backward_key_binding");
+		backward.setAttribute(FORMAT, INT);
+		backward.setAttribute("key", BACKWARD.toString());
+		input.appendChild(backward);
+		
+		Element left = doc.createElement("left_key_binding");
+		left.setAttribute(FORMAT, INT);
+		left.setAttribute("key", LEFT.toString());
+		input.appendChild(left);
+		
+		Element right = doc.createElement("right_key_binding");
+		right.setAttribute(FORMAT, INT);
+		right.setAttribute("key", RIGHT.toString());
+		input.appendChild(right);
+		
+		Element sprint = doc.createElement("sprint_key_binding");
+		sprint.setAttribute(FORMAT, INT);
+		sprint.setAttribute("key", SPRINT.toString());
+		input.appendChild(sprint);
+		
+		Element walk = doc.createElement("walk_key_binding");
+		walk.setAttribute(FORMAT, INT);
+		walk.setAttribute("key", WALK.toString());
+		input.appendChild(walk);
+		
+		Element jump = doc.createElement("jump_key_binding");
+		jump.setAttribute(FORMAT, INT);
+		jump.setAttribute("key", JUMP.toString());
+		input.appendChild(jump);
 		
 		Element textureSize = doc.createElement("texture_size");
 		textureSize.setAttribute(FORMAT, INT);

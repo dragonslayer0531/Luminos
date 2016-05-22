@@ -322,5 +322,33 @@ public class Maths {
 	public static int rgbToInt(int r, int g, int b) {
 		return rgbToInt(new Vector3f(r, g, b));
 	}
+	
+	/**
+	 * Gets the minimum value of an array
+	 * 
+	 * @param vals		Array to calculate minimum of
+	 * @return			Minimum value in array
+	 */
+	public static float getMinimum(float[] vals) {
+		float min = vals[0];
+		for(float val : vals) {
+			if(val < min) min = val;
+		}
+		return min;
+	}
+	
+	/**
+	 * Gets the maximum value of an array
+	 * 
+	 * @param vals		Array to calculate maximum of
+	 * @return			Maximum value in array
+	 */
+	public static float getMaximum(float[] vals) {
+		float max = vals[0];
+		for(float val : vals) {
+			if(val > max) max = val;
+		}
+		return max;
+	}
 
 }

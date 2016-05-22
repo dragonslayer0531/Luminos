@@ -15,7 +15,8 @@ tk.luminos.luminoscore.graphics.textures
 tk.luminos.luminoscore.graphics.water
 tk.luminos.luminoscore.input
 tk.luminos.luminoscore.network
-tk.luminos.luminoscore.physics
+tk.luminos.luminoscore.physics.colliders
+tk.luminos.luminoscore.physics.forces
 tk.luminos.luminoscore.tools
 tk.luminos.luminoscore.tools.algorithms
 tk.luminos.luminosutils.serialization
