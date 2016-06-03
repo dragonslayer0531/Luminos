@@ -27,7 +27,8 @@ public class ModelTexture implements Texture {
 	/**
 	 * Constructor
 	 * 
-	 * @param texture	GPU ID
+	 * @param fileLocation	Location of image to load
+	 * @param loader		Loader to use to load image
 	 */
 	public ModelTexture(String fileLocation, Loader loader){
 		this.textureID = loader.loadTexture(fileLocation);

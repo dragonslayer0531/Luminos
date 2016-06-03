@@ -32,7 +32,6 @@ public class AABB implements Collider {
 	 * Creates an AABB of the entity
 	 * 
 	 * @param entity	Entity to create AABB of
-	 * @return			AABB of mesh
 	 */
 	public void generate(Entity entity) {
 		

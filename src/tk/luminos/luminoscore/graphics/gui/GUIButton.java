@@ -37,8 +37,7 @@ public class GUIButton implements GUIObject {
 	
 	/**
 	 * Gets if/where the button is clicked
-	 * 
-	 * @param window	GLFWWindow to be used for mouse location
+
 	 * @return 			Mouse location
 	 */
 	public Vector2f getClickLocation() {

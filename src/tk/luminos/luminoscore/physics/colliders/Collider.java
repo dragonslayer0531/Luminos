@@ -15,7 +15,7 @@ public interface Collider {
 	/**
 	 * Generation interface for collider 
 	 * 
-	 * @param entity
+	 * @param entity			Entity to generate collider of
 	 */
 	public void generate(Entity entity);
 

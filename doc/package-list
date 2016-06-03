@@ -21,4 +21,5 @@ tk.luminos.luminoscore.physics.colliders
 tk.luminos.luminoscore.physics.forces
 tk.luminos.luminoscore.tools
 tk.luminos.luminoscore.tools.algorithms
+tk.luminos.luminoscore.tools.instanceinfo
 tk.luminos.luminosutils.serialization
