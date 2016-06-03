@@ -1,8 +1,16 @@
 package tk.luminos.luminoscore;
 
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
+
+import tk.luminos.luminoscore.tools.instanceinfo.GLFWInstance;
+import tk.luminos.luminoscore.tools.instanceinfo.JavaEnvironmentInstance;
+import tk.luminos.luminoscore.tools.instanceinfo.OpenALInstance;
+import tk.luminos.luminoscore.tools.instanceinfo.OpenGLInstance;
 
 /**
  * 
@@ -17,10 +25,16 @@ public class Debug {
 	
 	public static boolean DEBUG = true;
 	public static boolean PRINT_TO_FILE = true;
-	
-	private static final String NEW_LINE = System.lineSeparator();
-	
+		
 	private static StringBuilder debug_data = new StringBuilder();
+	private static StringBuilder header = new StringBuilder();
+	
+	public static void prepare() {
+		header.append(JavaEnvironmentInstance.getEnvironmentData());
+		header.append(OpenGLInstance.getContextInformation());
+		header.append(OpenALInstance.getContextInformation());
+		header.append(GLFWInstance.getContextInformation());
+	}
 	
 	/**
 	 * Append string to debug buffer
@@ -28,7 +42,8 @@ public class Debug {
 	 * @param string	String to be added
 	 */
 	public static void addData(String string) {
-		if(DEBUG) debug_data.append(string + NEW_LINE);
+		appendNewLine(debug_data);
+		if(DEBUG) debug_data.append(string);
 	}
 	
 	/**
@@ -43,14 +58,20 @@ public class Debug {
 	 * Prints to file
 	 */
 	public static void print() {
-		if(debug_data.toString() == null) {
+		if(debug_data.toString() != null) {
 			try {
-				PrintWriter pw = new PrintWriter("DEBUG" + ManagementFactory.getRuntimeMXBean().getName() + ".lof");
-				pw.write(getEnvironmentData());
+				FileWriter fw = new FileWriter("DEBUG" + ManagementFactory.getRuntimeMXBean().getName() + ".lof", true);
+				BufferedWriter bw = new BufferedWriter(fw);
+				PrintWriter pw = new PrintWriter(bw);
+				pw.write(header.toString());
 				pw.write(debug_data.toString());
 				pw.flush();
 				pw.close();
+				bw.close();
+				fw.close();
 			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
@@ -60,25 +81,13 @@ public class Debug {
 //***********************************Private Methods*******************************************//
 	
 	/**
-	 * Retrieves Runtime Environment Data
+	 * Appends new line to string builder
 	 * 
-	 * @return Runtime Environment Data
+	 * @param sb		String builder to append to
 	 */
-	private static String getEnvironmentData() {
-		StringBuilder data = new StringBuilder();
-		
-		data.append(System.getProperty("os.name"));
-		data.append(NEW_LINE);
-		data.append("MaxMem " + Runtime.getRuntime().maxMemory());
-		data.append(NEW_LINE);
-		data.append("UsedMem " + Runtime.getRuntime().totalMemory());
-		data.append(NEW_LINE);
-		data.append("ActiveThreadCount " + Thread.activeCount());
-		data.append(NEW_LINE);
-		data.append("CurrentThread " + Thread.currentThread());
-		data.append(NEW_LINE);
-		
-		return data.toString();
+	private static void appendNewLine(StringBuilder sb) {
+		sb.append(System.lineSeparator());
 	}
+	
 
 }

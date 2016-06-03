@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 import tk.luminos.luminoscore.graphics.gameobjects.Entity;
 import tk.luminos.luminoscore.graphics.models.RawModel;
@@ -76,7 +77,7 @@ public class ShadowMapEntityRenderer {
 	 * @param entity		Entity to be prepared
 	 */
 	private void prepareInstance(Entity entity) {
-		Matrix4f modelMatrix = Maths.createTransformationMatrix(entity.getPosition(),
+		Matrix4f modelMatrix = Maths.createTransformationMatrix((Vector3f) entity.getPosition(),
 				entity.getRotation(), entity.getScale());
 		Matrix4f mvpMatrix = Matrix4f.mul(projectionViewMatrix, modelMatrix, null);
 		shader.loadMvpMatrix(mvpMatrix);

@@ -1,8 +1,10 @@
 tk.luminos.luminoscore
 tk.luminos.luminoscore.audio
+tk.luminos.luminoscore.graphics
 tk.luminos.luminoscore.graphics.display
 tk.luminos.luminoscore.graphics.gameobjects
 tk.luminos.luminoscore.graphics.gameobjects.components
+tk.luminos.luminoscore.graphics.gui
 tk.luminos.luminoscore.graphics.loaders
 tk.luminos.luminoscore.graphics.models
 tk.luminos.luminoscore.graphics.particles

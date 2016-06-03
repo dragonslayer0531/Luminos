@@ -9,7 +9,7 @@ package tk.luminos.luminoscore.graphics.textures;
  *
  */
 
-public class ParticleTexture {
+public class ParticleTexture implements Texture {
 
 	private int textureID;
 	private int numberOfRows;
@@ -30,7 +30,7 @@ public class ParticleTexture {
 	 * 
 	 * @return	GPU ID of texture
 	 */
-	public int getTextureID() {
+	public int getID() {
 		return textureID;
 	}
 

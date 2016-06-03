@@ -1,5 +1,34 @@
 package tk.luminos.luminoscore;
 
+import static tk.luminos.luminoscore.ConfigData.BACKWARD;
+import static tk.luminos.luminoscore.ConfigData.FORWARD;
+import static tk.luminos.luminoscore.ConfigData.FULLSCREEN;
+import static tk.luminos.luminoscore.ConfigData.GL_MAJOR;
+import static tk.luminos.luminoscore.ConfigData.GL_MINOR;
+import static tk.luminos.luminoscore.ConfigData.HEIGHT;
+import static tk.luminos.luminoscore.ConfigData.INITIATED;
+import static tk.luminos.luminoscore.ConfigData.JUMP;
+import static tk.luminos.luminoscore.ConfigData.LEFT;
+import static tk.luminos.luminoscore.ConfigData.MOUSE_VISIBLE;
+import static tk.luminos.luminoscore.ConfigData.NORMALS;
+import static tk.luminos.luminoscore.ConfigData.POSITION;
+import static tk.luminos.luminoscore.ConfigData.RESIZABLE;
+import static tk.luminos.luminoscore.ConfigData.RIGHT;
+import static tk.luminos.luminoscore.ConfigData.SAMPLES;
+import static tk.luminos.luminoscore.ConfigData.SIZE;
+import static tk.luminos.luminoscore.ConfigData.SPRINT;
+import static tk.luminos.luminoscore.ConfigData.STENCIL_BITS;
+import static tk.luminos.luminoscore.ConfigData.TEXTURES;
+import static tk.luminos.luminoscore.ConfigData.TEXTURE_SIZE;
+import static tk.luminos.luminoscore.ConfigData.VSYNC;
+import static tk.luminos.luminoscore.ConfigData.WALK;
+import static tk.luminos.luminoscore.ConfigData.WATER_FBO_REFLEC_HEIGHT;
+import static tk.luminos.luminoscore.ConfigData.WATER_FBO_REFLEC_WIDTH;
+import static tk.luminos.luminoscore.ConfigData.WATER_FBO_REFRAC_HEIGHT;
+import static tk.luminos.luminoscore.ConfigData.WATER_FBO_REFRAC_WIDTH;
+import static tk.luminos.luminoscore.ConfigData.WIDTH;
+import static tk.luminos.luminoscore.GlobalLock.printToFile;
+
 import java.io.File;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -21,7 +50,7 @@ import org.w3c.dom.NodeList;
 
 public class Luminos {
 	
-	public static String config_loc = "config.xml";
+	public static String config_loc = "operation_reclaimer.config";
 
 	protected long windowID;
 
@@ -36,8 +65,8 @@ public class Luminos {
 	 * @return		New Luminos Instance
 	 */
 	public static Luminos createLuminosInstance() {
-		if(!GlobalLock.INITIATED) {
-			GlobalLock.INITIATED = true;
+		if(!INITIATED) {
+			INITIATED = true;
 		}
 
 		//Check if file exists and initialize for loading
@@ -61,50 +90,50 @@ public class Luminos {
 			NodeList input_methods = doc.getElementsByTagName("input_methods");
 			for(int i = 0; i < input_methods.getLength(); i++) { 
 				Element node = (Element) input_methods.item(i);
-				GlobalLock.FORWARD = Integer.parseInt(node.getElementsByTagName("forward_key_binding").item(0).getAttributes().getNamedItem("key").getNodeValue());
-				GlobalLock.BACKWARD = Integer.parseInt(node.getElementsByTagName("backward_key_binding").item(0).getAttributes().getNamedItem("key").getNodeValue());
-				GlobalLock.LEFT = Integer.parseInt(node.getElementsByTagName("left_key_binding").item(0).getAttributes().getNamedItem("key").getNodeValue());
-				GlobalLock.RIGHT = Integer.parseInt(node.getElementsByTagName("right_key_binding").item(0).getAttributes().getNamedItem("key").getNodeValue());
-				GlobalLock.SPRINT = Integer.parseInt(node.getElementsByTagName("sprint_key_binding").item(0).getAttributes().getNamedItem("key").getNodeValue());
-				GlobalLock.WALK = Integer.parseInt(node.getElementsByTagName("walk_key_binding").item(0).getAttributes().getNamedItem("key").getNodeValue());
-				GlobalLock.JUMP = Integer.parseInt(node.getElementsByTagName("jump_key_binding").item(0).getAttributes().getNamedItem("key").getNodeValue());
+				FORWARD = Integer.parseInt(node.getElementsByTagName("forward_key_binding").item(0).getAttributes().getNamedItem("key").getNodeValue());
+				BACKWARD = Integer.parseInt(node.getElementsByTagName("backward_key_binding").item(0).getAttributes().getNamedItem("key").getNodeValue());
+				LEFT = Integer.parseInt(node.getElementsByTagName("left_key_binding").item(0).getAttributes().getNamedItem("key").getNodeValue());
+				RIGHT = Integer.parseInt(node.getElementsByTagName("right_key_binding").item(0).getAttributes().getNamedItem("key").getNodeValue());
+				SPRINT = Integer.parseInt(node.getElementsByTagName("sprint_key_binding").item(0).getAttributes().getNamedItem("key").getNodeValue());
+				WALK = Integer.parseInt(node.getElementsByTagName("walk_key_binding").item(0).getAttributes().getNamedItem("key").getNodeValue());
+				JUMP = Integer.parseInt(node.getElementsByTagName("jump_key_binding").item(0).getAttributes().getNamedItem("key").getNodeValue());
 			}
 
 			//Load world data
 			NodeList world = doc.getElementsByTagName("world");
 			for(int i = 0; i < world.getLength(); i++) {
 				Element node = (Element) world.item(i);
-				GlobalLock.TEXTURE_SIZE = Integer.parseInt(node.getElementsByTagName("texture_size").item(0).getAttributes().getNamedItem("size").getNodeValue());
-				GlobalLock.SIZE = Integer.parseInt(node.getElementsByTagName("chunk_size").item(0).getAttributes().getNamedItem("size").getNodeValue());
-				GlobalLock.WATER_FBO_REFRAC_WIDTH = Integer.parseInt(node.getElementsByTagName("water_refrac").item(0).getAttributes().getNamedItem("width").getNodeValue());
-				GlobalLock.WATER_FBO_REFRAC_HEIGHT = Integer.parseInt(node.getElementsByTagName("water_refrac").item(0).getAttributes().getNamedItem("height").getNodeValue());
-				GlobalLock.WATER_FBO_REFLEC_WIDTH = Integer.parseInt(node.getElementsByTagName("water_reflec").item(0).getAttributes().getNamedItem("width").getNodeValue());
-				GlobalLock.WATER_FBO_REFLEC_HEIGHT = Integer.parseInt(node.getElementsByTagName("water_reflec").item(0).getAttributes().getNamedItem("height").getNodeValue());
+				TEXTURE_SIZE = Integer.parseInt(node.getElementsByTagName("texture_size").item(0).getAttributes().getNamedItem("size").getNodeValue());
+				SIZE = Integer.parseInt(node.getElementsByTagName("chunk_size").item(0).getAttributes().getNamedItem("size").getNodeValue());
+				WATER_FBO_REFRAC_WIDTH = Integer.parseInt(node.getElementsByTagName("water_refrac").item(0).getAttributes().getNamedItem("width").getNodeValue());
+				WATER_FBO_REFRAC_HEIGHT = Integer.parseInt(node.getElementsByTagName("water_refrac").item(0).getAttributes().getNamedItem("height").getNodeValue());
+				WATER_FBO_REFLEC_WIDTH = Integer.parseInt(node.getElementsByTagName("water_reflec").item(0).getAttributes().getNamedItem("width").getNodeValue());
+				WATER_FBO_REFLEC_HEIGHT = Integer.parseInt(node.getElementsByTagName("water_reflec").item(0).getAttributes().getNamedItem("height").getNodeValue());
 			}
 
 			//Load window data
 			NodeList window = doc.getElementsByTagName("window");
 			for(int i = 0; i < window.getLength(); i++) {
 				Element node = (Element) window.item(i);
-				GlobalLock.WIDTH = Integer.parseInt(node.getElementsByTagName("dimensions").item(0).getAttributes().getNamedItem("width").getNodeValue());
-				GlobalLock.HEIGHT = Integer.parseInt(node.getElementsByTagName("dimensions").item(0).getAttributes().getNamedItem("height").getNodeValue());
-				GlobalLock.FULLSCREEN = Boolean.parseBoolean(node.getElementsByTagName("window_hints").item(0).getAttributes().getNamedItem("fullscreen").getNodeValue());
-				GlobalLock.MOUSE_VISIBLE = Boolean.parseBoolean(node.getElementsByTagName("window_hints").item(0).getAttributes().getNamedItem("mouse_visible").getNodeValue());
-				GlobalLock.RESIZABLE = Boolean.parseBoolean(node.getElementsByTagName("window_hints").item(0).getAttributes().getNamedItem("resizable").getNodeValue());
-				GlobalLock.VSYNC = Boolean.parseBoolean(node.getElementsByTagName("window_hints").item(0).getAttributes().getNamedItem("vsync").getNodeValue());
-				GlobalLock.GL_MAJOR = Integer.parseInt(node.getElementsByTagName("gl_version").item(0).getAttributes().getNamedItem("major").getNodeValue());
-				GlobalLock.GL_MINOR = Integer.parseInt(node.getElementsByTagName("gl_version").item(0).getAttributes().getNamedItem("minor").getNodeValue());
-				GlobalLock.SAMPLES = Integer.parseInt(node.getElementsByTagName("msaa").item(0).getAttributes().getNamedItem("samples").getNodeValue());
-				GlobalLock.STENCIL_BITS = Integer.parseInt(node.getElementsByTagName("msaa").item(0).getAttributes().getNamedItem("stencil_bits").getNodeValue());
+				WIDTH = Integer.parseInt(node.getElementsByTagName("dimensions").item(0).getAttributes().getNamedItem("width").getNodeValue());
+				HEIGHT = Integer.parseInt(node.getElementsByTagName("dimensions").item(0).getAttributes().getNamedItem("height").getNodeValue());
+				FULLSCREEN = Boolean.parseBoolean(node.getElementsByTagName("window_hints").item(0).getAttributes().getNamedItem("fullscreen").getNodeValue());
+				MOUSE_VISIBLE = Boolean.parseBoolean(node.getElementsByTagName("window_hints").item(0).getAttributes().getNamedItem("mouse_visible").getNodeValue());
+				RESIZABLE = Boolean.parseBoolean(node.getElementsByTagName("window_hints").item(0).getAttributes().getNamedItem("resizable").getNodeValue());
+				VSYNC = Boolean.parseBoolean(node.getElementsByTagName("window_hints").item(0).getAttributes().getNamedItem("vsync").getNodeValue());
+				GL_MAJOR = Integer.parseInt(node.getElementsByTagName("gl_version").item(0).getAttributes().getNamedItem("major").getNodeValue());
+				GL_MINOR = Integer.parseInt(node.getElementsByTagName("gl_version").item(0).getAttributes().getNamedItem("minor").getNodeValue());
+				SAMPLES = Integer.parseInt(node.getElementsByTagName("msaa").item(0).getAttributes().getNamedItem("samples").getNodeValue());
+				STENCIL_BITS = Integer.parseInt(node.getElementsByTagName("msaa").item(0).getAttributes().getNamedItem("stencil_bits").getNodeValue());
 			}
 			
 			//Load shader data
 			NodeList shader = doc.getElementsByTagName("shader");
 			for(int i = 0; i < shader.getLength(); i++) {
 				Element node = (Element) shader.item(i);
-				GlobalLock.POSITION = Integer.parseInt(node.getElementsByTagName("position").item(0).getAttributes().getNamedItem("shader_loc").getNodeValue());
-				GlobalLock.TEXTURES = Integer.parseInt(node.getElementsByTagName("texture").item(0).getAttributes().getNamedItem("shader_loc").getNodeValue());
-				GlobalLock.NORMALS = Integer.parseInt(node.getElementsByTagName("normal").item(0).getAttributes().getNamedItem("shader_loc").getNodeValue());
+				POSITION = Integer.parseInt(node.getElementsByTagName("position").item(0).getAttributes().getNamedItem("shader_loc").getNodeValue());
+				TEXTURES = Integer.parseInt(node.getElementsByTagName("texture").item(0).getAttributes().getNamedItem("shader_loc").getNodeValue());
+				NORMALS = Integer.parseInt(node.getElementsByTagName("normal").item(0).getAttributes().getNamedItem("shader_loc").getNodeValue());
 			}
 			
 			return new Luminos();
@@ -129,8 +158,8 @@ public class Luminos {
 	 * Closes the instance
 	 */
 	public void close() {
-		GlobalLock.INITIATED = false;
-		GlobalLock.printToFile("config.xml");
+		INITIATED = false;
+		printToFile(config_loc);
 	}
 
 }

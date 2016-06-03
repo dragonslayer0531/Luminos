@@ -37,7 +37,7 @@ public class BaseForce implements Force {
 	 * @param window	{@link GLFWWindow} to calculate frametime with 
 	 */
 	public Vector3f calculate(GLFWWindow window) {
-		Vector3f updatedPos = entity.getPosition();
+		Vector3f updatedPos = (Vector3f) entity.getPosition();
 		updatedPos.x += (window.getFrameTime() * force.x);
 		updatedPos.y += (window.getFrameTime() * force.y);
 		updatedPos.z += (window.getFrameTime() * force.z);

@@ -101,9 +101,10 @@ public class Camera {
 		float theta = player.getRotation().y + angleAroundPlayer;
 		float offsetX = (float) (horizDistance * Math.sin(Math.toRadians(theta)));
 		float offsetZ = (float) (horizDistance * Math.cos(Math.toRadians(theta)));
-		position.x = player.getPosition().x - offsetX;
-		position.z = player.getPosition().z - offsetZ;
-		position.y = player.getPosition().y + verticDistance + 1f;
+		Vector3f pos = (Vector3f) (player.getPosition());
+		position.x = pos.x - offsetX;
+		position.z = pos.z - offsetZ;
+		position.y = pos.y + verticDistance + 1f;
 	}
 	
 	/**

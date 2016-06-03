@@ -1,10 +1,14 @@
 package tk.luminos.luminoscore.graphics.render;
 
+import static tk.luminos.luminoscore.ConfigData.HEIGHT;
+import static tk.luminos.luminoscore.ConfigData.POSITION;
+import static tk.luminos.luminoscore.ConfigData.WIDTH;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
-import tk.luminos.luminoscore.GlobalLock;
+import tk.luminos.luminoscore.graphics.FrameBufferObject;
 import tk.luminos.luminoscore.graphics.loaders.Loader;
 import tk.luminos.luminoscore.graphics.models.RawModel;
 import tk.luminos.luminoscore.graphics.shaders.ImageShader;
@@ -35,7 +39,7 @@ public class ImageRenderer {
 	public ImageRenderer(Loader loader) {
 		quad = loader.loadToVAO(POSITIONS, 2);
 		shader = new ImageShader();
-		fbo = new FrameBufferObject(GlobalLock.WIDTH, GlobalLock.HEIGHT, FrameBufferObject.NONE);
+		fbo = new FrameBufferObject(WIDTH, HEIGHT, FrameBufferObject.NONE);
 	}
 	
 	/**
@@ -65,7 +69,7 @@ public class ImageRenderer {
 	 */
 	public void finish() {
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
-		GL20.glDisableVertexAttribArray(GlobalLock.POSITION);
+		GL20.glDisableVertexAttribArray(POSITION);
 		GL30.glBindVertexArray(0);
 	}
 	

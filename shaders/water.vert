@@ -7,13 +7,12 @@ out vec2 textureCoords;
 out vec3 toCameraVector;
 out vec3 fromLightVector;
 
+uniform float tiling;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 modelMatrix;
 uniform vec3 cameraPosition;
 uniform vec3 lightPosition;
-
-const float tiling = 2;
 
 void main(void) {
 

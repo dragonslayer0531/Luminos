@@ -10,6 +10,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL32;
+import org.lwjgl.opengl.GL40;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
@@ -30,6 +31,8 @@ public abstract class ShaderProgram {
 	private int programID;
 	private int vertexShaderID;
 	private int geometryShaderID;
+	private int tessControlID;
+	private int tessEvalID;
 	private int fragmentShaderID;
 	
 	private static FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
@@ -41,8 +44,8 @@ public abstract class ShaderProgram {
 	 * @param fragmentFile	Fragment shader file
 	 */
 	public ShaderProgram(String vertexFile,String fragmentFile){
-		vertexShaderID = loadShader(vertexFile,GL20.GL_VERTEX_SHADER);
-		fragmentShaderID = loadShader(fragmentFile,GL20.GL_FRAGMENT_SHADER);
+		vertexShaderID = loadShader(vertexFile, GL20.GL_VERTEX_SHADER);
+		fragmentShaderID = loadShader(fragmentFile, GL20.GL_FRAGMENT_SHADER);
 		programID = GL20.glCreateProgram();
 		GL20.glAttachShader(programID, vertexShaderID);
 		GL20.glAttachShader(programID, fragmentShaderID);
@@ -60,9 +63,9 @@ public abstract class ShaderProgram {
 	 * @param fragmentFile	Fragment shader file
 	 */
 	public ShaderProgram(String vertexFile, String geometryFile, String fragmentFile) {
-		vertexShaderID = loadShader(vertexFile,GL20.GL_VERTEX_SHADER);
+		vertexShaderID = loadShader(vertexFile, GL20.GL_VERTEX_SHADER);
 		geometryShaderID = loadShader(geometryFile, GL32.GL_GEOMETRY_SHADER);
-		fragmentShaderID = loadShader(fragmentFile,GL20.GL_FRAGMENT_SHADER);
+		fragmentShaderID = loadShader(fragmentFile, GL20.GL_FRAGMENT_SHADER);
 		GL20.glAttachShader(programID, vertexShaderID);
 		GL20.glAttachShader(programID, geometryShaderID);
 		GL20.glAttachShader(programID, fragmentShaderID);
@@ -73,9 +76,32 @@ public abstract class ShaderProgram {
 	}
 	
 	/**
+	 * Constructor
+	 * 
+	 * @param vertexFile			Vertex shader file
+	 * @param tessControlFile		Tessellation control shader file
+	 * @param tessEvaluationFile	Tessellation evaluation shader file 
+	 * @param fragmentFile			Fragment shader file
+	 */
+	public ShaderProgram(String vertexFile, String tessControlFile, String tessEvaluationFile, String fragmentFile) {
+		vertexShaderID = loadShader(vertexFile, GL20.GL_VERTEX_SHADER);
+		tessControlID = loadShader(tessControlFile, GL40.GL_TESS_CONTROL_SHADER);
+		tessEvalID = loadShader(vertexFile, GL40.GL_TESS_EVALUATION_SHADER);
+		fragmentShaderID = loadShader(fragmentFile, GL20.GL_FRAGMENT_SHADER);
+		GL20.glAttachShader(programID, vertexShaderID);
+		GL20.glAttachShader(programID, tessControlID);
+		GL20.glAttachShader(programID, tessEvalID);
+		GL20.glAttachShader(programID, fragmentShaderID);
+		bindAttributes();
+		GL20.glLinkProgram(programID);
+		GL20.glValidateProgram(programID);
+		getAllUniformLocations();
+	}
+	
+	/**
 	 * Gets uniform locations
 	 */
-	protected abstract void getAllUniformLocations();
+	public abstract void getAllUniformLocations();
 	
 	/**
 	 * Gets uniform location of variable
@@ -83,7 +109,7 @@ public abstract class ShaderProgram {
 	 * @param uniformName	Shader uniform variable
 	 * @return 	Shader variable location
 	 */
-	protected int getUniformLocation(String uniformName){
+	public int getUniformLocation(String uniformName){
 		return GL20.glGetUniformLocation(programID,uniformName);
 	}
 	
@@ -116,7 +142,7 @@ public abstract class ShaderProgram {
 	/**
 	 * Bind attribute locations
 	 */
-	protected abstract void bindAttributes();
+	public abstract void bindAttributes();
 	
 	/**
 	 * Binds variable location
@@ -124,7 +150,7 @@ public abstract class ShaderProgram {
 	 * @param attribute		Attribute to be bound
 	 * @param variableName	Variable name to be bound
 	 */
-	protected void bindAttribute(int attribute, String variableName){
+	public void bindAttribute(int attribute, String variableName){
 		GL20.glBindAttribLocation(programID, attribute, variableName);
 	}
 	
@@ -134,7 +160,7 @@ public abstract class ShaderProgram {
 	 * @param location	Location of variable to be bound
 	 * @param value		Value of variable to be bound
 	 */
-	protected void loadFloat(int location, float value){
+	public void loadFloat(int location, float value){
 		GL20.glUniform1f(location, value);
 	}
 	
@@ -144,7 +170,7 @@ public abstract class ShaderProgram {
 	 * @param location	Location of variable to be bound
 	 * @param value		Value of variable to be bound
 	 */
-	protected void loadInt(int location, int value){
+	public void loadInt(int location, int value){
 		GL20.glUniform1i(location, value);
 	}
 	
@@ -154,7 +180,7 @@ public abstract class ShaderProgram {
 	 * @param location	Location of variable to be bound
 	 * @param vector	Value of variable to be bound
 	 */
-	protected void loadVector(int location, Vector3f vector){
+	public void loadVector(int location, Vector3f vector){
 		GL20.glUniform3f(location,vector.x,vector.y,vector.z);
 	}
 	
@@ -164,7 +190,7 @@ public abstract class ShaderProgram {
 	 * @param location	Location of variable to be bound
 	 * @param vector	Value of variable to be bound
 	 */
-	protected void load4DVector(int location, Vector4f vector){
+	public void load4DVector(int location, Vector4f vector){
 		GL20.glUniform4f(location, vector.x, vector.y, vector.z, vector.w);
 	}
 	
@@ -174,7 +200,7 @@ public abstract class ShaderProgram {
 	 * @param location	Location of variable to be bound
 	 * @param vector	Value of variable to be bound
 	 */
-	protected void load2DVector(int location, Vector2f vector){
+	public void load2DVector(int location, Vector2f vector){
 		GL20.glUniform2f(location,vector.x,vector.y);
 	}
 	
@@ -184,7 +210,7 @@ public abstract class ShaderProgram {
 	 * @param location	Location of variable to be bound
 	 * @param value		Value of variable to be bound
 	 */
-	protected void loadBoolean(int location, boolean value){
+	public void loadBoolean(int location, boolean value){
 		float toLoad = 0;
 		if(value){
 			toLoad = 1;
@@ -198,7 +224,7 @@ public abstract class ShaderProgram {
 	 * @param location	Location of variable to be bound
 	 * @param matrix	Value of variable to be bound
 	 */
-	protected void loadMatrix(int location, Matrix4f matrix){
+	public void loadMatrix(int location, Matrix4f matrix){
 		matrix.store(matrixBuffer);
 		matrixBuffer.flip();
 		GL20.glUniformMatrix4fv(location, false, matrixBuffer);
@@ -232,7 +258,8 @@ public abstract class ShaderProgram {
 		GL20.glShaderSource(shaderID, shaderSource);
 		GL20.glCompileShader(shaderID);
 		if(GL20.glGetShaderi(shaderID, GL20.GL_COMPILE_STATUS )== GL11.GL_FALSE){
-			Debug.addData(ShaderProgram.class + " " + GL20.glGetShaderInfoLog(shaderID, 50000) + " Could not compile shader.");
+			System.out.println(GL20.glGetShaderInfoLog(shaderID, 50000));
+			Debug.addData(GL20.glGetShaderInfoLog(shaderID, 50000) + " Could not compile shader.");
 			Debug.print();
 		}
 		return shaderID;

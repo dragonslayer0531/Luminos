@@ -1,10 +1,12 @@
 package tk.luminos.luminoscore.graphics.textures;
 
+import static tk.luminos.luminoscore.ConfigData.SIZE;
+import static tk.luminos.luminoscore.ConfigData.TEXTURE_SIZE;
+
 import java.awt.image.BufferedImage;
 
 import org.lwjgl.util.vector.Vector3f;
 
-import tk.luminos.luminoscore.GlobalLock;
 import tk.luminos.luminoscore.graphics.terrains.Terrain;
 import tk.luminos.luminoscore.tools.Maths;
 
@@ -27,7 +29,7 @@ public class ProceduralTerrainTexture {
 	 */
 	
 	public static BufferedImage generateTerrainMap(Terrain terrain) {
-		BufferedImage image = new BufferedImage(GlobalLock.TEXTURE_SIZE, GlobalLock.TEXTURE_SIZE, BufferedImage.TYPE_INT_RGB);
+		BufferedImage image = new BufferedImage(TEXTURE_SIZE, TEXTURE_SIZE, BufferedImage.TYPE_INT_RGB);
 		
 		/*
 		 
@@ -53,13 +55,13 @@ public class ProceduralTerrainTexture {
 		int BLACK = Maths.rgbToInt(new Vector3f(0, 0, 0));
 		int RED = Maths.rgbToInt(new Vector3f(255, 0, 0));
 				
-		for(int x = 0; x < GlobalLock.TEXTURE_SIZE; x++) {
-			for(int y = 0; y < GlobalLock.TEXTURE_SIZE; y++) {
+		for(int x = 0; x < TEXTURE_SIZE; x++) {
+			for(int y = 0; y < TEXTURE_SIZE; y++) {
 				float wX = terrain.getX();
 				float wZ = terrain.getZ();
 				
-				float fracX = (x / (float) GlobalLock.TEXTURE_SIZE) * GlobalLock.SIZE;
-				float fracZ = (y / (float) GlobalLock.TEXTURE_SIZE) * GlobalLock.SIZE;
+				float fracX = (x / (float) TEXTURE_SIZE) * SIZE;
+				float fracZ = (y / (float) TEXTURE_SIZE) * SIZE;
 				
 				float worldX = wX + fracX;
 				float worldZ = wZ + fracZ;

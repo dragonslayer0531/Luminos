@@ -1,5 +1,7 @@
 package tk.luminos.luminoscore.network;
 
+import static tk.luminos.luminoscore.ConfigData.INITIATED;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -8,7 +10,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import tk.luminos.luminoscore.Debug;
-import tk.luminos.luminoscore.GlobalLock;
+import tk.luminos.luminosutils.serialization.LDatabase;
 
 /**
  * 
@@ -85,7 +87,7 @@ public class LuminosServer extends Thread {
 			Debug.print();
 		}
 		
-		while(GlobalLock.INITIATED) {
+		while(INITIATED) {
 			receiveData();
 		}
 		
@@ -94,10 +96,14 @@ public class LuminosServer extends Thread {
 	/**
 	 * Sends the data
 	 * 
-	 * @param data to send
+	 * @param db		Database to send
+	 * @param address	Address to send to
+	 * @param port		Port to send on
 	 */
-	public void sendData(byte[] data) {
-		DatagramPacket packet = new DatagramPacket(data, data.length);
+	public void sendData(LDatabase db, InetAddress address, int port) {
+		byte[] data = new byte[db.getSize()];
+		db.getBytes(data, 0);
+		DatagramPacket packet = new DatagramPacket(data, data.length, address, port);
 		try {
 			clientSocket.send(packet);
 		} catch (IOException e) {
@@ -108,7 +114,7 @@ public class LuminosServer extends Thread {
 	/**
 	 * Receives data
 	 * 
-	 * @return	data received
+	 * @return	database received
 	 */
 	public byte[] receiveData() {
 		byte[] data = new byte[1024];

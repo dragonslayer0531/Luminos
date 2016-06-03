@@ -26,6 +26,8 @@ import tk.luminos.luminoscore.tools.DateUtils;
 public class SkyboxRenderer {
 	
 	private static final float SIZE = 300f;
+	private float lowerLimit = -130.0f;
+	private float upperLimit = -100.0f;
 	
 	private static final float[] VERTICES = {        
 	    -SIZE,  SIZE, -SIZE,
@@ -121,6 +123,8 @@ public class SkyboxRenderer {
 		shader.start();
 		shader.loadViewMatrix(camera, window);
 		shader.loadFogColour(r, g, b);
+		shader.loadLowerLimit(lowerLimit);
+		shader.loadUpperLimit(upperLimit);
 		GL30.glBindVertexArray(cube.getVaoID());
 		GL20.glEnableVertexAttribArray(0);
 		GL11.glEnable(GL32.GL_TEXTURE_CUBE_MAP_SEAMLESS);
@@ -132,8 +136,44 @@ public class SkyboxRenderer {
 		shader.stop();
 	}
 
-//**************************************Private Methods************************************//
+	/**
+	 * Gets the lower limit
+	 * 
+	 * @return	lower limit
+	 */
+	public float getLowerLimit() {
+		return lowerLimit;
+	}
+
+	/**
+	 * Sets the lower limit
+	 * 
+	 * @param lowerLimit 	Lower rendering limit
+	 */
+	public void setLowerLimit(float lowerLimit) {
+		this.lowerLimit = lowerLimit;
+	}
+
+	/**
+	 * Gets the upper limit
+	 * 
+	 * @return	upper limit
+	 */
+	public float getUpperLimit() {
+		return upperLimit;
+	}
+
+	/**
+	 * Sets the upper limit
+	 * 
+	 * @param upperLimit	Upper rendering limit
+	 */
+	public void setUpperLimit(float upperLimit) {
+		this.upperLimit = upperLimit;
+	}
 	
+//**************************************Private Methods************************************//	
+
 	/**
 	 * Binds textures of skybox
 	 */

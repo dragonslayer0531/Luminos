@@ -26,6 +26,8 @@ import tk.luminos.luminoscore.tools.Maths;
 public class TerrainRenderer {
 
 	private TerrainShader shader;
+	private float density = 0.001f;
+	private float gradient = 5.0f;
 
 	/**
 	 * Constructor
@@ -52,10 +54,52 @@ public class TerrainRenderer {
 		for (Terrain terrain : terrains) {
 			prepareTerrain(terrain);
 			loadModelMatrix(terrain);
-			GL11.glDrawElements(GL11.GL_TRIANGLES, terrain.getModel().getVertexCount(),
+			shader.loadDensity(density);
+			shader.loadGradient(gradient);
+			GL11.glDrawElements(GL11.GL_TRIANGLES, terrain.getRawModel().getVertexCount(),
 					GL11.GL_UNSIGNED_INT, 0);
 			unbindTexturedModel();
 		}
+	}
+	
+	/**
+	 * Gets the density of the fog
+	 * 
+	 * @return	density of the fog
+	 */
+	public float getDensity() {
+		return density;
+	}
+
+	/**
+	 * Sets the density of the fog
+	 * 
+	 * @param density	density of fog
+	 */
+	public void setDensity(float density) {
+		this.density = density;
+	}
+
+	/**
+	 * Gets the gradient of the fog
+	 * 
+	 * @return	gradient of the fog
+	 */
+	public float getGradient() {
+		return gradient;
+	}
+
+	/**
+	 * Sets the gradient of the fog
+	 * 
+	 * @param gradient	gradient of fog
+	 */
+	public void setGradient(float gradient) {
+		this.gradient = gradient;
+	}
+	
+	public void cleanUp() {
+		shader.cleanUp();
 	}
 
 //**********************************Private Methods*****************************************//	
@@ -66,7 +110,7 @@ public class TerrainRenderer {
 	 * @param terrain  Terrain to be prepared
 	 */
 	private void prepareTerrain(Terrain terrain) {
-		RawModel rawModel = terrain.getModel();
+		RawModel rawModel = terrain.getRawModel();
 		GL30.glBindVertexArray(rawModel.getVaoID());
 		GL20.glEnableVertexAttribArray(0);
 		GL20.glEnableVertexAttribArray(1);
@@ -83,15 +127,15 @@ public class TerrainRenderer {
 	private void bindTextures(Terrain terrain){
 		TerrainTexturePack texturePack = terrain.getTexturePack();
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturePack.getBackgroundTexture().getTextureID());
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturePack.getBackgroundTexture().getID());
 		GL13.glActiveTexture(GL13.GL_TEXTURE1);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturePack.getrTexture().getTextureID());
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturePack.getrTexture().getID());
 		GL13.glActiveTexture(GL13.GL_TEXTURE2);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturePack.getgTexture().getTextureID());
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturePack.getgTexture().getID());
 		GL13.glActiveTexture(GL13.GL_TEXTURE3);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturePack.getbTexture().getTextureID());
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturePack.getbTexture().getID());
 		GL13.glActiveTexture(GL13.GL_TEXTURE4);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, terrain.getBlendMap().getTextureID());
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, terrain.getBlendMap().getID());
 	}
 
 	/**

@@ -89,7 +89,7 @@ public class ShadowMapMasterRenderer {
      * @return Shadow Map GPU index
      */
     public int getShadowMap() {
-        return shadowFbo.getShadowMap();
+        return shadowFbo.getDepthTexture();
     }
 
     /**

@@ -1,9 +1,6 @@
 package tk.luminos.luminoscore.graphics.loaders;
 
 import java.awt.image.BufferedImage;
-import java.util.List;
-
-import org.lwjgl.util.vector.Vector3f;
 
 import tk.luminos.luminoscore.graphics.models.RawModel;
 
@@ -74,13 +71,12 @@ public class Loader {
 	 * @param positions		Positions to be loaded
 	 * @param textureCoords	Texture coordinates of the positions
 	 * @param normals		Normal coordinates of the positions
-	 * @param vertices		List of Vector3fs describing the positions
-	 * @param normalArray	List of Vector3fs describing the normals
 	 * @param indices		Indices describing the order of the positions
-	 * @return				RawModel describing the positions, texture coordinates, normal coordinates, and mesh loaded
+	 * @param id			String describing the file location
+	 * @return				RawModel describing the positions, texture coordinates, and normal coordinates loaded
 	 */
-	public RawModel loadToVAO(float[] positions, float[] textureCoords, float[] normals, List<Vector3f> vertices, List<Vector3f> normalArray, int[] indices) {
-		return modelLoader.loadToVAO(positions, textureCoords, normals, vertices, normalArray, indices);
+	public RawModel loadToVAO(float[] positions, float[] textureCoords, float[] normals, int[] indices, String id) {
+		return modelLoader.loadToVAO(positions, textureCoords, normals, indices, id);
 	}
 	
 	/**

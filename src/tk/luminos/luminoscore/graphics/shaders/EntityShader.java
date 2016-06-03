@@ -1,5 +1,9 @@
 package tk.luminos.luminoscore.graphics.shaders;
 
+import static tk.luminos.luminoscore.ConfigData.NORMALS;
+import static tk.luminos.luminoscore.ConfigData.POSITION;
+import static tk.luminos.luminoscore.ConfigData.TEXTURES;
+
 import java.util.List;
 
 import org.lwjgl.util.vector.Matrix4f;
@@ -7,7 +11,6 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
-import tk.luminos.luminoscore.GlobalLock;
 import tk.luminos.luminoscore.graphics.gameobjects.Camera;
 import tk.luminos.luminoscore.graphics.gameobjects.Light;
 import tk.luminos.luminoscore.tools.Maths;
@@ -37,6 +40,8 @@ public class EntityShader extends ShaderProgram {
 	private int location_numberOfRows;
 	private int location_offset;
 	private int location_plane;
+	private int location_density;
+	private int location_gradient;
 	
 	public static String VERT = "entity.vert";
 	public static String FRAG = "entity.frag";
@@ -52,17 +57,17 @@ public class EntityShader extends ShaderProgram {
 	 * (non-Javadoc)
 	 * @see luminoscore.graphics.shaders.ShaderProgram#bindAttributes()
 	 */
-	protected void bindAttributes() {
-		super.bindAttribute(GlobalLock.POSITION, "position");
-		super.bindAttribute(GlobalLock.TEXTURES, "textureCoordinates");
-		super.bindAttribute(GlobalLock.NORMALS, "normal");
+	public void bindAttributes() {
+		super.bindAttribute(POSITION, "position");
+		super.bindAttribute(TEXTURES, "textureCoordinates");
+		super.bindAttribute(NORMALS, "normal");
 	}
 	
 	/*
 	 * (non-Javadoc)
 	 * @see luminoscore.graphics.shaders.ShaderProgram#getAllUniformLocations()
 	 */
-	protected void getAllUniformLocations() {
+	public void getAllUniformLocations() {
 		location_transformationMatrix = super.getUniformLocation("transformationMatrix");
 		location_projectionMatrix = super.getUniformLocation("projectionMatrix");
 		location_viewMatrix = super.getUniformLocation("viewMatrix");
@@ -81,6 +86,26 @@ public class EntityShader extends ShaderProgram {
 			location_lightColour[i] = super.getUniformLocation("lightColour[" + i + "]");
 			location_attenuation[i] = super.getUniformLocation("attenuation[" + i + "]");
 		}
+		location_density = super.getUniformLocation("density");
+		location_gradient = super.getUniformLocation("gradient");
+	}
+	
+	/**
+	 * Load density to shader
+	 * 
+	 * @param density		Density of fog
+	 */
+	public void loadDensity(float density) {
+		super.loadFloat(location_density, density);
+	}
+	
+	/**
+	 * Load gradient to shader
+	 * 
+	 * @param gradient		Gradient of fog
+	 */
+	public void loadGradient(float gradient) {
+		super.loadFloat(location_gradient, gradient);
 	}
 	
 	/**

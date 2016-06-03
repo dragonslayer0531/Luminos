@@ -26,7 +26,7 @@ public class AudioSource {
 		sourceID = AL10.alGenSources();
 		AL10.alSourcef(sourceID, AL10.AL_ROLLOFF_FACTOR, rolloff);
 		AL10.alSourcef(sourceID, AL10.AL_REFERENCE_DISTANCE, referenceDistance);
-		AL10.alSourcef(sourceID, AL10.AL_MAX_DISTANCE, 15);
+		AL10.alSourcef(sourceID, AL10.AL_MAX_DISTANCE, maxDistance);
 	}
 	
 	/**
@@ -45,7 +45,7 @@ public class AudioSource {
 	public void play(int buffer) {
 		stop();
 		AL10.alSourcei(sourceID, AL10.AL_BUFFER, buffer);
-		AL10.alSourcePlay(sourceID);
+		continuePlay();
 	}
 	
 	/**

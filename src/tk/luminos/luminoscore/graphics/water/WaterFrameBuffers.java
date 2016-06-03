@@ -1,5 +1,12 @@
 package tk.luminos.luminoscore.graphics.water;
 
+import static tk.luminos.luminoscore.ConfigData.HEIGHT;
+import static tk.luminos.luminoscore.ConfigData.WATER_FBO_REFLEC_HEIGHT;
+import static tk.luminos.luminoscore.ConfigData.WATER_FBO_REFLEC_WIDTH;
+import static tk.luminos.luminoscore.ConfigData.WATER_FBO_REFRAC_HEIGHT;
+import static tk.luminos.luminoscore.ConfigData.WATER_FBO_REFRAC_WIDTH;
+import static tk.luminos.luminoscore.ConfigData.WIDTH;
+
 import java.nio.ByteBuffer;
 
 import org.lwjgl.opengl.GL11;
@@ -7,7 +14,6 @@ import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL32;
 
-import tk.luminos.luminoscore.GlobalLock;
 
 /**
  * 
@@ -20,11 +26,11 @@ import tk.luminos.luminoscore.GlobalLock;
 
 public class WaterFrameBuffers {
 
-	protected static final int REFLECTION_WIDTH = GlobalLock.WATER_FBO_REFLEC_WIDTH;
-	private static final int REFLECTION_HEIGHT = GlobalLock.WATER_FBO_REFLEC_HEIGHT;
+	protected static final int REFLECTION_WIDTH = WATER_FBO_REFLEC_WIDTH;
+	private static final int REFLECTION_HEIGHT = WATER_FBO_REFLEC_HEIGHT;
 	
-	protected static final int REFRACTION_WIDTH = GlobalLock.WATER_FBO_REFRAC_WIDTH;
-	private static final int REFRACTION_HEIGHT = GlobalLock.WATER_FBO_REFRAC_HEIGHT;
+	protected static final int REFRACTION_WIDTH = WATER_FBO_REFRAC_WIDTH;
+	private static final int REFRACTION_HEIGHT = WATER_FBO_REFRAC_HEIGHT;
 
 	private int reflectionFrameBuffer;
 	private int reflectionTexture;
@@ -73,7 +79,7 @@ public class WaterFrameBuffers {
 	 */
 	public void unbindCurrentFrameBuffer() {
 		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
-		GL11.glViewport(0, 0, GlobalLock.WIDTH, GlobalLock.HEIGHT);
+		GL11.glViewport(0, 0, WIDTH, HEIGHT);
 	}
 
 	/**

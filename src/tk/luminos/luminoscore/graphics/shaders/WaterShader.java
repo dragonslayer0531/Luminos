@@ -1,8 +1,9 @@
 package tk.luminos.luminoscore.graphics.shaders;
 
+import static tk.luminos.luminoscore.ConfigData.POSITION;
+
 import org.lwjgl.util.vector.Matrix4f;
 
-import tk.luminos.luminoscore.GlobalLock;
 import tk.luminos.luminoscore.graphics.gameobjects.Camera;
 import tk.luminos.luminoscore.graphics.gameobjects.Light;
 import tk.luminos.luminoscore.tools.Maths;
@@ -32,6 +33,12 @@ public class WaterShader extends ShaderProgram {
 	private int location_lightPosition;
 	private int location_lightColor;
 	private int location_depthMap;
+	private int location_nearPlane;
+	private int location_farPlane;
+	private int location_tiling;
+	private int location_waveStrength;
+	private int location_shineDamper;
+	private int location_reflectivity;
 
 	/**
 	 * Constructor
@@ -44,15 +51,15 @@ public class WaterShader extends ShaderProgram {
 	 * (non-Javadoc)
 	 * @see luminoscore.graphics.shaders.ShaderProgram#bindAttributes()
 	 */
-	protected void bindAttributes() {
-		bindAttribute(GlobalLock.POSITION, "position");
+	public void bindAttributes() {
+		bindAttribute(POSITION, "position");
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * @see luminoscore.graphics.shaders.ShaderProgram#getAllUniformLocations()
 	 */
-	protected void getAllUniformLocations() {
+	public void getAllUniformLocations() {
 		location_projectionMatrix = getUniformLocation("projectionMatrix");
 		location_viewMatrix = getUniformLocation("viewMatrix");
 		location_modelMatrix = getUniformLocation("modelMatrix");
@@ -65,6 +72,12 @@ public class WaterShader extends ShaderProgram {
 		location_lightPosition = getUniformLocation("lightPosition");
 		location_lightColor = getUniformLocation("lightColor");
 		location_depthMap = getUniformLocation("depthMap");
+		location_nearPlane = getUniformLocation("near");
+		location_farPlane = getUniformLocation("far");
+		location_tiling = getUniformLocation("tiling");
+		location_waveStrength = getUniformLocation("waveStrength");
+		location_shineDamper = getUniformLocation("shineDamper");
+		location_reflectivity = getUniformLocation("reflectivity");
 	}
 
 	/**
@@ -76,6 +89,11 @@ public class WaterShader extends ShaderProgram {
 		super.loadInt(location_dudvMap, 2);
 		super.loadInt(location_normalMap, 3);
 		super.loadInt(location_depthMap, 4);
+	}
+	
+	public void loadRenderBox(float nearPlane, float farPlane) {
+		super.loadFloat(location_nearPlane, nearPlane);
+		super.loadFloat(location_farPlane, farPlane);
 	}
 	
 	/**
@@ -124,6 +142,42 @@ public class WaterShader extends ShaderProgram {
 	 */
 	public void loadModelMatrix(Matrix4f modelMatrix){
 		loadMatrix(location_modelMatrix, modelMatrix);
+	}
+	
+	/**
+	 * Loads tiling amount to shader
+	 * 
+	 * @param tiling		amount to tile per quad
+	 */
+	public void loadTiling(float tiling) {
+		super.loadFloat(location_tiling, tiling);
+	}
+	
+	/**
+	 * Loads wave strength to shader
+	 * 
+	 * @param waveStrength		strength of waves
+	 */
+	public void loadWaveStrength(float waveStrength) {
+		super.loadFloat(location_waveStrength, waveStrength);
+	}
+	
+	/**
+	 * Loads shine damper to shader
+	 * 
+	 * @param shineDamper	amount of shine damper
+	 */
+	public void loadShineDamper(float shineDamper) {
+		super.loadFloat(location_shineDamper, shineDamper);
+	}
+	
+	/**
+	 * Loads reflection amount
+	 * 
+	 * @param reflection	percentage of reflection 
+	 */
+	public void loadReflectivity(float reflection) {
+		super.loadFloat(location_reflectivity, reflection);
 	}
 
 }

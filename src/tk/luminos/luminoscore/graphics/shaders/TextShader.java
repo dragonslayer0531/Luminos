@@ -1,9 +1,10 @@
 package tk.luminos.luminoscore.graphics.shaders;
 
+import static tk.luminos.luminoscore.ConfigData.POSITION;
+import static tk.luminos.luminoscore.ConfigData.TEXTURES;
+
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
-
-import tk.luminos.luminoscore.GlobalLock;
 
 /**
  * 
@@ -33,7 +34,7 @@ public class TextShader extends ShaderProgram {
 	 * (non-Javadoc)
 	 * @see luminoscore.graphics.shaders.ShaderProgram#getAllUniformLocations()
 	 */
-	protected void getAllUniformLocations() {
+	public void getAllUniformLocations() {
 		location_color = super.getUniformLocation("color");
 		location_translation = super.getUniformLocation("translation");
 		location_font = super.getUniformLocation("font");
@@ -43,9 +44,9 @@ public class TextShader extends ShaderProgram {
 	 * (non-Javadoc)
 	 * @see luminoscore.graphics.shaders.ShaderProgram#bindAttributes()
 	 */
-	protected void bindAttributes() {
-		super.bindAttribute(GlobalLock.POSITION, "position");
-		super.bindAttribute(GlobalLock.TEXTURES, "textureCoords");
+	public void bindAttributes() {
+		super.bindAttribute(POSITION, "position");
+		super.bindAttribute(TEXTURES, "textureCoords");
 	}
 	
 	/**

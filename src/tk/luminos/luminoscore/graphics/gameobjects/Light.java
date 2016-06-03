@@ -1,5 +1,6 @@
 package tk.luminos.luminoscore.graphics.gameobjects;
 
+import org.lwjgl.util.vector.Vector;
 import org.lwjgl.util.vector.Vector3f;
 
 import tk.luminos.luminosutils.serialization.LArray;
@@ -14,7 +15,7 @@ import tk.luminos.luminosutils.serialization.LObject;
  * @version 1.0
  *
  */
-public class Light implements GameObject {
+public class Light {
 	
 	private Vector3f position;
 	private Vector3f color;
@@ -42,6 +43,18 @@ public class Light implements GameObject {
 		this.position = position;
 		this.color = color;
 		this.attenuation = attenuation;
+	}
+	
+	/**
+	 * Increases the position of the GameObject by delta
+	 * 
+	 * @param delta		amount to increase
+	 */
+	public void increasePosition(Vector delta) {
+		Vector3f d = (Vector3f) delta;
+		position.x += d.x;
+		position.y += d.y;
+		position.z += d.z;
 	}
 	
 	/**

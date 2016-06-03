@@ -2,6 +2,8 @@ package tk.luminos.luminoscore.graphics.display;
 
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MAJOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MINOR;
+import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_FORWARD_COMPAT;
+import static org.lwjgl.glfw.GLFW.GLFW_REFRESH_RATE;
 import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
 import static org.lwjgl.glfw.GLFW.GLFW_SAMPLES;
 import static org.lwjgl.glfw.GLFW.GLFW_STENCIL_BITS;
@@ -11,7 +13,6 @@ import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowTitle;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
@@ -25,7 +26,20 @@ import static org.lwjgl.opengl.GL11.GL_TRUE;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.system.MemoryUtil.NULL;
+import static tk.luminos.luminoscore.ConfigData.FULLSCREEN;
+import static tk.luminos.luminoscore.ConfigData.GL_MAJOR;
+import static tk.luminos.luminoscore.ConfigData.GL_MINOR;
+import static tk.luminos.luminoscore.ConfigData.HEIGHT;
+import static tk.luminos.luminoscore.ConfigData.INITIATED;
+import static tk.luminos.luminoscore.ConfigData.MOUSE_VISIBLE;
+import static tk.luminos.luminoscore.ConfigData.RESIZABLE;
+import static tk.luminos.luminoscore.ConfigData.SAMPLES;
+import static tk.luminos.luminoscore.ConfigData.STENCIL_BITS;
+import static tk.luminos.luminoscore.ConfigData.VSYNC;
+import static tk.luminos.luminoscore.ConfigData.WIDTH;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +56,6 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.util.vector.Vector2f;
 
 import tk.luminos.luminoscore.Debug;
-import tk.luminos.luminoscore.GlobalLock;
 import tk.luminos.luminoscore.LuminosException;
 import tk.luminos.luminoscore.graphics.loaders.Loader;
 import tk.luminos.luminoscore.graphics.render.GuiRenderer;
@@ -61,13 +74,6 @@ import tk.luminos.luminoscore.input.MousePosition;
  */
 
 public class GLFWWindow {
-
-	
-	public static int GL_MAJOR = GlobalLock.GL_MAJOR;
-	public static int GL_MINOR = GlobalLock.GL_MINOR;
-	
-	public static int STENCIL_BITS = GlobalLock.STENCIL_BITS;
-	public static int SAMPLES = GlobalLock.SAMPLES;
 	
 	//Set up callback information
 	
@@ -104,8 +110,8 @@ public class GLFWWindow {
 	 */
 	public GLFWWindow(String title, boolean vsync, boolean fullscreen, boolean visible, boolean resizable, boolean vismouse) throws LuminosException {
 		this.title = title;
-		this.width = GlobalLock.WIDTH;
-		this.height = GlobalLock.HEIGHT;
+		this.width = WIDTH;
+		this.height = HEIGHT;
 		this.vsync = vsync;
 		this.fullscreen = fullscreen;
 		this.visible = visible;
@@ -121,7 +127,7 @@ public class GLFWWindow {
 	 */
 	private void init() throws LuminosException {
 		
-		if(!GlobalLock.INITIATED) {
+		if(!INITIATED) {
 			throw new LuminosException(GLFWWindow.class + " Luminos Engine has not been instantiated.  Closing...");
 		}
 		
@@ -135,8 +141,15 @@ public class GLFWWindow {
 		glfwWindowHint(GLFW_RESIZABLE, resizable ? GL_TRUE : GL_FALSE);
 		glfwWindowHint(GLFW_STENCIL_BITS, STENCIL_BITS);
 		glfwWindowHint(GLFW_SAMPLES, SAMPLES);
+		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+		glfwWindowHint(GLFW_REFRESH_RATE, 120);
 		
 		if(fullscreen) {
+			Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+			width = (int) dim.getWidth();
+			height = (int) dim.getHeight();
+			WIDTH = width;
+			HEIGHT = height;
 			window = glfwCreateWindow(width, height, title, glfwGetPrimaryMonitor(), NULL);
 		} else {
 			window = glfwCreateWindow(width, height, title, GL_FALSE, NULL);
@@ -217,10 +230,10 @@ public class GLFWWindow {
 		loader.cleanUp();
 		GLFW.glfwSwapBuffers(window);
 		
-		GlobalLock.FULLSCREEN = fullscreen;
-		GlobalLock.VSYNC = vsync;
-		GlobalLock.RESIZABLE = resizable;
-		GlobalLock.MOUSE_VISIBLE = vismouse;
+		FULLSCREEN = fullscreen;
+		VSYNC = vsync;
+		RESIZABLE = resizable;
+		MOUSE_VISIBLE = vismouse;
 	}
 	
 	/**
@@ -244,7 +257,7 @@ public class GLFWWindow {
 	/**
 	 * Releases all callbacks and disposes of the window
 	 */
-	public void dispose() {
+	public void close() {
 		keyCallback.release();
 		mouseButtonCallback.release();
 		cursorPosCallback.release();
@@ -255,19 +268,12 @@ public class GLFWWindow {
 	}
 	
 	/**
-	 * Getter of boolean deciding if the window should close
+	 * Getter of boolean deciding if the window should dispose
 	 * 
-	 * @return Value of whether the window should close or remain opened
+	 * @return Value of whether the window should dispose or remain opened
 	 */
 	public boolean shouldClose() {
-		return glfwWindowShouldClose(window) == GL_TRUE;
-	}
-	
-	/**
-	 * Sets the window close to true
-	 */
-	public void close() {
-		glfwSetWindowShouldClose(window, GL_TRUE);
+		return glfwWindowShouldClose(window) != GL_TRUE;
 	}
 
 	/**

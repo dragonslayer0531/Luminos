@@ -9,7 +9,7 @@ package tk.luminos.luminoscore.graphics.textures;
  *
  */
 
-public class TerrainTexture {
+public class TerrainTexture implements Texture {
 	
 	private int textureID;
 
@@ -27,7 +27,7 @@ public class TerrainTexture {
 	 * 
 	 * @return Texture ID
 	 */
-	public int getTextureID() {
+	public int getID() {
 		return textureID;
 	}
 	

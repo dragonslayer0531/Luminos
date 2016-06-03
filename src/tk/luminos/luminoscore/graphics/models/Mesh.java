@@ -1,5 +1,6 @@
 package tk.luminos.luminoscore.graphics.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.util.vector.Vector3f;
@@ -15,8 +16,8 @@ import org.lwjgl.util.vector.Vector3f;
 
 public class Mesh {
 	
-	private List<Vector3f> vertices;
-	private List<Vector3f> normals;
+	private float[] vertices;
+	private float[] normals;
 
 	/**
 	 * Constructor
@@ -24,7 +25,7 @@ public class Mesh {
 	 * @param vertices	Vertex positions
 	 * @param normals	Normal vectors
 	 */
-	public Mesh(List<Vector3f> vertices, List<Vector3f> normals) {
+	public Mesh(float[] vertices, float[] normals) {
 		this.vertices = vertices;
 		this.normals = normals;
 	}
@@ -35,7 +36,20 @@ public class Mesh {
 	 * @return Positions of vertices of model
 	 */
 	public List<Vector3f> getVertices() {
-		return vertices;
+		List<Vector3f> ret = new ArrayList<Vector3f>();
+		Vector3f placeHolder = new Vector3f();
+		for(int i = 0; i < vertices.length; i++) {
+			if(vertices[i] % 3 == 1) {
+				placeHolder.x = vertices[i];
+			} else if(vertices[i] % 3 == 2) {
+				placeHolder.y = vertices[i];
+			} else {
+				placeHolder.z = vertices[i];
+				ret.add(placeHolder);
+				placeHolder = new Vector3f();
+			}
+		}
+		return ret;
 	}
 	
 	/**
@@ -44,7 +58,20 @@ public class Mesh {
 	 * @return Normals of the vertices of model
 	 */
 	public List<Vector3f> getNormals() {
-		return normals;
+		List<Vector3f> ret = new ArrayList<Vector3f>();
+		Vector3f placeHolder = new Vector3f();
+		for(int i = 0; i < normals.length; i++) {
+			if(normals[i] % 3 == 1) {
+				placeHolder.x = normals[i];
+			} else if(normals[i] % 3 == 2) {
+				placeHolder.y = normals[i];
+			} else {
+				placeHolder.z = normals[i];
+				ret.add(placeHolder);
+				placeHolder = new Vector3f();
+			}
+		}
+		return ret;
 	}
 
 }

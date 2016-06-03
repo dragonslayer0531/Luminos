@@ -1,6 +1,6 @@
 package tk.luminos.luminoscore.graphics.shaders;
 
-import tk.luminos.luminoscore.GlobalLock;
+import static tk.luminos.luminoscore.ConfigData.POSITION;
 
 /**
  * 
@@ -27,7 +27,7 @@ public class ImageShader extends ShaderProgram {
 	 * (non-Javadoc)
 	 * @see luminoscore.graphics.shaders.ShaderProgram#getAllUniformLocations()
 	 */
-	protected void getAllUniformLocations() {
+	public void getAllUniformLocations() {
 		
 	}
 
@@ -35,8 +35,8 @@ public class ImageShader extends ShaderProgram {
 	 * (non-Javadoc)
 	 * @see luminoscore.graphics.shaders.ShaderProgram#bindAttributes()
 	 */
-	protected void bindAttributes() {
-		super.bindAttribute(GlobalLock.POSITION, "position");
+	public void bindAttributes() {
+		super.bindAttribute(POSITION, "position");
 	}
 
 }

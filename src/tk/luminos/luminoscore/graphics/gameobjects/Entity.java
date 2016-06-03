@@ -1,16 +1,26 @@
 package tk.luminos.luminoscore.graphics.gameobjects;
 
+import static tk.luminos.luminoscore.ConfigData.BACKWARD;
+import static tk.luminos.luminoscore.ConfigData.FORWARD;
+import static tk.luminos.luminoscore.ConfigData.JUMP;
+import static tk.luminos.luminoscore.ConfigData.LEFT;
+import static tk.luminos.luminoscore.ConfigData.RIGHT;
+import static tk.luminos.luminoscore.ConfigData.SPRINT;
+import static tk.luminos.luminoscore.ConfigData.WALK;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.lwjgl.util.vector.Vector;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
-import tk.luminos.luminoscore.GlobalLock;
+import tk.luminos.luminoscore.graphics.AssetHolder;
 import tk.luminos.luminoscore.graphics.display.GLFWWindow;
 import tk.luminos.luminoscore.graphics.gameobjects.components.Component;
 import tk.luminos.luminoscore.graphics.models.Mesh;
+import tk.luminos.luminoscore.graphics.models.RawModel;
 import tk.luminos.luminoscore.graphics.models.TexturedModel;
 import tk.luminos.luminoscore.graphics.terrains.Terrain;
 import tk.luminos.luminoscore.input.Keyboard;
@@ -99,7 +109,18 @@ public class Entity implements GameObject {
 		this.scale = scale / 8;
 		this.models = models;
 	}
-
+	
+	/**
+	 * Increases the position of the GameObject by delta
+	 * 
+	 * @param delta		amount to 
+	 */
+	public void increasePosition(Vector delta) {
+		Vector3f d = (Vector3f) delta;
+		position.x += d.x;
+		position.y += d.y;
+		position.z += d.z;
+	}
 
 	/**
 	 * Moves the entity given terrain collision detection
@@ -110,7 +131,7 @@ public class Entity implements GameObject {
 	public void move(List<Terrain> terrains, GLFWWindow window) {
 		float y = this.position.y;
 		checkInputs(terrains, window);
-		rotate(new Vector2f(5f, 5f), window, false);
+		rotate(new Vector2f(2f, 2f), window, false);
 		Vector3f.add(new Vector3f(0, window.getFrameTime() * currentTurnSpeed, 0), rotation, rotation);
 		rotation.y %= 360;
 		for(Terrain terrain : terrains) {
@@ -119,7 +140,7 @@ public class Entity implements GameObject {
 
 		upwardsSpeed += GRAVITY * window.getFrameTime();
 		Vector3f.add(position, new Vector3f(0, upwardsSpeed * window.getFrameTime(), 0), position);
-		float terrainHeight = terrain.getHeightOfTerrain(getPosition().x, getPosition().z);
+		float terrainHeight = terrain.getHeightOfTerrain(position.x, position.z);
 		if (position.y < terrainHeight || position.y <= 0 || !isInAir) {
 			upwardsSpeed = 0;
 			isInAir = false;
@@ -390,7 +411,8 @@ public class Entity implements GameObject {
 		object.addArray(LArray.Float("pos", new float[] {position.x, position.y, position.z}));
 		object.addArray(LArray.Float("rot", new float[] {rotation.x, rotation.y, rotation.z}));
 		object.addField(LField.Float("sca", scale * 8));
-		object.addString(LString.Create("cur_mod", this.getCurrentModel().getRawModel().getID()));
+		object.addString(LString.Create("cur_mod", AssetHolder.getValue(this.getCurrentModel().getRawModel().getVaoID())));
+		object.addString(LString.Create("cur_tex", AssetHolder.getValue(this.getCurrentModel().getTexture().getID())));
 		return object;
 	}
 	
@@ -435,6 +457,24 @@ public class Entity implements GameObject {
 		return collider;
 	}
 	
+	/**
+	 * Gets the entity's current raw model
+	 * 
+	 * @return 		current raw model
+	 */
+	public RawModel getRawModel() {
+		return getCurrentModel().getRawModel();
+	}
+	
+	/**
+	 * Gets the entity's current texture 
+	 * 
+	 * @return 		GPU texture ID
+	 */
+	public int getTextureID() {
+		return getCurrentModel().getTexture().getID();
+	}
+	
 	//*******************************Private Methods*****************************//
 
 	/**
@@ -448,10 +488,10 @@ public class Entity implements GameObject {
 		if(!XBOXController.isControllerConnected()) {
 			switch(state) {
 			case STANDING:
-				if(Keyboard.isDown(GlobalLock.FORWARD)) {
-					if(Keyboard.isDown(GlobalLock.SPRINT)) {
+				if(Keyboard.isDown(FORWARD)) {
+					if(Keyboard.isDown(SPRINT)) {
 						this.currentSpeed = RUN_SPEED * SPRINT_MODIFICATION;
-					} else if(Keyboard.isDown(GlobalLock.WALK)) {
+					} else if(Keyboard.isDown(WALK)) {
 						this.currentSpeed = RUN_SPEED * WALK_MODIFICATION;
 					} else {
 						this.currentSpeed = RUN_SPEED;
@@ -460,8 +500,8 @@ public class Entity implements GameObject {
 					dx = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
 					dz = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
 					Vector3f.add(position, new Vector3f(dx, 0, dz), position);
-				} else if(Keyboard.isDown(GlobalLock.BACKWARD)) {
-					if(Keyboard.isDown(GlobalLock.WALK)) {
+				} else if(Keyboard.isDown(BACKWARD)) {
+					if(Keyboard.isDown(WALK)) {
 						this.currentSpeed = -RUN_SPEED * WALK_MODIFICATION;
 					} else {
 						this.currentSpeed = -RUN_SPEED;
@@ -472,10 +512,10 @@ public class Entity implements GameObject {
 					Vector3f.add(position, new Vector3f(dx, 0, dz), position);
 				} else this.currentSpeed = 0;
 
-				if(Keyboard.isDown(GlobalLock.LEFT)) {
-					if (Keyboard.isDown(GlobalLock.WALK)) {
+				if(Keyboard.isDown(LEFT)) {
+					if (Keyboard.isDown(WALK)) {
 						this.currentSpeed = RUN_SPEED * .5f;
-					} else if (Keyboard.isDown(GlobalLock.SPRINT)) {
+					} else if (Keyboard.isDown(SPRINT)) {
 						this.currentSpeed = RUN_SPEED * 1.5f;
 					} 
 					else this.currentSpeed = RUN_SPEED;
@@ -484,10 +524,10 @@ public class Entity implements GameObject {
 					dx = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
 					dz = (float) (-distance * Math.sin(Math.toRadians(rotation.y)));
 					Vector3f.add(position, new Vector3f(dx, 0, dz), position);
-				} else if(Keyboard.isDown(GlobalLock.RIGHT)) {
-					if (Keyboard.isDown(GlobalLock.WALK)) {
+				} else if(Keyboard.isDown(RIGHT)) {
+					if (Keyboard.isDown(WALK)) {
 						this.currentSpeed = RUN_SPEED * .5f;
-					} else if (Keyboard.isDown(GlobalLock.SPRINT)) {
+					} else if (Keyboard.isDown(SPRINT)) {
 						this.currentSpeed = RUN_SPEED * 1.5f;
 					} 
 					else this.currentSpeed = RUN_SPEED;
@@ -497,16 +537,16 @@ public class Entity implements GameObject {
 					dz = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
 					Vector3f.add(position, new Vector3f(dx, 0, dz), position);			
 				}
-				if(Keyboard.isDown(GlobalLock.JUMP	)) {
+				if(Keyboard.isDown(JUMP	)) {
 					jump();
 				}
 				
 				break;
 			case CROUCHING:
-				if(Keyboard.isDown(GlobalLock.FORWARD)) {
-					if(Keyboard.isDown(GlobalLock.SPRINT)) {
+				if(Keyboard.isDown(FORWARD)) {
+					if(Keyboard.isDown(SPRINT)) {
 						this.currentSpeed = RUN_SPEED * SPRINT_MODIFICATION * CROUCH_MODIFICATION;
-					} else if(Keyboard.isDown(GlobalLock.WALK)) {
+					} else if(Keyboard.isDown(WALK)) {
 						this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * CROUCH_MODIFICATION;
 					} else {
 						this.currentSpeed = RUN_SPEED;
@@ -515,8 +555,8 @@ public class Entity implements GameObject {
 					dx = (float) (distance * Math.sin(Math.toRadians(rotation.y)));
 					dz = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
 					Vector3f.add(position, new Vector3f(dx, 0, dz), position);
-				} else if(Keyboard.isDown(GlobalLock.BACKWARD)) {
-					if(Keyboard.isDown(GlobalLock.WALK)) {
+				} else if(Keyboard.isDown(BACKWARD)) {
+					if(Keyboard.isDown(WALK)) {
 						this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * CROUCH_MODIFICATION;
 					} else {
 						this.currentSpeed = RUN_SPEED;
@@ -527,10 +567,10 @@ public class Entity implements GameObject {
 					Vector3f.add(position, new Vector3f(dx, 0, dz), position);
 				} else this.currentSpeed = 0;
 
-				if(Keyboard.isDown(GlobalLock.LEFT)) {
-					if (Keyboard.isDown(GlobalLock.WALK)) {
+				if(Keyboard.isDown(LEFT)) {
+					if (Keyboard.isDown(WALK)) {
 						this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * CROUCH_MODIFICATION;
-					} else if (Keyboard.isDown(GlobalLock.SPRINT)) {
+					} else if (Keyboard.isDown(SPRINT)) {
 						this.currentSpeed = RUN_SPEED * SPRINT_MODIFICATION * CROUCH_MODIFICATION;
 					} 
 					else this.currentSpeed = RUN_SPEED;
@@ -540,9 +580,9 @@ public class Entity implements GameObject {
 					dz = (float) (-distance * Math.sin(Math.toRadians(rotation.y)));
 					Vector3f.add(position, new Vector3f(dx, 0, dz), position);
 				} else if(Keyboard.isDown(Keyboard.KEY_D)) {
-					if (Keyboard.isDown(GlobalLock.WALK)) {
+					if (Keyboard.isDown(WALK)) {
 						this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * CROUCH_MODIFICATION;
-					} else if (Keyboard.isDown(GlobalLock.SPRINT)) {
+					} else if (Keyboard.isDown(SPRINT)) {
 						this.currentSpeed = RUN_SPEED * SPRINT_MODIFICATION * CROUCH_MODIFICATION;
 					} 
 					else this.currentSpeed = RUN_SPEED;
@@ -554,10 +594,10 @@ public class Entity implements GameObject {
 				}
 				break;
 			case LAYING:
-				if(Keyboard.isDown(GlobalLock.RIGHT)) {
-					if(Keyboard.isDown(GlobalLock.SPRINT)) {
+				if(Keyboard.isDown(RIGHT)) {
+					if(Keyboard.isDown(SPRINT)) {
 						this.currentSpeed = RUN_SPEED * SPRINT_MODIFICATION * PRONE_MODIFICATION;
-					} else if(Keyboard.isDown(GlobalLock.WALK)) {
+					} else if(Keyboard.isDown(WALK)) {
 						this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * PRONE_MODIFICATION;
 					} else {
 						this.currentSpeed = RUN_SPEED;
@@ -567,7 +607,7 @@ public class Entity implements GameObject {
 					dz = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
 					Vector3f.add(position, new Vector3f(dx, 0, dz), position);
 				} else if(Keyboard.isDown(Keyboard.KEY_S)) {
-					if(Keyboard.isDown(GlobalLock.WALK)) {
+					if(Keyboard.isDown(WALK)) {
 						this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * PRONE_MODIFICATION;
 					} else {
 						this.currentSpeed = RUN_SPEED;
@@ -578,10 +618,10 @@ public class Entity implements GameObject {
 					Vector3f.add(position, new Vector3f(dx, 0, dz), position);
 				} else this.currentSpeed = 0;
 
-				if(Keyboard.isDown(GlobalLock.LEFT)) {
-					if (Keyboard.isDown(GlobalLock.WALK)) {
+				if(Keyboard.isDown(LEFT)) {
+					if (Keyboard.isDown(WALK)) {
 						this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * PRONE_MODIFICATION;
-					} else if (Keyboard.isDown(GlobalLock.SPRINT)) {
+					} else if (Keyboard.isDown(SPRINT)) {
 						this.currentSpeed = RUN_SPEED * SPRINT_MODIFICATION * PRONE_MODIFICATION;
 					} 
 					else this.currentSpeed = RUN_SPEED;
@@ -590,10 +630,10 @@ public class Entity implements GameObject {
 					dx = (float) (distance * Math.cos(Math.toRadians(rotation.y)));
 					dz = (float) (-distance * Math.sin(Math.toRadians(rotation.y)));
 					Vector3f.add(position, new Vector3f(dx, 0, dz), position);
-				} else if(Keyboard.isDown(GlobalLock.RIGHT)) {
-					if (Keyboard.isDown(GlobalLock.WALK)) {
+				} else if(Keyboard.isDown(RIGHT)) {
+					if (Keyboard.isDown(WALK)) {
 						this.currentSpeed = RUN_SPEED * WALK_MODIFICATION * PRONE_MODIFICATION;
-					} else if (Keyboard.isDown(GlobalLock.SPRINT)) {
+					} else if (Keyboard.isDown(SPRINT)) {
 						this.currentSpeed = RUN_SPEED * SPRINT_MODIFICATION * PRONE_MODIFICATION;
 					} 
 					else this.currentSpeed = RUN_SPEED;

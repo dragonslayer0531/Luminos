@@ -153,7 +153,7 @@ public class TextMeshCreator {
      * @param x			X value of quad
      * @param y			Y value of quad
      * @param maxX		X Max value of quad
-     * @param maxY		Y Max value of quadd
+     * @param maxY		Y Max value of quad
      */
     private static void addVertices(List<Float> vertices, double x, double y, double maxX, double maxY) {
         vertices.add((float) x);

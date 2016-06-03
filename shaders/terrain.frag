@@ -2,8 +2,8 @@
 
 in vec2 pass_textureCoordinates;
 in vec3 surfaceNormal;
-in vec3 toLightVector[4];
 in vec3 toCameraVector;
+in vec3 toLightVector[4];
 in vec4 shadowCoords;
 in float visibility;
 

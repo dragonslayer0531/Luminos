@@ -8,7 +8,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import tk.luminos.luminoscore.Debug;
-import tk.luminos.luminoscore.GlobalLock;
+import tk.luminos.luminosutils.serialization.LDatabase;
 
 /**
  * 
@@ -23,6 +23,7 @@ public class LuminosClient extends Thread {
 	
 	private DatagramSocket clientSocket;
 	private InetAddress address;
+	public boolean RUNNING = false;
 	
 	/**
 	 * Contructor
@@ -58,12 +59,18 @@ public class LuminosClient extends Thread {
 			Debug.print();
 		}
 		
-		while(GlobalLock.INITIATED) {
+		RUNNING = true;
+		
+		while(RUNNING) {
 			receiveData();
 		}
 		
 	}
-
+	
+	public void close() {
+		RUNNING = false;
+	}
+	
 	/**
 	 * Sends data
 	 * 
@@ -83,18 +90,17 @@ public class LuminosClient extends Thread {
 	/**
 	 * Retrieves data
 	 * 
-	 * @return byte array describing data
+	 * @return Luminos Database describing data
 	 */
-	public byte[] receiveData() {
+	public LDatabase receiveData() {
 		byte[] data = new byte[1024];
 		DatagramPacket packet = new DatagramPacket(data, data.length);
 		try {
 			clientSocket.receive(packet);
-		} catch (IOException e) {
+		} catch (IOException | NullPointerException e) {
 			Debug.addData(e.getMessage());
-			return new byte[1024];
 		}
-		return data;
+		return LDatabase.Deserialize(data);
 	}
 	
 	/**

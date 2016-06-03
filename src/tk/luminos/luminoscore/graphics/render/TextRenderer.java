@@ -94,6 +94,18 @@ public class TextRenderer {
 			texts.remove(text.getFont());
 		}
 	}
+	
+	/**
+	 * Updates the text value
+	 * 
+	 * @param text		Text to update
+	 * @param updated	String of updated value
+	 */
+	public void updateText(GUIText text, String updated){
+		GUIText update = new GUIText(updated, text.getFontSize(), text.getFont(), text.getPosition(), text.getMaxLineSize(), text.centerText);
+		removeText(text);
+		loadText(update);
+	}
 
 //*****************************************Private Methods*********************************************//
 	

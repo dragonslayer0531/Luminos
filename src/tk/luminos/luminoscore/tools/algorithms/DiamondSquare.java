@@ -1,8 +1,8 @@
 package tk.luminos.luminoscore.tools.algorithms;
 
-import java.util.Random;
+import static tk.luminos.luminoscore.ConfigData.TEXTURE_SIZE;
 
-import tk.luminos.luminoscore.GlobalLock;
+import java.util.Random;
 
 /**
  * 
@@ -16,7 +16,7 @@ import tk.luminos.luminoscore.GlobalLock;
 public class DiamondSquare {
 
 	private Random random;
-	private static int w = GlobalLock.TEXTURE_SIZE, h = GlobalLock.TEXTURE_SIZE;
+	private static int w = TEXTURE_SIZE, h = TEXTURE_SIZE;
 	private float[] values = new float[w * h];
 	
 	/**
@@ -74,8 +74,8 @@ public class DiamondSquare {
 	 * Sets the initial samples
 	 */
 	private void setSamples() {
-		for(int y = 0; y < h; y += GlobalLock.TEXTURE_SIZE / 8) {
-			for(int x = 0; x < w; x += GlobalLock.TEXTURE_SIZE / 8) {
+		for(int y = 0; y < h; y += TEXTURE_SIZE / 8) {
+			for(int x = 0; x < w; x += TEXTURE_SIZE / 8) {
 				setSample(x, y, random.nextFloat() * 255);
 			}
 		}

@@ -1,5 +1,8 @@
 package tk.luminos.luminoscore.graphics.textures;
 
+import tk.luminos.luminoscore.graphics.AssetHolder;
+import tk.luminos.luminoscore.graphics.loaders.Loader;
+
 /**
  * 
  * Texture Used in Model
@@ -9,7 +12,7 @@ package tk.luminos.luminoscore.graphics.textures;
  *
  */
 
-public class ModelTexture {
+public class ModelTexture implements Texture {
 	
 	private int textureID;
 	
@@ -26,8 +29,9 @@ public class ModelTexture {
 	 * 
 	 * @param texture	GPU ID
 	 */
-	public ModelTexture(int texture){
-		this.textureID = texture;
+	public ModelTexture(String fileLocation, Loader loader){
+		this.textureID = loader.loadTexture(fileLocation);
+		AssetHolder.add(textureID, fileLocation);
 	}
 		
 	/**

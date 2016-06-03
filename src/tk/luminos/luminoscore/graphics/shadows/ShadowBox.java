@@ -1,10 +1,12 @@
 package tk.luminos.luminoscore.graphics.shadows;
 
+import static tk.luminos.luminoscore.ConfigData.HEIGHT;
+import static tk.luminos.luminoscore.ConfigData.WIDTH;
+
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
-import tk.luminos.luminoscore.GlobalLock;
 import tk.luminos.luminoscore.graphics.gameobjects.Camera;
 import tk.luminos.luminoscore.graphics.render.MasterRenderer;
 
@@ -216,7 +218,7 @@ public class ShadowBox {
      * @return	Aspect Ratio
      */
     private float getAspectRatio() {
-        return (float) GlobalLock.WIDTH / GlobalLock.HEIGHT;
+        return (float) WIDTH / HEIGHT;
     }
 
 }

@@ -1,9 +1,10 @@
 package tk.luminos.luminoscore.graphics.shaders;
- 
+
+import static tk.luminos.luminoscore.ConfigData.POSITION;
+
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
-import tk.luminos.luminoscore.GlobalLock;
 import tk.luminos.luminoscore.graphics.display.GLFWWindow;
 import tk.luminos.luminoscore.graphics.gameobjects.Camera;
 import tk.luminos.luminoscore.tools.Maths;
@@ -18,18 +19,17 @@ import tk.luminos.luminoscore.tools.Maths;
  */
 
 public class SkyboxShader extends ShaderProgram {
-    
-    private static final float ROTATE_SPEED = 0f;
-     
+         
     private int location_projectionMatrix;
     private int location_viewMatrix;
     private int location_fogColour;
     private int location_cubeMap;
     private int location_cubeMap2;
     private int location_blendFactor;
+    private int location_lowerLimit;
+    private int location_upperLimit;
     
     private float rotation = 0.05f;
-    
 	
 	public static String VERT = "skybox.vert";
 	public static String FRAG = "skybox.frag";
@@ -61,7 +61,7 @@ public class SkyboxShader extends ShaderProgram {
         matrix.m30 = 0;
         matrix.m31 = 0;
         matrix.m32 = 0;
-        rotation += ROTATE_SPEED * window.getFrameTime();
+        rotation += window.getFrameTime();
         Matrix4f.rotate((float) Math.toRadians(rotation), new Vector3f(0,1,0), matrix, matrix);
         super.loadMatrix(location_viewMatrix, matrix);
     }
@@ -93,26 +93,46 @@ public class SkyboxShader extends ShaderProgram {
     public void loadBlendFactor(float blend){
     	super.loadFloat(location_blendFactor, blend);
     }
+    
+    /**
+     * Loads lower rendering limit
+     * 
+     * @param lowerLimit	Lower rendering limit
+     */
+    public void loadLowerLimit(float lowerLimit) {
+    	super.loadFloat(location_lowerLimit, lowerLimit);
+    }
+    
+    /**
+     * Loads upper rendering limit
+     * 
+     * @param upperLimit	Upper rendering limit
+     */
+    public void loadUpperLimit(float upperLimit) {
+    	super.loadFloat(location_upperLimit, upperLimit);
+    }
      
     /*
      * (non-Javadoc)
      * @see luminoscore.graphics.shaders.ShaderProgram#getAllUniformLocations()
      */
-    protected void getAllUniformLocations() {
+    public void getAllUniformLocations() {
         location_projectionMatrix = super.getUniformLocation("projectionMatrix");
         location_viewMatrix = super.getUniformLocation("viewMatrix");
         location_fogColour = super.getUniformLocation("fogColour");
         location_blendFactor = super.getUniformLocation("blendFactor");
         location_cubeMap = super.getUniformLocation("cubeMap");
         location_cubeMap2 = super.getUniformLocation("cubeMap2");
+        location_lowerLimit = super.getUniformLocation("lowerLimit");
+        location_upperLimit = super.getUniformLocation("upperLimit");
     }
  
     /*
      * (non-Javadoc)
      * @see luminoscore.graphics.shaders.ShaderProgram#bindAttributes()
      */
-    protected void bindAttributes() {
-        super.bindAttribute(GlobalLock.POSITION, "position");
+    public void bindAttributes() {
+        super.bindAttribute(POSITION, "position");
     }
  
 }

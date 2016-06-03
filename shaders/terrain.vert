@@ -19,8 +19,8 @@ uniform vec4 plane;
 
 uniform mat4 toShadowMapSpace;
 
-const float density = 0.001;
-const float gradient = 5.0;
+uniform float density;
+uniform float gradient;
 
 void main(void){
 

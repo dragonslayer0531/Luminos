@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 import tk.luminos.luminoscore.graphics.gameobjects.Entity;
 import tk.luminos.luminoscore.graphics.models.RawModel;
@@ -28,7 +29,9 @@ import tk.luminos.luminoscore.tools.Maths;
 public class EntityRenderer {
 
 	private EntityShader shader;
-
+	private float gradient = 5.0f;
+	private float density = 0.0035f;
+	
 	/**
 	 * Constructor of EntityRenderer
 	 * 
@@ -59,9 +62,52 @@ public class EntityRenderer {
 			unbindTexturedModel();
 		}
 	}
-
-//***********************************Private Methods*********************************//	
 	
+	/**
+	 * Gets the gradient of the fog
+	 * 
+	 * @return	gradient of the fog
+	 */
+	public float getGradient() {
+		return gradient;
+	}
+
+	/**
+	 * Sets the gradient of the fog
+	 * 
+	 * @param gradient		fog gradient value
+	 */
+	public void setGradient(float gradient) {
+		this.gradient = gradient;
+	}
+
+	/**
+	 * Gets the density of the fog
+	 * 
+	 * @return	density of the fog
+	 */
+	public float getDensity() {
+		return density;
+	}
+
+	/**
+	 * Sets the density of the fog
+	 * 
+	 * @param density	fog density value
+	 */
+	public void setDensity(float density) {
+		this.density = density;
+	}
+	
+	/**
+	 * Cleans up shader program
+	 */
+	public void cleanUp() {
+		shader.cleanUp();
+	}
+	
+//***********************************Private Methods*********************************//	
+
 	/**
 	 * @param model		Defines textured model to be prepared
 	 * 
@@ -80,6 +126,8 @@ public class EntityRenderer {
 		}
 		shader.loadFakeLightingVariable(texture.usesFakeLighting());
 		shader.loadShineVariables(texture.getShineDamper(), texture.getReflectivity());
+		shader.loadDensity(density);
+		shader.loadGradient(gradient);
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getID());
 	}
@@ -101,7 +149,7 @@ public class EntityRenderer {
 	 * Prepares instance of entity for rendering
 	 */
 	private void prepareInstance(Entity entity) {
-		Matrix4f transformationMatrix = Maths.createTransformationMatrix(entity.getPosition(),
+		Matrix4f transformationMatrix = Maths.createTransformationMatrix((Vector3f) entity.getPosition(),
 				entity.getRotation(), entity.getScale());
 		shader.loadTransformationMatrix(transformationMatrix);
 		shader.loadOffset(0, 0);

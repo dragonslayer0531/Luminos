@@ -61,7 +61,7 @@ public class ParticleRenderer {
 		
 		for(ParticleTexture texture : particles.keySet()) {
 			GL13.glActiveTexture(GL13.GL_TEXTURE0);
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getTextureID());
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getID());
 			for(Particle particle : particles.get(texture)) {
 				updateModelViewMatrix(particle.getPosition(), particle.getRotation(), particle.getScale(), viewMatrix);
 				shader.loadTextureCoordInfo(particle.getOffsetOne(), particle.getOffsetTwo(), texture.getNumberOfRows(), particle.getBlend());

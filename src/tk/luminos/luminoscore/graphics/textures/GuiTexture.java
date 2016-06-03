@@ -11,7 +11,7 @@ import org.lwjgl.util.vector.Vector2f;
  *
  */
 
-public class GuiTexture {
+public class GuiTexture implements Texture {
 	
 	private int texture;
 	private Vector2f position;
@@ -34,7 +34,7 @@ public class GuiTexture {
 	 * Gets texture ID of GUI Texture
 	 * @return  GPU Texture ID
 	 */
-	public int getTexture() {
+	public int getID() {
 		return texture;
 	}
 
@@ -45,6 +45,15 @@ public class GuiTexture {
 	 */
 	public Vector2f getPosition() {
 		return position;
+	}
+	
+	/**
+	 * Sets the position of the texture
+	 * 
+	 * @param position	Updated position
+	 */
+	public void setPosition(Vector2f position) {
+		this.position = position;
 	}
 
 	/**

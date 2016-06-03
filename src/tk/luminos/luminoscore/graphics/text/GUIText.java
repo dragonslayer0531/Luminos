@@ -27,7 +27,7 @@ public class GUIText {
  
     private FontType font;
  
-    private boolean centerText = false;
+    public boolean centerText = false;
  
     /**
      * Constructor
@@ -129,7 +129,7 @@ public class GUIText {
      * 
      * @return Font Size
      */
-    protected float getFontSize() {
+    public float getFontSize() {
         return fontSize;
     }
  
@@ -156,7 +156,7 @@ public class GUIText {
      * 
      * @return Max line size
      */
-    protected float getMaxLineSize() {
+    public float getMaxLineSize() {
         return lineMaxSize;
     }
  

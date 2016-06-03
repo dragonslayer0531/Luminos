@@ -1,5 +1,38 @@
 package tk.luminos.luminoscore;
 
+import static tk.luminos.luminoscore.ConfigData.API;
+import static tk.luminos.luminoscore.ConfigData.BACKWARD;
+import static tk.luminos.luminoscore.ConfigData.BOOLEAN;
+import static tk.luminos.luminoscore.ConfigData.FORMAT;
+import static tk.luminos.luminoscore.ConfigData.FORWARD;
+import static tk.luminos.luminoscore.ConfigData.FULLSCREEN;
+import static tk.luminos.luminoscore.ConfigData.GL_MAJOR;
+import static tk.luminos.luminoscore.ConfigData.GL_MINOR;
+import static tk.luminos.luminoscore.ConfigData.HEIGHT;
+import static tk.luminos.luminoscore.ConfigData.INT;
+import static tk.luminos.luminoscore.ConfigData.JUMP;
+import static tk.luminos.luminoscore.ConfigData.LEFT;
+import static tk.luminos.luminoscore.ConfigData.MOUSE_VISIBLE;
+import static tk.luminos.luminoscore.ConfigData.NORMALS;
+import static tk.luminos.luminoscore.ConfigData.POSITION;
+import static tk.luminos.luminoscore.ConfigData.RESIZABLE;
+import static tk.luminos.luminoscore.ConfigData.RIGHT;
+import static tk.luminos.luminoscore.ConfigData.SAMPLES;
+import static tk.luminos.luminoscore.ConfigData.SHADER_LOC;
+import static tk.luminos.luminoscore.ConfigData.SIZE;
+import static tk.luminos.luminoscore.ConfigData.SPRINT;
+import static tk.luminos.luminoscore.ConfigData.STENCIL_BITS;
+import static tk.luminos.luminoscore.ConfigData.TEXTURES;
+import static tk.luminos.luminoscore.ConfigData.TEXTURE_SIZE;
+import static tk.luminos.luminoscore.ConfigData.VERSION;
+import static tk.luminos.luminoscore.ConfigData.VSYNC;
+import static tk.luminos.luminoscore.ConfigData.WALK;
+import static tk.luminos.luminoscore.ConfigData.WATER_FBO_REFLEC_HEIGHT;
+import static tk.luminos.luminoscore.ConfigData.WATER_FBO_REFLEC_WIDTH;
+import static tk.luminos.luminoscore.ConfigData.WATER_FBO_REFRAC_HEIGHT;
+import static tk.luminos.luminoscore.ConfigData.WATER_FBO_REFRAC_WIDTH;
+import static tk.luminos.luminoscore.ConfigData.WIDTH;
+
 import java.io.File;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -16,8 +49,6 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import tk.luminos.luminoscore.input.Keyboard;
-
 /**
  * 
  * Holds global data for loading to the configuration
@@ -28,61 +59,6 @@ import tk.luminos.luminoscore.input.Keyboard;
  */
 
 public class GlobalLock {
-	
-	/**
-	 * 
-	 * Enumeration of Luminos Supported Graphics APIs
-	 * 
-	 * @author Nick Clark
-	 * @version 1.0
-	 *
-	 */
-	public enum GraphicsAPI {
-		GLFW,
-		VULKAN
-	}
-	
-	public static Boolean INITIATED = false;
-	
-	public static final String VERSION = "1.0.0";
-	
-	public static GraphicsAPI API = GraphicsAPI.GLFW;
-	public static Integer WIDTH = 1280;
-	public static Integer HEIGHT = 720;
-	public static boolean FULLSCREEN = false;
-	public static boolean VSYNC = false;
-	public static boolean RESIZABLE = false;
-	public static boolean MOUSE_VISIBLE = false;
-	public static Integer GL_MAJOR = 4;
-	public static Integer GL_MINOR = 0;
-	public static Integer STENCIL_BITS = 1;
-	public static Integer SAMPLES = 4;
-	
-	public static Integer WATER_FBO_REFRAC_WIDTH = 640;
-	public static Integer WATER_FBO_REFRAC_HEIGHT = 360;
-	public static Integer WATER_FBO_REFLEC_WIDTH = 320;
-	public static Integer WATER_FBO_REFLEC_HEIGHT = 180;
-	
-	public static Integer SIZE = 100;
-	
-	public static Integer TEXTURE_SIZE = 256;
-	
-	public static Integer POSITION = 0;
-	public static Integer TEXTURES = 1;
-	public static Integer NORMALS = 2;
-	
-	public static Integer FORWARD = Keyboard.KEY_W;
-	public static Integer BACKWARD = Keyboard.KEY_S;
-	public static Integer LEFT = Keyboard.KEY_A;
-	public static Integer RIGHT = Keyboard.KEY_D;
-	public static Integer SPRINT = Keyboard.KEY_LEFT_SHIFT;
-	public static Integer WALK = Keyboard.KEY_LEFT_CONTROL;
-	public static Integer JUMP = Keyboard.KEY_SPACE;
-	
-	private static final String FORMAT = "format";
-	private static final String BOOLEAN = "bool";
-	private static final String INT = "int";
-	private static final String SHADER_LOC = "shader_loc";
 	
 	/**
 	 * Prints the data to an XML file

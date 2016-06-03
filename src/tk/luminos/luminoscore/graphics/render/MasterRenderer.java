@@ -1,5 +1,8 @@
 package tk.luminos.luminoscore.graphics.render;
 
+import static tk.luminos.luminoscore.ConfigData.HEIGHT;
+import static tk.luminos.luminoscore.ConfigData.WIDTH;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,11 +16,11 @@ import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
-import tk.luminos.luminoscore.GlobalLock;
 import tk.luminos.luminoscore.graphics.display.GLFWWindow;
 import tk.luminos.luminoscore.graphics.gameobjects.Camera;
 import tk.luminos.luminoscore.graphics.gameobjects.Entity;
 import tk.luminos.luminoscore.graphics.gameobjects.Light;
+import tk.luminos.luminoscore.graphics.gui.GUIObject;
 import tk.luminos.luminoscore.graphics.loaders.Loader;
 import tk.luminos.luminoscore.graphics.models.TexturedModel;
 import tk.luminos.luminoscore.graphics.particles.Particle;
@@ -43,19 +46,19 @@ import tk.luminos.luminoscore.tools.Maths;
  */
 
 public class MasterRenderer {
-	
+
 	public static final float FOV = 60;
 	public static final float NEAR_PLANE = 0.15f;
-	private static final float FAR_PLANE = 600f;
+	public static final float FAR_PLANE = 600f;
 	private static final float ENTITY_FAR_PLANE = 1000f;
-	
+
 	private static final float RED = 0.1f;
 	private static final float GREEN = 0.4f;
 	private static final float BLUE = 0.2f;
-	
+
 	private Matrix4f projectionMatrix;
 	private Matrix4f entityProjectionMatrix;
-	
+
 	private EntityRenderer entityRenderer;
 	private EntityShader entityShader = new EntityShader();
 	private GuiRenderer guiRenderer;
@@ -67,18 +70,18 @@ public class MasterRenderer {
 	private TextRenderer textRenderer;
 	private WaterRenderer waterRenderer;
 	private WaterShader waterShader = new WaterShader();
-	
+
 	private WaterFrameBuffers buffers;
 	private Map<TexturedModel, List<Entity>> entities = new HashMap<TexturedModel,List<Entity>>();
 	private List<Terrain> terrains = new ArrayList<Terrain>();
-	
+
 	private DateUtils du;
-	
+
 	/**
+	 * Constructor used to create a Master Renderer
+	 * 
 	 * @param loader	Passes loader used for rendering
 	 * @param camera	Camera used to create projection matrix of
-	 * 
-	 * Constructor used to create a Master Renderer
 	 */
 	public MasterRenderer(Loader loader, Camera camera){
 		enableCulling();
@@ -93,11 +96,11 @@ public class MasterRenderer {
 		textRenderer = new TextRenderer(loader);
 		buffers = new WaterFrameBuffers();
 		waterRenderer = new WaterRenderer(loader, waterShader, projectionMatrix, buffers, "res/textures/waterdudv.png", "res/textures/waternormal.png");
-		
+
 		du = new DateUtils();
 		skyboxRenderer.prepare(du);
 	}
-	
+
 	/**
 	 * Renders the entire 3D scene
 	 * 
@@ -113,33 +116,39 @@ public class MasterRenderer {
 		if(entities != null) {
 			while(entities.hasNext()) {
 				Entity entity = entities.next();
-				if(Maths.getDistance(entity.getPosition(), focalPoint) < 300) {
+				if(Maths.getDistance((Vector3f) entity.getPosition(), focalPoint) < 300) {
 					processEntity(entity);
 				}
 			}
 		}
-		
+
 		if(terrains != null) {
 			while(terrains.hasNext()) {
 				Terrain terrain = terrains.next();
-				if(Maths.getDistance(new Vector3f(terrain.getX(), focalPoint.y, terrain.getZ()), focalPoint) < 500) {
+				if(Maths.getDistance((Vector3f) terrain.getPosition(), focalPoint) < 500) {
 					processTerrain(terrain);
 				}
 			}
 		}
-		
+
 		render(lights, camera, clipPlane, window);
 	}
 	
 	/**
 	 * Renders GUI Textures to screen
 	 * 
-	 * @param guiTextures	GUI Textures to be rendered
-	 */
-	public void renderGUI(List<GuiTexture> guiTextures) {
-		guiRenderer.render(guiTextures);
+	 * @param objects	GUIObjects to be rendered
+	 */	
+	public void renderGUI(List<GUIObject> objects) {
+		for(GUIObject object : objects) {
+			guiRenderer.render(object.getTextures());
+		}
 	}
-	
+
+	public void renderGUI(ArrayList<GuiTexture> textures) {
+		guiRenderer.render(textures);
+	}
+
 	/**
 	 * Renders particles through screen
 	 * 
@@ -150,7 +159,7 @@ public class MasterRenderer {
 		ParticleMaster.update(window);
 		particleRenderer.render(ParticleMaster.particles, camera);
 	}
-	
+
 	/**
 	 * Adds particle to ParticleMaster
 	 * 
@@ -159,7 +168,7 @@ public class MasterRenderer {
 	public void addParticle(Particle particle) {
 		ParticleMaster.addParticle(particle);
 	}
-	
+
 	/**
 	 * Adds particle list to ParticleMaster
 	 * 
@@ -168,14 +177,14 @@ public class MasterRenderer {
 	public void addParticles(List<Particle> particles) {
 		ParticleMaster.addAllParticles(particles);
 	}
-	
+
 	/**
 	 * Renders text to screen
 	 */
 	public void renderGuiText() {
 		textRenderer.render();
 	}
-	
+
 	/**
 	 * Loads {@link GUIText} to renderer
 	 * 
@@ -184,7 +193,7 @@ public class MasterRenderer {
 	public void addText(GUIText text) {
 		textRenderer.loadText(text);
 	}
-	
+
 	/**
 	 * Removes {@link GUIText} from renderer
 	 * 
@@ -194,6 +203,16 @@ public class MasterRenderer {
 		textRenderer.removeText(text);
 	}
 	
+	/**
+	 * Updates the text's value
+	 * 
+	 * @param text		Text to be updated
+	 * @param value		String of 
+	 */
+	public void updateTextValue(GUIText text, String value) {
+		textRenderer.updateText(text, value);
+	}
+
 	/**
 	 * Prepares water for rendering
 	 * 
@@ -218,7 +237,7 @@ public class MasterRenderer {
 		GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
 		buffers.unbindCurrentFrameBuffer();
 	}
-	
+
 	/**
 	 * Renders {@link WaterTile}s
 	 * 
@@ -229,7 +248,7 @@ public class MasterRenderer {
 	public void renderWater(List<WaterTile> tiles, Camera camera, Light light) {
 		waterRenderer.render(tiles, camera, light);
 	}
-	
+
 	/**
 	 * Prepares rendering
 	 */
@@ -241,7 +260,7 @@ public class MasterRenderer {
 		GL13.glActiveTexture(GL13.GL_TEXTURE5);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, getShadowMapTexture());
 	}
-	
+
 	/**
 	 * Renders {@link Entity}
 	 * 
@@ -270,7 +289,7 @@ public class MasterRenderer {
 		terrains.clear();
 		entities.clear();
 	}
-	
+
 	/**
 	 * Adds {@link Terrain} to list of terrains
 	 * 
@@ -279,7 +298,7 @@ public class MasterRenderer {
 	public void processTerrain(Terrain terrain){
 		terrains.add(terrain);
 	}
-	
+
 	/**
 	 * Processes {@link Entity}
 	 * 
@@ -298,7 +317,7 @@ public class MasterRenderer {
 			}
 		}
 	}
-	
+
 	/**
 	 * Render a shadow map
 	 * 
@@ -312,7 +331,7 @@ public class MasterRenderer {
 		shadowRenderer.render(entities, sun);
 		entities.clear();
 	}
-	
+
 	/**
 	 * Gets the ID of the shadow map
 	 * 
@@ -321,19 +340,19 @@ public class MasterRenderer {
 	public int getShadowMapTexture() {
 		return shadowRenderer.getShadowMap();
 	}
-	
+
 	/**
 	 * Cleans up all shaders used
 	 */
 	public void cleanUp(){
-		entityShader.cleanUp();
+		entityRenderer.cleanUp();
 		guiRenderer.cleanUp();
 		particleRenderer.cleanUp();
 		shadowRenderer.cleanUp();
-		terrainShader.cleanUp();
+		terrainRenderer.cleanUp();
 		textRenderer.cleanUp();
 	}
-	
+
 	/**
 	 * Enables back face culling
 	 */
@@ -341,14 +360,14 @@ public class MasterRenderer {
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glCullFace(GL11.GL_BACK);		
 	}
-	
+
 	/**
 	 * Disables back face culling
 	 */
 	public static void disableCulling(){
 		GL11.glDisable(GL11.GL_CULL_FACE);
 	}
-	
+
 	/**
 	 * @return Matrix4f	Contains Projection Matrix
 	 * 
@@ -358,15 +377,15 @@ public class MasterRenderer {
 		return this.projectionMatrix;
 	}
 
-//*******************************Private Methods*************************************//
-	
+	//*******************************Private Methods*************************************//
+
 	/**
 	 * Creates projection matrix for entities
 	 * 
 	 * @param display	Used to calculate aspect ratio
 	 */
 	private void createEntityProjectionMatrix() {
-		float aspectRatio = (float) GlobalLock.WIDTH / (float) GlobalLock.HEIGHT;
+		float aspectRatio = (float) WIDTH / (float) HEIGHT;
 		float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))));
 		float x_scale = y_scale / aspectRatio;
 		float frustum_length = ENTITY_FAR_PLANE - NEAR_PLANE;
@@ -379,14 +398,14 @@ public class MasterRenderer {
 		entityProjectionMatrix.m32 = -((2 * NEAR_PLANE * ENTITY_FAR_PLANE) / frustum_length);
 		entityProjectionMatrix.m33 = 0;
 	}
-	
+
 	/**
 	 * Creates projection matrix for terrains and skybox
 	 * 
 	 * @param display  Used to calculate aspect ratio
 	 */
 	private void createProjectionMatrix() {
-		float aspectRatio = (float) GlobalLock.WIDTH / (float) GlobalLock.HEIGHT;
+		float aspectRatio = (float) WIDTH / (float) HEIGHT;
 		float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))));
 		float x_scale = y_scale / aspectRatio;
 		float frustum_length = FAR_PLANE - NEAR_PLANE;
@@ -399,6 +418,6 @@ public class MasterRenderer {
 		projectionMatrix.m32 = -((2 * NEAR_PLANE * FAR_PLANE) / frustum_length);
 		projectionMatrix.m33 = 0;
 	}
-	
+
 }
 

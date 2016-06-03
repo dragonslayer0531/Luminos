@@ -31,7 +31,7 @@ public class WaterRenderer {
 
 	private final String DUDV_MAP;
 	private final String NORMAL_MAP;
-	private static final float WAVE_SPEED = 0.2f;
+	private static final float WAVE_SPEED = 0.35f;
 	
 	private RawModel quad;
 	private WaterShader shader;
@@ -39,6 +39,11 @@ public class WaterRenderer {
 	
 	private float moveFactor = 0;
 	private int dudvTexture, normalTexture;
+	
+	private float tiling = 5;
+	private float waveStrength = 0.04f;
+	private float shineDamper = 10.0f;
+	private float reflectivity = 0.05f;
 
 	/**
 	 * Constructor
@@ -77,6 +82,10 @@ public class WaterRenderer {
 			if(Maths.getDistance(new Vector3f(tile.getX(), 0, tile.getZ()), camera.getPosition()) > 500) continue;
 			Matrix4f modelMatrix = Maths.createWaterTransformationMatrix(new Vector3f(tile.getX(), tile.getHeight(), tile.getZ()), 0, 0, 0, tile.getScale());
 			shader.loadModelMatrix(modelMatrix);
+			shader.loadTiling(tiling);
+			shader.loadWaveStrength(waveStrength);
+			shader.loadShineDamper(shineDamper);
+			shader.loadReflectivity(reflectivity);
 			GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, quad.getVertexCount());
 		}
 		unbind();
@@ -92,14 +101,91 @@ public class WaterRenderer {
 	public void renderTile(List<WaterTile> water, Camera camera, Light sun) {
 		prepareRender(camera, sun);
 		for(WaterTile tile : water) {
+			if(Maths.getDistance(new Vector3f(tile.getX(), 0, tile.getZ()), camera.getPosition()) > 500) continue;
 			Matrix4f modelMatrix = Maths.createTransformationMatrix(new Vector3f(tile.getX(), tile.getHeight(), tile.getZ()), 0, 0, 0, tile.getFloatScale());
 			shader.loadModelMatrix(modelMatrix);
+			shader.loadTiling(tiling);
+			shader.loadWaveStrength(waveStrength);
+			shader.loadShineDamper(shineDamper);
+			shader.loadReflectivity(reflectivity);
 			GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, quad.getVertexCount());
 		}
 	}
 
-//**************************************Private Methods********************************************//
+	/**
+	 * Gets the tiling value of the water
+	 * 
+	 * @return	tiling value of water
+	 */
+	public float getTiling() {
+		return tiling;
+	}
 	
+	/**
+	 * Sets the tiling value of the water
+	 * 
+	 * @param tiling	tiles per quad
+	 */
+	public void setTiling(float tiling) {
+		this.tiling = tiling;
+	}
+	
+	/**
+	 * Gets the strength of the waves
+	 * 
+	 * @return	strength of the waves
+	 */
+	public float getWaveStrength() {
+		return waveStrength;
+	}
+
+	/**
+	 * Sets the strength of the waves
+	 * 
+	 * @param waveStrength		strength of waves
+	 */
+	public void setWaveStrength(float waveStrength) {
+		this.waveStrength = waveStrength;
+	}
+
+	/**
+	 * Gets the shine damper amount
+	 * 
+	 * @return	shine damper amount
+	 */
+	public float getShineDamper() {
+		return shineDamper;
+	}
+
+	/**
+	 * Sets the shine damper amount
+	 * 
+	 * @param shineDamper	shine damper amount
+	 */
+	public void setShineDamper(float shineDamper) {
+		this.shineDamper = shineDamper;
+	}
+
+	/**
+	 * Gets the reflectivity percentage
+	 * 
+	 * @return	reflectivity percentage
+	 */
+	public float getReflectivity() {
+		return reflectivity;
+	}
+
+	/**
+	 * Sets the reflectivity percentage
+	 * 
+	 * @param reflectivity	percentage of total reflection
+	 */
+	public void setReflectivity(float reflectivity) {
+		this.reflectivity = reflectivity;
+	}
+	
+//**************************************Private Methods********************************************//	
+
 	/**
 	 * Prepare to render
 	 * 
@@ -112,6 +198,7 @@ public class WaterRenderer {
 		moveFactor += WAVE_SPEED * 0.001;
 		moveFactor %= 1;
 		shader.loadMoveFactor(moveFactor);
+		shader.loadRenderBox(MasterRenderer.NEAR_PLANE, MasterRenderer.FAR_PLANE);
 		shader.loadLight(sun);
 		GL30.glBindVertexArray(quad.getVaoID());
 		GL20.glEnableVertexAttribArray(0);
@@ -132,6 +219,7 @@ public class WaterRenderer {
 	/**
 	 * Unbind VAO
 	 */
+	
 	private void unbind(){
 		GL11.glDisable(GL11.GL_BLEND);
 		GL20.glDisableVertexAttribArray(0);

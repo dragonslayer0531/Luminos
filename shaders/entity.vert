@@ -11,12 +11,12 @@ uniform vec3 lightPosition[4];
 
 uniform float useFakeLighting;
 
+uniform float density;
+uniform float gradient;
 uniform float numberOfRows;
 uniform vec2 offset;
 uniform vec4 plane;
 
-const float density = 0.0035;
-const float gradient = 5.0;
 
 out vec2 pass_textureCoordinates;
 out vec3 surfaceNormal;

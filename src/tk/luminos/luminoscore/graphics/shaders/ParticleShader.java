@@ -1,9 +1,9 @@
 package tk.luminos.luminoscore.graphics.shaders;
 
+import static tk.luminos.luminoscore.ConfigData.POSITION;
+
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
-
-import tk.luminos.luminoscore.GlobalLock;
 
 /**
  * 
@@ -36,7 +36,7 @@ public class ParticleShader extends ShaderProgram {
 	 * (non-Javadoc)
 	 * @see luminoscore.graphics.shaders.ShaderProgram#getAllUniformLocations()
 	 */
-	protected void getAllUniformLocations() {
+	public void getAllUniformLocations() {
 		location_modelViewMatrix = super.getUniformLocation("modelViewMatrix");
 		location_projectionMatrix = super.getUniformLocation("projectionMatrix");
 		location_texOffset1 = super.getUniformLocation("texOffset1");
@@ -62,8 +62,8 @@ public class ParticleShader extends ShaderProgram {
 	 * (non-Javadoc)
 	 * @see luminoscore.graphics.shaders.ShaderProgram#bindAttributes()
 	 */
-	protected void bindAttributes() {
-		super.bindAttribute(GlobalLock.POSITION, "position");
+	public void bindAttributes() {
+		super.bindAttribute(POSITION, "position");
 	}
 	
 	/**

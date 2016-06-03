@@ -1,5 +1,8 @@
 package tk.luminos.luminoscore.graphics.text;
 
+import static tk.luminos.luminoscore.ConfigData.HEIGHT;
+import static tk.luminos.luminoscore.ConfigData.WIDTH;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -8,7 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import tk.luminos.luminoscore.Debug;
-import tk.luminos.luminoscore.GlobalLock;
 
 /**
  * 
@@ -51,7 +53,7 @@ public class MetaFile {
      * @param file		File to be loaded
      */
     protected MetaFile(File file) {
-        this.aspectRatio = (double) GlobalLock.WIDTH / (double) GlobalLock.HEIGHT;
+        this.aspectRatio = (double) WIDTH / (double) HEIGHT;
         openFile(file);
         loadPaddingData();
         loadLineSizes();

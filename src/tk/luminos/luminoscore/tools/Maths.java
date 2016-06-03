@@ -55,7 +55,7 @@ public class Maths {
 		Matrix4f.scale(new Vector3f(scale,scale,scale), matrix, matrix);
 		return matrix;
 	}
-	
+		
 	/**
 	 * Creates transformation matrix
 	 * 
@@ -66,6 +66,25 @@ public class Maths {
 	 */
 	public static Matrix4f createTransformationMatrix(Vector3f translation, Vector3f rotation, float scale) {
 		return Maths.createTransformationMatrix(translation, rotation.x, rotation.y, rotation.z, scale);
+	}
+	
+	/**
+	 * Creates transformation matrix
+	 * 
+	 * @param translation	3D Translation
+	 * @param rotation		3D Rotation
+	 * @param scale			3D Scale
+	 * @return				Transformation Matrix
+	 */
+	public static Matrix4f createTransformationMatrix(Vector3f translation, Vector3f rotation, Vector3f scale) {
+		Matrix4f matrix = new Matrix4f();
+		matrix.setIdentity();
+		Matrix4f.translate(translation, matrix, matrix);
+		Matrix4f.rotate((float) Math.toRadians(rotation.x), new Vector3f(1,0,0), matrix, matrix);
+		Matrix4f.rotate((float) Math.toRadians(rotation.y), new Vector3f(0,1,0), matrix, matrix);
+		Matrix4f.rotate((float) Math.toRadians(rotation.z), new Vector3f(0,0,1), matrix, matrix);
+		Matrix4f.scale(scale, matrix, matrix);
+		return matrix;
 	}
 	
 	/**

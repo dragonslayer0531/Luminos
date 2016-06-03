@@ -10,7 +10,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
-import org.lwjgl.util.vector.Vector3f;
 
 import tk.luminos.luminoscore.graphics.models.Mesh;
 import tk.luminos.luminoscore.graphics.models.RawModel;
@@ -94,28 +93,7 @@ public class ModelLoader {
 		storeDataInAttributeList(1, 2, textureCoords);
 		storeDataInAttributeList(2, 3, normals);
 		unbindVAO();
-		return new RawModel(vaoID, indices.length);
-	}
-	
-	/**
-	 * @param positions		floats used to describe the positions of the vertices
-	 * @param textureCoords	floats used to describe the texture coordinates of the vertices
-	 * @param normals		floats used to describe the normal vectors of the vertices
-	 * @param vertices		Vector3f used to describe the positions of the vertices
-	 * @param normalArray 	Vector3f used to describe the normal vector of a vertex
-	 * @param indices		integers used to describe the order of vertices
-	 * @return RawModel		RawModel containing GPU data on the vertices.
-	 * 
-	 * Loads Positions, Texture Coordinates, Normals, and Indices to graphics card.  3D Coordinates.
-	 */
-	protected RawModel loadToVAO(float[] positions, float[] textureCoords, float[] normals, List<Vector3f> vertices, List<Vector3f> normalArray, int[] indices) {
-		int vaoID = createVAO();
-		bindIndicesBuffer(indices);
-		storeDataInAttributeList(0, 3, positions);
-		storeDataInAttributeList(1, 2, textureCoords);
-		storeDataInAttributeList(2, 3, normals);
-		unbindVAO();
-		return new RawModel(vaoID, indices.length, new Mesh(vertices, normalArray));
+		return new RawModel(vaoID, indices.length, new Mesh(positions, normals));
 	}
 	
 	/**
@@ -134,6 +112,15 @@ public class ModelLoader {
 		storeDataInAttributeList(2, 3, normals);
 		unbindVAO();
 		return new RawModel(vaoID, vertexCount);
+	}
+	
+	public RawModel loadToVAO(float[] positions, float[] textureCoords, float[] normals, int[] indices, String id) {
+		int vaoID = createVAO();
+		storeDataInAttributeList(0, 3, positions);
+		storeDataInAttributeList(1, 2, textureCoords);
+		storeDataInAttributeList(2, 3, normals);
+		RawModel rm = new RawModel(vaoID, indices.length, new Mesh(positions, normals));
+		return rm;
 	}
 	
 	/**

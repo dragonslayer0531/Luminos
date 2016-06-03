@@ -1,5 +1,7 @@
 package tk.luminos.luminoscore.graphics.terrains;
 
+import static tk.luminos.luminoscore.ConfigData.SIZE;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -7,11 +9,11 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import org.lwjgl.util.vector.Vector;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 import tk.luminos.luminoscore.Debug;
-import tk.luminos.luminoscore.GlobalLock;
 import tk.luminos.luminoscore.graphics.gameobjects.Entity;
 import tk.luminos.luminoscore.graphics.loaders.Loader;
 import tk.luminos.luminoscore.graphics.models.RawModel;
@@ -20,25 +22,28 @@ import tk.luminos.luminoscore.graphics.textures.TerrainTexture;
 import tk.luminos.luminoscore.graphics.textures.TerrainTexturePack;
 import tk.luminos.luminoscore.tools.Maths;
 import tk.luminos.luminoscore.tools.algorithms.FractalNoise;
+import tk.luminos.luminosutils.serialization.LDatabase;
+import tk.luminos.luminosutils.serialization.LField;
+import tk.luminos.luminosutils.serialization.LObject;
 
 /**
  * 
  * Terrain class
  * 
  * @author Nick Clark
- * @version 1.0
+ * @version 1.1
  *
  */
 
 public class Terrain {
 
-	public static float SIZE = GlobalLock.SIZE;
 	public static int VERTEX_COUNT = 32;
 	private static float MAX_HEIGHT = 40;
 	private static final float MAX_PIXEL_COLOUR = 256 * 256 * 256;
 
 	private float x;
 	private float z;
+	private int seed;
 	private RawModel model;
 	private TerrainTexturePack texturePack;
 	private TerrainTexture blendMap;
@@ -54,13 +59,13 @@ public class Terrain {
 	 * @param gridZ			Terrain Grid Z Position
 	 * @param seed			PerlinNoise seed
 	 * @param loader		Loader to use
-	 * @param blendMap		Blend Map for textures
 	 * @param texturePack	Texture Pack to use
 	 */
-	public Terrain(float gridX, float gridZ, int seed, Loader loader, TerrainTexture blendMap, TerrainTexturePack texturePack) {
+	public Terrain(float gridX, float gridZ, int seed, Loader loader, TerrainTexturePack texturePack) {
 		this.texturePack = texturePack;
 		this.x = gridX * SIZE;
 		this.z = gridZ * SIZE;
+		this.seed = seed;
 		this.model = generateTerrain(loader, new FractalNoise((int) gridX, (int) gridZ, VERTEX_COUNT, seed, TerrainType.Type.HILLS));
 		this.blendMap = new TerrainTexture(loader.loadTexture(ProceduralTerrainTexture.generateTerrainMap(this)));
 	}
@@ -72,7 +77,7 @@ public class Terrain {
 	 * @param gridZ			Terrain Grid Z Position
 	 * @param loader		Loader to use
 	 * @param texturePack	Texture Pack to use
-	 * @param blendMap		Blendd Map for textures
+	 * @param blendMap		Blend Map for textures
 	 * @param heightMap		Height map to use
 	 */
 	public Terrain(float gridX, float gridZ, Loader loader, TerrainTexturePack texturePack, TerrainTexture blendMap, String heightMap) {
@@ -126,7 +131,7 @@ public class Terrain {
 	 * @return 			Inside terrain bounds
 	 */
 	public boolean isOnTerrain(Entity entity) {
-		return isOnTerrain(entity.getPosition());
+		return isOnTerrain((Vector3f) entity.getPosition());
 	}
 
 	/**
@@ -152,7 +157,7 @@ public class Terrain {
 	 * 
 	 * @return model describing terrain
 	 */
-	public RawModel getModel() {
+	public RawModel getRawModel() {
 		return model;
 	}
 
@@ -214,6 +219,10 @@ public class Terrain {
 
 		return answer;
 	}
+	
+	private float[] vertices;
+	private float[] textureCoords;
+	private int[] indices;
 
 	/**
 	 * Generates raw model of terrain
@@ -225,15 +234,15 @@ public class Terrain {
 	private RawModel generateTerrain(Loader loader, FractalNoise noise) {
 		int count = (int) Math.pow(VERTEX_COUNT, 2);
 		heights = new float[VERTEX_COUNT][VERTEX_COUNT];
-		float[] vertices = new float[count * 3];
+		vertices = new float[count * 3];
 		normals = new float[count * 3];
-		float[] textureCoords = new float[count * 2];
-		int[] indices = new int[6 * (VERTEX_COUNT - 1) * (VERTEX_COUNT * 1)];
+		textureCoords = new float[count * 2];
+		indices = new int[6 * (VERTEX_COUNT - 1) * (VERTEX_COUNT * 1)];
 		int vertexPointer = 0;
 		for(int i = 0; i < VERTEX_COUNT; i++) {
 			for(int j = 0; j < VERTEX_COUNT; j++) {
 				vertices[vertexPointer * 3] = (float) j / ((float) VERTEX_COUNT - 1) * SIZE;
-				float height = getHeight(j, i, noise);
+				float height = getHeight(j, i, noise) - 10;
 				vertices[vertexPointer * 3 + 1] = height;
 				heights[j][i] = height;
 				vertices[vertexPointer * 3 + 2] = (float) i / ((float) VERTEX_COUNT - 1) * SIZE;
@@ -363,6 +372,36 @@ public class Terrain {
 	public float[][] getHeights() {
 		return heights;
 	}
+	
+	public Vector getPosition() {
+		return new Vector3f(x, 0, z);
+	}
+	
+	public void increasePosition(Vector delta) {
+		Vector2f increase = (Vector2f) delta;
+		this.x += increase.x;
+		this.z += increase.y;
+	}
+	
+	public byte[] getBytes() {
+		LObject object = getLuminosObject();
+		byte[] data = new byte[object.getSize()];
+		object.getBytes(data, 0);
+		return data;
+	}
+	
+	public LObject getLuminosObject() {
+		LObject object = new LObject("terrain" + x +"_" + z);
+		object.addField(LField.Float("x", getX()));
+		object.addField(LField.Float("z", getZ()));
+		object.addField(LField.Integer("seed", seed));
+		return object;
+	}
+	
+	public void attachToLuminosDatabase(LDatabase database) {
+		database.addObject(getLuminosObject());
+	}
+
 
 //**************************************************Private Methods*********************************************//
 	

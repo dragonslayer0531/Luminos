@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.openal.AL10;
-import org.lwjgl.openal.ALC;
-import org.lwjgl.util.WaveData;
+import org.lwjgl.openal.ALContext;
+import org.lwjgl.openal.ALDevice;
 
 /**
  * 
@@ -19,12 +19,15 @@ import org.lwjgl.util.WaveData;
 public class AudioMaster {
 	
 	private List<Integer> buffers = new ArrayList<Integer>();
+	private ALContext context;
+	private ALDevice device;
 	
 	/**
 	 * Constructor
 	 */
 	public AudioMaster() {
-		
+		context = ALContext.create();
+		device = context.getDevice();
 	}
 	
 	/**
@@ -34,7 +37,8 @@ public class AudioMaster {
 		for(Integer buffer : buffers) {
 			AL10.alDeleteBuffers(buffer);
 		}
-		ALC.destroy();
+		device.destroy();
+		context.destroy();
 	}
 	
 	/**
@@ -49,7 +53,6 @@ public class AudioMaster {
 		
 		WaveData data = WaveData.create(source);
 		AL10.alBufferData(buffer, data.format, data.data, data.samplerate);
-		data.dispose();
 		
 		return buffer;
 	}

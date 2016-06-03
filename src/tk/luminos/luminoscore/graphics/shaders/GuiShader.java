@@ -1,8 +1,8 @@
 package tk.luminos.luminoscore.graphics.shaders;
 
-import org.lwjgl.util.vector.Matrix4f;
+import static tk.luminos.luminoscore.ConfigData.POSITION;
 
-import tk.luminos.luminoscore.GlobalLock;
+import org.lwjgl.util.vector.Matrix4f;
 
 /**
  * 
@@ -30,7 +30,7 @@ public class GuiShader extends ShaderProgram {
 	 * (non-Javadoc)
 	 * @see luminoscore.graphics.shaders.ShaderProgram#getAllUniformLocations()
 	 */
-	protected void getAllUniformLocations() {
+	public void getAllUniformLocations() {
 		location_transformationMatrix = super.getUniformLocation("transformationMatrix");
 	}
 
@@ -38,8 +38,8 @@ public class GuiShader extends ShaderProgram {
 	 * (non-Javadoc)
 	 * @see luminoscore.graphics.shaders.ShaderProgram#bindAttributes()
 	 */
-	protected void bindAttributes() {
-		super.bindAttribute(GlobalLock.POSITION, "position");
+	public void bindAttributes() {
+		super.bindAttribute(POSITION, "position");
 	}
 	
 	/**
