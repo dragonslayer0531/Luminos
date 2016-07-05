@@ -25,17 +25,17 @@ import tk.luminos.luminoscore.tools.Maths;
 
 public class TerrainShader extends ShaderProgram{
 	
-	private static final int MAX_LIGHTS = 4;
+	private static final int MAX_LIGHTS = 500;
 	
 	private int location_transformationMatrix;
 	private int location_projectionMatrix;
 	private int location_viewMatrix;
 	private int location_lightPosition[];
-	private int location_lightColour[];
+	private int location_lightColor[];
 	private int location_shineDamper;
 	private int location_attenuation[];
 	private int location_reflectivity;
-	private int location_skyColour;
+	private int location_skyColor;
 	private int location_backgroundTexture;
 	private int location_rTexture;
 	private int location_gTexture;
@@ -46,6 +46,8 @@ public class TerrainShader extends ShaderProgram{
 	private int location_toShadowMapSpace;
 	private int location_density;
 	private int location_gradient;
+	private int location_maxLights;
+	private int location_tileFactor;
 	
 	public static String VERT = "terrain.vert";
 	public static String FRAG = "terrain.frag";
@@ -77,7 +79,7 @@ public class TerrainShader extends ShaderProgram{
 		location_viewMatrix = super.getUniformLocation("viewMatrix");
 		location_shineDamper = super.getUniformLocation("shineDamper");
 		location_reflectivity = super.getUniformLocation("reflectivity");
-		location_skyColour = super.getUniformLocation("skyColour");
+		location_skyColor = super.getUniformLocation("skyColor");
 		location_backgroundTexture = super.getUniformLocation("backgroundTexture");
 		location_rTexture = super.getUniformLocation("rTexture");
 		location_gTexture = super.getUniformLocation("gTexture");
@@ -88,15 +90,17 @@ public class TerrainShader extends ShaderProgram{
 		location_toShadowMapSpace = super.getUniformLocation("toShadowMapSpace");
 		
 		location_lightPosition = new int[MAX_LIGHTS];
-		location_lightColour = new int[MAX_LIGHTS];
+		location_lightColor = new int[MAX_LIGHTS];
 		location_attenuation = new int[MAX_LIGHTS];
-		for(int i=0;i<MAX_LIGHTS;i++){
+		for(int i=0;i < MAX_LIGHTS;i++){
 			location_lightPosition[i] = super.getUniformLocation("lightPosition[" + i + "]");
-			location_lightColour[i] = super.getUniformLocation("lightColour[" + i + "]");
+			location_lightColor[i] = super.getUniformLocation("lightColor[" + i + "]");
 			location_attenuation[i] = super.getUniformLocation("attenuation[" + i + "]");
 		}
 		location_density = super.getUniformLocation("density");
 		location_gradient = super.getUniformLocation("gradient");
+		location_maxLights = super.getUniformLocation("maxLights");
+		location_tileFactor = super.getUniformLocation("tileFactor");
 	}
 	
 	/**
@@ -127,8 +131,8 @@ public class TerrainShader extends ShaderProgram{
 	 * @param g	G color of sky
 	 * @param b	B color of sky
 	 */
-	public void loadSkyColour(float r, float g, float b){
-		super.loadVector(location_skyColour, new Vector3f(r,g,b));
+	public void loadSkyColor(float r, float g, float b){
+		super.loadVector(location_skyColor, new Vector3f(r,g,b));
 	}
 	
 	/**
@@ -160,11 +164,11 @@ public class TerrainShader extends ShaderProgram{
 		for(int i=0;i<MAX_LIGHTS;i++){
 			if(i<lights.size()){
 				super.loadVector(location_lightPosition[i], lights.get(i).getPosition());
-				super.loadVector(location_lightColour[i], lights.get(i).getColor());
+				super.loadVector(location_lightColor[i], lights.get(i).getColor());
 				super.loadVector(location_attenuation[i], lights.get(i).getAttenuation());
 			}else{
 				super.loadVector(location_lightPosition[i], new Vector3f(0, 0, 0));
-				super.loadVector(location_lightColour[i], new Vector3f(0, 0, 0));
+				super.loadVector(location_lightColor[i], new Vector3f(0, 0, 0));
 				super.loadVector(location_attenuation[i], new Vector3f(1, 0, 0));
 			}
 		}
@@ -214,6 +218,24 @@ public class TerrainShader extends ShaderProgram{
 	 */
 	public void loadGradient(float gradient) {
 		super.loadFloat(location_gradient, gradient);
+	}
+	
+	/**
+	 * Loads maximum light count to shader
+	 * 
+	 * @param light_count	Light count
+	 */
+	public void loadMaxLights(int light_count) {
+		super.loadInt(location_maxLights, light_count);
+	}
+	
+	/**
+	 * Loads tiling factor for terrain texture
+	 * 
+	 * @param tileFactor		tiling factor for repetition of textures
+	 */
+	public void loadTileFactor(int tileFactor) {
+		super.loadInt(location_tileFactor, tileFactor);
 	}
 	
 }

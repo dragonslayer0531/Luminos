@@ -1,7 +1,8 @@
 package tk.luminos.luminoscore.input;
 
+import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
+
 import org.lwjgl.glfw.GLFWKeyCallback;
-import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * 

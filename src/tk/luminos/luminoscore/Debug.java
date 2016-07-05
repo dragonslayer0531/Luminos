@@ -9,7 +9,6 @@ import java.lang.management.ManagementFactory;
 
 import tk.luminos.luminoscore.tools.instanceinfo.GLFWInstance;
 import tk.luminos.luminoscore.tools.instanceinfo.JavaEnvironmentInstance;
-import tk.luminos.luminoscore.tools.instanceinfo.OpenALInstance;
 import tk.luminos.luminoscore.tools.instanceinfo.OpenGLInstance;
 
 /**
@@ -32,7 +31,6 @@ public class Debug {
 	public static void prepare() {
 		header.append(JavaEnvironmentInstance.getEnvironmentData());
 		header.append(OpenGLInstance.getContextInformation());
-		header.append(OpenALInstance.getContextInformation());
 		header.append(GLFWInstance.getContextInformation());
 	}
 	

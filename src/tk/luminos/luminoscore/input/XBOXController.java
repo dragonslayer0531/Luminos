@@ -1,7 +1,5 @@
 package tk.luminos.luminoscore.input;
 
-import static org.lwjgl.opengl.GL11.GL_TRUE;
-
 import org.lwjgl.glfw.GLFW;
 
 /**
@@ -101,7 +99,7 @@ public class XBOXController {
 	 * @return	Is the controller connected
 	 */
 	public static boolean isControllerConnected() {
-		return GLFW.glfwJoystickPresent(XBOXController.GLFW_JOYSTICK_1) == GL_TRUE;
+		return GLFW.glfwJoystickPresent(XBOXController.GLFW_JOYSTICK_1);
 	}
 
 }

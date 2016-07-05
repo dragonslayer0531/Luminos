@@ -109,9 +109,9 @@ public class EntityRenderer {
 //***********************************Private Methods*********************************//	
 
 	/**
-	 * @param model		Defines textured model to be prepared
-	 * 
 	 * Prepares a textured model for rendering as entity
+	 * 
+	 * @param model		Defines textured model to be prepared
 	 */
 	private void prepareTexturedModel(TexturedModel model) {
 		RawModel rawModel = model.getRawModel();
@@ -130,6 +130,10 @@ public class EntityRenderer {
 		shader.loadGradient(gradient);
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getID());
+		if(model.getTexture().hasNormal()) {
+			GL13.glActiveTexture(GL13.GL_TEXTURE1);
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getNormal());
+		}
 	}
 
 	/**

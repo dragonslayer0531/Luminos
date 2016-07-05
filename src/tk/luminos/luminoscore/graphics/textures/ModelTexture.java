@@ -15,24 +15,26 @@ import tk.luminos.luminoscore.graphics.loaders.Loader;
 public class ModelTexture implements Texture {
 	
 	private int textureID;
+	private int normalID;
 	
 	private float shineDamper = 1;
 	private float reflectivity = 0;
 	
 	private boolean hasTransparency = false;
 	private boolean useFakeLighting = false;
-	
+	private boolean hasNormal = false;
+		
 	private int numberOfRows = 1;
 	
 	/**
 	 * Constructor
 	 * 
-	 * @param fileLocation	Location of image to load
+	 * @param texture		Location of image to load
 	 * @param loader		Loader to use to load image
 	 */
-	public ModelTexture(String fileLocation, Loader loader){
-		this.textureID = loader.loadTexture(fileLocation);
-		AssetHolder.add(textureID, fileLocation);
+	public ModelTexture(String texture, Loader loader){
+		this.textureID = loader.loadTexture(texture);
+		AssetHolder.add(textureID, texture);
 	}
 		
 	/**
@@ -132,6 +134,32 @@ public class ModelTexture implements Texture {
 	 */
 	public void setReflectivity(float reflectivity) {
 		this.reflectivity = reflectivity;
+	}
+	
+	/**
+	 * Gets the normal map's ID
+	 * 
+	 * @return	normal map's ID
+	 */
+	public int getNormal() {
+		return normalID;
+	}
+	
+	/**
+	 * Sets the normal map's ID
+	 */
+	public void setNormal(String normal, Loader loader) {
+		this.normalID = loader.loadTexture(normal);
+		AssetHolder.add(normalID, normal);
+	}
+	
+	/**
+	 * Evaluates if the model texture has a normal map associated with it
+	 * 
+	 * @return	if the model texture has an associated normal map
+	 */
+	public boolean hasNormal() {
+		return hasNormal;
 	}
 
 }

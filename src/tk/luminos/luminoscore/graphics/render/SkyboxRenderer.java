@@ -25,7 +25,7 @@ import tk.luminos.luminoscore.tools.DateUtils;
 
 public class SkyboxRenderer {
 	
-	private static final float SIZE = 300f;
+	private static final float SIZE = 700f;
 	private float lowerLimit = -130.0f;
 	private float upperLimit = -100.0f;
 	

@@ -6,7 +6,7 @@ in vec3 normal;
 
 out vec2 pass_textureCoordinates;
 out vec3 surfaceNormal;
-out vec3 toLightVector[4];
+out vec3 toLightVector[20];
 out vec3 toCameraVector;
 out float visibility;
 out vec4 shadowCoords;
@@ -14,8 +14,10 @@ out vec4 shadowCoords;
 uniform mat4 transformationMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
-uniform vec3 lightPosition[4];
+uniform vec3 lightPosition[20];
 uniform vec4 plane;
+
+uniform int maxLights;
 
 uniform mat4 toShadowMapSpace;
 
@@ -32,13 +34,16 @@ void main(void){
 	pass_textureCoordinates = textureCoordinates;
 	
 	surfaceNormal = (transformationMatrix * vec4(normal,0.0)).xyz;
-	for(int i=0;i<4;i++){
+	
+	for(int i = 0; i < maxLights; i++){
 		toLightVector[i] = lightPosition[i] - worldPosition.xyz;
 	}
-	toCameraVector = (inverse(viewMatrix) * vec4(0.0,0.0,0.0,1.0)).xyz - worldPosition.xyz;
 	
+	toCameraVector = (inverse(viewMatrix) * vec4(0.0,0.0,0.0,1.0)).xyz - worldPosition.xyz;
+		
 	float distance = length(positionRelativeToCam.xyz);
 	visibility = exp(-pow((distance*density),gradient));
 	visibility = clamp(visibility,0.0,1.0);
+	
 
 }

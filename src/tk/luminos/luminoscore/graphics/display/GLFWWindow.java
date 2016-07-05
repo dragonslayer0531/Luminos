@@ -131,7 +131,7 @@ public class GLFWWindow {
 			throw new LuminosException(GLFWWindow.class + " Luminos Engine has not been instantiated.  Closing...");
 		}
 		
-		if(glfwInit() != GL_TRUE) {
+		if(glfwInit()) {
 			Debug.addData(GLFWWindow.class + " Could not instantiate GLFW instance");
 		}
 		
@@ -258,13 +258,13 @@ public class GLFWWindow {
 	 * Releases all callbacks and disposes of the window
 	 */
 	public void close() {
-		keyCallback.release();
-		mouseButtonCallback.release();
-		cursorPosCallback.release();
-		framebufferCallback.release();
-		windowSizeCallback.release();
+		keyCallback.close();
+		mouseButtonCallback.close();
+		cursorPosCallback.close();
+		framebufferCallback.close();
+		windowSizeCallback.close();
 		glfwTerminate();
-		errorCallback.release();
+		errorCallback.close();
 	}
 	
 	/**
@@ -273,7 +273,7 @@ public class GLFWWindow {
 	 * @return Value of whether the window should dispose or remain opened
 	 */
 	public boolean shouldClose() {
-		return glfwWindowShouldClose(window) != GL_TRUE;
+		return glfwWindowShouldClose(window);
 	}
 
 	/**

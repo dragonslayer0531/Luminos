@@ -23,6 +23,7 @@ import tk.luminos.luminoscore.graphics.models.Mesh;
 import tk.luminos.luminoscore.graphics.models.RawModel;
 import tk.luminos.luminoscore.graphics.models.TexturedModel;
 import tk.luminos.luminoscore.graphics.terrains.Terrain;
+import tk.luminos.luminoscore.graphics.textures.ModelTexture;
 import tk.luminos.luminoscore.input.Keyboard;
 import tk.luminos.luminoscore.input.XBOXController;
 import tk.luminos.luminoscore.physics.colliders.Collider;
@@ -473,6 +474,15 @@ public class Entity implements GameObject {
 	 */
 	public int getTextureID() {
 		return getCurrentModel().getTexture().getID();
+	}
+	
+	/**
+	 * Gets the entity's current model
+	 * 
+	 * @return 		GPU texture
+	 */
+	public ModelTexture getModelTexture() {
+		return getCurrentModel().getTexture();
 	}
 	
 	//*******************************Private Methods*****************************//

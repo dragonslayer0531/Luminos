@@ -29,8 +29,6 @@ import tk.luminos.luminoscore.tools.Maths;
 
 public class WaterRenderer {
 
-	private final String DUDV_MAP;
-	private final String NORMAL_MAP;
 	private static final float WAVE_SPEED = 0.35f;
 	
 	private RawModel quad;
@@ -58,10 +56,8 @@ public class WaterRenderer {
 	public WaterRenderer(Loader loader, WaterShader shader, Matrix4f projectionMatrix, WaterFrameBuffers fbos, String dudv, String normal) {
 		this.shader = shader;
 		this.fbos = fbos;
-		this.DUDV_MAP = dudv;
-		this.NORMAL_MAP = normal;
-		dudvTexture = loader.loadTexture(DUDV_MAP);
-		normalTexture = loader.loadTexture(NORMAL_MAP);
+		dudvTexture = loader.loadTexture(dudv);
+		normalTexture = loader.loadTexture(normal);
 		shader.start();
 		shader.connectTextureUnits();
 		shader.loadProjectionMatrix(projectionMatrix);

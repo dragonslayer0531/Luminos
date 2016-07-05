@@ -28,6 +28,7 @@ public class TerrainRenderer {
 	private TerrainShader shader;
 	private float density = 0.001f;
 	private float gradient = 5.0f;
+	private int tileFactor = 60;
 
 	/**
 	 * Constructor
@@ -39,6 +40,7 @@ public class TerrainRenderer {
 		this.shader = shader;
 		shader.start();
 		shader.loadProjectionMatrix(projectionMatrix);
+		shader.loadTileFactor(tileFactor);
 		shader.connectTextureUnits();
 		shader.stop();
 	}

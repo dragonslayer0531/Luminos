@@ -33,10 +33,10 @@ public class ConfigData {
 	public static Integer STENCIL_BITS = 1;
 	public static Integer SAMPLES = 4;
 	
-	public static Integer WATER_FBO_REFRAC_WIDTH = 640;
-	public static Integer WATER_FBO_REFRAC_HEIGHT = 360;
-	public static Integer WATER_FBO_REFLEC_WIDTH = 320;
-	public static Integer WATER_FBO_REFLEC_HEIGHT = 180;
+	public static Integer WATER_FBO_REFRAC_WIDTH = 1920;
+	public static Integer WATER_FBO_REFRAC_HEIGHT = 1080;
+	public static Integer WATER_FBO_REFLEC_WIDTH = 1920;
+	public static Integer WATER_FBO_REFLEC_HEIGHT = 1080;
 	
 	public static Integer SIZE = 100;
 	

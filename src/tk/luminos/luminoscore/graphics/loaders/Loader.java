@@ -66,20 +66,6 @@ public class Loader {
 	}
 	
 	/**
-	 * Loads an array of positions, texture coordinates, normal coordinates, and inidices to the graphics card
-	 * 
-	 * @param positions		Positions to be loaded
-	 * @param textureCoords	Texture coordinates of the positions
-	 * @param normals		Normal coordinates of the positions
-	 * @param indices		Indices describing the order of the positions
-	 * @param id			String describing the file location
-	 * @return				RawModel describing the positions, texture coordinates, and normal coordinates loaded
-	 */
-	public RawModel loadToVAO(float[] positions, float[] textureCoords, float[] normals, int[] indices, String id) {
-		return modelLoader.loadToVAO(positions, textureCoords, normals, indices, id);
-	}
-	
-	/**
 	 * Loads an array of positions, texture coordinates, normal coordinates, and vertex count to the graphics card
 	 * 
 	 * @param positions		Positions to be loaded
@@ -90,6 +76,10 @@ public class Loader {
 	 */
 	public RawModel loadToVAO(float[] positions, float[] textureCoords, float[] normals, int vertexCount) {
 		return modelLoader.loadToVAO(positions, textureCoords, normals, vertexCount);
+	}
+	
+	public RawModel loadToVAO(float[] positions, float[] textureCoords, float[] normals, float[] tangentsArray, int[] indicesArray) {
+		return modelLoader.loadToVAO(positions, textureCoords, normals, tangentsArray, indicesArray);
 	}
 	
 	/**

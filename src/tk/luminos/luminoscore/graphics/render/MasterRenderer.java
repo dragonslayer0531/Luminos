@@ -49,12 +49,12 @@ public class MasterRenderer {
 
 	public static final float FOV = 60;
 	public static final float NEAR_PLANE = 0.15f;
-	public static final float FAR_PLANE = 600f;
-	private static final float ENTITY_FAR_PLANE = 1000f;
+	public static final float FAR_PLANE = 800f;
+	private static final float ENTITY_FAR_PLANE = 1500f;
 
-	private static final float RED = 0.1f;
-	private static final float GREEN = 0.4f;
-	private static final float BLUE = 0.2f;
+	static final float RED = 0.1f;
+	static final float GREEN = 0.4f;
+	static final float BLUE = 0.2f;
 
 	private Matrix4f projectionMatrix;
 	private Matrix4f entityProjectionMatrix;
@@ -62,6 +62,7 @@ public class MasterRenderer {
 	private EntityRenderer entityRenderer;
 	private EntityShader entityShader = new EntityShader();
 	private GuiRenderer guiRenderer;
+	private NormalMapRenderer normalMapRenderer;
 	private ParticleRenderer particleRenderer;
 	private ShadowMapMasterRenderer shadowRenderer;
 	private SkyboxRenderer skyboxRenderer;
@@ -73,6 +74,7 @@ public class MasterRenderer {
 
 	private WaterFrameBuffers buffers;
 	private Map<TexturedModel, List<Entity>> entities = new HashMap<TexturedModel,List<Entity>>();
+	private Map<TexturedModel, List<Entity>> normalMapEntities = new HashMap<TexturedModel,List<Entity>>();
 	private List<Terrain> terrains = new ArrayList<Terrain>();
 
 	private DateUtils du;
@@ -89,9 +91,10 @@ public class MasterRenderer {
 		createEntityProjectionMatrix();
 		entityRenderer = new EntityRenderer(entityShader, entityProjectionMatrix);
 		guiRenderer = new GuiRenderer(loader);
+		normalMapRenderer = new NormalMapRenderer(entityProjectionMatrix);
 		particleRenderer = new ParticleRenderer(loader, entityProjectionMatrix);
 		shadowRenderer = new ShadowMapMasterRenderer(camera);		
-		skyboxRenderer = new SkyboxRenderer(loader, projectionMatrix);
+		skyboxRenderer = new SkyboxRenderer(loader, entityProjectionMatrix);
 		terrainRenderer = new TerrainRenderer(terrainShader, projectionMatrix);
 		textRenderer = new TextRenderer(loader);
 		buffers = new WaterFrameBuffers();
@@ -116,7 +119,7 @@ public class MasterRenderer {
 		if(entities != null) {
 			while(entities.hasNext()) {
 				Entity entity = entities.next();
-				if(Maths.getDistance((Vector3f) entity.getPosition(), focalPoint) < 300) {
+				if(Maths.getDistance((Vector3f) entity.getPosition(), focalPoint) < 500) {
 					processEntity(entity);
 				}
 			}
@@ -133,7 +136,7 @@ public class MasterRenderer {
 
 		render(lights, camera, clipPlane, window);
 	}
-	
+
 	/**
 	 * Renders GUI Textures to screen
 	 * 
@@ -202,7 +205,7 @@ public class MasterRenderer {
 	public void removeText(GUIText text) {
 		textRenderer.removeText(text);
 	}
-	
+
 	/**
 	 * Updates the text's value
 	 * 
@@ -233,7 +236,7 @@ public class MasterRenderer {
 		camera.getPosition().y += distance;
 		camera.invertPitch();
 		buffers.bindRefractionFrameBuffer();
-		renderScene(entities.iterator(), terrains.iterator(), lights, focalPoint, camera, new Vector4f(0, -1, 0, 0), window);
+		renderScene(null, terrains.iterator(), lights, focalPoint, camera, new Vector4f(0, -1, 0, 0), window);
 		GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
 		buffers.unbindCurrentFrameBuffer();
 	}
@@ -273,14 +276,17 @@ public class MasterRenderer {
 		prepare();
 		entityShader.start();
 		entityShader.loadClipPlane(clipPlane);
-		entityShader.loadSkyColour(RED, GREEN, BLUE);
+		entityShader.loadSkyColor(RED, GREEN, BLUE);
+		entityShader.loadMaxLights(1);
 		entityShader.loadLights(lights);
 		entityShader.loadViewMatrix(camera);
 		entityRenderer.render(entities);
+		entityRenderer.render(normalMapEntities);
 		entityShader.stop();
 		terrainShader.start();
 		terrainShader.loadClipPlane(clipPlane);
-		terrainShader.loadSkyColour(RED, GREEN, BLUE);
+		terrainShader.loadSkyColor(RED, GREEN, BLUE);
+		terrainShader.loadMaxLights(1);
 		terrainShader.loadLights(lights);
 		terrainShader.loadViewMatrix(camera);
 		terrainRenderer.render(terrains, shadowRenderer.getToShadowMapSpaceMatrix());
@@ -288,6 +294,7 @@ public class MasterRenderer {
 		skyboxRenderer.render(camera, RED, GREEN, BLUE, window);
 		terrains.clear();
 		entities.clear();
+		normalMapEntities.clear();
 	}
 
 	/**
@@ -305,8 +312,18 @@ public class MasterRenderer {
 	 * @param entity 		Entity to be processed 
 	 */
 	public void processEntity(Entity entity){
-		List<TexturedModel> entityModels = entity.getModels();
-		for(TexturedModel entityModel : entityModels) {
+		if(entity.getModelTexture().hasNormal()) {
+			TexturedModel entityModel = entity.getCurrentModel();
+			List<Entity> batch = normalMapEntities.get(entityModel);
+			if(batch!=null){
+				batch.add(entity);
+			}else{
+				List<Entity> newBatch = new ArrayList<Entity>();
+				newBatch.add(entity);
+				normalMapEntities.put(entityModel, newBatch);		
+			}
+		} else {
+			TexturedModel entityModel = entity.getCurrentModel();
 			List<Entity> batch = entities.get(entityModel);
 			if(batch!=null){
 				batch.add(entity);
@@ -318,106 +335,126 @@ public class MasterRenderer {
 		}
 	}
 
-	/**
-	 * Render a shadow map
-	 * 
-	 * @param entityList	Entities to have shadows
-	 * @param sun			Focal light
-	 */
-	public void renderShadowMap(List<Entity> entityList, Light sun) {
-		for(Entity entity : entityList) {
-			processEntity(entity);
+/**
+ * Processes {@link Entity} with a normal map
+ * 
+ * @param entity		Entity to be processed
+ */
+public void processNormalMapEntity(Entity entity){
+	List<TexturedModel> entityModels = entity.getModels();
+	for(TexturedModel entityModel : entityModels) {
+		List<Entity> batch = normalMapEntities.get(entityModel);
+		if(batch!=null){
+			batch.add(entity);
+		}else{
+			List<Entity> newBatch = new ArrayList<Entity>();
+			newBatch.add(entity);
+			normalMapEntities.put(entityModel, newBatch);		
 		}
-		shadowRenderer.render(entities, sun);
-		entities.clear();
 	}
+}
 
-	/**
-	 * Gets the ID of the shadow map
-	 * 
-	 * @return ID of shadow map
-	 */
-	public int getShadowMapTexture() {
-		return shadowRenderer.getShadowMap();
+/**
+ * Render a shadow map
+ * 
+ * @param entityList	Entities to have shadows
+ * @param sun			Focal light
+ */
+public void renderShadowMap(List<Entity> entityList, Light sun) {
+	for(Entity entity : entityList) {
+		processEntity(entity);
 	}
+	shadowRenderer.render(entities, sun);
+	entities.clear();
+}
 
-	/**
-	 * Cleans up all shaders used
-	 */
-	public void cleanUp(){
-		entityRenderer.cleanUp();
-		guiRenderer.cleanUp();
-		particleRenderer.cleanUp();
-		shadowRenderer.cleanUp();
-		terrainRenderer.cleanUp();
-		textRenderer.cleanUp();
-	}
+/**
+ * Gets the ID of the shadow map
+ * 
+ * @return ID of shadow map
+ */
+public int getShadowMapTexture() {
+	return shadowRenderer.getShadowMap();
+}
 
-	/**
-	 * Enables back face culling
-	 */
-	public static void enableCulling(){
-		GL11.glEnable(GL11.GL_CULL_FACE);
-		GL11.glCullFace(GL11.GL_BACK);		
-	}
+/**
+ * Cleans up all shaders used
+ */
+public void cleanUp(){
+	entityRenderer.cleanUp();
+	guiRenderer.cleanUp();
+	normalMapRenderer.cleanUp();
+	particleRenderer.cleanUp();
+	shadowRenderer.cleanUp();
+	terrainRenderer.cleanUp();
+	textRenderer.cleanUp();
+}
 
-	/**
-	 * Disables back face culling
-	 */
-	public static void disableCulling(){
-		GL11.glDisable(GL11.GL_CULL_FACE);
-	}
+/**
+ * Enables back face culling
+ */
+public static void enableCulling(){
+	GL11.glEnable(GL11.GL_CULL_FACE);
+	GL11.glCullFace(GL11.GL_BACK);		
+}
 
-	/**
-	 * @return Matrix4f	Contains Projection Matrix
-	 * 
-	 * Gets projection matrix of rendering
-	 */
-	public Matrix4f getProjectionMatrix(){
-		return this.projectionMatrix;
-	}
+/**
+ * Disables back face culling
+ */
+public static void disableCulling(){
+	GL11.glDisable(GL11.GL_CULL_FACE);
+}
 
-	//*******************************Private Methods*************************************//
+/**
+ * @return Matrix4f	Contains Projection Matrix
+ * 
+ * Gets projection matrix of rendering
+ */
+public Matrix4f getProjectionMatrix(){
+	return this.projectionMatrix;
+}
 
-	/**
-	 * Creates projection matrix for entities
-	 * 
-	 * @param display	Used to calculate aspect ratio
-	 */
-	private void createEntityProjectionMatrix() {
-		float aspectRatio = (float) WIDTH / (float) HEIGHT;
-		float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))));
-		float x_scale = y_scale / aspectRatio;
-		float frustum_length = ENTITY_FAR_PLANE - NEAR_PLANE;
+//*******************************Private Methods*************************************//
 
-		entityProjectionMatrix = new Matrix4f();
-		entityProjectionMatrix.m00 = x_scale;
-		entityProjectionMatrix.m11 = y_scale;
-		entityProjectionMatrix.m22 = -((ENTITY_FAR_PLANE + NEAR_PLANE) / frustum_length);
-		entityProjectionMatrix.m23 = -1;
-		entityProjectionMatrix.m32 = -((2 * NEAR_PLANE * ENTITY_FAR_PLANE) / frustum_length);
-		entityProjectionMatrix.m33 = 0;
-	}
+/**
+ * Creates projection matrix for entities
+ * 
+ * @param display	Used to calculate aspect ratio
+ */
+private void createEntityProjectionMatrix() {
+	float aspectRatio = (float) WIDTH / (float) HEIGHT;
+	float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))));
+	float x_scale = y_scale / aspectRatio;
+	float frustum_length = ENTITY_FAR_PLANE - NEAR_PLANE;
 
-	/**
-	 * Creates projection matrix for terrains and skybox
-	 * 
-	 * @param display  Used to calculate aspect ratio
-	 */
-	private void createProjectionMatrix() {
-		float aspectRatio = (float) WIDTH / (float) HEIGHT;
-		float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))));
-		float x_scale = y_scale / aspectRatio;
-		float frustum_length = FAR_PLANE - NEAR_PLANE;
+	entityProjectionMatrix = new Matrix4f();
+	entityProjectionMatrix.m00 = x_scale;
+	entityProjectionMatrix.m11 = y_scale;
+	entityProjectionMatrix.m22 = -((ENTITY_FAR_PLANE + NEAR_PLANE) / frustum_length);
+	entityProjectionMatrix.m23 = -1;
+	entityProjectionMatrix.m32 = -((2 * NEAR_PLANE * ENTITY_FAR_PLANE) / frustum_length);
+	entityProjectionMatrix.m33 = 0;
+}
 
-		projectionMatrix = new Matrix4f();
-		projectionMatrix.m00 = x_scale;
-		projectionMatrix.m11 = y_scale;
-		projectionMatrix.m22 = -((FAR_PLANE + NEAR_PLANE) / frustum_length);
-		projectionMatrix.m23 = -1;
-		projectionMatrix.m32 = -((2 * NEAR_PLANE * FAR_PLANE) / frustum_length);
-		projectionMatrix.m33 = 0;
-	}
+/**
+ * Creates projection matrix for terrains and skybox
+ * 
+ * @param display  Used to calculate aspect ratio
+ */
+private void createProjectionMatrix() {
+	float aspectRatio = (float) WIDTH / (float) HEIGHT;
+	float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))));
+	float x_scale = y_scale / aspectRatio;
+	float frustum_length = FAR_PLANE - NEAR_PLANE;
+
+	projectionMatrix = new Matrix4f();
+	projectionMatrix.m00 = x_scale;
+	projectionMatrix.m11 = y_scale;
+	projectionMatrix.m22 = -((FAR_PLANE + NEAR_PLANE) / frustum_length);
+	projectionMatrix.m23 = -1;
+	projectionMatrix.m32 = -((2 * NEAR_PLANE * FAR_PLANE) / frustum_length);
+	projectionMatrix.m33 = 0;
+}
 
 }
 

@@ -14,7 +14,7 @@ public class TerrainType {
 	/**
 	 * Enumeration of Terrain Types
 	 */
-	public enum Type {
+	public static enum Type {
 		FLAT,
 		PLAINS,
 		HILLS,

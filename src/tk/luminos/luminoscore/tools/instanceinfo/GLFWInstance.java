@@ -1,7 +1,6 @@
 package tk.luminos.luminoscore.tools.instanceinfo;
 
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
 
 /**
  * 
@@ -20,7 +19,7 @@ public class GLFWInstance {
 	 * @return	GLFW Version
 	 */
 	public static String getVersion() {
-		assert(GLFW.glfwInit() == GL11.GL_TRUE);
+		assert(GLFW.glfwInit());
 		return GLFW.glfwGetVersionString();
 	}
 	
@@ -30,7 +29,7 @@ public class GLFWInstance {
 	 * @return	GLFW Context info
 	 */
 	public static String getContextInformation() {
-		assert(GLFW.glfwInit() == GL11.GL_TRUE);
+		assert(GLFW.glfwInit());
 		StringBuilder data = new StringBuilder();
 		data.append(new String("GLFW VERSION: ") + getVersion());
 		appendNewLine(data);
