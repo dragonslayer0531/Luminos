@@ -7,17 +7,18 @@ in vec3 tangent;
 
 out vec2 pass_textureCoordinates;
 out vec3 surfaceNormal;
-out vec3 toLightVector[4];
+out vec3 toLightVector[20];
 out vec3 toCameraVector;
 out float visibility;
 
 uniform mat4 transformationMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
-uniform vec3 lightPositionEyeSpace[4];
+uniform vec3 lightPositionEyeSpace[20];
 
 uniform float numberOfRows;
 uniform vec2 offset;
+uniform int maxLights;
 
 const float density = 0;
 const float gradient = 5.0;
@@ -46,7 +47,7 @@ void main(void){
 		tang.z, bitang.z, norm.z
 	);
 	
-	for(int i=0;i<4;i++){
+	for(int i  =0; i < maxLights; i++){
 		toLightVector[i] = toTangentSpace * (lightPositionEyeSpace[i] - positionRelativeToCam.xyz);
 	}
 	

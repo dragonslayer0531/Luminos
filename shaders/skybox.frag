@@ -9,15 +9,15 @@ uniform samplerCube cubeMap2;
 uniform float blendFactor;
 uniform float lowerLimit;
 uniform float upperLimit;
-uniform vec3 fogColour;
+uniform vec3 fogColor;
 
 
 void main(void){
 	vec4 texture1 = texture(cubeMap, textureCoords);
 	vec4 texture2 = texture(cubeMap2, textureCoords);
-    vec4 finalColour = mix(texture1, texture2, blendFactor);
+    vec4 finalColor = mix(texture1, texture2, blendFactor);
     
     float factor = (textureCoords.y - lowerLimit)/(upperLimit - lowerLimit);
     factor = clamp(factor, 0.0, 1.0);
-    out_Color = mix(vec4(fogColour, 1.0), finalColour, factor);
+    out_Color = mix(vec4(fogColor, 1.0), finalColor, factor);
 }

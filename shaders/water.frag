@@ -13,6 +13,7 @@ uniform sampler2D dudvMap;
 uniform sampler2D normalMap;
 uniform sampler2D depthMap;
 uniform vec3 lightColor;
+uniform vec3 skyColor;
 uniform float moveFactor;
 uniform float near;
 uniform float far;
@@ -65,7 +66,7 @@ void main(void) {
 	out_Color = mix(reflectColour, refractColour, refractiveFactor);
     out_Color = mix(out_Color, vec4(0,0.3,0.5,1), 0.15) + vec4(specularHighlights, 0.0);
     float depth_factor = clamp((depth - 10) / 15, 0, 1);
-    out_Color = mix(out_Color, vec4(205/255, 133/255, 63/255, 1), depth_factor);
+    out_Color = mix(out_Color, vec4(skyColor, 1), depth_factor);
     out_Color.a = clamp(waterDepth/20.0, 0, 1);
  
 }
