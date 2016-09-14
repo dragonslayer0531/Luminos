@@ -54,7 +54,7 @@ public class LuminosClient extends Thread {
 		try {
 			clientSocket = new DatagramSocket();
 		} catch (SocketException e) {
-			Debug.addData(e.getMessage());
+			Debug.addData(e);
 			Debug.print();
 		}
 		
@@ -82,7 +82,7 @@ public class LuminosClient extends Thread {
 		try {
 			clientSocket.send(packet);
 		} catch (IOException e) {
-			Debug.addData(e.getMessage());
+			Debug.addData(e);
 		}
 	}
 	
@@ -97,7 +97,7 @@ public class LuminosClient extends Thread {
 		try {
 			clientSocket.receive(packet);
 		} catch (IOException | NullPointerException e) {
-			Debug.addData(e.getMessage());
+			Debug.addData(e);
 		}
 		return LDatabase.Deserialize(data);
 	}

@@ -20,7 +20,6 @@ public class LuminosException extends Exception {
 	 */
 	public LuminosException(String message) {
 		super(message);
-		Debug.addData(message);
 	}
 
 }

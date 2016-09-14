@@ -5,6 +5,15 @@ import tk.luminos.filesystem.serialization.LField;
 import tk.luminos.filesystem.serialization.LObject;
 import tk.luminos.filesystem.serialization.LString;
 
+/**
+ * 
+ * File conversion manager
+ * 
+ * @author Nick Clark
+ * @version 1.0
+ *
+ */
+
 public class FileManager {
 	
 	public static final String shine_damper = "shine_damper";
@@ -24,46 +33,85 @@ public class FileManager {
 	
 	private LDatabase db;	
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param OBJ_FILE			OBJ File
+	 * @param TEXTURE_FILE		Texture File
+	 */
 	public FileManager(String OBJ_FILE, String TEXTURE_FILE) {
 		db = Converter.objToLOF(OBJ_FILE, TEXTURE_FILE);
 	}
 	
+	/**
+	 * Sets if the double sided variable to true
+	 */
 	public void setDoubleSided() {
 		LObject obj = new LObject(double_sided);
 		obj.addField(LField.Boolean(double_sided_field, true));
 		db.addObject(obj);
 	}
 	
+	/**
+	 * Loads shine damper
+	 * 
+	 * @param shine		Shine damper
+	 */
 	public void setShineDamper(float shine) {
 		LObject obj = new LObject(shine_damper);
 		obj.addField(LField.Float(shine_damper_field, shine));
 		db.addObject(obj);
 	}
 	
+	/**
+	 * Loads reflectivity
+	 * 
+	 * @param reflectivity		Reflectivity factor
+	 */
 	public void setReflectivity(float reflectivity) {
 		LObject obj = new LObject(FileManager.reflectivity);
 		obj.addField(LField.Float(reflectivity_field, reflectivity));
 		db.addObject(obj);
 	}
 	
+	/**
+	 * Sets if the texture uses transparency
+	 * 
+	 * @param transparent		Transparency
+	 */
 	public void hasTransparency(boolean transparent) {
 		LObject obj = new LObject(transparency);
 		obj.addField(LField.Boolean(transparency_field, transparent));
 		db.addObject(obj);
 	}
 	
+	/**
+	 * Sets if the texture uses fake lighting
+	 * 
+	 * @param lighting			Fake lighting
+	 */
 	public void hasFakeLighting(boolean lighting) {
 		LObject obj = new LObject(fake_lighting);
 		obj.addField(LField.Boolean(fake_lighting_field, lighting));
 		db.addObject(obj);
 	}
 	
+	/**
+	 * Sets the normal texture
+	 * 
+	 * @param normal		Normal texture
+	 */
 	public void setNormal(String normal) {
 		LObject obj = new LObject(FileManager.normal);
 		obj.addString(LString.Create(normal_field, normal));
 		db.addObject(obj);
 	}
 	
+	/**
+	 * Sets how many rows the textures have
+	 * 
+	 * @param number_of_rows		Number of rows in texture
+	 */
 	public void setNumberOfRows(int number_of_rows) {
 		LObject obj = new LObject(FileManager.number_of_rows);
 		obj.addField(LField.Integer(number_of_rows_field, number_of_rows));

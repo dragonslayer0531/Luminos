@@ -2,15 +2,31 @@ package tk.luminos.maths.matrix;
 
 import tk.luminos.maths.vector.Vector2f;
 
-public class Matrix2f {
+/**
+ * 
+ * Class implementing a 2x2 matrix
+ * 
+ * @author Nick Clark
+ * @version 1.0
+ *
+ */
+
+public class Matrix2f implements Matrix {
 	
 	public float 	m00, m01, 
 					m10, m11;
 	
+	/**
+	 * Constructor
+	 */
 	public Matrix2f() {
 		setIdentity();
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see tk.luminos.maths.matrix.Matrix#setIdentity()
+	 */
 	public void setIdentity() {
 		this.m00 = 1.0f;
 		this.m01 = 0.0f;
@@ -18,6 +34,14 @@ public class Matrix2f {
 		this.m10 = 0.0f;
 	}
 	
+	/**
+	 * Adds two matrices
+	 * 
+	 * @param left		Left addend	matrix
+	 * @param right		Right addend matrix
+	 * @param dest		Destination matrix
+	 * @return			Sum matrix
+	 */
 	public static Matrix2f add(Matrix2f left, Matrix2f right, Matrix2f dest) {
 		if (dest == null)
 			dest = new Matrix2f();
@@ -30,6 +54,14 @@ public class Matrix2f {
 		return dest;
 	}
 	
+	/**
+	 * Subtracts two matrices
+	 * 
+	 * @param left		Minuend matrix
+	 * @param right		Subtrahend matrix
+	 * @param dest		Destination matrix
+	 * @return			Difference matrix
+	 */
 	public static Matrix2f sub(Matrix2f left, Matrix2f right, Matrix2f dest) {
 		if (dest == null)
 			dest = new Matrix2f();
@@ -42,6 +74,14 @@ public class Matrix2f {
 		return dest;
 	}
 	
+	/**
+	 * Multiplies two matrices
+	 * 
+	 * @param left		Multiplicand matrix
+	 * @param right		Multiplier matrix
+	 * @param dest		Destination matrix
+	 * @return			Product matrix
+	 */
 	public static Matrix2f mul(Matrix2f left, Matrix2f right, Matrix2f dest) {
 		if (dest == null)
 			dest = new Matrix2f();
@@ -59,6 +99,14 @@ public class Matrix2f {
 		return dest;
 	}
 	
+	/**
+	 * Transforms a vector
+	 * 
+	 * @param left		Transformation matrix
+	 * @param right		Vector
+	 * @param dest		Destination vector
+	 * @return			Vector that was transformed
+	 */
 	public static Vector2f transform(Matrix2f left, Vector2f right, Vector2f dest) {
 		if (dest == null)
 			dest = new Vector2f();
@@ -72,10 +120,23 @@ public class Matrix2f {
 		return dest;
 	}
 	
+	/**
+	 * Transposes a matrix
+	 * 
+	 * @param dest		Destination matrix
+	 * @return			Transposed matrix
+	 */
 	public Matrix2f transpose(Matrix2f dest) {
 		return transpose(this, dest);
 	}
 	
+	/**
+	 * Transposes a matrix
+	 * 
+	 * @param src		Source matrix
+	 * @param dest		Destination matrix
+	 * @return			Transposed matrix
+	 */
 	public static Matrix2f transpose(Matrix2f src, Matrix2f dest) {
 		if (dest == null)
 			dest = new Matrix2f();
@@ -89,10 +150,22 @@ public class Matrix2f {
 		return dest;
 	}
 	
+	/**
+	 * Inverts a matrix
+	 * 
+	 * @return	Inverted matrix
+	 */
 	public Matrix2f invert() {
 		return invert(this, this);
 	}
 	
+	/**
+	 * Inverts a matrix
+	 * 
+	 * @param src		Source Matrix
+	 * @param dest		Destination Matrix
+	 * @return			Inverted matrix
+	 */
 	public static Matrix2f invert(Matrix2f src, Matrix2f dest) {
 		float determinant = src.determinant();
 		if (determinant != 0) {
@@ -113,10 +186,23 @@ public class Matrix2f {
 			return null;
 	}
 	
+	/**
+	 * Negates a matrix
+	 * 
+	 * @param dest		Destination matrix
+	 * @return			Negated matrix
+	 */
 	public Matrix2f negate(Matrix2f dest) {
 		return negate(this, dest);
 	}
 	
+	/**
+	 * Negates a matrix
+	 * 
+	 * @param src		Source matrix
+	 * @param dest		Destination matrix
+	 * @return			Negated matrix
+	 */
 	public static Matrix2f negate(Matrix2f src, Matrix2f dest) {
 		if (dest == null)
 			dest = new Matrix2f();
@@ -129,11 +215,22 @@ public class Matrix2f {
 		return dest;
 	}
 	
+	/**
+	 * Sets matrix values to zero
+	 * 
+	 * @return	zero matrix
+	 */
 	public Matrix2f setZero() {
 		setZero(this);
 		return this;
 	}
 	
+	/**
+	 * Sets matrix values to zero
+	 * 
+	 * @param src		Source matrix
+	 * @return			Zero matrix
+	 */
 	public static Matrix2f setZero(Matrix2f src) {
 		src.m00 = 0.0f;
 		src.m01 = 0.0f;
@@ -142,6 +239,10 @@ public class Matrix2f {
 		return src;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see tk.luminos.maths.matrix.Matrix#determinant()
+	 */
 	public float determinant() {
 		return m00 * m11 - m01*m10;
 	}

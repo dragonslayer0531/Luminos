@@ -82,7 +82,7 @@ public class LuminosServer extends Thread {
 		try {
 			clientSocket = new DatagramSocket(port);
 		} catch (SocketException e) {
-			Debug.addData(e.getMessage());
+			Debug.addData(e);
 			Debug.print();
 		}
 		
@@ -106,7 +106,7 @@ public class LuminosServer extends Thread {
 		try {
 			clientSocket.send(packet);
 		} catch (IOException e) {
-			Debug.addData(e.getMessage());
+			Debug.addData(e);
 		}
 	}
 	
@@ -121,7 +121,7 @@ public class LuminosServer extends Thread {
 		try {
 			clientSocket.receive(packet);
 		} catch (IOException e) {
-			Debug.addData(e.getMessage());
+			Debug.addData(e);
 			return new byte[1024];
 		}
 		return data;

@@ -2,7 +2,7 @@ package tk.luminos.tools.algorithms;
 
 import java.util.Random;
 
-import tk.luminos.graphics.terrains.TerrainType;
+import tk.luminos.graphics.opengl.terrains.TerrainType;
 import tk.luminos.tools.Maths;
 
 /**

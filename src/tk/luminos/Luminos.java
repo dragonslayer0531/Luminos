@@ -15,6 +15,7 @@ import static tk.luminos.ConfigData.POSITION;
 import static tk.luminos.ConfigData.RESIZABLE;
 import static tk.luminos.ConfigData.RIGHT;
 import static tk.luminos.ConfigData.SAMPLES;
+import static tk.luminos.ConfigData.SCREENSHOT;
 import static tk.luminos.ConfigData.SIZE;
 import static tk.luminos.ConfigData.SPRINT;
 import static tk.luminos.ConfigData.STENCIL_BITS;
@@ -30,12 +31,17 @@ import static tk.luminos.ConfigData.WIDTH;
 import static tk.luminos.GlobalLock.printToFile;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.lwjgl.openal.AL10;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL15;
+import org.lwjgl.opengl.GL30;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
@@ -50,9 +56,18 @@ import org.w3c.dom.NodeList;
 
 public class Luminos {
 	
-	public static String config_loc = "operation_reclaimer.config";
+	public static String config_loc = "luminos.config";
 
 	protected long windowID;
+	
+	public static List<Integer> vaos = new ArrayList<Integer>();
+	public static List<Integer> vbos = new ArrayList<Integer>();
+	public static List<Integer> textures = new ArrayList<Integer>();
+	public static List<Integer> fbos = new ArrayList<Integer>();
+	public static List<Integer> fboTextures = new ArrayList<Integer>();
+	public static List<Integer> fboBuffers = new ArrayList<Integer>();
+	public static List<Integer> audioSources = new ArrayList<Integer>();
+	public static List<Integer> audioBuffers = new ArrayList<Integer>();
 
 	/**
 	 * Construction
@@ -72,7 +87,7 @@ public class Luminos {
 		//Check if file exists and initialize for loading
 		File config = new File(config_loc);
 		if(!config.exists()) {
-			return new Luminos();
+			printToFile(config_loc);
 		}
 		
 		try {
@@ -82,9 +97,9 @@ public class Luminos {
 			doc.getDocumentElement().normalize();
 			
 			//Check to make sure config is up to date to version
-			if(!doc.getDocumentElement().getNodeName().equals("luminos_config")) return new Luminos();
-			Node version = doc.getElementById("version");
-			if(version.getNodeValue().equals("1.0.0")) return new Luminos();
+			if(!doc.getDocumentElement().getNodeName().equals("luminos_config")) {
+				return new Luminos();
+			}
 			
 			//Load input methods
 			NodeList input_methods = doc.getElementsByTagName("input_methods");
@@ -97,6 +112,7 @@ public class Luminos {
 				SPRINT = Integer.parseInt(node.getElementsByTagName("sprint_key_binding").item(0).getAttributes().getNamedItem("key").getNodeValue());
 				WALK = Integer.parseInt(node.getElementsByTagName("walk_key_binding").item(0).getAttributes().getNamedItem("key").getNodeValue());
 				JUMP = Integer.parseInt(node.getElementsByTagName("jump_key_binding").item(0).getAttributes().getNamedItem("key").getNodeValue());
+				SCREENSHOT = Integer.parseInt(node.getElementsByTagName("screenshot_key_binding").item(0).getAttributes().getNamedItem("key").getNodeValue());
 			}
 
 			//Load world data
@@ -139,7 +155,7 @@ public class Luminos {
 			return new Luminos();
 
 		} catch (Exception e) {
-			Debug.addData(e.getMessage());
+			Debug.addData(e);
 			return new Luminos();
 		}
 		
@@ -159,6 +175,24 @@ public class Luminos {
 	 */
 	public void close() {
 		INITIATED = false;
+		for(Integer vao : vaos) {
+			GL30.glDeleteVertexArrays(vao);
+		} for (Integer vbo : vbos) {
+			GL15.glDeleteBuffers(vbo);
+		} for (Integer texture : textures) {
+			GL11.glDeleteTextures(texture);
+		} for (Integer fbo : fbos) {
+			GL30.glDeleteFramebuffers(fbo);
+		} for (Integer fboTexture : fboTextures) {
+			GL11.glDeleteTextures(fboTexture);
+		} for (Integer fboBuffer : fboBuffers) {
+			GL30.glDeleteRenderbuffers(fboBuffer);
+		} for (Integer audioSource : audioSources) {
+			AL10.alSourceStop(audioSource);
+			AL10.alDeleteSources(audioSource);
+		} for (Integer audioBuffer : audioBuffers) {
+			AL10.alDeleteBuffers(audioBuffer);
+		}
 		printToFile(config_loc);
 	}
 

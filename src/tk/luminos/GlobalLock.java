@@ -73,12 +73,12 @@ public class GlobalLock {
 		try {
 			db = dbf.newDocumentBuilder();
 		} catch (ParserConfigurationException e) {
-			Debug.addData(e.getMessage());
+			Debug.addData(e);
 			return false;
 		}
 		
 		if(db == null) {
-			Debug.addData(GlobalLock.class.getName() + ": Could not create DocumentBuilder");
+			Debug.addData(new LuminosException("COULD NOT CREATE DOCUMENT BUILDER"));
 			return false;
 		}
 		Document doc = db.newDocument();
@@ -130,6 +130,11 @@ public class GlobalLock {
 		jump.setAttribute(FORMAT, INT);
 		jump.setAttribute("key", JUMP.toString());
 		input.appendChild(jump);
+		
+		Element screenshot = doc.createElement("screenshot_key_binding");
+		screenshot.setAttribute(FORMAT, INT);
+		screenshot.setAttribute("key", JUMP.toString());
+		input.appendChild(screenshot);
 		
 		Element textureSize = doc.createElement("texture_size");
 		textureSize.setAttribute(FORMAT, INT);
@@ -205,7 +210,7 @@ public class GlobalLock {
 		try {
 			transformer = TransformerFactory.newInstance().newTransformer();
 		} catch (TransformerConfigurationException | TransformerFactoryConfigurationError e) {
-			Debug.addData(e.getMessage());
+			Debug.addData(e);
 			return false;
 		}
 		DOMSource source = new DOMSource(doc);
@@ -213,7 +218,7 @@ public class GlobalLock {
 		try {
 			transformer.transform(source, result);
 		} catch (TransformerException e) {
-			Debug.addData(e.getMessage());
+			Debug.addData(e);
 			return false;
 		}
 		

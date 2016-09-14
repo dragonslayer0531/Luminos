@@ -24,6 +24,9 @@ uniform mat4 toShadowMapSpace;
 uniform float density;
 uniform float gradient;
 
+const float shadowDistance = 100;
+const float transitionDistance = 10.0;
+
 void main(void){
 
 	vec4 worldPosition = transformationMatrix * vec4(position,1.0);
@@ -44,6 +47,10 @@ void main(void){
 	float distance = length(positionRelativeToCam.xyz);
 	visibility = exp(-pow((distance*density),gradient));
 	visibility = clamp(visibility,0.0,1.0);
+	
+	distance = distance - (shadowDistance - transitionDistance);
+	distance = distance / transitionDistance;
+	shadowCoords.w = clamp(1-distance, 0, 1);
 	
 
 }

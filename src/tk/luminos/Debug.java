@@ -16,7 +16,7 @@ import tk.luminos.tools.instanceinfo.OpenGLInstance;
  * Custom Luminos Debugger
  * 
  * @author Nick Clark
- * @version 1.0
+ * @version 1.1
  *
  */
 
@@ -37,11 +37,20 @@ public class Debug {
 	/**
 	 * Append string to debug buffer
 	 * 
-	 * @param string	String to be added
+	 * @param e		Throwable error
 	 */
-	public static void addData(String string) {
-		appendNewLine(debug_data);
-		if(DEBUG) debug_data.append(string);
+	public static void addData(Throwable e) {
+		
+		if(DEBUG) {
+			appendNewLine(debug_data);
+			debug_data.append(e.getMessage());
+			StackTraceElement[] elements = e.getStackTrace();
+			for(StackTraceElement element : elements) {
+				appendNewLine(debug_data);
+				debug_data.append(element.getFileName() + " " + element.getClassName() + " " + element.getLineNumber());
+			}
+		}
+		
 	}
 	
 	/**

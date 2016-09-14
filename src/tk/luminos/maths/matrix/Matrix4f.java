@@ -6,17 +6,24 @@ import tk.luminos.maths.vector.Vector2f;
 import tk.luminos.maths.vector.Vector3f;
 import tk.luminos.maths.vector.Vector4f;
 
-public class Matrix4f {
+public class Matrix4f implements Matrix {
 
 	public float	m00, m01, m02, m03,
 	m10, m11, m12, m13,
 	m20, m21, m22, m23,
 	m30, m31, m32, m33;
 
+	/**
+	 * Constructor
+	 */
 	public Matrix4f() {
 		setIdentity();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see tk.luminos.maths.matrix.Matrix#setIdentity()
+	 */
 	public void setIdentity() {
 		this.m00 = 1.0f;
 		this.m01 = 0.0f;
@@ -36,6 +43,12 @@ public class Matrix4f {
 		this.m33 = 1.0f;
 	}
 	
+	/**
+	 * Stores matrix in a float buffer
+	 * 
+	 * @param buf		Float buffer
+	 * @return			Matrix stored
+	 */
 	public Matrix4f store(FloatBuffer buf) {
 		buf.put(m00);
 		buf.put(m01);
@@ -56,6 +69,14 @@ public class Matrix4f {
 		return this;
 	}
 
+	/**
+	 * Adds two matrices
+	 * 
+	 * @param left		Left addend	matrix
+	 * @param right		Right addend matrix
+	 * @param dest		Destination matrix
+	 * @return			Sum matrix
+	 */
 	public static Matrix4f add(Matrix4f left, Matrix4f right, Matrix4f dest) {
 		if (dest == null)
 			dest = new Matrix4f();
@@ -80,6 +101,14 @@ public class Matrix4f {
 		return dest;
 	}
 
+	/**
+	 * Subtracts two matrices
+	 * 
+	 * @param left		Minuend matrix
+	 * @param right		Subtrahend matrix
+	 * @param dest		Destination matrix
+	 * @return			Difference matrix
+	 */
 	public static Matrix4f sub(Matrix4f left, Matrix4f right, Matrix4f dest) {
 		if (dest == null)
 			dest = new Matrix4f();
@@ -104,6 +133,14 @@ public class Matrix4f {
 		return dest;
 	}
 
+	/**
+	 * Multiplies two matrices
+	 * 
+	 * @param left		Multiplicand matrix
+	 * @param right		Multiplier matrix
+	 * @param dest		Destination matrix
+	 * @return			Product matrix
+	 */
 	public static Matrix4f mul(Matrix4f left, Matrix4f right, Matrix4f dest) {
 		if (dest == null)
 			dest = new Matrix4f();
@@ -145,6 +182,14 @@ public class Matrix4f {
 		return dest;
 	}
 
+	/**
+	 * Transforms a vector
+	 * 
+	 * @param left		Transformation matrix
+	 * @param right		Vector
+	 * @param dest		Destination vector
+	 * @return			Vector that was transformed
+	 */
 	public static Vector4f transform(Matrix4f left, Vector4f right, Vector4f dest) {
 		if (dest == null)
 			dest = new Vector4f();
@@ -162,6 +207,15 @@ public class Matrix4f {
 		return dest;
 	}
 
+	/**
+	 * Rotates a matrix around a given axis and by a given angle
+	 * 
+	 * @param angle		Angle of rotation
+	 * @param axis		Axis of rotation
+	 * @param src		Source matrix
+	 * @param dest		Destination matrix
+	 * @return			Rotated matrix
+	 */
 	public static Matrix4f rotate(float angle, Vector3f axis, Matrix4f src, Matrix4f dest) {
 		if (dest == null)
 			dest = new Matrix4f();
@@ -208,6 +262,14 @@ public class Matrix4f {
 		return dest;
 	}
 
+	/**
+	 * Scales a matrix
+	 * 
+	 * @param vec		Vector to scale by
+	 * @param src		Source matrix
+	 * @param dest		Destination matrix
+	 * @return			Scaled matrix
+	 */
 	public static Matrix4f scale(Vector3f vec, Matrix4f src, Matrix4f dest) {
 		if (dest == null)
 			dest = new Matrix4f();
@@ -226,6 +288,14 @@ public class Matrix4f {
 		return dest;
 	}
 
+	/**
+	 * Translates matrix in XY plane
+	 * 
+	 * @param vec		Vector of translation
+	 * @param src		Source matrix
+	 * @param dest		Destination matrix
+	 * @return			Translated matrix
+	 */
 	public static Matrix4f translate(Vector2f vec, Matrix4f src, Matrix4f dest) {
 		if (dest == null)
 			dest = new Matrix4f();
@@ -238,6 +308,14 @@ public class Matrix4f {
 		return dest;
 	}
 
+	/**
+	 * Translates matrix in 3D space
+	 * 
+	 * @param vec		Vector of translation
+	 * @param src		Source matrix
+	 * @param dest		Destination matrix
+	 * @return			Translated matrix
+	 */
 	public static Matrix4f translate(Vector3f vec, Matrix4f src, Matrix4f dest) {
 		if (dest == null)
 			dest = new Matrix4f();
@@ -250,10 +328,23 @@ public class Matrix4f {
 		return dest;
 	}
 
+	/**
+	 * Transposes a matrix
+	 * 
+	 * @param dest		Destination matrix
+	 * @return			Transposed matrix
+	 */
 	public Matrix4f transpose(Matrix4f dest) {
 		return transpose(this, dest);
 	}
 
+	/**
+	 * Transposes a matrix
+	 * 
+	 * @param src		Source matrix
+	 * @param dest		Destination matrix
+	 * @return			Transposed matrix
+	 */
 	public static Matrix4f transpose(Matrix4f src, Matrix4f dest) {
 		if (dest == null)
 			dest = new Matrix4f();
@@ -294,6 +385,10 @@ public class Matrix4f {
 		return dest;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see tk.luminos.maths.matrix.Matrix#determinant()
+	 */
 	public float determinant() {
 		float f =
 				m00
@@ -319,16 +414,43 @@ public class Matrix4f {
 		return f;
 	}
 
+	/**
+	 * Returns determinant of a 3x3 matrix
+	 * 
+	 * @param t00		row 1 column 1
+	 * @param t01		row 1 column 2
+	 * @param t02		row 1 column 3
+	 * @param t10		row 2 column 1
+	 * @param t11		row 2 column 2
+	 * @param t12		row 2 column 3
+	 * @param t20		row 3 column 1
+	 * @param t21		row 3 column 2
+	 * @param t22		row 3 column 3
+	 * @return			Determinant 
+	 */
 	public static float determinant3x3(float t00, float t01, float t02, float t10, float t11, float t12, float t20, float t21, float t22) {
 		return   t00 * (t11 * t22 - t12 * t21)
 				+ t01 * (t12 * t20 - t10 * t22)
 				+ t02 * (t10 * t21 - t11 * t20);
 	}
 	
+	/**
+	 * Inverts a matrix
+	 * 
+	 * @param dest		Destination matrix 
+	 * @return			Inverted matrix
+	 */
 	public Matrix4f invert(Matrix4f dest) {
 		return invert(this, dest);
 	}
 	
+	/**
+	 * Inverts a matrix
+	 * 
+	 * @param src		Source Matrix
+	 * @param dest		Destination Matrix
+	 * @return			Inverted matrix
+	 */
 	public static Matrix4f invert(Matrix4f src, Matrix4f dest) {
 		float determinant = src.determinant();
 
@@ -376,10 +498,23 @@ public class Matrix4f {
 			return null;
 	}
 	
+	/**
+	 * Negates a matrix
+	 * 
+	 * @param dest		Destination matrix
+	 * @return			Negated matrix
+	 */
 	public Matrix4f negate(Matrix4f dest) {
 		return negate(this, dest);
 	}
 	
+	/**
+	 * Negates a matrix
+	 * 
+	 * @param src		Source matrix
+	 * @param dest		Destination matrix
+	 * @return			Negated matrix
+	 */
 	public static Matrix4f negate(Matrix4f src, Matrix4f dest) {
 		if (dest == null)
 			dest = new Matrix4f();
@@ -404,6 +539,9 @@ public class Matrix4f {
 		return dest;
 	}
 
+	/**
+	 * Sets matrix values to zero
+	 */
 	public void setZero() {
 		this.m00 = 0.0f;
 		this.m01 = 0.0f;

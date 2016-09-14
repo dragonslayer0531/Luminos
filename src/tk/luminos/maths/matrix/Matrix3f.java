@@ -2,16 +2,32 @@ package tk.luminos.maths.matrix;
 
 import tk.luminos.maths.vector.Vector3f;
 
-public class Matrix3f {
+/**
+ * 
+ * Class implementing a 3x3 matrix
+ * 
+ * @author Nick Clark
+ * @version 1.0
+ *
+ */
+
+public class Matrix3f implements Matrix {
 	
 	public float 	m00, m01, m02,
 					m10, m11, m12,
 					m20, m21, m22;
 	
+	/**
+	 * Constructor
+	 */
 	public Matrix3f() {
 		setIdentity();
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see tk.luminos.maths.matrix.Matrix#setIdentity()
+	 */
 	public void setIdentity() {
 		this.m00 = 1.0f;
 		this.m01 = 0.0f;
@@ -24,6 +40,14 @@ public class Matrix3f {
 		this.m22 = 1.0f;
 	}
 	
+	/**
+	 * Adds two matrices
+	 * 
+	 * @param left		Left addend	matrix
+	 * @param right		Right addend matrix
+	 * @param dest		Destination matrix
+	 * @return			Sum matrix
+	 */
 	public static Matrix3f add(Matrix3f left, Matrix3f right, Matrix3f dest) {
 		if (dest == null)
 			dest = new Matrix3f();
@@ -41,6 +65,14 @@ public class Matrix3f {
 		return dest;
 	}
 	
+	/**
+	 * Subtracts two matrices
+	 * 
+	 * @param left		Minuend matrix
+	 * @param right		Subtrahend matrix
+	 * @param dest		Destination matrix
+	 * @return			Difference matrix
+	 */
 	public static Matrix3f sub(Matrix3f left, Matrix3f right, Matrix3f dest) {
 		if (dest == null)
 			dest = new Matrix3f();
@@ -58,6 +90,14 @@ public class Matrix3f {
 		return dest;
 	}
 	
+	/**
+	 * Multiplies two matrices
+	 * 
+	 * @param left		Multiplicand matrix
+	 * @param right		Multiplier matrix
+	 * @param dest		Destination matrix
+	 * @return			Product matrix
+	 */
 	public static Matrix3f mul(Matrix3f left, Matrix3f right, Matrix3f dest) {
 		if (dest == null)
 			dest = new Matrix3f();
@@ -94,6 +134,14 @@ public class Matrix3f {
 		return dest;
 	}
 	
+	/**
+	 * Transforms a vector
+	 * 
+	 * @param left		Transformation matrix
+	 * @param right		Vector
+	 * @param dest		Destination vector
+	 * @return			Vector that was transformed
+	 */
 	public static Vector3f transform(Matrix3f left, Vector3f right, Vector3f dest) {
 		if (dest == null)
 			dest = new Vector3f();
@@ -109,10 +157,23 @@ public class Matrix3f {
 		return dest;
 	}
 	
+	/**
+	 * Transposes a matrix
+	 * 
+	 * @param dest		Destination matrix
+	 * @return			Transposed matrix
+	 */
 	public Matrix3f transpose(Matrix3f dest) {
 		return transpose(this, dest);
 	}
 	
+	/**
+	 * Transposes a matrix
+	 * 
+	 * @param src		Source matrix
+	 * @param dest		Destination matrix
+	 * @return			Transposed matrix
+	 */
 	public static Matrix3f transpose(Matrix3f src, Matrix3f dest) {
 		if (dest == null)
 		   dest = new Matrix3f();
@@ -138,6 +199,10 @@ public class Matrix3f {
 		return dest;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see tk.luminos.maths.matrix.Matrix#determinant()
+	 */
 	public float determinant() {
 		float f =
 			m00 * (m11 * m22 - m12 * m21)
@@ -146,10 +211,22 @@ public class Matrix3f {
 		return f;
 	}
 	
+	/**
+	 * Inverts a matrix
+	 * 
+	 * @return	Inverted matrix
+	 */
 	public Matrix3f invert() {
 		return invert(this, this);
 	}
 	
+	/**
+	 * Inverts a matrix
+	 * 
+	 * @param src		Source Matrix
+	 * @param dest		Destination Matrix
+	 * @return			Inverted matrix
+	 */
 	public static Matrix3f invert(Matrix3f src, Matrix3f dest) {
 		float determinant = src.determinant();
 
@@ -182,10 +259,23 @@ public class Matrix3f {
 			 return null;
 	}
 	
+	/**
+	 * Negates a matrix
+	 * 
+	 * @param dest		Destination matrix
+	 * @return			Negated matrix
+	 */
 	public Matrix3f negate(Matrix3f dest) {
 		return negate(this, dest);
 	}
 	
+	/**
+	 * Negates a matrix
+	 * 
+	 * @param src		Source matrix
+	 * @param dest		Destination matrix
+	 * @return			Negated matrix
+	 */
 	public static Matrix3f negate(Matrix3f src, Matrix3f dest) {
 		if (dest == null)
 			dest = new Matrix3f();
@@ -202,21 +292,32 @@ public class Matrix3f {
 		return dest;
 	}
 	
+	/**
+	 * Sets matrix values to zero
+	 * 
+	 * @return	zero matrix
+	 */
 	public Matrix3f setZero() {
 		return setZero(this);
 	}
 	
-	public static Matrix3f setZero(Matrix3f m) {
-		m.m00 = 0.0f;
-		m.m01 = 0.0f;
-		m.m02 = 0.0f;
-		m.m10 = 0.0f;
-		m.m11 = 0.0f;
-		m.m12 = 0.0f;
-		m.m20 = 0.0f;
-		m.m21 = 0.0f;
-		m.m22 = 0.0f;
-		return m;
+	/**
+	 * Sets matrix values to zero
+	 * 
+	 * @param src		Source matrix
+	 * @return			Zero matrix
+	 */
+	public static Matrix3f setZero(Matrix3f src) {
+		src.m00 = 0.0f;
+		src.m01 = 0.0f;
+		src.m02 = 0.0f;
+		src.m10 = 0.0f;
+		src.m11 = 0.0f;
+		src.m12 = 0.0f;
+		src.m20 = 0.0f;
+		src.m21 = 0.0f;
+		src.m22 = 0.0f;
+		return src;
 	}
 
 }

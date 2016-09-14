@@ -14,8 +14,24 @@ import tk.luminos.filesystem.serialization.LString;
 import tk.luminos.maths.vector.Vector2f;
 import tk.luminos.maths.vector.Vector3f;
 
+/**
+ * 
+ * Static methods converting files to Luminos Databases
+ * 
+ * @author Nick Clark
+ * @version 1.0
+ *
+ */
+
 public class Converter {
 	
+	/**
+	 * Converts OBJ file to {@link LDatabase}
+	 * 
+	 * @param obj			OBJ file
+	 * @param textureFile	Texture file
+	 * @return				Luminos Database
+	 */
 	public static LDatabase objToLOF(String obj, String textureFile) {
 		File file = new File(obj);
 		FileReader fr = null;

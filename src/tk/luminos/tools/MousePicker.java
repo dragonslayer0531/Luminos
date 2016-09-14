@@ -3,12 +3,20 @@ package tk.luminos.tools;
 import java.util.List;
 
 import tk.luminos.ConfigData;
-import tk.luminos.graphics.gameobjects.Camera;
-import tk.luminos.graphics.terrains.Terrain;
+import tk.luminos.graphics.opengl.gameobjects.Camera;
+import tk.luminos.graphics.opengl.terrains.Terrain;
 import tk.luminos.maths.matrix.Matrix4f;
 import tk.luminos.maths.vector.Vector2f;
 import tk.luminos.maths.vector.Vector3f;
 import tk.luminos.maths.vector.Vector4f;
+
+/**
+ * Class that sets up mouse data
+ * 
+ * @author Nick Clark
+ * @version 1.0
+ *
+ */
 
 public class MousePicker {
 
@@ -24,6 +32,13 @@ public class MousePicker {
 	private List<Terrain> terrain;
 	private Vector3f currentTerrainPoint;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param cam			Camera used to render
+	 * @param projection	Projection matrix
+	 * @param terrain		Terrains
+	 */
 	public MousePicker(Camera cam, Matrix4f projection, List<Terrain> terrain) {
 		camera = cam;
 		projectionMatrix = projection;
@@ -31,16 +46,29 @@ public class MousePicker {
 		this.terrain = terrain;
 	}
 	
+	/**
+	 * Gets the point on the world that was selected
+	 * 
+	 * @return	point on the world
+	 */
 	public Vector3f getWorldPoint() {
 		if(currentTerrainPoint == null) return null;
 		if(currentTerrainPoint.y > 0) return currentTerrainPoint;
 		else return new Vector3f(currentTerrainPoint.x, 0, currentTerrainPoint.z);
 	}
 
+	/**
+	 * Gets current mouse ray
+	 * 
+	 * @return	current mouse ray
+	 */
 	public Vector3f getCurrentRay() {
 		return currentRay;
 	}
 
+	/**
+	 * Updates the mouse picker
+	 */
 	public void update() {
 		viewMatrix = Maths.createViewMatrix(camera);
 		currentRay = calculateMouseRay();
@@ -80,9 +108,7 @@ public class MousePicker {
 		float y = (2.0f * mouseY) / ConfigData.HEIGHT - 1f;
 		return new Vector2f(x, y);
 	}
-	
-	//**********************************************************
-	
+		
 	private Vector3f getPointOnRay(Vector3f ray, float distance) {
 		Vector3f camPos = camera.getPosition();
 		Vector3f start = new Vector3f(camPos.x, camPos.y, camPos.z);

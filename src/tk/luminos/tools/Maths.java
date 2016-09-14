@@ -2,7 +2,7 @@ package tk.luminos.tools;
 
 import java.util.List;
 
-import tk.luminos.graphics.gameobjects.Camera;
+import tk.luminos.graphics.opengl.gameobjects.Camera;
 import tk.luminos.maths.matrix.Matrix4f;
 import tk.luminos.maths.vector.Vector2f;
 import tk.luminos.maths.vector.Vector3f;
