@@ -94,7 +94,9 @@ public class Terrain {
 	 * @param heights		2 dimensional array describing height values
 	 * @param textures		2 dimensional array describing texture coordinates
 	 * @param blendMap		BufferedImage to use as blend map
-	 * @param loader		Loader to use when rendering terrain
+	 * @param loader		Loader to use
+	 * @param gridX			Grid X coordinate
+	 * @param gridZ			Grid Z coordinate
 	 */
 	public Terrain(RawModel model, float[][] heights, List<String> textures, BufferedImage blendMap, Loader loader, float gridX, float gridZ) {
 		this.model = model;
@@ -115,7 +117,8 @@ public class Terrain {
 	 * @param heights		2 dimensional array describing height values
 	 * @param textures		Texture Pack
 	 * @param blendMap		BufferedImage to use as blend map
-	 * @param loader		Loader to use when rendering terrain
+	 * @param x				X coordinate of terrain
+	 * @param z				Z coordinate of terrain
 	 */
 	public Terrain(RawModel model, float[][] heights, TerrainTexturePack textures, TerrainTexture blendMap, float x, float z) {
 		this.model = model;

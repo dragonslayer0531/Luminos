@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
-import com.luminos.graphics.gameobjects.Entity;
+import com.luminos.graphics.gameobjects.GameObject;
 import com.luminos.graphics.models.RawModel;
 import com.luminos.graphics.models.TexturedModel;
 import com.luminos.graphics.shaders.NormalMapShader;
@@ -48,12 +48,12 @@ public class NormalMapRenderer {
      * 
      * @param entities		Map of entities to render
      */
-    public void render(Map<TexturedModel, List<Entity>> entities) {
+    public void render(Map<TexturedModel, List<GameObject>> entities) {
         shader.start();
         for (TexturedModel model : entities.keySet()) {
             prepareTexturedModel(model);
-            List<Entity> batch = entities.get(model);
-            for (Entity entity : batch) {
+            List<GameObject> batch = entities.get(model);
+            for (GameObject entity : batch) {
                 prepareInstance(entity);
                 GL11.glDrawElements(GL11.GL_TRIANGLES, model.getRawModel().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
             }
@@ -97,7 +97,7 @@ public class NormalMapRenderer {
         GL30.glBindVertexArray(0);
     }
  
-    private void prepareInstance(Entity entity) {
+    private void prepareInstance(GameObject entity) {
         Matrix4f transformationMatrix = Maths.createTransformationMatrix(entity.getPosition(), entity.getRotation(), entity.getScale());
         shader.loadTransformationMatrix(transformationMatrix);
         shader.loadOffset(0, 0);

@@ -11,6 +11,8 @@ public class BoundingSphere extends Collider {
 	
 	/**
 	 * Creates bounding sphere with a radius of 0
+	 * 
+	 * @param parent		Parent entity
 	 */
 	public BoundingSphere(Entity parent) {
 		super(parent);
@@ -20,6 +22,7 @@ public class BoundingSphere extends Collider {
 	 * Creates bounding sphere with a radius
 	 * 
 	 * @param radius		Radius of bounds
+	 * @param parent		Parent entity
 	 */
 	public BoundingSphere(int radius, Entity parent) {
 		super(parent);

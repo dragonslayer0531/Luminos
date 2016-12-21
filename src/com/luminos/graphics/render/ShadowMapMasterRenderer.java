@@ -6,7 +6,7 @@ import java.util.Map;
 import org.lwjgl.opengl.GL11;
 
 import com.luminos.graphics.gameobjects.Camera;
-import com.luminos.graphics.gameobjects.Entity;
+import com.luminos.graphics.gameobjects.GameObject;
 import com.luminos.graphics.gameobjects.Light;
 import com.luminos.graphics.models.TexturedModel;
 import com.luminos.graphics.shaders.ShadowShader;
@@ -58,7 +58,7 @@ public class ShadowMapMasterRenderer {
      * @param entities		List of all rendered entities
      * @param sun			Focal light to render to shadow map
      */
-    public void render(Map<TexturedModel, List<Entity>> entities, Light sun) {
+    public void render(Map<TexturedModel, List<GameObject>> entities, Light sun) {
         shadowBox.update();
         Vector3f sunPosition = sun.getPosition();
         Vector3f lightDirection = new Vector3f(-sunPosition.x, -sunPosition.y, -sunPosition.z);

@@ -1,5 +1,3 @@
-#version 400 core
-
 in vec2 position;
 
 out vec4 clipSpace;

@@ -10,14 +10,30 @@ public class Collider {
 	
 	private Entity parent;
 	
+	/**
+	 * Creates collider 
+	 * 
+	 * @param parent	Parent entity
+	 */
 	public Collider(Entity parent) {
 		this.parent = parent;
 	}
 	
+	/**
+	 * Returns a copy of the collider's reference
+	 * 
+	 * @return	itself
+	 */
 	public Collider copy() {
 		return this;
 	}
 	
+	/**
+	 * Gets all collisions detected
+	 * 
+	 * @param colliders		Colliders that can collide
+	 * @return				List of colliders that are intersecting
+	 */
 	public List<Collider> getCollisions(List<Collider> colliders) {
 		List<Collider> collisionDetected = new ArrayList<Collider>();
 		for (Collider collider : colliders) {

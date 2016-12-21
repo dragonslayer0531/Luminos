@@ -1,5 +1,3 @@
-#version 400 core
-
 in vec3 position;
 in vec2 textureCoordinates;
 in vec3 normal;

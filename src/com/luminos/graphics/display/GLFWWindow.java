@@ -1,5 +1,13 @@
 package com.luminos.graphics.display;
 
+import static com.luminos.ConfigData.FULLSCREEN;
+import static com.luminos.ConfigData.GL_MAJOR;
+import static com.luminos.ConfigData.GL_MINOR;
+import static com.luminos.ConfigData.HEIGHT;
+import static com.luminos.ConfigData.MOUSE_VISIBLE;
+import static com.luminos.ConfigData.RESIZABLE;
+import static com.luminos.ConfigData.VSYNC;
+import static com.luminos.ConfigData.WIDTH;
 import static org.lwjgl.glfw.GLFW.GLFW_CLIENT_API;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MAJOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MINOR;
@@ -27,15 +35,6 @@ import static org.lwjgl.opengl.GL11.GL_TRUE;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.system.MemoryUtil.NULL;
-import static com.luminos.ConfigData.FULLSCREEN;
-import static com.luminos.ConfigData.GL_MAJOR;
-import static com.luminos.ConfigData.GL_MINOR;
-import static com.luminos.ConfigData.HEIGHT;
-import static com.luminos.ConfigData.INITIATED;
-import static com.luminos.ConfigData.MOUSE_VISIBLE;
-import static com.luminos.ConfigData.RESIZABLE;
-import static com.luminos.ConfigData.VSYNC;
-import static com.luminos.ConfigData.WIDTH;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -63,13 +62,13 @@ import org.lwjgl.opengl.GL13;
 
 import com.luminos.Debug;
 import com.luminos.LuminosException;
-import com.luminos.graphics.input.Keyboard;
-import com.luminos.graphics.input.Mouse;
-import com.luminos.graphics.input.MousePosition;
 import com.luminos.graphics.loaders.Loader;
 import com.luminos.graphics.render.GuiRenderer;
 import com.luminos.graphics.shaders.GuiShader;
 import com.luminos.graphics.textures.GUITexture;
+import com.luminos.input.Keyboard;
+import com.luminos.input.Mouse;
+import com.luminos.input.MousePosition;
 import com.luminos.maths.vector.Vector2f;
 
 /**
@@ -137,12 +136,8 @@ public class GLFWWindow {
 	 */
 	private void init() throws LuminosException {
 
-		if(!INITIATED) {
-			throw new LuminosException(GLFWWindow.class + " Luminos Engine has not been instantiated.  Closing...");
-		}
-
 		if(!glfwInit()) {
-			Debug.addData(new LuminosException("COULD NOT INSTANTIATE GLFW INSTANCE"));
+			throw new LuminosException("COULD NOT INSTANTIATE GLFW INSTANCE");
 		}
 
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, GL_MAJOR);
@@ -166,8 +161,7 @@ public class GLFWWindow {
 		}
 
 		if(window == NULL) {
-			Debug.addData(new LuminosException("COULD NOT INSTANTIATE GLFW WINDOW"));
-			Debug.print();
+			throw new LuminosException("COULD NOT INSTANTIATE GLFW WINDOW");
 		}
 
 		glfwMakeContextCurrent(window);
@@ -285,8 +279,8 @@ public class GLFWWindow {
 		cursorPosCallback.close();
 		framebufferCallback.close();
 		windowSizeCallback.close();
-		glfwTerminate();
 		errorCallback.close();
+		glfwTerminate();
 	}
 
 	/**
@@ -560,4 +554,73 @@ public class GLFWWindow {
 
 	}
 
+}
+
+class FrameRateCounter {
+	
+	private double start;
+	private double end;
+	private double frameTime = 0;
+	private short frames = 0;
+	private double fps;
+
+	/**
+	 * Constructor of the frame rate counter
+	 */
+	public FrameRateCounter() {
+		
+	}
+	
+	/**
+	 * Starts the frame rate counter.  Called at beginning of each GLFW update
+	 * 
+	 * @throws LuminosException		Checks if GLFW has been initialized
+	 */
+	public void start() throws LuminosException {
+		if(GLFW.glfwInit()) {
+			start = GLFW.glfwGetTime();
+		} else {
+			throw new LuminosException("GLFW NOT INITIALISED");
+		}
+	}
+	
+	/**
+	 * Ends the frame time counter and calculates.  Called at end of each GLFW update
+	 * 
+	 * @throws LuminosException		Checks if GLFW has been initialized
+	 */
+	public void calculate() throws LuminosException {
+		if(GLFW.glfwInit()) {
+			end = GLFW.glfwGetTime();
+		} else {
+			throw new LuminosException("GLFW NOT INITIALISED");
+		}
+		frameTime = frameTime + end - start;
+		++frames;
+		if(frameTime >= (1)) {
+			fps = frames;
+			frames = 0;
+			frameTime = 0;
+		}
+		
+	}
+	
+	/**
+	 * Gets the frames per second count
+	 * 
+	 * @return Value of FPS 
+	 */
+	public int getFPS() {
+		return (int) fps;
+	}
+	
+	/**
+	 * Gets the length of time per frame
+	 * 
+	 * @return Value of seconds per frame
+	 */
+	public float getFrameTime() {
+		return 1 / (float) GLFWWindow.REFRESH_RATE;
+	}
+	
 }

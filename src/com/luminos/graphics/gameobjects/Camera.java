@@ -32,7 +32,6 @@ public class Camera {
 	 */
 	public Camera(Entity player){
 		this.player = player;
-		this.player.setCamera(this);
 	}
 	
 	/**

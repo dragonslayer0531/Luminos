@@ -1,14 +1,11 @@
 package com.luminos;
 
-import com.luminos.graphics.input.Keyboard;
+import com.luminos.input.Keyboard;
 
 public class ConfigData {
-	
-	public static Boolean INITIATED = false;
-	
+		
 	public static final String VERSION = "1.0.0";
 	
-	public static GraphicsAPI API = GraphicsAPI.OPENGL;
 	public static Integer WIDTH = 1280;
 	public static Integer HEIGHT = 720;
 	public static boolean FULLSCREEN = false;
@@ -21,6 +18,9 @@ public class ConfigData {
 	public static Integer SAMPLES = 4;
 	
 	public static Long SEED = 0l;
+	
+	public static Integer UPS = 30;
+	public static Integer FPS = 60;
 	
 	public static Integer WATER_FBO_REFRAC_WIDTH = 1920;
 	public static Integer WATER_FBO_REFRAC_HEIGHT = 1080;
@@ -35,14 +35,6 @@ public class ConfigData {
 	public static Integer POSITION = 0;
 	public static Integer TEXTURES = 1;
 	public static Integer NORMALS = 2;
-	
-	public static Integer FORWARD = Keyboard.KEY_W;
-	public static Integer BACKWARD = Keyboard.KEY_S;
-	public static Integer LEFT = Keyboard.KEY_A;
-	public static Integer RIGHT = Keyboard.KEY_D;
-	public static Integer SPRINT = Keyboard.KEY_LEFT_SHIFT;
-	public static Integer WALK = Keyboard.KEY_LEFT_CONTROL;
-	public static Integer JUMP = Keyboard.KEY_SPACE;
 	
 	public static Integer SCREENSHOT = Keyboard.KEY_F12;
 	

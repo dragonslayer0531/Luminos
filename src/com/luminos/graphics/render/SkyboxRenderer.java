@@ -6,7 +6,6 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL32;
 
-import com.luminos.graphics.display.GLFWWindow;
 import com.luminos.graphics.gameobjects.Camera;
 import com.luminos.graphics.loaders.Loader;
 import com.luminos.graphics.models.RawModel;
@@ -107,11 +106,10 @@ public class SkyboxRenderer {
 	 * 
 	 * @param camera	Camera to be projected from
 	 * @param skyColor 	SkyColor
-	 * @param window 	{@link GLFWWindow} to get frametime of
 	 */
-	public void render(Camera camera, Vector3f skyColor, GLFWWindow window){
+	public void render(Camera camera, Vector3f skyColor){
 		shader.start();
-		shader.loadViewMatrix(camera, window);
+		shader.loadViewMatrix(camera);
 		shader.loadFogColor(skyColor);
 		shader.loadLowerLimit(lowerLimit);
 		shader.loadUpperLimit(upperLimit);

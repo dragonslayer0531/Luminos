@@ -1,5 +1,3 @@
-#version 400
-
 in vec2 pass_textureCoords;
 
 out vec4 out_Color;

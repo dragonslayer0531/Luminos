@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
-import com.luminos.graphics.gameobjects.Entity;
+import com.luminos.graphics.gameobjects.GameObject;
 import com.luminos.graphics.models.RawModel;
 import com.luminos.graphics.models.TexturedModel;
 import com.luminos.graphics.shaders.ShadowShader;
@@ -46,13 +46,13 @@ public class ShadowMapEntityRenderer {
 	 * 
 	 * @param entities	Defines entities to render to shadow map
 	 */
-	protected void render(Map<TexturedModel, List<Entity>> entities) {
+	protected void render(Map<TexturedModel, List<GameObject>> entities) {
 		for (TexturedModel model : entities.keySet()) {
 			RawModel rawModel = model.getRawModel();
 			bindModel(rawModel);
 			GL13.glActiveTexture(GL13.GL_TEXTURE0);
 			GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getID());
-			for (Entity entity : entities.get(model)) {
+			for (GameObject entity : entities.get(model)) {
 				if (!entity.isRenderable())
 					continue;
 				prepareInstance(entity);
@@ -83,7 +83,7 @@ public class ShadowMapEntityRenderer {
 	 * 
 	 * @param entity		Entity to be prepared
 	 */
-	private void prepareInstance(Entity entity) {
+	private void prepareInstance(GameObject entity) {
 		Matrix4f modelMatrix = Maths.createTransformationMatrix((Vector3f) entity.getPosition(),
 				entity.getRotation(), entity.getScale());
 		Matrix4f mvpMatrix = Matrix4f.mul(projectionViewMatrix, modelMatrix, null);

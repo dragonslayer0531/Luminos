@@ -1,9 +1,9 @@
 package com.luminos.graphics.gameobjects;
 
-import com.luminos.filesystem.serialization.LDatabase;
-import com.luminos.filesystem.serialization.LObject;
-import com.luminos.graphics.models.RawModel;
-import com.luminos.maths.vector.Vector;
+import java.util.List;
+
+import com.luminos.graphics.models.TexturedModel;
+import com.luminos.graphics.terrains.Terrain;
 import com.luminos.maths.vector.Vector3f;
 
 /**
@@ -17,54 +17,19 @@ import com.luminos.maths.vector.Vector3f;
 
 public interface GameObject {
 	
-	/**
-	 * Gets the position of the GameObject
-	 * 
-	 * @return	position of the object
-	 */
+	public boolean isRenderable();
+	public float getRenderDistance();
+	public float getScale();
+	public TexturedModel getModel();
 	public Vector3f getPosition();
-	
-	/**
-	 * Increases the position of the GameObject by delta
-	 * 
-	 * @param delta		amount to increase
-	 */
-	public void increasePosition(Vector delta);
-	
-	/**
-	 * Gets the rotation of the GameObject
-	 * 
-	 * @return 	rotation of the object
-	 */
 	public Vector3f getRotation();
+
+	public void setRenderable(boolean renderable);
+	public void setRenderDistance(float renderDistance);
+	public void setScale(float scale);
+	public void setModel(TexturedModel model);
+	public void setPosition(Vector3f position);
+	public void setRotation(Vector3f rotation);
 	
-	//Serialization Interface
-	/**
-	 * Gets the bytes of the GameObject
-	 * 
-	 * @return	bytes of the object
-	 */
-	public byte[] getBytes();
-	
-	/**
-	 * Gets the Luminos Object of the object
-	 * 
-	 * @return	Luminos Object representing the object
-	 */
-	public LObject getLuminosObject();
-	
-	/**
-	 * Attaches the GameObject to a Luminos Database
-	 * 
-	 * @param database		Database to attach to
-	 */
-	public void attachToLuminosDatabase(LDatabase database);
-	
-	/**
-	 * Gets Game Object's Raw Model
-	 * 
-	 * @return		Raw Model of Game Object
-	 */
-	public RawModel[] getRawModels();
-	
+	public void move(List<Terrain> terrains, float factor);
 }

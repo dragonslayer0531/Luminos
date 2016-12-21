@@ -1,5 +1,3 @@
-#version 400 core
-
 in vec4 clipSpace;
 in vec2 textureCoords;
 in vec3 toCameraVector;

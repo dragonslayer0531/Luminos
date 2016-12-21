@@ -1,5 +1,3 @@
-#version 330
-
 in vec2 textureCoords;
 
 out vec4 out_colour;

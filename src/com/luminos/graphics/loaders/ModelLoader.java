@@ -9,8 +9,6 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
-import com.luminos.Luminos;
-import com.luminos.graphics.models.Mesh;
 import com.luminos.graphics.models.RawModel;
 
 /**
@@ -88,7 +86,7 @@ public class ModelLoader {
 		storeDataInAttributeList(1, 2, textureCoords);
 		storeDataInAttributeList(2, 3, normals);
 		unbindVAO();
-		return new RawModel(vaoID, indices.length, new Mesh(positions, normals));
+		return new RawModel(vaoID, indices.length);
 	}
 	
 	/**
@@ -127,7 +125,7 @@ public class ModelLoader {
 		storeDataInAttributeList(2, 3, normals);
 		storeDataInAttributeList(3, 3, tangents);
 		unbindVAO();
-		return new RawModel(vaoID, indices.length, new Mesh(positions, normals));
+		return new RawModel(vaoID, indices.length);
 	}
 	
 	/**
@@ -138,6 +136,7 @@ public class ModelLoader {
 	private int createVAO() {
 		int vaoID = GL30.glGenVertexArrays();
 		GL30.glBindVertexArray(vaoID);
+		Loader.vaos.add(vaoID);
 		return vaoID;
 	}
 	
@@ -155,6 +154,7 @@ public class ModelLoader {
 		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
 		GL20.glVertexAttribPointer(attributeNumber, coordinateSize, GL11.GL_FLOAT, false, 0, 0);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+		Loader.vbos.add(vboID);
 	}
 	
 	/**
@@ -164,10 +164,10 @@ public class ModelLoader {
 	 */
 	private void bindIndicesBuffer(int[] indices) {
 		int vboID = GL15.glGenBuffers();
-		Luminos.vbos.add(vboID);
 		GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboID);
 		IntBuffer buffer = storeDataInIntBuffer(indices);
 		GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
+		Loader.vbos.add(vboID);
 	}
 	
 	/**

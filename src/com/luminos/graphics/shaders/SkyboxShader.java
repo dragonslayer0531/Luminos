@@ -2,7 +2,7 @@ package com.luminos.graphics.shaders;
 
 import static com.luminos.ConfigData.POSITION;
 
-import com.luminos.graphics.display.GLFWWindow;
+import com.luminos.ConfigData;
 import com.luminos.graphics.gameobjects.Camera;
 import com.luminos.maths.matrix.Matrix4f;
 import com.luminos.maths.vector.Vector3f;
@@ -53,14 +53,13 @@ public class SkyboxShader extends ShaderProgram {
      * Loads view matrix to shader
      * 
      * @param camera	Camera to create view matrix of
-     * @param window	{@link GLFWWindow} to get the frame time of
      */
-    public void loadViewMatrix(Camera camera, GLFWWindow window){
+    public void loadViewMatrix(Camera camera){
         Matrix4f matrix = Maths.createViewMatrix(camera);
         matrix.m30 = 0;
         matrix.m31 = 0;
         matrix.m32 = 0;
-        rotation += window.getFrameTime() * 0.001f;
+        rotation += 1f / ConfigData.FPS * 0.001f;
         Matrix4f.rotate((float) Math.toRadians(rotation), new Vector3f(0,1,0), matrix, matrix);
         super.loadMatrix(location_viewMatrix, matrix);
     }

@@ -1,8 +1,6 @@
-#version 140
-
-out vec2 textureCoords1;
-out vec2 textureCoords2;
-out float blend;
+in vec2 textureCoords1;
+in vec2 textureCoords2;
+in float blend;
 
 out vec4 out_Color;
 

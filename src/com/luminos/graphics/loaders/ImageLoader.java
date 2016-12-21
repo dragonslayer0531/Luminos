@@ -12,7 +12,6 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL30;
 
-import com.luminos.Luminos;
 import com.luminos.graphics.loaders.LuminosImage.Format;
 
 /**
@@ -78,7 +77,7 @@ public class ImageLoader {
 
 		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
 				
-		Luminos.textures.add(textureID);
+		Loader.textures.add(textureID);
 		return textureID;
 	}
 	
@@ -112,9 +111,8 @@ public class ImageLoader {
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 
 		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, image.getBuffer());
-				
-		Luminos.textures.add(textureID);
-		
+						
+		Loader.textures.add(textureID);
 		return textureID;
 	}
 	
@@ -125,9 +123,9 @@ public class ImageLoader {
 	 * @return 					Integer describing the cube map index on the graphics card
 	 */
 	protected int loadCubeMap(String[] textureFiles) {
-		int texID = GL11.glGenTextures();
+		int textureID = GL11.glGenTextures();
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
-		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, texID);
+		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, textureID);
 
 		for (int i = 0; i < textureFiles.length; i++) {
 			LuminosImage data = LuminosImage.loadImage(textureFiles[i], Format.RGBA);
@@ -137,8 +135,9 @@ public class ImageLoader {
 		
 		GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
 		GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-		Luminos.textures.add(texID);
-		return texID;
+		
+		Loader.textures.add(textureID);
+		return textureID;
 	}
 
 }

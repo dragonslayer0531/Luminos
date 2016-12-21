@@ -8,8 +8,8 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL30;
 
+import com.luminos.graphics.models.ModelData;
 import com.luminos.graphics.models.RawModel;
-import com.luminos.tools.loaders.ModelData;
 
 /**
  * 
@@ -95,8 +95,8 @@ public class Loader {
 	 * @param positions		Positions to be loaded
 	 * @param textureCoords	Texture coordinates of the positions
 	 * @param normals		Normal coordinates of the positions
-	 * @param vertexCount	Integer describing the number of vertices
 	 * @param tangentsArray	Tangential data
+	 * @param indicesArray	Index data
 	 * @return				RawModel describing the positions, texture coordinates, and normal coordinates loaded
 	 */
 	public RawModel loadToVAO(float[] positions, float[] textureCoords, float[] normals, float[] tangentsArray, int[] indicesArray) {
@@ -137,6 +137,9 @@ public class Loader {
 		return imageLoader.loadTexture(bImage);
 	}
 	
+	/**
+	 * Removes all VAOs, VBOs, and Textures from the VRAM
+	 */
 	public void cleanUp() {
 		for (Integer vao : vaos) GL30.glDeleteVertexArrays(vao);
 		for (Integer vbo : vbos) GL15.glDeleteBuffers(vbo);

@@ -9,6 +9,7 @@ import java.nio.FloatBuffer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL32;
 
 import com.luminos.Debug;
 import com.luminos.LuminosException;
@@ -29,6 +30,7 @@ public abstract class ShaderProgram {
 	
 	private int programID;
 	private int vertexShaderID;
+	private int geometryShaderID = -1;
 	private int fragmentShaderID;
 	
 	private static FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
@@ -48,6 +50,25 @@ public abstract class ShaderProgram {
 		bindAttributes();
 		GL20.glLinkProgram(programID);
 		GL20.glValidateProgram(programID);
+		GL20.glDeleteShader(vertexShaderID);
+		GL20.glDeleteShader(fragmentShaderID);
+		getAllUniformLocations();
+	}
+	
+	public ShaderProgram(String vertexFile, String geometryFile, String fragmentFile){
+		vertexShaderID = loadShader(vertexFile, GL20.GL_VERTEX_SHADER);
+		geometryShaderID = loadShader(geometryFile, GL32.GL_GEOMETRY_SHADER);
+		fragmentShaderID = loadShader(fragmentFile, GL20.GL_FRAGMENT_SHADER);
+		programID = GL20.glCreateProgram();
+		GL20.glAttachShader(programID, vertexShaderID);
+		GL20.glAttachShader(programID, geometryShaderID);
+		GL20.glAttachShader(programID, fragmentShaderID);
+		bindAttributes();
+		GL20.glLinkProgram(programID);
+		GL20.glValidateProgram(programID);
+		GL20.glDeleteShader(vertexShaderID);
+		GL20.glDeleteShader(geometryShaderID);
+		GL20.glDeleteShader(fragmentShaderID);
 		getAllUniformLocations();
 	}
 	
@@ -86,9 +107,9 @@ public abstract class ShaderProgram {
 	public void cleanUp(){
 		stop();
 		GL20.glDetachShader(programID, vertexShaderID);
+		if (geometryShaderID != -1) 
+			GL20.glDetachShader(programID, geometryShaderID);
 		GL20.glDetachShader(programID, fragmentShaderID);
-		GL20.glDeleteShader(vertexShaderID);
-		GL20.glDeleteShader(fragmentShaderID);
 		GL20.glDeleteProgram(programID);
 	}
 	
@@ -194,7 +215,21 @@ public abstract class ShaderProgram {
 	 */
 	private static int loadShader(String file, int type){
 		StringBuilder shaderSource = new StringBuilder();
-		InputStream isr = Class.class.getResourceAsStream("/" + file);
+		
+		InputStream isr = Class.class.getResourceAsStream("/scene.header");
+		try{
+			BufferedReader reader = new BufferedReader(new InputStreamReader(isr));
+			String line;
+			while((line = reader.readLine())!=null){
+				shaderSource.append(line).append("//\n");
+			}
+			reader.close();
+		} catch(IOException e) {
+			Debug.addData(e);
+			Debug.print();
+		}
+		
+		isr = Class.class.getResourceAsStream("/" + file);
 		try{
 			BufferedReader reader = new BufferedReader(new InputStreamReader(isr));
 			String line;

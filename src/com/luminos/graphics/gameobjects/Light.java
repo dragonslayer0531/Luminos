@@ -1,8 +1,5 @@
 package com.luminos.graphics.gameobjects;
 
-import com.luminos.filesystem.serialization.LArray;
-import com.luminos.filesystem.serialization.LDatabase;
-import com.luminos.filesystem.serialization.LObject;
 import com.luminos.maths.vector.Vector;
 import com.luminos.maths.vector.Vector3f;
 
@@ -81,40 +78,6 @@ public class Light {
 	 */
 	public Vector3f getColor() {
 		return color;
-	}
-	
-	/**
-	 * Gets the light as a luminos object
-	 * 
-	 * @return	Gets the luminos object
-	 */
-	public LObject getLuminosObject() {
-		LObject object = new LObject("light");
-		object.addArray(LArray.Float("pos", new float[]{position.x, position.y, position.z}));
-		object.addArray(LArray.Float("col", new float[]{color.x, color.y, color.z}));
-		object.addArray(LArray.Float("att", new float[]{attenuation.x, attenuation.y, attenuation.z}));
-		return object;
-	}
-	
-	/**
-	 * Gets bytes of the light
-	 *  
-	 * @return	bytes of the light
-	 */
-	public byte[] getBytes() {
-		LObject object = getLuminosObject();
-		byte[] data = new byte[object.getSize()];
-		object.getBytes(data, 0);
-		return data;
-	}
-	
-	/**
-	 * Attaches the light to a Luminos Database
-	 * 
-	 * @param database		Database to be added to
-	 */
-	public void attachToLuminosDatabase(LDatabase database) {
-		database.addObject(getLuminosObject());
 	}
 
 }

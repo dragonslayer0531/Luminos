@@ -32,18 +32,15 @@ public class LuminosUtils {
 	 * @return			Duplicate of entity
 	 */
 	public static Entity copy(Entity entity) {
-		Entity ent = new Entity(entity.getPosition(), entity.getRotation(), entity.getScale(), entity.getModels());
-		ent.setCamera(entity.getCamera());
-		ent.setCollider(entity.getCollider());
+		Entity ent = new Entity(entity.getPosition(), entity.getRotation(), entity.getScale(), entity.getModel());
 		ent.setRenderable(entity.isRenderable());
-		ent.setVelocity(entity.getVelocity());
 		return ent;
 	}
 	
 	/**
 	 * Creates copy of terrain 
 	 * 
-	 * @param entity	Terrain to copy
+	 * @param terrain	Terrain to copy
 	 * @return			Duplicate of terrain
 	 */
 	public static Terrain copy(Terrain terrain) {

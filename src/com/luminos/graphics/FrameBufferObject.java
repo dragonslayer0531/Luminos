@@ -1,14 +1,16 @@
 package com.luminos.graphics;
 
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL14;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 import com.luminos.ConfigData;
-import com.luminos.Luminos;
  
 /**
  * 
@@ -34,6 +36,7 @@ public class FrameBufferObject {
  
     private int depthBuffer;
     private int colorBuffer;
+    private int colorBuffer2;
     
     private boolean multisample = false;
  
@@ -62,15 +65,11 @@ public class FrameBufferObject {
      */
     public void cleanUp() {
         GL30.glDeleteFramebuffers(frameBuffer);
-        Luminos.fbos.remove(frameBuffer);
         GL11.glDeleteTextures(colorTexture);
-        Luminos.fboTextures.remove(colorTexture);
         GL11.glDeleteTextures(depthTexture);
-        Luminos.fboTextures.remove(depthTexture);
         GL30.glDeleteRenderbuffers(depthBuffer);
-        Luminos.fboBuffers.remove(depthBuffer);
         GL30.glDeleteRenderbuffers(colorBuffer);
-        Luminos.fboBuffers.remove(colorBuffer);
+        GL30.glDeleteRenderbuffers(colorBuffer2);
     }
  
     /**
@@ -89,7 +88,7 @@ public class FrameBufferObject {
      */
     public void unbindFrameBuffer() {
         GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
-        GL11.glViewport(0, 0, 1900, 1080);
+        GL11.glViewport(0, 0, ConfigData.WIDTH, ConfigData.HEIGHT);
     }
  
     /**
@@ -117,11 +116,13 @@ public class FrameBufferObject {
     /**
      * Resolves frame buffer to another frame buffer
      * 
-     * @param fbo		FrameBufferObject to be resolved to
+     * @param readBuffer	Buffer to read from
+     * @param fbo			FrameBufferObject to be resolved to
      */
-    public void resolveToFBO(FrameBufferObject fbo) {
+    public void resolveToFBO(int readBuffer, FrameBufferObject fbo) {
     	GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, fbo.frameBuffer);
     	GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, this.frameBuffer);
+    	GL11.glReadBuffer(readBuffer);
     	GL30.glBlitFramebuffer(0, 0, width, height, 0, 0, fbo.width, fbo.height, GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, GL11.GL_NEAREST);
     	this.unbindFrameBuffer();
     }
@@ -148,7 +149,8 @@ public class FrameBufferObject {
     private void initialiseFrameBuffer(int type) {
         createFrameBuffer();
         if(multisample) {
-        	createMultisampleColorAttachment();
+        	colorBuffer = createMultisampleColorAttachment(GL30.GL_COLOR_ATTACHMENT0);
+        	colorBuffer2 = createMultisampleColorAttachment(GL30.GL_COLOR_ATTACHMENT1);
         } else {
         	createTextureAttachment();
         }
@@ -159,6 +161,16 @@ public class FrameBufferObject {
         }
         unbindFrameBuffer();
     }
+    
+    private void determineDrawBuffers() {
+    	IntBuffer drawBuffers = BufferUtils.createIntBuffer(2);
+    	drawBuffers.put(GL30.GL_COLOR_ATTACHMENT0);
+    	if (this.multisample) {
+    		drawBuffers.put(GL30.GL_COLOR_ATTACHMENT1);
+    	}
+    	drawBuffers.flip();
+    	GL20.glDrawBuffers(drawBuffers);
+    }
  
     /**
      * Creates a new frame buffer object and sets the buffer to which drawing
@@ -168,9 +180,8 @@ public class FrameBufferObject {
      */
     private void createFrameBuffer() {
         frameBuffer = GL30.glGenFramebuffers();
-        Luminos.fbos.add(frameBuffer);
         GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, frameBuffer);
-        GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
+        determineDrawBuffers();
     }
  
     /**
@@ -179,7 +190,6 @@ public class FrameBufferObject {
      */
     private void createTextureAttachment() {
         colorTexture = GL11.glGenTextures();
-        Luminos.fboTextures.add(colorTexture);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, colorTexture);
         GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, width, height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE,
                 (ByteBuffer) null);
@@ -194,12 +204,12 @@ public class FrameBufferObject {
     /**
      * Creates a color attachment with multiple samples
      */
-    private void createMultisampleColorAttachment() {
-    	colorBuffer = GL30.glGenRenderbuffers();
-    	Luminos.fboBuffers.add(colorBuffer);
+    private int createMultisampleColorAttachment(int attachment) {
+    	int colorBuffer = GL30.glGenRenderbuffers();
     	GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, colorBuffer);
     	GL30.glRenderbufferStorageMultisample(GL30.GL_RENDERBUFFER, 4, GL11.GL_RGBA8, width, height);
-    	GL30.glFramebufferRenderbuffer(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL30.GL_RENDERBUFFER, colorBuffer);
+    	GL30.glFramebufferRenderbuffer(GL30.GL_FRAMEBUFFER, attachment, GL30.GL_RENDERBUFFER, colorBuffer);
+    		return colorBuffer;
     }
  
     /**
@@ -208,7 +218,6 @@ public class FrameBufferObject {
      */
     private void createDepthTextureAttachment() {
         depthTexture = GL11.glGenTextures();
-        Luminos.fboTextures.add(depthTexture);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, depthTexture);
         GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL14.GL_DEPTH_COMPONENT24, width, height, 0, GL11.GL_DEPTH_COMPONENT,
                 GL11.GL_FLOAT, (ByteBuffer) null);
@@ -223,7 +232,6 @@ public class FrameBufferObject {
      */
     private void createDepthBufferAttachment() {
         depthBuffer = GL30.glGenRenderbuffers();
-        Luminos.fboBuffers.add(depthBuffer);
         GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, depthBuffer);
         if(!multisample) {
             GL30.glRenderbufferStorage(GL30.GL_RENDERBUFFER, GL14.GL_DEPTH_COMPONENT24, width, height);
