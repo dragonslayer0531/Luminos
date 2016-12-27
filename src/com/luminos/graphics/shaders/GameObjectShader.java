@@ -167,7 +167,7 @@ public class GameObjectShader extends ShaderProgram {
 	 * @param matrix	Transformation matrix
 	 */
 	public void loadTransformationMatrix(Matrix4f matrix){
-		super.loadMatrix(location_transformationMatrix, matrix);
+		super.loadMatrix4f(location_transformationMatrix, matrix);
 	}
 	
 	/**
@@ -196,7 +196,7 @@ public class GameObjectShader extends ShaderProgram {
 	 */
 	public void loadViewMatrix(Camera camera){
 		Matrix4f viewMatrix = Maths.createViewMatrix(camera);
-		super.loadMatrix(location_viewMatrix, viewMatrix);
+		super.loadMatrix4f(location_viewMatrix, viewMatrix);
 	}
 	
 	/**
@@ -205,7 +205,7 @@ public class GameObjectShader extends ShaderProgram {
 	 * @param projection	Projection matrix
 	 */
 	public void loadProjectionMatrix(Matrix4f projection){
-		super.loadMatrix(location_projectionMatrix, projection);
+		super.loadMatrix4f(location_projectionMatrix, projection);
 	}
 	
 	/**
@@ -232,7 +232,7 @@ public class GameObjectShader extends ShaderProgram {
 	 * @param shadowMapSpace		Shadow map space
 	 */
 	public void loadToShadowMapSpace(Matrix4f shadowMapSpace) {
-		super.loadMatrix(location_toShadowMapSpace, shadowMapSpace);
+		super.loadMatrix4f(location_toShadowMapSpace, shadowMapSpace);
 	}
 
 }

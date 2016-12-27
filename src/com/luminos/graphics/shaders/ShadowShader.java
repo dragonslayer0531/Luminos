@@ -38,7 +38,7 @@ public class ShadowShader extends ShaderProgram {
      * @param mvpMatrix		Model View Projection matrix	
      */
     public void loadMvpMatrix(Matrix4f mvpMatrix){
-        super.loadMatrix(location_mvpMatrix, mvpMatrix);
+        super.loadMatrix4f(location_mvpMatrix, mvpMatrix);
     }
  
     /*

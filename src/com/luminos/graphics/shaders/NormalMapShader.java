@@ -150,7 +150,7 @@ public class NormalMapShader extends ShaderProgram {
 	 * @param matrix		Transformation matrix
 	 */
 	public void loadTransformationMatrix(Matrix4f matrix){
-		super.loadMatrix(location_transformationMatrix, matrix);
+		super.loadMatrix4f(location_transformationMatrix, matrix);
 	}
 
 	/**
@@ -179,7 +179,7 @@ public class NormalMapShader extends ShaderProgram {
 	 * @param viewMatrix		View matrix
 	 */
 	public void loadViewMatrix(Matrix4f viewMatrix){
-		super.loadMatrix(location_viewMatrix, viewMatrix);
+		super.loadMatrix4f(location_viewMatrix, viewMatrix);
 	}
 
 	/**
@@ -188,7 +188,7 @@ public class NormalMapShader extends ShaderProgram {
 	 * @param projection		Projection matrix
 	 */
 	public void loadProjectionMatrix(Matrix4f projection){
-		super.loadMatrix(location_projectionMatrix, projection);
+		super.loadMatrix4f(location_projectionMatrix, projection);
 	}
 	
 	/**

@@ -114,7 +114,7 @@ public class WaterShader extends ShaderProgram {
 	 * @param projection	Projection matrix
 	 */
 	public void loadProjectionMatrix(Matrix4f projection) {
-		loadMatrix(location_projectionMatrix, projection);
+		loadMatrix4f(location_projectionMatrix, projection);
 	}
 	
 	/**
@@ -133,7 +133,7 @@ public class WaterShader extends ShaderProgram {
 	 */
 	public void loadViewMatrix(Camera camera){
 		Matrix4f viewMatrix = Maths.createViewMatrix(camera);
-		loadMatrix(location_viewMatrix, viewMatrix);
+		loadMatrix4f(location_viewMatrix, viewMatrix);
 		super.loadVector3f(location_cameraPosition, camera.getPosition());
 	}
 
@@ -143,7 +143,7 @@ public class WaterShader extends ShaderProgram {
 	 * @param modelMatrix	Model matrix
 	 */
 	public void loadModelMatrix(Matrix4f modelMatrix){
-		loadMatrix(location_modelMatrix, modelMatrix);
+		loadMatrix4f(location_modelMatrix, modelMatrix);
 	}
 	
 	/**

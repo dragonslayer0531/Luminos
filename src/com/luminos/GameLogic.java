@@ -6,6 +6,7 @@ import com.luminos.graphics.display.GLFWWindow;
 import com.luminos.graphics.gameobjects.Camera;
 import com.luminos.graphics.gameobjects.GameObject;
 import com.luminos.graphics.gameobjects.Light;
+import com.luminos.graphics.render.MasterRenderer;
 import com.luminos.graphics.terrains.Terrain;
 import com.luminos.graphics.water.WaterTile;
 import com.luminos.tools.SceneManager;
@@ -68,5 +69,16 @@ public interface GameLogic {
 	 * @param camera	Camera that is used for rendering
 	 */
 	public void input(GLFWWindow window, GameObject entity, Camera camera);
+	
+	/**
+	 * Updates physics for GameLogic
+	 */
+	public void update();
+	
+	public GameObject getFocalObject();
+	
+	public Camera getCamera();
+	
+	public MasterRenderer getRenderer();
 	
 }

@@ -1,10 +1,11 @@
 package com.luminos;
 
+import org.lwjgl.glfw.GLFW;
+
 import com.luminos.graphics.display.GLFWWindow;
-import com.luminos.graphics.gameobjects.Camera;
-import com.luminos.graphics.gameobjects.Entity;
 import com.luminos.graphics.loaders.Loader;
 import com.luminos.graphics.render.MasterRenderer;
+import com.luminos.input.Keyboard;
 import com.luminos.tools.SceneManager;
 import com.luminos.tools.Timer;
 
@@ -33,10 +34,20 @@ public class Engine {
 	}
 	
 	/**
+	 * Opens window
+	 * 
+	 * @param windowID		Window to open
+	 */
+	public void start(long windowID) {
+		GLFW.glfwShowWindow(windowID);
+		Thread.currentThread().setName("ENGINE");
+	}
+	
+	/**
 	 * Updates physics
 	 */
-	public void update() {
-		
+	public void update(GameLogic logic) {
+		logic.update();
 	}
 	
 	/**
@@ -48,12 +59,20 @@ public class Engine {
 	 * @param window					Window to render to
 	 * @throws InterruptedException		Thrown when synchronizing the thread causes an error
 	 */
-	public void render(GameLogic logic, Entity entity, Camera camera, GLFWWindow window) throws InterruptedException {
-		this.update();
-		logic.input(window, entity, camera);
-		logic.render(manager, camera);
-		sync();
-		window.update();
+	public void render(GameLogic logic, GLFWWindow window) throws InterruptedException {
+		while (!window.shouldClose()) {
+			if (closeRequest())
+				break;
+			logic.input(window, logic.getFocalObject(), logic.getCamera());
+			logic.update();
+			logic.render(manager, logic.getCamera());
+			window.update();
+			sync();
+		}
+	}
+	
+	private boolean closeRequest() {
+		return Keyboard.isDown(Keyboard.KEY_ESCAPE);
 	}
 	
 	private void sync() throws InterruptedException {

@@ -72,7 +72,7 @@ public class ParticleShader extends ShaderProgram {
 	 * @param matrix	Model View Matrix
 	 */
 	public void loadModelViewMatrix(Matrix4f matrix) {
-		super.loadMatrix(location_modelViewMatrix, matrix);
+		super.loadMatrix4f(location_modelViewMatrix, matrix);
 	}
 	
 	/**
@@ -81,7 +81,7 @@ public class ParticleShader extends ShaderProgram {
 	 * @param matrix	Projection Matrix
 	 */
 	public void loadProjectionMatrix(Matrix4f matrix) {
-		super.loadMatrix(location_projectionMatrix, matrix);
+		super.loadMatrix4f(location_projectionMatrix, matrix);
 	}
 
 }

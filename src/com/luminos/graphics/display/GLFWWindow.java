@@ -36,8 +36,6 @@ import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -97,7 +95,7 @@ public class GLFWWindow {
 
 	private String title;
 	private int width, height;
-	private boolean vsync, fullscreen, visible, resizable, vismouse;
+	private boolean vsync, fullscreen, visible = false, resizable, vismouse;
 	private long window;
 	private FrameRateCounter frameRateCounter;
 
@@ -117,13 +115,12 @@ public class GLFWWindow {
 	 * 
 	 * Constructor that initiates the GLFW and OpenGL contexts, as well as the window itself
 	 */
-	public GLFWWindow(String title, boolean vsync, boolean fullscreen, boolean visible, boolean resizable, boolean vismouse) throws LuminosException {
+	public GLFWWindow(String title, int width, int height, boolean vsync, boolean fullscreen, boolean resizable, boolean vismouse) throws LuminosException {
 		this.title = title;
-		this.width = WIDTH;
-		this.height = HEIGHT;
+		this.width = width;
+		this.height = height;
 		this.vsync = vsync;
 		this.fullscreen = fullscreen;
-		this.visible = visible;
 		this.resizable = resizable;
 		this.vismouse = vismouse;
 
@@ -150,11 +147,6 @@ public class GLFWWindow {
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
 
 		if(fullscreen) {
-			Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-			width = (int) dim.getWidth();
-			height = (int) dim.getHeight();
-			WIDTH = width;
-			HEIGHT = height;
 			window = glfwCreateWindow(width, height, title, glfwGetPrimaryMonitor(), NULL);
 		} else {
 			window = glfwCreateWindow(width, height, title, GL_FALSE, NULL);

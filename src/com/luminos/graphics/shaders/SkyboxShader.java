@@ -46,7 +46,7 @@ public class SkyboxShader extends ShaderProgram {
      * @param matrix	Projection Matrix
      */
     public void loadProjectionMatrix(Matrix4f matrix){
-        super.loadMatrix(location_projectionMatrix, matrix);
+        super.loadMatrix4f(location_projectionMatrix, matrix);
     }
     
     /**
@@ -61,7 +61,7 @@ public class SkyboxShader extends ShaderProgram {
         matrix.m32 = 0;
         rotation += 1f / ConfigData.FPS * 0.001f;
         Matrix4f.rotate((float) Math.toRadians(rotation), new Vector3f(0,1,0), matrix, matrix);
-        super.loadMatrix(location_viewMatrix, matrix);
+        super.loadMatrix4f(location_viewMatrix, matrix);
     }
     
     /**

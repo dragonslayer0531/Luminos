@@ -78,6 +78,41 @@ public class Matrix4f {
 		buf.put(m33);
 		return this;
 	}
+	
+	/**
+
+	 * Load from a float buffer. The buffer stores the matrix in column major
+
+	 * (OpenGL) order.
+
+	 *
+
+	 * @param buf A float buffer to read from
+
+	 * @return this
+
+	 */
+
+	public Matrix4f load(FloatBuffer buf) {
+		m00 = buf.get();
+		m01 = buf.get();
+		m02 = buf.get();
+		m03 = buf.get();
+		m10 = buf.get();
+		m11 = buf.get();
+		m12 = buf.get();
+		m13 = buf.get();
+		m20 = buf.get();
+		m21 = buf.get();
+		m22 = buf.get();
+		m23 = buf.get();
+		m30 = buf.get();
+		m31 = buf.get();
+		m32 = buf.get();
+		m33 = buf.get();
+
+		return this;
+	}
 
 	/**
 	 * Adds two matrices

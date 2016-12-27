@@ -119,7 +119,7 @@ public class TerrainShader extends ShaderProgram{
 	 * @param matrix	Shadow Space Matrix
 	 */
 	public void loadToShadowSpaceMatrix(Matrix4f matrix) {
-		super.loadMatrix(location_toShadowMapSpace, matrix);
+		super.loadMatrix4f(location_toShadowMapSpace, matrix);
 	}
 	
 	/**
@@ -148,7 +148,7 @@ public class TerrainShader extends ShaderProgram{
 	 * @param matrix	Transformation matrix
 	 */
 	public void loadTransformationMatrix(Matrix4f matrix){
-		super.loadMatrix(location_transformationMatrix, matrix);
+		super.loadMatrix4f(location_transformationMatrix, matrix);
 	}
 	
 	/**
@@ -177,7 +177,7 @@ public class TerrainShader extends ShaderProgram{
 	 */
 	public void loadViewMatrix(Camera camera){
 		Matrix4f viewMatrix = Maths.createViewMatrix(camera);
-		super.loadMatrix(location_viewMatrix, viewMatrix);
+		super.loadMatrix4f(location_viewMatrix, viewMatrix);
 	}
 	
 	/**
@@ -186,7 +186,7 @@ public class TerrainShader extends ShaderProgram{
 	 * @param projection	Projection matrix
 	 */
 	public void loadProjectionMatrix(Matrix4f projection){
-		super.loadMatrix(location_projectionMatrix, projection);
+		super.loadMatrix4f(location_projectionMatrix, projection);
 	}
 	
 	/**

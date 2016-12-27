@@ -198,7 +198,7 @@ public abstract class ShaderProgram {
 	 * @param location	Location of variable to be bound
 	 * @param matrix	Value of variable to be bound
 	 */
-	public void loadMatrix(int location, Matrix4f matrix){
+	public void loadMatrix4f(int location, Matrix4f matrix){
 		matrix.store(matrixBuffer);
 		matrixBuffer.flip();
 		GL20.glUniformMatrix4fv(location, false, matrixBuffer);
