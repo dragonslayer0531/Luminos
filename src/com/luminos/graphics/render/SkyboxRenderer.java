@@ -1,18 +1,28 @@
 package com.luminos.graphics.render;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GL32;
+import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glDrawArrays;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE_CUBE_MAP;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
+import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.opengl.GL32.GL_TEXTURE_CUBE_MAP_SEAMLESS;
+
+import java.io.IOException;
 
 import com.luminos.graphics.gameobjects.Camera;
-import com.luminos.graphics.loaders.Loader;
 import com.luminos.graphics.models.RawModel;
 import com.luminos.graphics.shaders.SkyboxShader;
-import com.luminos.maths.matrix.Matrix4f;
-import com.luminos.maths.vector.Vector3f;
+import com.luminos.loaders.Loader;
 import com.luminos.tools.DateUtils;
+import com.luminos.tools.maths.matrix.Matrix4f;
+import com.luminos.tools.maths.vector.Vector3f;
 
 /**
  * 
@@ -89,8 +99,9 @@ public class SkyboxRenderer {
 	 * @param shader			Defines shader to render with
 	 * @param loader			Loader used for rendering
 	 * @param projectionMatrix	Projection matrix of skybox
+	 * @throws IOException		Exception for if file isn't found or cannot be handled
 	 */
-	public SkyboxRenderer(SkyboxShader shader, Loader loader, Matrix4f projectionMatrix){
+	public SkyboxRenderer(SkyboxShader shader, Loader loader, Matrix4f projectionMatrix) throws IOException {
 		cube = loader.loadToVAO(VERTICES, 3);
 		texture = loader.loadCubeMap(TEXTURE_FILES);
 		nightTexture = loader.loadCubeMap(NIGHT_TEXTURE_FILES);
@@ -113,14 +124,14 @@ public class SkyboxRenderer {
 		shader.loadFogColor(skyColor);
 		shader.loadLowerLimit(lowerLimit);
 		shader.loadUpperLimit(upperLimit);
-		GL30.glBindVertexArray(cube.getVaoID());
-		GL20.glEnableVertexAttribArray(0);
-		GL11.glEnable(GL32.GL_TEXTURE_CUBE_MAP_SEAMLESS);
+		glBindVertexArray(cube.getVaoID());
+		glEnableVertexAttribArray(0);
+		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 		bindTextures();
-		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, cube.getVertexCount());
-		GL20.glDisableVertexAttribArray(0);
-		GL11.glDisable(GL32.GL_TEXTURE_CUBE_MAP_SEAMLESS);
-		GL30.glBindVertexArray(0);
+		glDrawArrays(GL_TRIANGLES, 0, cube.getVertexCount());
+		glDisableVertexAttribArray(0);
+		glDisable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+		glBindVertexArray(0);
 		shader.stop();
 	}
 
@@ -188,10 +199,10 @@ public class SkyboxRenderer {
 			blendFactor = Math.abs((totalTime - 68400000))/(72000000 - 68400000);
 		}
 
-		GL13.glActiveTexture(GL13.GL_TEXTURE0);
-		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, texture1);
-		GL13.glActiveTexture(GL13.GL_TEXTURE1);
-		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, texture2);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, texture1);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, texture2);
 		shader.loadBlendFactor(blendFactor);
 	}
 	

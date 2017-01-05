@@ -2,23 +2,35 @@ package com.luminos.graphics.render;
 
 import static com.luminos.ConfigData.HEIGHT;
 import static com.luminos.ConfigData.WIDTH;
+import static org.lwjgl.opengl.GL11.GL_BACK;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.GL_LESS;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glCullFace;
+import static org.lwjgl.opengl.GL11.glDepthFunc;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE5;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
+import static org.lwjgl.opengl.GL30.GL_CLIP_DISTANCE0;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL30;
-
-import com.luminos.graphics.display.GLFWWindow;
+import com.luminos.graphics.display.Window;
 import com.luminos.graphics.gameobjects.Camera;
-import com.luminos.graphics.gameobjects.Entity;
 import com.luminos.graphics.gameobjects.GameObject;
-import com.luminos.graphics.gameobjects.Light;
+import com.luminos.graphics.gameobjects.PointLight;
 import com.luminos.graphics.gui.GUIObject;
-import com.luminos.graphics.loaders.Loader;
 import com.luminos.graphics.models.TexturedModel;
 import com.luminos.graphics.particles.Particle;
 import com.luminos.graphics.particles.ParticleMaster;
@@ -37,10 +49,11 @@ import com.luminos.graphics.text.GUIText;
 import com.luminos.graphics.textures.GUITexture;
 import com.luminos.graphics.water.WaterFrameBuffers;
 import com.luminos.graphics.water.WaterTile;
-import com.luminos.maths.matrix.Matrix4f;
-import com.luminos.maths.vector.Vector3f;
-import com.luminos.maths.vector.Vector4f;
+import com.luminos.loaders.Loader;
 import com.luminos.tools.Maths;
+import com.luminos.tools.maths.matrix.Matrix4f;
+import com.luminos.tools.maths.vector.Vector3f;
+import com.luminos.tools.maths.vector.Vector4f;
 
 /**
  * 
@@ -53,7 +66,7 @@ import com.luminos.tools.Maths;
 
 public class MasterRenderer {
 
-	public static final float FOV = 70;
+	public static float FOV = 70;
 	public static final float NEAR_PLANE = .15f;
 	public static final float FAR_PLANE = 500f;
 	public static final float SKYBOX_PLANE = 1500f;
@@ -68,23 +81,23 @@ public class MasterRenderer {
 	private Matrix4f skyboxMatrix;
 
 	private GameObjectRenderer gameObjectRenderer;
-	private GameObjectShader gameObjectShader = new GameObjectShader();
+	private GameObjectShader gameObjectShader;
 	private GuiRenderer guiRenderer;
-	private GuiShader guiShader = new GuiShader();
+	private GuiShader guiShader;
 	private NormalMapRenderer normalMapRenderer;
-	private NormalMapShader normalMapShader = new NormalMapShader();
+	private NormalMapShader normalMapShader;
 	private ParticleRenderer particleRenderer;
-	private ParticleShader particleShader = new ParticleShader();
+	private ParticleShader particleShader;
 	private ShadowMapMasterRenderer shadowRenderer;
-	private ShadowShader shadowShader = new ShadowShader();
+	private ShadowShader shadowShader;
 	private SkyboxRenderer skyboxRenderer;
-	private SkyboxShader skyboxShader = new SkyboxShader();
+	private SkyboxShader skyboxShader;
 	private TerrainRenderer terrainRenderer;
-	private TerrainShader terrainShader = new TerrainShader();
+	private TerrainShader terrainShader;
 	private TextRenderer textRenderer;
-	private TextShader textShader = new TextShader();
+	private TextShader textShader;
 	private WaterRenderer waterRenderer;
-	private WaterShader waterShader = new WaterShader();
+	private WaterShader waterShader;
 
 	private WaterFrameBuffers buffers;
 	private Map<TexturedModel, List<GameObject>> entities = new HashMap<TexturedModel,List<GameObject>>();
@@ -94,11 +107,22 @@ public class MasterRenderer {
 	/**
 	 * Constructor used to create a Master Renderer
 	 * 
-	 * @param loader	Passes loader used for rendering
-	 * @param camera	Camera used to create projection matrix of
+	 * @param loader		Passes loader used for rendering
+	 * @param camera		Camera used to create projection matrix of
+	 * @throws Exception	Exception for if file isn't found or cannot be handled
 	 */
-	public MasterRenderer(Loader loader, Camera camera){
+	public MasterRenderer(Loader loader, Camera camera) throws Exception {
 		enableCulling();
+		gameObjectShader = new GameObjectShader();
+		guiShader = new GuiShader();
+		normalMapShader = new NormalMapShader();
+		particleShader = new ParticleShader();
+		shadowShader = new ShadowShader();
+		skyboxShader = new SkyboxShader();
+		terrainShader = new TerrainShader();
+		textShader = new TextShader();
+		waterShader = new WaterShader();
+		
 		projectionMatrix = createProjectionMatrix(FOV, FAR_PLANE, NEAR_PLANE);
 		skyboxMatrix = createProjectionMatrix(FOV, SKYBOX_PLANE, NEAR_PLANE);
 		gameObjectRenderer = new GameObjectRenderer(gameObjectShader, projectionMatrix);
@@ -123,11 +147,11 @@ public class MasterRenderer {
 	 * @param camera		Camera to be renderer
 	 * @param clipPlane		Plane to clip all rendering beyond
 	 */
-	public void renderScene(List<GameObject> entities, List<Terrain> terrains, List<Light> lights, Vector3f focalPoint, Camera camera, Vector4f clipPlane) {
+	public void renderScene(List<GameObject> entities, List<Terrain> terrains, List<PointLight> lights, Vector3f focalPoint, Camera camera, Vector4f clipPlane) {
 		if (entities != null) {
 			for (GameObject entity : entities) {
 				if (entity.isRenderable() && Maths.getDistance(entity.getPosition(), camera.getPosition()) < entity.getRenderDistance())
-					processEntity(entity);
+					processGameObject(entity);
 			}
 		}
 		if (terrains != null) {
@@ -138,7 +162,7 @@ public class MasterRenderer {
 		}
 
 		if (lights == null) {
-			lights = new ArrayList<Light>();
+			lights = new ArrayList<PointLight>();
 		}
 		render(lights, camera, clipPlane);
 	}
@@ -162,9 +186,9 @@ public class MasterRenderer {
 	 * Renders particles through screen
 	 * 
 	 * @param camera		{@link Camera} to render with
-	 * @param window		{@link GLFWWindow} to get frame time of
+	 * @param window		{@link Window} to get frame time of
 	 */
-	public void renderParticles(Camera camera, GLFWWindow window) {
+	public void renderParticles(Camera camera, Window window) {
 		ParticleMaster.update(window);
 		particleRenderer.render(ParticleMaster.particles, camera);
 	}
@@ -231,8 +255,8 @@ public class MasterRenderer {
 	 * @param focalPoint	Passed to renderScene
 	 * @param camera		Calculates FBOs and passed to renderScene
 	 */
-	public void prepareWater(List<GameObject> gameObjects, List<Terrain> terrains, List<Light> lights, Vector3f focalPoint, Camera camera) {
-		GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
+	public void prepareWater(List<GameObject> gameObjects, List<Terrain> terrains, List<PointLight> lights, Vector3f focalPoint, Camera camera) {
+		glEnable(GL_CLIP_DISTANCE0);
 		buffers.bindReflectionFrameBuffer();
 		float distance = 2 * (camera.getPosition().y);
 		camera.getPosition().y -= distance;
@@ -246,7 +270,7 @@ public class MasterRenderer {
 			if(entity.getPosition().y < 0) ents.add(entity);
 		}
 		renderScene(ents, terrains, lights, focalPoint, camera, new Vector4f(0, -1, 0, 0));
-		GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
+		glDisable(GL_CLIP_DISTANCE0);
 		buffers.unbindCurrentFrameBuffer();
 	}
 
@@ -257,7 +281,7 @@ public class MasterRenderer {
 	 * @param camera	Camera to use
 	 * @param lights		Light to reflect
 	 */
-	public void renderWater(List<WaterTile> tiles, Camera camera, List<Light> lights) {
+	public void renderWater(List<WaterTile> tiles, Camera camera, List<PointLight> lights) {
 		waterShader.loadTiling(6);
 		waterRenderer.render(tiles, camera, lights);
 	}
@@ -266,46 +290,46 @@ public class MasterRenderer {
 	 * Prepares rendering
 	 */
 	public void prepare() {
-		GL11.glEnable(GL11.GL_DEPTH_TEST);
-		GL11.glDepthFunc(GL11.GL_LESS);
-		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-		GL11.glClearColor(RED, GREEN, BLUE, 1);
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClearColor(RED, GREEN, BLUE, 1);
 	}
 
 	/**
-	 * Renders {@link Entity}
+	 * Renders {@link GameObject}
 	 * 
 	 * @param lights	Passes lights to shaders
 	 * @param camera	Camera to create transformation matrix of
 	 * @param clipPlane	Plane to clip all rendering beyond
 	 */
-	public void render(List<Light> lights, Camera camera, Vector4f clipPlane){
+	public void render(List<PointLight> lights, Camera camera, Vector4f clipPlane){
 		prepare();
-		GL13.glActiveTexture(GL13.GL_TEXTURE1);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, getShadowMapTexture());
-		gameObjectShader.start();
-		gameObjectShader.loadClipPlane(clipPlane);
-		gameObjectShader.loadSkyColor(RED, GREEN, BLUE);
-		gameObjectShader.loadMaxLights(1);
-		gameObjectShader.loadLights(lights);
-		gameObjectShader.loadViewMatrix(camera);
-		gameObjectRenderer.render(entities, shadowRenderer.getToShadowMapSpaceMatrix());
-		normalMapRenderer.render(normalMapEntities);
-		normalMapShader.loadClipPlane(clipPlane);
-		normalMapShader.loadSkyColour(MasterRenderer.RED, MasterRenderer.GREEN, MasterRenderer.BLUE);
 		Matrix4f viewMatrix = Maths.createViewMatrix(camera);
-		normalMapShader.loadMaxLights(lights.size());
-		normalMapShader.loadLights(lights, viewMatrix);
-		normalMapShader.loadViewMatrix(viewMatrix);
+//		normalMapShader.start();
+//		normalMapShader.loadClipPlane(clipPlane);
+//		normalMapShader.loadSkyColor(MasterRenderer.RED, MasterRenderer.GREEN, MasterRenderer.BLUE);
+//		normalMapShader.loadMaxPointLights(1);
+//		normalMapShader.loadPointLights(lights, viewMatrix);
+//		normalMapShader.loadViewMatrix(viewMatrix);
+//		normalMapRenderer.render(normalMapEntities);
+//		normalMapShader.stop();
+		gameObjectShader.start();
+		gameObjectShader.setUniform(gameObjectShader.getLocation("skyColor"), new Vector3f(RED, GREEN, BLUE));
+		gameObjectShader.loadPointLights(lights);
+		gameObjectShader.setUniform(gameObjectShader.getLocation("viewMatrix"), viewMatrix);
+		gameObjectRenderer.render(entities);
 		gameObjectShader.stop();
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, getShadowMapTexture());
 		terrainShader.start();
-		GL13.glActiveTexture(GL13.GL_TEXTURE5);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, getShadowMapTexture());
+		glActiveTexture(GL_TEXTURE5);
+		glBindTexture(GL_TEXTURE_2D, getShadowMapTexture());
 		terrainShader.loadClipPlane(clipPlane);
 		terrainShader.loadSkyColor(SKY_COLOR);
-		terrainShader.loadMaxLights(1);
-		terrainShader.loadLights(lights);
-		terrainShader.loadViewMatrix(camera);
+		terrainShader.loadMaxPointLights(lights.size());
+		terrainShader.loadPointLights(lights);
+		terrainShader.loadViewMatrix(viewMatrix);
 		terrainRenderer.render(terrains, shadowRenderer.getToShadowMapSpaceMatrix());
 		terrainShader.stop();
 		skyboxRenderer.render(camera, SKY_COLOR);
@@ -324,13 +348,13 @@ public class MasterRenderer {
 	}
 
 	/**
-	 * Processes {@link Entity}
+	 * Processes {@link GameObject}
 	 * 
-	 * @param entity 		Entity to be processed 
+	 * @param entity 		GameObject to be processed 
 	 */
-	public void processEntity(GameObject entity){
+	public void processGameObject(GameObject entity){
 		TexturedModel model = entity.getModel();
-			if(model.getTexture().hasNormal()) {
+			if(model.getMaterial().hasNormal()) {
 				TexturedModel entityModel = model;
 				List<GameObject> batch = normalMapEntities.get(entityModel);
 				if(batch!=null){
@@ -354,11 +378,11 @@ public class MasterRenderer {
 	}
 
 	/**
-	 * Processes {@link Entity} with a normal map
+	 * Processes {@link GameObject} with a normal map
 	 * 
-	 * @param entity		Entity to be processed
+	 * @param entity		GameObject to be processed
 	 */
-	public void processNormalMapEntity(GameObject entity){
+	public void processNormalMapGameObject(GameObject entity){
 		TexturedModel entityModel = entity.getModel();
 		List<GameObject> batch = normalMapEntities.get(entityModel);
 		if(batch!=null){
@@ -377,10 +401,10 @@ public class MasterRenderer {
 	 * @param focalPoint	Central rendering point
 	 * @param sun			Focal light
 	 */
-	public void renderShadowMap(List<GameObject> ents, Vector3f focalPoint, Light sun) {
+	public void renderShadowMap(List<GameObject> ents, Vector3f focalPoint, PointLight sun) {
 		for(GameObject entity : ents) {
 			if(Maths.getDistance(entity.getPosition(), focalPoint) < 2 * ShadowBox.SHADOW_DISTANCE) {
-				processEntity(entity);
+				processGameObject(entity);
 			}
 		}
 		shadowRenderer.render(entities, sun);
@@ -413,15 +437,15 @@ public class MasterRenderer {
 	 * Enables back face culling
 	 */
 	public static void enableCulling(){
-		GL11.glEnable(GL11.GL_CULL_FACE);
-		GL11.glCullFace(GL11.GL_BACK);		
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);		
 	}
 
 	/**
 	 * Disables back face culling
 	 */
 	public static void disableCulling(){
-		GL11.glDisable(GL11.GL_CULL_FACE);
+		glDisable(GL_CULL_FACE);
 	}
 
 	/**

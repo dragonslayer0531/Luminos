@@ -5,14 +5,14 @@ in vec3 tangent;
 
 out vec2 pass_textureCoordinates;
 out vec3 surfaceNormal;
-out vec3 toLightVector[20];
+out vec3 toLightVector[4];
 out vec3 toCameraVector;
 out float visibility;
 
 uniform mat4 transformationMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
-uniform vec3 lightPositionEyeSpace[20];
+uniform vec3 lightPositionEyeSpace[4];
 
 uniform float numberOfRows;
 uniform vec2 offset;

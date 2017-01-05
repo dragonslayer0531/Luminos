@@ -6,7 +6,7 @@ import static com.luminos.ConfigData.TEXTURE_SIZE;
 import java.awt.image.BufferedImage;
 
 import com.luminos.graphics.terrains.Terrain;
-import com.luminos.maths.vector.Vector3f;
+import com.luminos.tools.maths.vector.Vector3f;
 import com.luminos.tools.Maths;
 
 /**

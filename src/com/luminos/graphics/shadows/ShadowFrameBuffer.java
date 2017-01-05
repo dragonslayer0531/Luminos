@@ -1,12 +1,32 @@
 package com.luminos.graphics.shadows;
 
-import java.nio.ByteBuffer;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_COMPONENT;
+import static org.lwjgl.opengl.GL11.GL_FLOAT;
+import static org.lwjgl.opengl.GL11.GL_NEAREST;
+import static org.lwjgl.opengl.GL11.GL_NONE;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_S;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_T;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glDeleteTextures;
+import static org.lwjgl.opengl.GL11.glDrawBuffer;
+import static org.lwjgl.opengl.GL11.glGenTextures;
+import static org.lwjgl.opengl.GL11.glTexImage2D;
+import static org.lwjgl.opengl.GL11.glTexParameteri;
+import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
+import static org.lwjgl.opengl.GL14.GL_DEPTH_COMPONENT16;
+import static org.lwjgl.opengl.GL30.GL_DEPTH_ATTACHMENT;
+import static org.lwjgl.opengl.GL30.GL_DRAW_FRAMEBUFFER;
+import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
+import static org.lwjgl.opengl.GL30.glBindFramebuffer;
+import static org.lwjgl.opengl.GL30.glDeleteFramebuffers;
+import static org.lwjgl.opengl.GL30.glGenFramebuffers;
+import static org.lwjgl.opengl.GL32.glFramebufferTexture;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-import org.lwjgl.opengl.GL14;
-import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GL32;
+import java.nio.ByteBuffer;
 
 import com.luminos.ConfigData;
 
@@ -39,14 +59,14 @@ public class ShadowFrameBuffer {
     }
     
     public void bindFrameBuffer() {
-    	GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
-    	GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, fboID);
-    	GL11.glViewport(0, 0, WIDTH, HEIGHT);
+    	glBindTexture(GL_TEXTURE_2D, 0);
+    	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fboID);
+    	glViewport(0, 0, WIDTH, HEIGHT);
     }
     
     public void unbindFrameBuffer() {
-    	GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
-    	GL11.glViewport(0, 0, ConfigData.WIDTH, ConfigData.HEIGHT);
+    	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    	glViewport(0, 0, ConfigData.WIDTH, ConfigData.HEIGHT);
     }
     
     public int getShadowMap() {
@@ -54,8 +74,8 @@ public class ShadowFrameBuffer {
     }
     
     public void cleanUp() {
-    	GL30.glDeleteFramebuffers(fboID);
-    	GL11.glDeleteTextures(shadowMap);
+    	glDeleteFramebuffers(fboID);
+    	glDeleteTextures(shadowMap);
     }
     
     private void initialiseFrameBuffer() {
@@ -64,22 +84,22 @@ public class ShadowFrameBuffer {
     }
     
     private int createFrameBuffer() {
-    	int frameBuffer = GL30.glGenFramebuffers();
-    	GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, frameBuffer);
-    	GL11.glDrawBuffer(GL11.GL_NONE);
+    	int frameBuffer = glGenFramebuffers();
+    	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+    	glDrawBuffer(GL_NONE);
     	return frameBuffer;
     }
     
     private int createDepthBufferAttachment() {
-    	int texture = GL11.glGenTextures();
-    	GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
-    	GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL14.GL_DEPTH_COMPONENT16, WIDTH, HEIGHT, 0,
-                GL11.GL_DEPTH_COMPONENT, GL11.GL_FLOAT, (ByteBuffer) null);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
-        GL32.glFramebufferTexture(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, texture, 0);
+    	int texture = glGenTextures();
+    	glBindTexture(GL_TEXTURE_2D, texture);
+    	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, WIDTH, HEIGHT, 0,
+                GL_DEPTH_COMPONENT, GL_FLOAT, (ByteBuffer) null);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texture, 0);
         return texture;
 
     }

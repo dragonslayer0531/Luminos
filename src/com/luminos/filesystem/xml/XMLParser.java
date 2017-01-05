@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.luminos.filesystem.collada.File;
+import com.luminos.tools.File;
 
 public class XMLParser {
 	

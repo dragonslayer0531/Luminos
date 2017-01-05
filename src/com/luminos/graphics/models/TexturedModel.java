@@ -1,6 +1,6 @@
 package com.luminos.graphics.models;
 
-import com.luminos.graphics.textures.ModelTexture;
+import com.luminos.graphics.textures.Material;
 
 /**
  * 
@@ -14,17 +14,17 @@ import com.luminos.graphics.textures.ModelTexture;
 public class TexturedModel {
 	
 	private RawModel rawModel;
-	private ModelTexture texture;
+	private Material material;
 
 	/**
 	 * Constructor wrapping models and textures
 	 * 
 	 * @param model		{@link RawModel} describing the vertices
-	 * @param texture	{@link ModelTexture} describing the texture
+	 * @param texture	{@link Material} describing the texture
 	 */
-	public TexturedModel(RawModel model, ModelTexture texture){
+	public TexturedModel(RawModel model, Material material){
 		this.rawModel = model;
-		this.texture = texture;
+		this.material = material;
 	}
 
 	/**
@@ -37,12 +37,12 @@ public class TexturedModel {
 	}
 
 	/**
-	 * Gets the TexturedModel's ModelTexture
+	 * Gets the TexturedModel's Material
 	 * 
-	 * @return Texture for the model to use
+	 * @return Material for the model to use
 	 */
-	public ModelTexture getTexture() {
-		return texture;
+	public Material getMaterial() {
+		return material;
 	}
 
 }

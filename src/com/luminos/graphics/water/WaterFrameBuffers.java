@@ -6,13 +6,37 @@ import static com.luminos.ConfigData.WATER_FBO_REFLEC_WIDTH;
 import static com.luminos.ConfigData.WATER_FBO_REFRAC_HEIGHT;
 import static com.luminos.ConfigData.WATER_FBO_REFRAC_WIDTH;
 import static com.luminos.ConfigData.WIDTH;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_COMPONENT;
+import static org.lwjgl.opengl.GL11.GL_FLOAT;
+import static org.lwjgl.opengl.GL11.GL_LINEAR;
+import static org.lwjgl.opengl.GL11.GL_RGB;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glDeleteTextures;
+import static org.lwjgl.opengl.GL11.glDrawBuffer;
+import static org.lwjgl.opengl.GL11.glGenTextures;
+import static org.lwjgl.opengl.GL11.glTexImage2D;
+import static org.lwjgl.opengl.GL11.glTexParameteri;
+import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL14.GL_DEPTH_COMPONENT32;
+import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
+import static org.lwjgl.opengl.GL30.GL_DEPTH_ATTACHMENT;
+import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
+import static org.lwjgl.opengl.GL30.GL_RENDERBUFFER;
+import static org.lwjgl.opengl.GL30.glBindFramebuffer;
+import static org.lwjgl.opengl.GL30.glBindRenderbuffer;
+import static org.lwjgl.opengl.GL30.glDeleteFramebuffers;
+import static org.lwjgl.opengl.GL30.glDeleteRenderbuffers;
+import static org.lwjgl.opengl.GL30.glFramebufferRenderbuffer;
+import static org.lwjgl.opengl.GL30.glGenFramebuffers;
+import static org.lwjgl.opengl.GL30.glGenRenderbuffers;
+import static org.lwjgl.opengl.GL30.glRenderbufferStorage;
+import static org.lwjgl.opengl.GL32.glFramebufferTexture;
 
 import java.nio.ByteBuffer;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL14;
-import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GL32;
 
 
 /**
@@ -52,12 +76,12 @@ public class WaterFrameBuffers {
 	 * Cleans up FBO and attached buffers
 	 */
 	public void cleanUp() {
-		GL30.glDeleteFramebuffers(reflectionFrameBuffer);
-		GL11.glDeleteTextures(reflectionTexture);
-		GL30.glDeleteRenderbuffers(reflectionDepthBuffer);
-		GL30.glDeleteFramebuffers(refractionFrameBuffer);
-		GL11.glDeleteTextures(refractionTexture);
-		GL11.glDeleteTextures(refractionDepthTexture);
+		glDeleteFramebuffers(reflectionFrameBuffer);
+		glDeleteTextures(reflectionTexture);
+		glDeleteRenderbuffers(reflectionDepthBuffer);
+		glDeleteFramebuffers(refractionFrameBuffer);
+		glDeleteTextures(refractionTexture);
+		glDeleteTextures(refractionDepthTexture);
 	}
 
 	/**
@@ -78,8 +102,8 @@ public class WaterFrameBuffers {
 	 * Unbinds frame buffer
 	 */
 	public void unbindCurrentFrameBuffer() {
-		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
-		GL11.glViewport(0, 0, WIDTH, HEIGHT);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glViewport(0, 0, WIDTH, HEIGHT);
 	}
 
 	/**
@@ -139,9 +163,9 @@ public class WaterFrameBuffers {
 	 * @param height		Frame Buffer Height
 	 */
 	private void bindFrameBuffer(int frameBuffer, int width, int height){
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);//To make sure the texture isn't bound
-		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, frameBuffer);
-		GL11.glViewport(0, 0, width, height);
+		glBindTexture(GL_TEXTURE_2D, 0);//To make sure the texture isn't bound
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+		glViewport(0, 0, width, height);
 	}
 
 	/**
@@ -150,9 +174,9 @@ public class WaterFrameBuffers {
 	 * @return	VAO ID of Frame Buffer
 	 */
 	private int createFrameBuffer() {
-		int frameBuffer = GL30.glGenFramebuffers();
-		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, frameBuffer);
-		GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
+		int frameBuffer = glGenFramebuffers();
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+		glDrawBuffer(GL_COLOR_ATTACHMENT0);
 		return frameBuffer;
 	}
 
@@ -164,13 +188,13 @@ public class WaterFrameBuffers {
 	 * @return 	GPU ID of texture attachment
 	 */
 	private int createTextureAttachment(int width, int height) {
-		int texture = GL11.glGenTextures();
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
-		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, width, height,
-				0, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, (ByteBuffer) null);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-		GL32.glFramebufferTexture(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0,
+		int texture = glGenTextures();
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height,
+				0, GL_RGB, GL_UNSIGNED_BYTE, (ByteBuffer) null);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
 				texture, 0);
 		return texture;
 	}
@@ -183,13 +207,13 @@ public class WaterFrameBuffers {
 	 * @return 			GPU ID of texture attachment
 	 */
 	private int createDepthTextureAttachment(int width, int height){
-		int texture = GL11.glGenTextures();
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
-		GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL14.GL_DEPTH_COMPONENT32, width, height,
-				0, GL11.GL_DEPTH_COMPONENT, GL11.GL_FLOAT, (ByteBuffer) null);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-		GL32.glFramebufferTexture(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT,
+		int texture = glGenTextures();
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, width, height,
+				0, GL_DEPTH_COMPONENT, GL_FLOAT, (ByteBuffer) null);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
 				texture, 0);
 		return texture;
 	}
@@ -202,12 +226,12 @@ public class WaterFrameBuffers {
 	 * @return			GPU ID of buffer
 	 */
 	private int createDepthBufferAttachment(int width, int height) {
-		int depthBuffer = GL30.glGenRenderbuffers();
-		GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, depthBuffer);
-		GL30.glRenderbufferStorage(GL30.GL_RENDERBUFFER, GL11.GL_DEPTH_COMPONENT, width,
+		int depthBuffer = glGenRenderbuffers();
+		glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width,
 				height);
-		GL30.glFramebufferRenderbuffer(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT,
-				GL30.GL_RENDERBUFFER, depthBuffer);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+				GL_RENDERBUFFER, depthBuffer);
 		return depthBuffer;
 	}
 

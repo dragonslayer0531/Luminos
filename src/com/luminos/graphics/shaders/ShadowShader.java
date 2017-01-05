@@ -2,7 +2,7 @@ package com.luminos.graphics.shaders;
 
 import static com.luminos.ConfigData.POSITION;
 
-import com.luminos.maths.matrix.Matrix4f;
+import com.luminos.tools.maths.matrix.Matrix4f;
 
 /**
  * 
@@ -14,13 +14,11 @@ import com.luminos.maths.matrix.Matrix4f;
  */
 
 public class ShadowShader extends ShaderProgram {
-
-    private int location_mvpMatrix;
     
     public static String VERT = "shadow.vert";
     public static String FRAG = "shadow.frag";
     
-	public ShadowShader() {
+	public ShadowShader() throws Exception {
         super(VERT, FRAG);
     }
  
@@ -29,7 +27,7 @@ public class ShadowShader extends ShaderProgram {
 	 * @see graphics.shaders.ShaderProgram#getAllUniformLocations()
 	 */
     public void getAllUniformLocations() {
-        location_mvpMatrix = super.getUniformLocation("mvpMatrix");  
+       createUniform("mvpMatrix");  
     }
      
     /**
@@ -38,7 +36,7 @@ public class ShadowShader extends ShaderProgram {
      * @param mvpMatrix		Model View Projection matrix	
      */
     public void loadMvpMatrix(Matrix4f mvpMatrix){
-        super.loadMatrix4f(location_mvpMatrix, mvpMatrix);
+    	setUniform(getLocation("mvpMatrix"), mvpMatrix);
     }
  
     /*

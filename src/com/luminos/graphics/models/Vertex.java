@@ -3,7 +3,7 @@ package com.luminos.graphics.models;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.luminos.maths.vector.Vector3f;
+import com.luminos.tools.maths.vector.Vector3f;
 
 public class Vertex {
 	

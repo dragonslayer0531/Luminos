@@ -2,7 +2,7 @@ package com.luminos.graphics.shaders;
 
 import static com.luminos.ConfigData.POSITION;
 
-import com.luminos.maths.matrix.Matrix4f;
+import com.luminos.tools.maths.matrix.Matrix4f;
 
 /**
  * 
@@ -16,13 +16,12 @@ public class GuiShader extends ShaderProgram {
 	
 	public static String VERT = "gui.vert";
 	public static String FRAG = "gui.frag";
-	
-	private int location_transformationMatrix;
 
 	/**
 	 * Constructor
+	 * @throws Exception 
 	 */
-	public GuiShader() {
+	public GuiShader() throws Exception {
 		super(VERT, FRAG);
 	}
 	
@@ -31,7 +30,7 @@ public class GuiShader extends ShaderProgram {
 	 * @see graphics.shaders.ShaderProgram#getAllUniformLocations()
 	 */
 	public void getAllUniformLocations() {
-		location_transformationMatrix = super.getUniformLocation("transformationMatrix");
+		createUniform("transformationMatrix");
 	}
 
 	/*
@@ -48,7 +47,7 @@ public class GuiShader extends ShaderProgram {
 	 * @param matrix	Transformation matrix
 	 */
 	public void loadTransformation(Matrix4f matrix){
-		super.loadMatrix4f(location_transformationMatrix, matrix);
+		setUniform(getLocation("transformationMatrix"), matrix);
 	}
 
 

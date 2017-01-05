@@ -6,16 +6,25 @@ package com.luminos.graphics.render;
  * @author Nick Clark
  * @version 1.0
  */
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TRIANGLE_STRIP;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glDrawArrays;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
+import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 import com.luminos.ConfigData;
-import com.luminos.graphics.loaders.Loader;
 import com.luminos.graphics.models.RawModel;
 import com.luminos.graphics.shaders.ImageShader;
+import com.luminos.loaders.Loader;
 
 public class ImageRenderer {
 	
@@ -30,8 +39,9 @@ public class ImageRenderer {
 	 * Constructor
 	 * 
 	 * @param loader		Creates quad to render to
+	 * @throws Exception 
 	 */
-	public ImageRenderer(Loader loader) {
+	public ImageRenderer(Loader loader) throws Exception {
 		quad = loader.loadToVAO(POSITIONS, 2);
 		shader = new ImageShader();
 	}
@@ -42,18 +52,18 @@ public class ImageRenderer {
 	 * @param textureID		texture to be rendered to quad
 	 */
 	public void render(int textureID) {
-		GL30.glBindVertexArray(quad.getVaoID());
-		GL20.glEnableVertexAttribArray(ConfigData.POSITION);
-		GL11.glDisable(GL11.GL_DEPTH_TEST);
-		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		glBindVertexArray(quad.getVaoID());
+		glEnableVertexAttribArray(ConfigData.POSITION);
+		glDisable(GL_DEPTH_TEST);
+		glActiveTexture(GL_TEXTURE0);
 		shader.start();
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureID);
-		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-		GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, 4);
+		glBindTexture(GL_TEXTURE_2D, textureID);
+		glClear(GL_COLOR_BUFFER_BIT);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		shader.stop();
-		GL11.glEnable(GL11.GL_DEPTH_TEST);
-		GL20.glDisableVertexAttribArray(ConfigData.POSITION);
-		GL30.glBindVertexArray(0);
+		glEnable(GL_DEPTH_TEST);
+		glDisableVertexAttribArray(ConfigData.POSITION);
+		glBindVertexArray(0);
 	}
 	
 	/**

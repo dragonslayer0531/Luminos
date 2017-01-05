@@ -2,8 +2,8 @@ package com.luminos.graphics.shaders;
 
 import static com.luminos.ConfigData.POSITION;
 
-import com.luminos.maths.matrix.Matrix4f;
-import com.luminos.maths.vector.Vector2f;
+import com.luminos.tools.maths.matrix.Matrix4f;
+import com.luminos.tools.maths.vector.Vector2f;
 
 /**
  * 
@@ -18,17 +18,12 @@ public class ParticleShader extends ShaderProgram {
 	
 	public static String VERT = "particle.vert";
 	public static String FRAG = "particle.frag";
-	
-	private int location_modelViewMatrix;
-	private int location_projectionMatrix;
-	private int location_texOffset1;
-	private int location_texOffset2;
-	private int location_texCoordInfo;
 
 	/**
 	 * Constructor
+	 * @throws Exception 
 	 */
-	public ParticleShader() {
+	public ParticleShader() throws Exception {
 		super(VERT, FRAG);
 	}
 
@@ -37,11 +32,11 @@ public class ParticleShader extends ShaderProgram {
 	 * @see graphics.shaders.ShaderProgram#getAllUniformLocations()
 	 */
 	public void getAllUniformLocations() {
-		location_modelViewMatrix = super.getUniformLocation("modelViewMatrix");
-		location_projectionMatrix = super.getUniformLocation("projectionMatrix");
-		location_texOffset1 = super.getUniformLocation("texOffset1");
-		location_texOffset2 = super.getUniformLocation("texOffset2");
-		location_texCoordInfo = super.getUniformLocation("texCoordInfo");
+		createUniform("modelViewMatrix");
+		createUniform("projectionMatrix");
+		createUniform("texOffset1");
+		createUniform("texOffset2");
+		createUniform("texCoordInfo");
 	}
 	
 	/**
@@ -53,9 +48,9 @@ public class ParticleShader extends ShaderProgram {
 	 * @param blend		Blend factor
 	 */
 	public void loadTextureCoordInfo(Vector2f offset1, Vector2f offset2, float numRows, float blend) {
-		super.loadVector2f(location_texOffset1, offset1);
-		super.loadVector2f(location_texOffset2, offset2);
-		super.loadVector2f(location_texCoordInfo, new Vector2f(numRows, blend));
+		setUniform(getLocation("texOffset1"), offset1);
+		setUniform(getLocation("location_texOffset2"), offset2);
+		setUniform(getLocation("texCoordInfo"), new Vector2f(numRows, blend));
 	}
 
 	/*
@@ -72,7 +67,7 @@ public class ParticleShader extends ShaderProgram {
 	 * @param matrix	Model View Matrix
 	 */
 	public void loadModelViewMatrix(Matrix4f matrix) {
-		super.loadMatrix4f(location_modelViewMatrix, matrix);
+		setUniform(getLocation("modelViewMatrix"), matrix);
 	}
 	
 	/**
@@ -81,7 +76,7 @@ public class ParticleShader extends ShaderProgram {
 	 * @param matrix	Projection Matrix
 	 */
 	public void loadProjectionMatrix(Matrix4f matrix) {
-		super.loadMatrix4f(location_projectionMatrix, matrix);
+		setUniform(getLocation("projectionMatrix"), matrix);
 	}
 
 }

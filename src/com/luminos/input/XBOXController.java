@@ -1,6 +1,8 @@
 package com.luminos.input;
 
-import org.lwjgl.glfw.GLFW;
+import static org.lwjgl.glfw.GLFW.glfwGetJoystickAxes;
+import static org.lwjgl.glfw.GLFW.glfwGetJoystickButtons;
+import static org.lwjgl.glfw.GLFW.glfwJoystickPresent;
 
 /**
  * 
@@ -34,7 +36,7 @@ public class XBOXController {
 	 * @return	Horizontal movement
 	 */
 	public static float getHorizontalAxis() {
-		return GLFW.glfwGetJoystickAxes(GLFW_JOYSTICK_1).get(0);
+		return glfwGetJoystickAxes(GLFW_JOYSTICK_1).get(0);
 	}
 	
 	/**
@@ -43,7 +45,7 @@ public class XBOXController {
 	 * @return	Vertical movement
 	 */
 	public static float getVerticalAxis() {
-		return GLFW.glfwGetJoystickAxes(GLFW_JOYSTICK_1).get(1);
+		return glfwGetJoystickAxes(GLFW_JOYSTICK_1).get(1);
 	}
 	
 	/**
@@ -52,7 +54,7 @@ public class XBOXController {
 	 * @return	Horizontal look movement
 	 */
 	public static float getHorizontalAxisLook() {
-		return GLFW.glfwGetJoystickAxes(GLFW_JOYSTICK_1).get(2);
+		return glfwGetJoystickAxes(GLFW_JOYSTICK_1).get(2);
 	}
 	
 	/**
@@ -61,7 +63,7 @@ public class XBOXController {
 	 * @return	Vertical look movement
 	 */
 	public static float getVerticalAxisLook() {
-		return GLFW.glfwGetJoystickAxes(GLFW_JOYSTICK_1).get(3);
+		return glfwGetJoystickAxes(GLFW_JOYSTICK_1).get(3);
 	}
 	
 	/**
@@ -72,7 +74,7 @@ public class XBOXController {
 	 */
 	public static boolean isButtonDown(int buttonID) {
 		if(!XBOXController.isControllerConnected()) return false;
-		return GLFW.glfwGetJoystickButtons(XBOXController.GLFW_JOYSTICK_1).get(buttonID) == 1;
+		return glfwGetJoystickButtons(XBOXController.GLFW_JOYSTICK_1).get(buttonID) == 1;
 	}
 	
 	/**
@@ -81,7 +83,7 @@ public class XBOXController {
 	 * @return The amount that the left trigger is pressed
 	 */
 	public static float leftTriggerPower() {
-		return (GLFW.glfwGetJoystickAxes(XBOXController.GLFW_JOYSTICK_1).get(4) + 1) / 2;
+		return (glfwGetJoystickAxes(XBOXController.GLFW_JOYSTICK_1).get(4) + 1) / 2;
 	}
 	
 	/**
@@ -90,7 +92,7 @@ public class XBOXController {
 	 * @return The amount that the right trigger is pressed
 	 */
 	public static float rightTriggerPower() {
-		return (GLFW.glfwGetJoystickAxes(XBOXController.GLFW_JOYSTICK_1).get(5) + 1) / 2;
+		return (glfwGetJoystickAxes(XBOXController.GLFW_JOYSTICK_1).get(5) + 1) / 2;
 	}
 
 	/**
@@ -99,7 +101,7 @@ public class XBOXController {
 	 * @return	Is the controller connected
 	 */
 	public static boolean isControllerConnected() {
-		return GLFW.glfwJoystickPresent(XBOXController.GLFW_JOYSTICK_1);
+		return glfwJoystickPresent(XBOXController.GLFW_JOYSTICK_1);
 	}
 
 }

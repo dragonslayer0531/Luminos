@@ -1,6 +1,6 @@
 in vec2 pass_textureCoordinates;
 in vec3 surfaceNormal;
-in vec3 toLightVector[20];
+in vec3 toLightVector[4];
 in vec3 toCameraVector;
 in float visibility;
 
@@ -8,8 +8,8 @@ out vec4 out_Color;
 
 uniform sampler2D modelTexture;
 uniform sampler2D normalMap;
-uniform vec3 lightColor[20];
-uniform vec3 attenuation[20];
+uniform vec3 lightColor[4];
+uniform vec3 attenuation[4];
 uniform float shineDamper;
 uniform float reflectivity;
 uniform vec3 skyColor;

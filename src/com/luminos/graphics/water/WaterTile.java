@@ -1,6 +1,6 @@
 package com.luminos.graphics.water;
 
-import com.luminos.maths.vector.Vector2f;
+import com.luminos.tools.maths.vector.Vector2f;
 
 /**
  * 

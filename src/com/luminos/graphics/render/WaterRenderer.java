@@ -1,23 +1,39 @@
 package com.luminos.graphics.render;
 
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glDrawArrays;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE4;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
+import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
-
 import com.luminos.graphics.gameobjects.Camera;
-import com.luminos.graphics.gameobjects.Light;
-import com.luminos.graphics.loaders.Loader;
+import com.luminos.graphics.gameobjects.PointLight;
 import com.luminos.graphics.models.RawModel;
 import com.luminos.graphics.shaders.WaterShader;
 import com.luminos.graphics.water.WaterFrameBuffers;
 import com.luminos.graphics.water.WaterTile;
-import com.luminos.maths.matrix.Matrix4f;
-import com.luminos.maths.vector.Vector3f;
+import com.luminos.loaders.Loader;
 import com.luminos.tools.Maths;
+import com.luminos.tools.maths.matrix.Matrix4f;
+import com.luminos.tools.maths.vector.Vector3f;
 
 /**
  * 
@@ -53,8 +69,9 @@ public class WaterRenderer {
 	 * @param fbos				WaterFrameBuffers
 	 * @param dudv				DUDV map location
 	 * @param normal			Normal map location
+	 * @throws IOException		Exception for if file isn't found or cannot be handled
 	 */
-	public WaterRenderer(Loader loader, WaterShader shader, Matrix4f projectionMatrix, WaterFrameBuffers fbos, String dudv, String normal) {
+	public WaterRenderer(Loader loader, WaterShader shader, Matrix4f projectionMatrix, WaterFrameBuffers fbos, String dudv, String normal) throws IOException {
 		this.shader = shader;
 		this.fbos = fbos;
 		dudvTexture = loader.loadTexture(dudv);
@@ -78,17 +95,17 @@ public class WaterRenderer {
 	 * @param camera	Camera to use in rendering
 	 * @param lights		Primary light source
 	 */
-	public void render(List<WaterTile> water, Camera camera, List<Light> lights) {
+	public void render(List<WaterTile> water, Camera camera, List<PointLight> lights) {
 		if (lights == null) {
-			lights = new ArrayList<Light>();
+			lights = new ArrayList<PointLight>();
 		}
-		for (Light light : lights) {
+		for (PointLight light : lights) {
 			prepareRender(camera, light); 
 			for (WaterTile tile : water) {
 				if (Maths.getDistance(new Vector3f(tile.getX(), 0, tile.getZ()), camera.getPosition()) > 500) continue;
 				Matrix4f modelMatrix = Maths.createWaterTransformationMatrix(new Vector3f(tile.getX(), tile.getHeight(), tile.getZ()), 0, 0, 0, tile.getScale());
 				shader.loadModelMatrix(modelMatrix);
-				GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, quad.getVertexCount());
+				glDrawArrays(GL_TRIANGLES, 0, quad.getVertexCount());
 			}
 		}
 		unbind();
@@ -99,15 +116,15 @@ public class WaterRenderer {
 	 * 
 	 * @param water		Water tiles to render to scene
 	 * @param camera	{@link Camera} to render through
-	 * @param sun		Focal {@link Light} of the scene
+	 * @param sun		Focal {@link PointLight} of the scene
 	 */
-	public void renderTile(List<WaterTile> water, Camera camera, Light sun) {
+	public void renderTile(List<WaterTile> water, Camera camera, PointLight sun) {
 		prepareRender(camera, sun);
 		for (WaterTile tile : water) {
 			if (Maths.getDistance(new Vector3f(tile.getX(), 0, tile.getZ()), camera.getPosition()) > 500) continue;
 			Matrix4f modelMatrix = Maths.createTransformationMatrix(new Vector3f(tile.getX(), tile.getHeight(), tile.getZ()), 0, 0, 0, tile.getFloatScale());
 			shader.loadModelMatrix(modelMatrix);
-			GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, quad.getVertexCount());
+			glDrawArrays(GL_TRIANGLES, 0, quad.getVertexCount());
 		}
 	}
 
@@ -191,28 +208,28 @@ public class WaterRenderer {
 	 * @param camera	Camera to prepare with
 	 * @param sun		Focal light
 	 */
-	private void prepareRender(Camera camera, Light sun){
+	private void prepareRender(Camera camera, PointLight sun){
 		shader.start();
 		shader.loadViewMatrix(camera);
 		moveFactor += WAVE_SPEED * 0.001;
 		moveFactor %= 1;
 		shader.loadMoveFactor(moveFactor);
 		shader.loadRenderBox(MasterRenderer.NEAR_PLANE, MasterRenderer.FAR_PLANE);
-		shader.loadLight(sun);
-		GL30.glBindVertexArray(quad.getVaoID());
-		GL20.glEnableVertexAttribArray(0);
-		GL13.glActiveTexture(GL13.GL_TEXTURE0);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, fbos.getReflectionTexture());
-		GL13.glActiveTexture(GL13.GL_TEXTURE1);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, fbos.getRefractionTexture());
-		GL13.glActiveTexture(GL13.GL_TEXTURE2);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, dudvTexture);
-		GL13.glActiveTexture(GL13.GL_TEXTURE3);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, normalTexture);
-		GL13.glActiveTexture(GL13.GL_TEXTURE4);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, fbos.getRefractionDepthTexture());
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		shader.loadPointLight(sun);
+		glBindVertexArray(quad.getVaoID());
+		glEnableVertexAttribArray(0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, fbos.getReflectionTexture());
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, fbos.getRefractionTexture());
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, dudvTexture);
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, normalTexture);
+		glActiveTexture(GL_TEXTURE4);
+		glBindTexture(GL_TEXTURE_2D, fbos.getRefractionDepthTexture());
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
 	/**
@@ -220,9 +237,9 @@ public class WaterRenderer {
 	 */
 	
 	private void unbind(){
-		GL11.glDisable(GL11.GL_BLEND);
-		GL20.glDisableVertexAttribArray(0);
-		GL30.glBindVertexArray(0);
+		glDisable(GL_BLEND);
+		glDisableVertexAttribArray(0);
+		glBindVertexArray(0);
 		shader.stop();
 	}
 

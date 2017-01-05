@@ -21,11 +21,6 @@ import com.luminos.tools.instanceinfo.OpenGLInstance;
  */
 
 public class Debug {
-	
-	public static boolean DEBUG = true;
-	public static boolean PRINT_TO_FILE = true;
-	public static int FRAMES = 1000;
-	public static boolean BENCHMARK = false;
 		
 	private static StringBuilder debug_data = new StringBuilder();
 	private static StringBuilder header = new StringBuilder();
@@ -42,17 +37,7 @@ public class Debug {
 	 * @param e		Throwable error
 	 */
 	public static void addData(Throwable e) {
-		
-		if(DEBUG) {
-			appendNewLine(debug_data);
-			debug_data.append(e.getMessage());
-			StackTraceElement[] elements = e.getStackTrace();
-			for(StackTraceElement element : elements) {
-				appendNewLine(debug_data);
-				debug_data.append(element.getFileName() + " " + element.getClassName() + " " + element.getLineNumber());
-			}
-		}
-		
+		appendNewLine(e, debug_data);
 	}
 	
 	/**
@@ -60,7 +45,6 @@ public class Debug {
 	 */
 	public static void out() {
 		System.out.println(debug_data.toString());
-		System.exit(-1);
 	}
 	
 	/**
@@ -94,7 +78,8 @@ public class Debug {
 	 * 
 	 * @param sb		String builder to append to
 	 */
-	private static void appendNewLine(StringBuilder sb) {
+	private static void appendNewLine(Throwable e, StringBuilder sb) {
+		sb.append(e.getStackTrace());
 		sb.append(System.lineSeparator());
 	}
 	

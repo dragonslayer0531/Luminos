@@ -5,9 +5,9 @@ import static com.luminos.ConfigData.WIDTH;
 
 import com.luminos.graphics.gameobjects.Camera;
 import com.luminos.graphics.render.MasterRenderer;
-import com.luminos.maths.matrix.Matrix4f;
-import com.luminos.maths.vector.Vector3f;
-import com.luminos.maths.vector.Vector4f;
+import com.luminos.tools.maths.matrix.Matrix4f;
+import com.luminos.tools.maths.vector.Vector3f;
+import com.luminos.tools.maths.vector.Vector4f;
 
 /**
  * 

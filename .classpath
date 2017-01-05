@@ -12,5 +12,6 @@
 	<classpathentry kind="lib" path="lib/jar/lwjgl-glfw.jar" sourcepath="lib/native-win"/>
 	<classpathentry kind="lib" path="lib/jar/lwjgl-openal.jar" sourcepath="lib/native-win"/>
 	<classpathentry kind="lib" path="lib/jar/lwjgl-opengl.jar"/>
+	<classpathentry kind="lib" path="lib/jar/lwjgl-stb.jar" sourcepath="lib/native-win"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

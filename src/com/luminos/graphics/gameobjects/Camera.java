@@ -1,6 +1,6 @@
 package com.luminos.graphics.gameobjects;
 
-import com.luminos.maths.vector.Vector3f;
+import com.luminos.tools.maths.vector.Vector3f;
 
 /**
  * 
@@ -23,14 +23,14 @@ public class Camera {
 	
 	private float roll;
 	
-	private Entity player;
+	private GameObject player;
 	
 	/**
 	 * Constructor determining the positioning of the Camera
 	 * 
-	 * @param player	Determines the focal {@link Entity} of the camera
+	 * @param player	Determines the focal {@link GameObject} of the camera
 	 */
-	public Camera(Entity player){
+	public Camera(GameObject player){
 		this.player = player;
 	}
 	

@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.luminos.Debug;
-import com.luminos.graphics.loaders.Loader;
 import com.luminos.graphics.models.RawModel;
 import com.luminos.graphics.models.Vertex;
-import com.luminos.maths.vector.Vector2f;
-import com.luminos.maths.vector.Vector3f;
+import com.luminos.loaders.Loader;
+import com.luminos.tools.maths.vector.Vector2f;
+import com.luminos.tools.maths.vector.Vector3f;
 
 public class OBJLoader {
 

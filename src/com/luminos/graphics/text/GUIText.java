@@ -1,7 +1,7 @@
 package com.luminos.graphics.text;
 
-import com.luminos.maths.vector.Vector2f;
-import com.luminos.maths.vector.Vector3f;
+import com.luminos.tools.maths.vector.Vector2f;
+import com.luminos.tools.maths.vector.Vector3f;
 
 /**
  * 

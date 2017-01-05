@@ -5,10 +5,10 @@ import java.util.List;
 import com.luminos.ConfigData;
 import com.luminos.graphics.gameobjects.Camera;
 import com.luminos.graphics.terrains.Terrain;
-import com.luminos.maths.matrix.Matrix4f;
-import com.luminos.maths.vector.Vector2f;
-import com.luminos.maths.vector.Vector3f;
-import com.luminos.maths.vector.Vector4f;
+import com.luminos.tools.maths.matrix.Matrix4f;
+import com.luminos.tools.maths.vector.Vector2f;
+import com.luminos.tools.maths.vector.Vector3f;
+import com.luminos.tools.maths.vector.Vector4f;
 
 /**
  * Class that sets up mouse data

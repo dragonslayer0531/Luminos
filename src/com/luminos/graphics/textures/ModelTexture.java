@@ -1,6 +1,8 @@
 package com.luminos.graphics.textures;
 
-import com.luminos.graphics.loaders.Loader;
+import java.io.IOException;
+
+import com.luminos.loaders.Loader;
 
 /**
  * 
@@ -31,8 +33,9 @@ public class ModelTexture implements Texture {
 	 * 
 	 * @param texture		Location of image to load
 	 * @param loader		Loader to use to load image
+	 * @throws IOException	Exception for if file isn't found or cannot be handled
 	 */
-	public ModelTexture(String texture, Loader loader){
+	public ModelTexture(String texture, Loader loader) throws IOException {
 		this.textureID = loader.loadTexture(texture);
 	}
 		
@@ -149,8 +152,9 @@ public class ModelTexture implements Texture {
 	 * 
 	 * @param normal		Location of normal map
 	 * @param loader		Loader to load the texture
+	 * @throws IOException	Exception for if file isn't found or cannot be handled
 	 */
-	public void setNormal(String normal, Loader loader) {
+	public void setNormal(String normal, Loader loader) throws IOException {
 		this.normalID = loader.loadTexture(normal);
 	}
 	

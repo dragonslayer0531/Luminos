@@ -1,4 +1,4 @@
-#version 400 core
+#version 330 core
 
 struct Attenuation {
 	float constant;
@@ -9,7 +9,6 @@ struct Attenuation {
 struct PointLight {
 	vec3 color;
 	vec3 position;
-	float intensity;
 	Attenuation attenuation;
 };
 

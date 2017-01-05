@@ -2,11 +2,11 @@ package com.luminos.graphics.shaders;
 
 import java.util.List;
 
-import com.luminos.graphics.gameobjects.Light;
-import com.luminos.maths.matrix.Matrix4f;
-import com.luminos.maths.vector.Vector2f;
-import com.luminos.maths.vector.Vector3f;
-import com.luminos.maths.vector.Vector4f;
+import com.luminos.graphics.gameobjects.PointLight;
+import com.luminos.tools.maths.matrix.Matrix4f;
+import com.luminos.tools.maths.vector.Vector2f;
+import com.luminos.tools.maths.vector.Vector3f;
+import com.luminos.tools.maths.vector.Vector4f;
 
 /**
  * 
@@ -22,28 +22,13 @@ public class NormalMapShader extends ShaderProgram {
 	public static String VERT = "normal.vert";
 	public static String FRAG = "normal.frag";
 
-	private static final int MAX_LIGHTS = 20;
-
-	private int location_transformationMatrix;
-	private int location_projectionMatrix;
-	private int location_viewMatrix;
-	private int location_lightPositionEyeSpace[];
-	private int location_lightColor[];
-	private int location_attenuation[];
-	private int location_shineDamper;
-	private int location_reflectivity;
-	private int location_skyColor;
-	private int location_numberOfRows;
-	private int location_offset;
-	private int location_plane;
-	private int location_modelTexture;
-	private int location_normalMap;
-	private int location_maxLights;
+	private static final int MAX_LIGHTS = 4;
 
 	/**
 	 * Constructor
+	 * @throws Exception 
 	 */
-	public NormalMapShader() {
+	public NormalMapShader() throws Exception {
 		super(VERT, FRAG);
 	}
 
@@ -52,26 +37,23 @@ public class NormalMapShader extends ShaderProgram {
 	 * @see com.luminos.graphics.shaders.ShaderProgram#getAllUniformLocations()
 	 */
 	public void getAllUniformLocations() {
-		location_transformationMatrix = super.getUniformLocation("transformationMatrix");
-		location_projectionMatrix = super.getUniformLocation("projectionMatrix");
-		location_viewMatrix = super.getUniformLocation("viewMatrix");
-		location_shineDamper = super.getUniformLocation("shineDamper");
-		location_reflectivity = super.getUniformLocation("reflectivity");
-		location_skyColor = super.getUniformLocation("skyColour");
-		location_numberOfRows = super.getUniformLocation("numberOfRows");
-		location_offset = super.getUniformLocation("offset");
-		location_plane = super.getUniformLocation("plane");
-		location_modelTexture = super.getUniformLocation("modelTexture");
-		location_normalMap = super.getUniformLocation("normalMap");
-		location_lightPositionEyeSpace = new int[MAX_LIGHTS];
-		location_lightColor = new int[MAX_LIGHTS];
-		location_attenuation = new int[MAX_LIGHTS];
-		for(int i=0;i<MAX_LIGHTS;i++){
-			location_lightPositionEyeSpace[i] = super.getUniformLocation("lightPositionEyeSpace[" + i + "]");
-			location_lightColor[i] = super.getUniformLocation("lightColour[" + i + "]");
-			location_attenuation[i] = super.getUniformLocation("attenuation[" + i + "]");
+		createUniform("transformationMatrix");
+		createUniform("projectionMatrix");
+		createUniform("viewMatrix");
+		createUniform("shineDamper");
+		createUniform("reflectivity");
+		createUniform("skyColor");
+		createUniform("numberOfRows");
+		createUniform("offset");
+		createUniform("plane");
+		createUniform("modelTexture");
+//		createUniform("normalMap");
+		for (int i=0;i<MAX_LIGHTS;i++) {
+			createUniform("lightPositionEyeSpace[" + i + "]");
+			createUniform("lightColor[" + i + "]");
+			createUniform("attenuation[" + i + "]");
 		}
-		location_maxLights = super.getUniformLocation("maxLights");
+		createUniform("maxLights");
 
 	}
 
@@ -89,86 +71,103 @@ public class NormalMapShader extends ShaderProgram {
 	/**
 	 * Connects textures to normal map
 	 */
-	public void connectTextureUnits(){
-		super.loadInt(location_modelTexture, 0);
-		super.loadInt(location_normalMap, 1);
+	public void connectTextureUnits() {
+		setUniform(getLocation("modelTexture"), 0);
+//		setUniform(getLocation("normalMap"), 1);
 	}
 
 	/**
-	 * Loads clip plane to the shader
+	 * Load density to shader
 	 * 
-	 * @param plane		Clip plane of rendering
+	 * @param density		Density of fog
 	 */
-	public void loadClipPlane(Vector4f plane){
-		super.loadVector4f(location_plane, plane);
+	public void loadDensity(float density) {
+		setUniform(getLocation("density"), density);
 	}
 
 	/**
-	 * Sets number of rows involved in the texture
+	 * Load gradient to shader
 	 * 
-	 * @param numberOfRows	rows of texture
+	 * @param gradient		Gradient of fog
+	 */
+	public void loadGradient(float gradient) {
+		setUniform(getLocation("gradient"), gradient);
+	}
+
+	/**
+	 * Loads rows of texture to shader
+	 * 
+	 * @param numberOfRows	Number of rows in texture
 	 */
 	public void loadNumberOfRows(int numberOfRows){
-		super.loadFloat(location_numberOfRows, numberOfRows);
+		setUniform(getLocation("numberOfRows"), numberOfRows);
 	}
 
 	/**
-	 * Sets the texture offset
+	 * Loads offset to shader
 	 * 
-	 * @param x		X offset
-	 * @param y		Y offset
+	 * @param x	X offset
+	 * @param y	Y offset
 	 */
 	public void loadOffset(float x, float y){
-		super.loadVector2f(location_offset, new Vector2f(x,y));
+		setUniform(getLocation("offset"), new Vector2f(x,y));
 	}
 
 	/**
 	 * Loads sky color
 	 * 
-	 * @param r		Red component
-	 * @param g		Green component
-	 * @param b		Blue component
+	 * @param r	R value of sky
+	 * @param g	G value of sky
+	 * @param b B value of sky
 	 */
-	public void loadSkyColour(float r, float g, float b){
-		super.loadVector3f(location_skyColor, new Vector3f(r,g,b));
+	public void loadSkyColor(float r, float g, float b){
+		setUniform(getLocation("skyColor"), new Vector3f(r,g,b));
 	}
 
 	/**
-	 * Loads shine and reflection
+	 * Loads boolean for whether to use fake lighting or not
 	 * 
-	 * @param damper			Shine damper
-	 * @param reflectivity		Reflection factor
+	 * @param useFake	Fake lighting
+	 */
+	public void loadFakePointLightingVariable(boolean useFake){
+		setUniform(getLocation("useFakeLighting"), useFake);
+	}
+
+	/**
+	 * Loads shine variables to shader
+	 * 
+	 * @param damper		Damper factor of texture
+	 * @param reflectivity	Reflective factor of texture
 	 */
 	public void loadShineVariables(float damper,float reflectivity){
-		super.loadFloat(location_shineDamper, damper);
-		super.loadFloat(location_reflectivity, reflectivity);
+		setUniform(getLocation("shineDamper"), damper);
+		setUniform(getLocation("reflectivity"), reflectivity);
 	}
 
 	/**
 	 * Loads transformation matrix to shader
 	 * 
-	 * @param matrix		Transformation matrix
+	 * @param matrix	Transformation matrix
 	 */
 	public void loadTransformationMatrix(Matrix4f matrix){
-		super.loadMatrix4f(location_transformationMatrix, matrix);
+		setUniform(getLocation("transformationMatrix"), matrix);
 	}
 
 	/**
-	 * Loads lights to shader
+	 * Loads lights to shaders
 	 * 
-	 * @param lights		Lights
-	 * @param viewMatrix	View matrix of light
+	 * @param lights	List of lights
 	 */
-	public void loadLights(List<Light> lights, Matrix4f viewMatrix){
+	public void loadPointLights(List<PointLight> lights, Matrix4f viewMatrix){
 		for(int i=0;i<MAX_LIGHTS;i++){
 			if(i<lights.size()){
-				super.loadVector3f(location_lightPositionEyeSpace[i], getEyeSpacePosition(lights.get(i), viewMatrix));
-				super.loadVector3f(location_lightColor[i], lights.get(i).getColor());
-				super.loadVector3f(location_attenuation[i], lights.get(i).getAttenuation());
+				setUniform(getLocation("lightPositionEyeSpace[" + i + "]"), getEyeSpacePosition(lights.get(i), viewMatrix));
+				setUniform(getLocation("lightColor[" + i + "]"), lights.get(i).getColor());
+				setUniform(getLocation("attenuation[" + i + "]"), lights.get(i).getAttenuation());
 			}else{
-				super.loadVector3f(location_lightPositionEyeSpace[i], new Vector3f(0, 0, 0));
-				super.loadVector3f(location_lightColor[i], new Vector3f(0, 0, 0));
-				super.loadVector3f(location_attenuation[i], new Vector3f(1, 0, 0));
+				setUniform(getLocation("lightPositionEyeSpace[" + i + "]"), new Vector3f(0, 0, 0));
+				setUniform(getLocation("lightColor[" + i + "]"), new Vector3f(0, 0, 0));
+				setUniform(getLocation("attenuation[" + i + "]"), new Vector3f(1, 0, 0));
 			}
 		}
 	}
@@ -176,31 +175,49 @@ public class NormalMapShader extends ShaderProgram {
 	/**
 	 * Loads view matrix to shader
 	 * 
-	 * @param viewMatrix		View matrix
+	 * @param camera	Camera to make view matrix
 	 */
 	public void loadViewMatrix(Matrix4f viewMatrix){
-		super.loadMatrix4f(location_viewMatrix, viewMatrix);
+		setUniform(getLocation("viewMatrix"), viewMatrix);
 	}
 
 	/**
 	 * Loads projection matrix to shader
 	 * 
-	 * @param projection		Projection matrix
+	 * @param projection	Projection matrix
 	 */
 	public void loadProjectionMatrix(Matrix4f projection){
-		super.loadMatrix4f(location_projectionMatrix, projection);
-	}
-	
-	/**
-	 * Loads maximum number of lights to be processed by the shader
-	 * 
-	 * @param maxLights		Maximum number of lights
-	 */
-	public void loadMaxLights(int maxLights) {
-		super.loadInt(location_maxLights, maxLights);
+		setUniform(getLocation("projectionMatrix"), projection);
 	}
 
-	private Vector3f getEyeSpacePosition(Light light, Matrix4f viewMatrix){
+	/**
+	 * Loads clip plane to shader
+	 * 
+	 * @param plane	Clip plane
+	 */
+	public void loadClipPlane(Vector4f plane) {
+		setUniform(getLocation("plane"), plane);
+	}
+
+	/**
+	 * Loads maximum light count to shader
+	 * 
+	 * @param light_count	PointLight count
+	 */
+	public void loadMaxPointLights(int light_count) {
+		setUniform(getLocation("maxLights"), light_count);
+	}
+
+	/**
+	 * Loads shadow map space to shader
+	 * 
+	 * @param shadowMapSpace		Shadow map space
+	 */
+	public void loadToShadowMapSpace(Matrix4f shadowMapSpace) {
+		setUniform(getLocation("toShadowMapSpace"), shadowMapSpace);
+	}
+
+	private Vector3f getEyeSpacePosition(PointLight light, Matrix4f viewMatrix) {
 		Vector3f position = light.getPosition();
 		Vector4f eyeSpacePos = new Vector4f(position.x,position.y, position.z, 1f);
 		Matrix4f.transform(viewMatrix, eyeSpacePos, eyeSpacePos);

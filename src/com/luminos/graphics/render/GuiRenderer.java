@@ -1,18 +1,30 @@
 package com.luminos.graphics.render;
 
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TRIANGLE_STRIP;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glDrawArrays;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
+import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
+
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
-
-import com.luminos.graphics.loaders.Loader;
 import com.luminos.graphics.models.RawModel;
 import com.luminos.graphics.shaders.GuiShader;
 import com.luminos.graphics.textures.GUITexture;
-import com.luminos.maths.matrix.Matrix4f;
+import com.luminos.loaders.Loader;
 import com.luminos.tools.Maths;
+import com.luminos.tools.maths.matrix.Matrix4f;
 
 /**
  * 
@@ -48,22 +60,22 @@ public class GuiRenderer {
 		
 		if(!guis.isEmpty()) {
 			shader.start();
-			GL30.glBindVertexArray(quad.getVaoID());
-			GL20.glEnableVertexAttribArray(0);
-			GL11.glEnable(GL11.GL_BLEND);
-			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-			GL11.glDisable(GL11.GL_DEPTH_TEST);
+			glBindVertexArray(quad.getVaoID());
+			glEnableVertexAttribArray(0);
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glDisable(GL_DEPTH_TEST);
 			for(GUITexture gui: guis){
-				GL13.glActiveTexture(GL13.GL_TEXTURE0);
-				GL11.glBindTexture(GL11.GL_TEXTURE_2D, gui.getID());
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, gui.getID());
 				Matrix4f matrix = Maths.createTransformationMatrix(gui.getPosition(), gui.getScale());
 				shader.loadTransformation(matrix);
-				GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, quad.getVertexCount());
+				glDrawArrays(GL_TRIANGLE_STRIP, 0, quad.getVertexCount());
 			}
-			GL11.glEnable(GL11.GL_DEPTH_TEST);
-			GL11.glDisable(GL11.GL_BLEND);
-			GL20.glDisableVertexAttribArray(0);
-			GL30.glBindVertexArray(0);
+			glEnable(GL_DEPTH_TEST);
+			glDisable(GL_BLEND);
+			glDisableVertexAttribArray(0);
+			glBindVertexArray(0);
 			shader.stop();
 		}
 		

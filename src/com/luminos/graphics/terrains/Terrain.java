@@ -13,15 +13,15 @@ import com.luminos.Debug;
 import com.luminos.filesystem.serialization.LDatabase;
 import com.luminos.filesystem.serialization.LField;
 import com.luminos.filesystem.serialization.LObject;
-import com.luminos.graphics.gameobjects.Entity;
-import com.luminos.graphics.loaders.Loader;
+import com.luminos.graphics.gameobjects.GameObject;
 import com.luminos.graphics.models.RawModel;
 import com.luminos.graphics.textures.ProceduralTerrainTexture;
 import com.luminos.graphics.textures.TerrainTexture;
 import com.luminos.graphics.textures.TerrainTexturePack;
-import com.luminos.maths.vector.Vector;
-import com.luminos.maths.vector.Vector2f;
-import com.luminos.maths.vector.Vector3f;
+import com.luminos.loaders.Loader;
+import com.luminos.tools.maths.vector.Vector;
+import com.luminos.tools.maths.vector.Vector2f;
+import com.luminos.tools.maths.vector.Vector3f;
 import com.luminos.tools.Maths;
 import com.luminos.tools.algorithms.FractalNoise;
 /**
@@ -97,8 +97,9 @@ public class Terrain {
 	 * @param loader		Loader to use
 	 * @param gridX			Grid X coordinate
 	 * @param gridZ			Grid Z coordinate
+	 * @throws IOException	Exception for if file isn't found or cannot be handled
 	 */
-	public Terrain(RawModel model, float[][] heights, List<String> textures, BufferedImage blendMap, Loader loader, float gridX, float gridZ) {
+	public Terrain(RawModel model, float[][] heights, List<String> textures, BufferedImage blendMap, Loader loader, float gridX, float gridZ) throws IOException {
 		this.model = model;
 		this.heights = heights;
 		this.texturePack = new TerrainTexturePack(new TerrainTexture(loader.loadTexture(textures.get(0))), 
@@ -149,10 +150,10 @@ public class Terrain {
 	/**
 	 * Calculates whether the entity is within a terrain's bounds
 	 * 
-	 * @param entity	Entity to calculate with
+	 * @param entity	GameObject to calculate with
 	 * @return 			Inside terrain bounds
 	 */
-	public boolean isOnTerrain(Entity entity) {
+	public boolean isOnTerrain(GameObject entity) {
 		return isOnTerrain((Vector3f) entity.getPosition());
 	}
 

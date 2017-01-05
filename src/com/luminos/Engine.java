@@ -1,11 +1,8 @@
 package com.luminos;
 
-import org.lwjgl.glfw.GLFW;
-
-import com.luminos.graphics.display.GLFWWindow;
-import com.luminos.graphics.loaders.Loader;
+import com.luminos.graphics.display.Window;
 import com.luminos.graphics.render.MasterRenderer;
-import com.luminos.input.Keyboard;
+import com.luminos.loaders.Loader;
 import com.luminos.tools.SceneManager;
 import com.luminos.tools.Timer;
 
@@ -22,32 +19,30 @@ public class Engine {
 	
 	private SceneManager manager;
 	private Timer timer = new Timer();
+	private float elapsedTime;
+	private float accumulator = 0f;
+	private float interval = 1f / ConfigData.UPS;
 	
 	/**
 	 * Creates a new Engine
 	 * 
 	 * @param masterRenderer	Wraps all required renderers
 	 * @param loader			Loads the required objects to the GPU
+	 * @throws Exception 
 	 */
-	public Engine(MasterRenderer masterRenderer, Loader loader) {
+	public Engine(MasterRenderer masterRenderer, Loader loader) throws Exception {
 		this.manager = new SceneManager(masterRenderer, loader);
+		Thread.currentThread().setName("LUMINOS_ENGINE:_GRAPHICS");
 	}
 	
 	/**
 	 * Opens window
 	 * 
-	 * @param windowID		Window to open
+	 * @param window		Window to open
 	 */
-	public void start(long windowID) {
-		GLFW.glfwShowWindow(windowID);
-		Thread.currentThread().setName("ENGINE");
-	}
-	
-	/**
-	 * Updates physics
-	 */
-	public void update(GameLogic logic) {
-		logic.update();
+	public void start(Window window) {
+		window.showWindow();
+		window.printDeviceData();
 	}
 	
 	/**
@@ -57,29 +52,31 @@ public class Engine {
 	 * @param entity					Entity controlled by user
 	 * @param camera					Camera to render with
 	 * @param window					Window to render to
-	 * @throws InterruptedException		Thrown when synchronizing the thread causes an error
+	 * @throws Exception 
 	 */
-	public void render(GameLogic logic, GLFWWindow window) throws InterruptedException {
-		while (!window.shouldClose()) {
-			if (closeRequest())
-				break;
-			logic.input(window, logic.getFocalObject(), logic.getCamera());
-			logic.update();
-			logic.render(manager, logic.getCamera());
-			window.update();
-			sync();
+	public void render(Scene logic, Window window) throws Exception {
+		elapsedTime = timer.getElapsedTime();
+		accumulator += elapsedTime;
+		logic.input(window, logic.getFocalObject(), logic.getCamera());
+		while (accumulator >= interval) {
+			logic.update(interval);
+			accumulator -= interval;
 		}
+		logic.render(manager, logic.getCamera());
+		window.update();
+		if (window.isVsync())
+			sync();
 	}
 	
-	private boolean closeRequest() {
-		return Keyboard.isDown(Keyboard.KEY_ESCAPE);
+	public void close() {
+		manager.dispose();
 	}
 	
 	private void sync() throws InterruptedException {
-		float loopSlot = 1f / ConfigData.FPS;
+		float loopSlot = 1f / Window.REFRESH_RATE;
 		double endTime = timer.getLastLoopTime() + loopSlot;
 		while (timer.getTime() < endTime) {
-			Thread.sleep(1);
+			
 		}
 	}
 

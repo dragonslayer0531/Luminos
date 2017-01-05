@@ -1,6 +1,7 @@
 package com.luminos.tools.instanceinfo;
 
-import org.lwjgl.glfw.GLFW;
+import static org.lwjgl.glfw.GLFW.glfwGetVersionString;
+import static org.lwjgl.glfw.GLFW.glfwInit;
 
 /**
  * 
@@ -19,8 +20,8 @@ public class GLFWInstance {
 	 * @return	GLFW Version
 	 */
 	public static String getVersion() {
-		assert(GLFW.glfwInit());
-		return GLFW.glfwGetVersionString();
+		assert(glfwInit());
+		return glfwGetVersionString();
 	}
 	
 	/**
@@ -29,7 +30,7 @@ public class GLFWInstance {
 	 * @return	GLFW Context info
 	 */
 	public static String getContextInformation() {
-		assert(GLFW.glfwInit());
+		assert(glfwInit());
 		StringBuilder data = new StringBuilder();
 		data.append(new String("GLFW VERSION: ") + getVersion());
 		appendNewLine(data);

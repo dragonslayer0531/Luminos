@@ -1,10 +1,9 @@
 package com.luminos.graphics.particles;
 
-import com.luminos.graphics.display.GLFWWindow;
-import com.luminos.graphics.gameobjects.Entity;
+import com.luminos.graphics.display.Window;
 import com.luminos.graphics.textures.ParticleTexture;
-import com.luminos.maths.vector.Vector2f;
-import com.luminos.maths.vector.Vector3f;
+import com.luminos.tools.maths.vector.Vector2f;
+import com.luminos.tools.maths.vector.Vector3f;
 
 /**
  * 
@@ -115,8 +114,8 @@ public class Particle {
 	 * @param window	{@link GLFWWindow} to get the frame time of
 	 * @return boolean 	Whether the particle is alive
 	 */
-	public boolean update(GLFWWindow window) {
-		velocity.y += Entity.GRAVITY * grav * window.getFrameTime();
+	public boolean update(Window window) {
+		velocity.y += 50 * grav * window.getFrameTime();
 		Vector3f change = new Vector3f(velocity.x, velocity.y, velocity.z);
 		change.scale(window.getFrameTime());
 		Vector3f.add(change, position, position);

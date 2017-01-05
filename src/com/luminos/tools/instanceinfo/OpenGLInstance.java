@@ -1,7 +1,11 @@
 package com.luminos.tools.instanceinfo;
 
-import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GL11;
+import static org.lwjgl.opengl.GL.getCapabilities;
+import static org.lwjgl.opengl.GL11.GL_EXTENSIONS;
+import static org.lwjgl.opengl.GL11.GL_RENDERER;
+import static org.lwjgl.opengl.GL11.GL_VENDOR;
+import static org.lwjgl.opengl.GL11.GL_VERSION;
+import static org.lwjgl.opengl.GL11.glGetString;
 
 /**
  * 
@@ -20,8 +24,8 @@ public class OpenGLInstance {
 	 * @return		OpenGL version
 	 */
 	public static String getOpenGLVersion() {
-		assert(GL.getCapabilities() != null);
-		return GL11.glGetString(GL11.GL_VERSION);
+		assert(getCapabilities() != null);
+		return glGetString(GL_VERSION);
 	}
 	
 	/**
@@ -30,8 +34,8 @@ public class OpenGLInstance {
 	 * @return		Graphics Card Manufacturer/Vendor
 	 */
 	public static String getGraphicsCardManufacturer() {
-		assert(GL.getCapabilities() != null);
-		return GL11.glGetString(GL11.GL_VENDOR);
+		assert(getCapabilities() != null);
+		return glGetString(GL_VENDOR);
 	}
 	
 	/**
@@ -40,8 +44,8 @@ public class OpenGLInstance {
 	 * @return		Graphics card in use
 	 */
 	public static String getRenderer() {
-		assert(GL.getCapabilities() != null);
-		return GL11.glGetString(GL11.GL_RENDERER);
+		assert(getCapabilities() != null);
+		return glGetString(GL_RENDERER);
 	}
 	
 	/**
@@ -50,8 +54,8 @@ public class OpenGLInstance {
 	 * @return		Extensions in use by OpenGL
 	 */
 	public static String getOpenGLExtensions() {
-		assert(GL.getCapabilities() != null);
-		return GL11.glGetString(GL11.GL_EXTENSIONS);
+		assert(getCapabilities() != null);
+		return glGetString(GL_EXTENSIONS);
 	}
 	
 	/**
@@ -60,7 +64,7 @@ public class OpenGLInstance {
 	 * @return		OpenGL context information
 	 */
 	public static String getContextInformation() {
-		assert(GL.getCapabilities() != null);
+		assert(getCapabilities() != null);
 		StringBuilder contextInfo = new StringBuilder();
 		contextInfo.append(new String("OPENGL VERSION: ") + getOpenGLVersion());
 		appendNewLine(contextInfo);

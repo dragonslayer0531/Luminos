@@ -16,12 +16,11 @@ public class ContrastShader extends ShaderProgram implements PostProcess {
 	public static String VERT = "contrast.vert";
 	public static String FRAG = "contrast.frag";
 	
-	private int location_contrast;
-
 	/**
 	 * Constructor
+	 * @throws Exception 
 	 */
-	public ContrastShader() {
+	public ContrastShader() throws Exception {
 		super(VERT, FRAG);
 	}
 
@@ -31,7 +30,7 @@ public class ContrastShader extends ShaderProgram implements PostProcess {
 	 */
 	@Override
 	public void getAllUniformLocations() {
-		location_contrast = super.getUniformLocation("contrast");
+		createUniform("contrast");
 	}
 
 	/*
@@ -49,7 +48,7 @@ public class ContrastShader extends ShaderProgram implements PostProcess {
 	 * @param contrast		Contrast factor
 	 */
 	public void setContrast(float contrast) {
-		super.loadFloat(location_contrast, contrast);
+		setUniform(getLocation("contrast"), contrast);
 	}
 
 }

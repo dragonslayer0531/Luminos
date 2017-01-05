@@ -1,20 +1,23 @@
 package com.luminos.graphics.render;
 
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glEnable;
+
 import java.util.List;
 import java.util.Map;
 
-import org.lwjgl.opengl.GL11;
-
 import com.luminos.graphics.gameobjects.Camera;
 import com.luminos.graphics.gameobjects.GameObject;
-import com.luminos.graphics.gameobjects.Light;
+import com.luminos.graphics.gameobjects.PointLight;
 import com.luminos.graphics.models.TexturedModel;
 import com.luminos.graphics.shaders.ShadowShader;
 import com.luminos.graphics.shadows.ShadowBox;
 import com.luminos.graphics.shadows.ShadowFrameBuffer;
-import com.luminos.maths.matrix.Matrix4f;
-import com.luminos.maths.vector.Vector2f;
-import com.luminos.maths.vector.Vector3f;
+import com.luminos.tools.maths.matrix.Matrix4f;
+import com.luminos.tools.maths.vector.Vector2f;
+import com.luminos.tools.maths.vector.Vector3f;
 
 /**
  * 
@@ -58,7 +61,7 @@ public class ShadowMapMasterRenderer {
      * @param entities		List of all rendered entities
      * @param sun			Focal light to render to shadow map
      */
-    public void render(Map<TexturedModel, List<GameObject>> entities, Light sun) {
+    public void render(Map<TexturedModel, List<GameObject>> entities, PointLight sun) {
         shadowBox.update();
         Vector3f sunPosition = sun.getPosition();
         Vector3f lightDirection = new Vector3f(-sunPosition.x, -sunPosition.y, -sunPosition.z);
@@ -96,9 +99,9 @@ public class ShadowMapMasterRenderer {
     /**
      * Returns the light view matrix
      * 
-     * @return Light Space Transformation Matrix
+     * @return PointLight Space Transformation Matrix
      */
-    public Matrix4f getLightSpaceTransform() {
+    public Matrix4f getPointLightSpaceTransform() {
         return lightViewMatrix;
     }
 
@@ -112,11 +115,11 @@ public class ShadowMapMasterRenderer {
      */
     private void prepare(Vector3f lightDirection, ShadowBox box) {
         updateOrthoProjectionMatrix(box.getWidth(), box.getHeight(), box.getLength());
-        updateLightViewMatrix(lightDirection, box.getCenter());
+        updatePointLightViewMatrix(lightDirection, box.getCenter());
         Matrix4f.mul(projectionMatrix, lightViewMatrix, projectionViewMatrix);
         shadowFbo.bindFrameBuffer();
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
+        glClear(GL_DEPTH_BUFFER_BIT);
         shader.start();
     }
 
@@ -134,7 +137,7 @@ public class ShadowMapMasterRenderer {
      * @param direction		Direction the light view matrix is facing
      * @param center		Center of the light view matrix
      */
-    private void updateLightViewMatrix(Vector3f direction, Vector3f center) {
+    private void updatePointLightViewMatrix(Vector3f direction, Vector3f center) {
         direction.normalize();
         center.negate();
         lightViewMatrix.setIdentity();

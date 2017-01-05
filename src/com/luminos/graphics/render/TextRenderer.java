@@ -1,20 +1,31 @@
 package com.luminos.graphics.render;
 
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glDrawArrays;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
+import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
-
-import com.luminos.graphics.loaders.Loader;
 import com.luminos.graphics.shaders.TextShader;
 import com.luminos.graphics.text.FontType;
 import com.luminos.graphics.text.GUIText;
 import com.luminos.graphics.text.TextMeshData;
+import com.luminos.loaders.Loader;
 
 /**
  * 
@@ -39,7 +50,7 @@ public class TextRenderer {
 	 * @param loader	Defines loader to render with
 	 */
 	public TextRenderer(TextShader shader, Loader loader) {
-		this.shader = new TextShader();
+		this.shader = shader;
 		this.loader = loader;
 	}
 	
@@ -49,8 +60,8 @@ public class TextRenderer {
 	public void render() {
 		prepare();
 		for(FontType font : texts.keySet()) {
-			GL13.glActiveTexture(GL13.GL_TEXTURE0);
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, font.getTextureAtlas());
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, font.getTextureAtlas());
 			for(GUIText text : texts.get(font)) {
 				renderText(text);
 			}
@@ -114,8 +125,8 @@ public class TextRenderer {
 	 * Prepares for rendering
 	 */
 	private void prepare() {
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		shader.start();
 	}
 	
@@ -125,15 +136,15 @@ public class TextRenderer {
 	 * @param text	GUIText to be rendered
 	 */
 	private void renderText(GUIText text) {
-		GL30.glBindVertexArray(text.getMesh());
-		GL20.glEnableVertexAttribArray(0);
-		GL20.glEnableVertexAttribArray(1);
+		glBindVertexArray(text.getMesh());
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
 		shader.loadColor(text.getColor());
 		shader.loadTranslation(text.getPosition());
-		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, text.getVertexCount());
-		GL20.glDisableVertexAttribArray(0);
-		GL20.glDisableVertexAttribArray(1);
-		GL30.glBindVertexArray(0);
+		glDrawArrays(GL_TRIANGLES, 0, text.getVertexCount());
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+		glBindVertexArray(0);
 	}
 	
 	/**
@@ -141,7 +152,7 @@ public class TextRenderer {
 	 */
 	private void stop() {
 		shader.stop();
-		GL11.glDisable(GL11.GL_BLEND);
+		glDisable(GL_BLEND);
 	}
 
 }

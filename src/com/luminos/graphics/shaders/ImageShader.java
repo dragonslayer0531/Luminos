@@ -20,8 +20,9 @@ public class ImageShader extends ShaderProgram implements PostProcess {
 	
 	/**
 	 * Constructor
+	 * @throws Exception 
 	 */
-	public ImageShader() {
+	public ImageShader() throws Exception {
 		super(vertexFile, fragmentFile);
 	}
 

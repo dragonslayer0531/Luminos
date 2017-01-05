@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.luminos.graphics.display.GLFWWindow;
+import com.luminos.graphics.display.Window;
 import com.luminos.graphics.textures.ParticleTexture;
 
 /**
@@ -51,9 +51,9 @@ public class ParticleMaster {
 	/**
 	 * Updates all particles in world
 	 * 
-	 * @param window	{@link GLFWWindow} to get frame time of
+	 * @param window	{@link Window} to get frame time of
 	 */
-	public static void update(GLFWWindow window) {
+	public static void update(Window window) {
 		Iterator<Entry<ParticleTexture, List<Particle>>> mapIterator = (Iterator<Entry<ParticleTexture, List<Particle>>>) particles.entrySet().iterator();
 		while(mapIterator.hasNext()) {
 			List<Particle> list = mapIterator.next().getValue();

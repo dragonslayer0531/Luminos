@@ -1,14 +1,54 @@
 package com.luminos.graphics;
 
-import java.nio.ByteBuffer;
+import static org.lwjgl.opengl.GL11.GL_BACK;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_COMPONENT;
+import static org.lwjgl.opengl.GL11.GL_FLOAT;
+import static org.lwjgl.opengl.GL11.GL_LINEAR;
+import static org.lwjgl.opengl.GL11.GL_NEAREST;
+import static org.lwjgl.opengl.GL11.GL_RGBA;
+import static org.lwjgl.opengl.GL11.GL_RGBA8;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_S;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_T;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glDeleteTextures;
+import static org.lwjgl.opengl.GL11.glDrawBuffer;
+import static org.lwjgl.opengl.GL11.glGenTextures;
+import static org.lwjgl.opengl.GL11.glReadBuffer;
+import static org.lwjgl.opengl.GL11.glTexImage2D;
+import static org.lwjgl.opengl.GL11.glTexParameteri;
+import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
+import static org.lwjgl.opengl.GL14.GL_DEPTH_COMPONENT24;
+import static org.lwjgl.opengl.GL20.glDrawBuffers;
+import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
+import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT1;
+import static org.lwjgl.opengl.GL30.GL_DEPTH_ATTACHMENT;
+import static org.lwjgl.opengl.GL30.GL_DRAW_FRAMEBUFFER;
+import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
+import static org.lwjgl.opengl.GL30.GL_READ_FRAMEBUFFER;
+import static org.lwjgl.opengl.GL30.GL_RENDERBUFFER;
+import static org.lwjgl.opengl.GL30.glBindFramebuffer;
+import static org.lwjgl.opengl.GL30.glBindRenderbuffer;
+import static org.lwjgl.opengl.GL30.glBlitFramebuffer;
+import static org.lwjgl.opengl.GL30.glDeleteFramebuffers;
+import static org.lwjgl.opengl.GL30.glDeleteRenderbuffers;
+import static org.lwjgl.opengl.GL30.glFramebufferRenderbuffer;
+import static org.lwjgl.opengl.GL30.glFramebufferTexture2D;
+import static org.lwjgl.opengl.GL30.glGenFramebuffers;
+import static org.lwjgl.opengl.GL30.glGenRenderbuffers;
+import static org.lwjgl.opengl.GL30.glRenderbufferStorage;
+import static org.lwjgl.opengl.GL30.glRenderbufferStorageMultisample;
+import static org.lwjgl.system.MemoryUtil.NULL;
+
 import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-import org.lwjgl.opengl.GL14;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
 
 import com.luminos.ConfigData;
  
@@ -36,7 +76,6 @@ public class FrameBufferObject {
  
     private int depthBuffer;
     private int colorBuffer;
-    private int colorBuffer2;
     
     private boolean multisample = false;
  
@@ -64,12 +103,11 @@ public class FrameBufferObject {
      * Deletes the frame buffer and its attachments when the game closes.
      */
     public void cleanUp() {
-        GL30.glDeleteFramebuffers(frameBuffer);
-        GL11.glDeleteTextures(colorTexture);
-        GL11.glDeleteTextures(depthTexture);
-        GL30.glDeleteRenderbuffers(depthBuffer);
-        GL30.glDeleteRenderbuffers(colorBuffer);
-        GL30.glDeleteRenderbuffers(colorBuffer2);
+        glDeleteFramebuffers(frameBuffer);
+        glDeleteTextures(colorTexture);
+        glDeleteTextures(depthTexture);
+        glDeleteRenderbuffers(depthBuffer);
+        glDeleteRenderbuffers(colorBuffer);
     }
  
     /**
@@ -77,8 +115,8 @@ public class FrameBufferObject {
      * rendered after this will be rendered to this FBO, and not to the screen.
      */
     public void bindFrameBuffer() {
-        GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, frameBuffer);
-        GL11.glViewport(0, 0, width, height);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frameBuffer);
+        glViewport(0, 0, width, height);
     }
  
     /**
@@ -87,16 +125,16 @@ public class FrameBufferObject {
      * screen, and not this FBO.
      */
     public void unbindFrameBuffer() {
-        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
-        GL11.glViewport(0, 0, ConfigData.WIDTH, ConfigData.HEIGHT);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glViewport(0, 0, ConfigData.WIDTH, ConfigData.HEIGHT);
     }
  
     /**
      * Binds the current FBO to be read from (not used in tutorial 43).
      */
     public void bindToRead() {
-        GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, frameBuffer);
-        GL11.glReadBuffer(GL30.GL_COLOR_ATTACHMENT0);
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, frameBuffer);
+        glReadBuffer(GL_COLOR_ATTACHMENT0);
     }
  
     /**
@@ -119,11 +157,10 @@ public class FrameBufferObject {
      * @param readBuffer	Buffer to read from
      * @param fbo			FrameBufferObject to be resolved to
      */
-    public void resolveToFBO(int readBuffer, FrameBufferObject fbo) {
-    	GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, fbo.frameBuffer);
-    	GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, this.frameBuffer);
-    	GL11.glReadBuffer(readBuffer);
-    	GL30.glBlitFramebuffer(0, 0, width, height, 0, 0, fbo.width, fbo.height, GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, GL11.GL_NEAREST);
+    public void resolveToFBO(FrameBufferObject fbo) {
+    	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo.frameBuffer);
+    	glBindFramebuffer(GL_READ_FRAMEBUFFER, this.frameBuffer);
+    	glBlitFramebuffer(0, 0, width, height, 0, 0, fbo.width, fbo.height, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
     	this.unbindFrameBuffer();
     }
     
@@ -131,10 +168,10 @@ public class FrameBufferObject {
      * Resolves FrameBufferObject to screen
      */
     public void resolveToScreen() {
-    	GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
-    	GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, this.frameBuffer);
-    	GL11.glDrawBuffer(GL11.GL_BACK);
-    	GL30.glBlitFramebuffer(0, 0, ConfigData.WIDTH, ConfigData.HEIGHT, 0, 0, ConfigData.WIDTH, ConfigData.HEIGHT, GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
+    	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+    	glBindFramebuffer(GL_READ_FRAMEBUFFER, this.frameBuffer);
+    	glDrawBuffer(GL_BACK);
+    	glBlitFramebuffer(0, 0, ConfigData.WIDTH, ConfigData.HEIGHT, 0, 0, ConfigData.WIDTH, ConfigData.HEIGHT, GL_COLOR_BUFFER_BIT, GL_NEAREST);
     	this.unbindFrameBuffer();
     }
  
@@ -149,8 +186,7 @@ public class FrameBufferObject {
     private void initialiseFrameBuffer(int type) {
         createFrameBuffer();
         if(multisample) {
-        	colorBuffer = createMultisampleColorAttachment(GL30.GL_COLOR_ATTACHMENT0);
-        	colorBuffer2 = createMultisampleColorAttachment(GL30.GL_COLOR_ATTACHMENT1);
+        	colorBuffer = createMultisampleColorAttachment(GL_COLOR_ATTACHMENT0);
         } else {
         	createTextureAttachment();
         }
@@ -164,12 +200,12 @@ public class FrameBufferObject {
     
     private void determineDrawBuffers() {
     	IntBuffer drawBuffers = BufferUtils.createIntBuffer(2);
-    	drawBuffers.put(GL30.GL_COLOR_ATTACHMENT0);
+    	drawBuffers.put(GL_COLOR_ATTACHMENT0);
     	if (this.multisample) {
-    		drawBuffers.put(GL30.GL_COLOR_ATTACHMENT1);
+    		drawBuffers.put(GL_COLOR_ATTACHMENT1);
     	}
     	drawBuffers.flip();
-    	GL20.glDrawBuffers(drawBuffers);
+    	glDrawBuffers(drawBuffers);
     }
  
     /**
@@ -179,8 +215,8 @@ public class FrameBufferObject {
      * 
      */
     private void createFrameBuffer() {
-        frameBuffer = GL30.glGenFramebuffers();
-        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, frameBuffer);
+        frameBuffer = glGenFramebuffers();
+        glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
         determineDrawBuffers();
     }
  
@@ -189,15 +225,14 @@ public class FrameBufferObject {
      * FBO.
      */
     private void createTextureAttachment() {
-        colorTexture = GL11.glGenTextures();
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, colorTexture);
-        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, width, height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE,
-                (ByteBuffer) null);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
-        GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, colorTexture,
+        colorTexture = glGenTextures();
+        glBindTexture(GL_TEXTURE_2D, colorTexture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTexture,
                 0);
     }
     
@@ -205,11 +240,11 @@ public class FrameBufferObject {
      * Creates a color attachment with multiple samples
      */
     private int createMultisampleColorAttachment(int attachment) {
-    	int colorBuffer = GL30.glGenRenderbuffers();
-    	GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, colorBuffer);
-    	GL30.glRenderbufferStorageMultisample(GL30.GL_RENDERBUFFER, 4, GL11.GL_RGBA8, width, height);
-    	GL30.glFramebufferRenderbuffer(GL30.GL_FRAMEBUFFER, attachment, GL30.GL_RENDERBUFFER, colorBuffer);
-    		return colorBuffer;
+    	int colorBuffer = glGenRenderbuffers();
+    	glBindRenderbuffer(GL_RENDERBUFFER, colorBuffer);
+    	glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_RGBA8, width, height);
+    	glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, colorBuffer);
+    	return colorBuffer;
     }
  
     /**
@@ -217,13 +252,13 @@ public class FrameBufferObject {
      * be sampled.
      */
     private void createDepthTextureAttachment() {
-        depthTexture = GL11.glGenTextures();
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, depthTexture);
-        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL14.GL_DEPTH_COMPONENT24, width, height, 0, GL11.GL_DEPTH_COMPONENT,
-                GL11.GL_FLOAT, (ByteBuffer) null);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-        GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, GL11.GL_TEXTURE_2D, depthTexture, 0);
+        depthTexture = glGenTextures();
+        glBindTexture(GL_TEXTURE_2D, depthTexture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, width, height, 0, GL_DEPTH_COMPONENT,
+                GL_FLOAT, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0);
     }
  
     /**
@@ -231,14 +266,14 @@ public class FrameBufferObject {
      * be used for sampling in the shaders.
      */
     private void createDepthBufferAttachment() {
-        depthBuffer = GL30.glGenRenderbuffers();
-        GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, depthBuffer);
+        depthBuffer = glGenRenderbuffers();
+        glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
         if(!multisample) {
-            GL30.glRenderbufferStorage(GL30.GL_RENDERBUFFER, GL14.GL_DEPTH_COMPONENT24, width, height);
+            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
         } else {
-            GL30.glRenderbufferStorageMultisample(GL30.GL_RENDERBUFFER, 4, GL14.GL_DEPTH_COMPONENT24, width, height);
+            glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH_COMPONENT24, width, height);
         }
-        GL30.glFramebufferRenderbuffer(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, GL30.GL_RENDERBUFFER,
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER,
                 depthBuffer);
     }
     

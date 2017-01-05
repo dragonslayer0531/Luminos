@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.luminos.graphics.models.TexturedModel;
 import com.luminos.graphics.terrains.Terrain;
-import com.luminos.maths.vector.Vector3f;
+import com.luminos.tools.maths.vector.Vector3f;
 
 /**
  * 

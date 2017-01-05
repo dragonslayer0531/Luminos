@@ -4,8 +4,8 @@ import static com.luminos.ConfigData.POSITION;
 
 import com.luminos.ConfigData;
 import com.luminos.graphics.gameobjects.Camera;
-import com.luminos.maths.matrix.Matrix4f;
-import com.luminos.maths.vector.Vector3f;
+import com.luminos.tools.maths.matrix.Matrix4f;
+import com.luminos.tools.maths.vector.Vector3f;
 import com.luminos.tools.Maths;
 
 /**
@@ -18,15 +18,6 @@ import com.luminos.tools.Maths;
  */
 
 public class SkyboxShader extends ShaderProgram {
-         
-    private int location_projectionMatrix;
-    private int location_viewMatrix;
-    private int location_fogColor;
-    private int location_cubeMap;
-    private int location_cubeMap2;
-    private int location_blendFactor;
-    private int location_lowerLimit;
-    private int location_upperLimit;
     
     private float rotation = 0.05f;
 	
@@ -35,8 +26,9 @@ public class SkyboxShader extends ShaderProgram {
      
     /** 
      * Constructor
+     * @throws Exception 
      */
-    public SkyboxShader() {
+    public SkyboxShader() throws Exception {
         super(VERT, FRAG);
     }
     
@@ -46,7 +38,7 @@ public class SkyboxShader extends ShaderProgram {
      * @param matrix	Projection Matrix
      */
     public void loadProjectionMatrix(Matrix4f matrix){
-        super.loadMatrix4f(location_projectionMatrix, matrix);
+        setUniform(getLocation("projectionMatrix"), matrix);
     }
     
     /**
@@ -61,7 +53,7 @@ public class SkyboxShader extends ShaderProgram {
         matrix.m32 = 0;
         rotation += 1f / ConfigData.FPS * 0.001f;
         Matrix4f.rotate((float) Math.toRadians(rotation), new Vector3f(0,1,0), matrix, matrix);
-        super.loadMatrix4f(location_viewMatrix, matrix);
+        setUniform(getLocation("viewMatrix"), matrix);
     }
     
     /**
@@ -70,15 +62,15 @@ public class SkyboxShader extends ShaderProgram {
      * @param color		Fog color
      */
     public void loadFogColor(Vector3f color){
-    	super.loadVector3f(location_fogColor, color);
+    	setUniform(getLocation("fogColor"), color);
     }
     
     /**
      * Connects texture units
      */
     public void connectTextureUnits(){
-    	super.loadInt(location_cubeMap, 0);
-    	super.loadInt(location_cubeMap2, 1);
+    	setUniform(getLocation("cubeMap"), 0);
+    	setUniform(getLocation("cubeMap2"), 1);
     }
     
     /**
@@ -87,7 +79,7 @@ public class SkyboxShader extends ShaderProgram {
      * @param blend	Blend Factor
      */
     public void loadBlendFactor(float blend){
-    	super.loadFloat(location_blendFactor, blend);
+    	setUniform(getLocation("blendFactor"), blend);
     }
     
     /**
@@ -96,7 +88,7 @@ public class SkyboxShader extends ShaderProgram {
      * @param lowerLimit	Lower rendering limit
      */
     public void loadLowerLimit(float lowerLimit) {
-    	super.loadFloat(location_lowerLimit, lowerLimit);
+    	setUniform(getLocation("lowerLimit"), lowerLimit);
     }
     
     /**
@@ -105,7 +97,7 @@ public class SkyboxShader extends ShaderProgram {
      * @param upperLimit	Upper rendering limit
      */
     public void loadUpperLimit(float upperLimit) {
-    	super.loadFloat(location_upperLimit, upperLimit);
+    	setUniform(getLocation("upperLimit"), upperLimit);
     }
      
     /*
@@ -113,14 +105,14 @@ public class SkyboxShader extends ShaderProgram {
      * @see graphics.shaders.ShaderProgram#getAllUniformLocations()
      */
     public void getAllUniformLocations() {
-        location_projectionMatrix = super.getUniformLocation("projectionMatrix");
-        location_viewMatrix = super.getUniformLocation("viewMatrix");
-        location_fogColor = super.getUniformLocation("fogColor");
-        location_blendFactor = super.getUniformLocation("blendFactor");
-        location_cubeMap = super.getUniformLocation("cubeMap");
-        location_cubeMap2 = super.getUniformLocation("cubeMap2");
-        location_lowerLimit = super.getUniformLocation("lowerLimit");
-        location_upperLimit = super.getUniformLocation("upperLimit");
+        createUniform("projectionMatrix");
+        createUniform("viewMatrix");
+        createUniform("fogColor");
+        createUniform("blendFactor");
+        createUniform("cubeMap");
+        createUniform("cubeMap2");
+        createUniform("lowerLimit");
+        createUniform("upperLimit");
     }
  
     /*

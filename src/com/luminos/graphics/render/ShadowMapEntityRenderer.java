@@ -1,20 +1,26 @@
 package com.luminos.graphics.render;
 
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glDrawElements;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
+import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
+
 import java.util.List;
 import java.util.Map;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
 
 import com.luminos.graphics.gameobjects.GameObject;
 import com.luminos.graphics.models.RawModel;
 import com.luminos.graphics.models.TexturedModel;
 import com.luminos.graphics.shaders.ShadowShader;
-import com.luminos.maths.matrix.Matrix4f;
-import com.luminos.maths.vector.Vector3f;
 import com.luminos.tools.Maths;
+import com.luminos.tools.maths.matrix.Matrix4f;
+import com.luminos.tools.maths.vector.Vector3f;
 
 /**
  * 
@@ -50,19 +56,19 @@ public class ShadowMapEntityRenderer {
 		for (TexturedModel model : entities.keySet()) {
 			RawModel rawModel = model.getRawModel();
 			bindModel(rawModel);
-			GL13.glActiveTexture(GL13.GL_TEXTURE0);
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getID());
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, model.getMaterial().getDiffuseID());
 			for (GameObject entity : entities.get(model)) {
 				if (!entity.isRenderable())
 					continue;
 				prepareInstance(entity);
-				GL11.glDrawElements(GL11.GL_TRIANGLES, rawModel.getVertexCount(),
-						GL11.GL_UNSIGNED_INT, 0);
+				glDrawElements(GL_TRIANGLES, rawModel.getVertexCount(),
+						GL_UNSIGNED_INT, 0);
 			}
 		}
-		GL20.glDisableVertexAttribArray(0);
-		GL20.glDisableVertexAttribArray(1);
-		GL30.glBindVertexArray(0);
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+		glBindVertexArray(0);
 	}
 
 //*************************************Private Methods********************************//
@@ -73,9 +79,9 @@ public class ShadowMapEntityRenderer {
 	 * @param rawModel		RawModel to be bound
 	 */
 	private void bindModel(RawModel rawModel) {
-		GL30.glBindVertexArray(rawModel.getVaoID());
-		GL20.glEnableVertexAttribArray(0);
-		GL20.glEnableVertexAttribArray(1);
+		glBindVertexArray(rawModel.getVaoID());
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
 	}
 
 	/**

@@ -1,22 +1,34 @@
 package com.luminos.graphics.render;
 
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_ONE;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TRIANGLE_STRIP;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glDepthMask;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glDrawArrays;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
+import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
+
 import java.util.List;
 import java.util.Map;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
-
 import com.luminos.graphics.gameobjects.Camera;
-import com.luminos.graphics.loaders.Loader;
 import com.luminos.graphics.models.RawModel;
 import com.luminos.graphics.particles.Particle;
 import com.luminos.graphics.shaders.ParticleShader;
 import com.luminos.graphics.textures.ParticleTexture;
-import com.luminos.maths.matrix.Matrix4f;
-import com.luminos.maths.vector.Vector3f;
+import com.luminos.loaders.Loader;
 import com.luminos.tools.Maths;
+import com.luminos.tools.maths.matrix.Matrix4f;
+import com.luminos.tools.maths.vector.Vector3f;
 
 /**
  * 
@@ -60,12 +72,12 @@ public class ParticleRenderer {
 		prepare();
 		
 		for(ParticleTexture texture : particles.keySet()) {
-			GL13.glActiveTexture(GL13.GL_TEXTURE0);
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getID());
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, texture.getID());
 			for(Particle particle : particles.get(texture)) {
 				updateModelViewMatrix(particle.getPosition(), particle.getRotation(), particle.getScale(), viewMatrix);
 				shader.loadTextureCoordInfo(particle.getOffsetOne(), particle.getOffsetTwo(), texture.getNumberOfRows(), particle.getBlend());
-				GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, quad.getVertexCount());
+				glDrawArrays(GL_TRIANGLE_STRIP, 0, quad.getVertexCount());
 			}
 		}
 		
@@ -77,21 +89,21 @@ public class ParticleRenderer {
 	 */
 	public void prepare() {
 		shader.start();
-		GL30.glBindVertexArray(quad.getVaoID());
-		GL20.glEnableVertexAttribArray(0);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-		GL11.glDepthMask(false);
+		glBindVertexArray(quad.getVaoID());
+		glEnableVertexAttribArray(0);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		glDepthMask(false);
 	}
 	
 	/**
 	 * Finished rendering process
 	 */
 	public void finish() {
-		GL11.glDepthMask(true);
-		GL11.glDisable(GL11.GL_BLEND);
-		GL20.glDisableVertexAttribArray(0);
-		GL30.glBindVertexArray(0);
+		glDepthMask(true);
+		glDisable(GL_BLEND);
+		glDisableVertexAttribArray(0);
+		glBindVertexArray(0);
 		shader.stop();
 	}
 	

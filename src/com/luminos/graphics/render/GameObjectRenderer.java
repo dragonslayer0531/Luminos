@@ -1,21 +1,30 @@
 package com.luminos.graphics.render;
 
+import static org.lwjgl.opengl.GL11.GL_CCW;
+import static org.lwjgl.opengl.GL11.GL_CW;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glDrawElements;
+import static org.lwjgl.opengl.GL11.glFrontFace;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
+import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
+
 import java.util.List;
 import java.util.Map;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
 
 import com.luminos.graphics.gameobjects.GameObject;
 import com.luminos.graphics.models.RawModel;
 import com.luminos.graphics.models.TexturedModel;
 import com.luminos.graphics.shaders.GameObjectShader;
-import com.luminos.graphics.textures.ModelTexture;
-import com.luminos.maths.matrix.Matrix4f;
-import com.luminos.maths.vector.Vector3f;
+import com.luminos.graphics.textures.Material;
 import com.luminos.tools.Maths;
+import com.luminos.tools.maths.matrix.Matrix4f;
+import com.luminos.tools.maths.vector.Vector3f;
 
 /**
  * 
@@ -51,21 +60,20 @@ public class GameObjectRenderer {
 	 * @param entities			Defines the map of entities to render
 	 * @param shadowMapSpace	Matrix defining the shadow map transformation
 	 */
-	public void render(Map<TexturedModel, List<GameObject>> entities, Matrix4f shadowMapSpace) {
-		shader.loadToShadowMapSpace(shadowMapSpace);
+	public void render(Map<TexturedModel, List<GameObject>> entities) {
 		for (TexturedModel model : entities.keySet()) {
 			prepareTexturedModel(model);
 			List<GameObject> batch = entities.get(model);
 			for (GameObject entity : batch) {
 				prepareInstance(entity);
-				if(model.getTexture().isDoubleSided()) {
-					GL11.glFrontFace(GL11.GL_CW);
-					GL11.glDrawElements(GL11.GL_TRIANGLES, model.getRawModel().getVertexCount(),
-							GL11.GL_UNSIGNED_INT, 0);
+				if(model.getMaterial().isRenderDoubleSided()) {
+					glFrontFace(GL_CW);
+					glDrawElements(GL_TRIANGLES, model.getRawModel().getVertexCount(),
+							GL_UNSIGNED_INT, 0);
 				}
-				GL11.glFrontFace(GL11.GL_CCW);
-				GL11.glDrawElements(GL11.GL_TRIANGLES, model.getRawModel().getVertexCount(),
-						GL11.GL_UNSIGNED_INT, 0);
+				glFrontFace(GL_CCW);
+				glDrawElements(GL_TRIANGLES, model.getRawModel().getVertexCount(),
+						GL_UNSIGNED_INT, 0);
 			}
 			unbindTexturedModel();
 		}
@@ -123,21 +131,21 @@ public class GameObjectRenderer {
 	 */
 	private void prepareTexturedModel(TexturedModel model) {
 		RawModel rawModel = model.getRawModel();
-		GL30.glBindVertexArray(rawModel.getVaoID());
-		GL20.glEnableVertexAttribArray(0);
-		GL20.glEnableVertexAttribArray(1);
-		GL20.glEnableVertexAttribArray(2);
-		ModelTexture texture = model.getTexture();
-		shader.loadNumberOfRows(texture.getNumberOfRows());
+		glBindVertexArray(rawModel.getVaoID());
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(2);
+		Material texture = model.getMaterial();
+		shader.loadNumberOfRows(texture.getRows());
 		if(texture.hasTransparency()){
 			MasterRenderer.disableCulling();
 		}
-		shader.loadFakeLightingVariable(texture.usesFakeLighting());
+		shader.loadFakePointLightingVariable(texture.useFakeLighting());
 		shader.loadShineVariables(texture.getShineDamper(), texture.getReflectivity());
 		shader.loadDensity(density);
 		shader.loadGradient(gradient);
-		GL13.glActiveTexture(GL13.GL_TEXTURE0);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getID());
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, model.getMaterial().getDiffuseID());
 	}
 
 	/**
@@ -145,10 +153,10 @@ public class GameObjectRenderer {
 	 */
 	private void unbindTexturedModel() {
 		MasterRenderer.enableCulling();
-		GL20.glDisableVertexAttribArray(0);
-		GL20.glDisableVertexAttribArray(1);
-		GL20.glDisableVertexAttribArray(2);
-		GL30.glBindVertexArray(0);
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(2);
+		glBindVertexArray(0);
 	}
 
 	/**

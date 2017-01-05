@@ -1,6 +1,6 @@
 package com.luminos.tools;
 
-import static com.luminos.ConfigData.*;
+import static com.luminos.ConfigData.SEED;
 
 public class Random extends java.util.Random {
 
