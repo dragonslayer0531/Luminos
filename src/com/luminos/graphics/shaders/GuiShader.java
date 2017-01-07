@@ -2,8 +2,6 @@ package com.luminos.graphics.shaders;
 
 import static com.luminos.ConfigData.POSITION;
 
-import com.luminos.tools.maths.matrix.Matrix4f;
-
 /**
  * 
  * Gui Shader to use in GuiRenderer
@@ -40,15 +38,5 @@ public class GuiShader extends ShaderProgram {
 	public void bindAttributes() {
 		super.bindAttribute(POSITION, "position");
 	}
-	
-	/**
-	 * Load transformation matrix to shader
-	 * 
-	 * @param matrix	Transformation matrix
-	 */
-	public void loadTransformation(Matrix4f matrix){
-		setUniform(getLocation("transformationMatrix"), matrix);
-	}
-
 
 }

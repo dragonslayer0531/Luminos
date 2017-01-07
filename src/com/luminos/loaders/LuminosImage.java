@@ -82,6 +82,11 @@ public class LuminosImage {
 		TextureData data = getData(file, format);
 		return new LuminosImage(data.getWidth(), data.getHeight(), data.getBuffer(), format);
 	}
+	
+	public static LuminosImage loadImage(BufferedImage image, Format format) {
+		TextureData data = getData(image, format);
+		return new LuminosImage(data.getWidth(), data.getHeight(), data.getBuffer(), format);
+	}
 
 	/**
 	 * Loads file to texture data
@@ -121,6 +126,50 @@ public class LuminosImage {
 			height = biRGB.getHeight();
 			int[] pixelsRGB = new int[width * height];
 			biRGB.getRGB(0, 0, width, height, pixelsRGB, 0, width);
+			buffer = BufferUtils.createByteBuffer(width * height * format.size);
+			for(int y = 0; y < height; y++){
+				for(int x = 0; x < width; x++){
+					int pixel = pixelsRGB[y * width + x];
+					buffer.put((byte) ((pixel >> 16) & 0xFF));
+					buffer.put((byte) ((pixel >> 8) & 0xFF));
+					buffer.put((byte) (pixel & 0xFF));
+				}
+			}
+			buffer.flip();
+			return new TextureData(buffer, width, height);
+		}
+		
+		return null;
+	}
+	
+	private static TextureData getData(BufferedImage image, Format format) {
+
+		int width = 0, height = 0;
+
+		ByteBuffer buffer = null;
+		switch(format) {
+		case RGBA:
+			width = image.getWidth();
+			height = image.getHeight();
+			int[] pixels = new int[width * height];
+			image.getRGB(0, 0, width, height, pixels, 0, width);
+			buffer = BufferUtils.createByteBuffer(width * height * format.size);
+			for(int y = 0; y < height; y++){
+				for(int x = 0; x < width; x++){
+					int pixel = pixels[y * width + x];
+					buffer.put((byte) ((pixel >> 16) & 0xFF));
+					buffer.put((byte) ((pixel >> 8) & 0xFF));
+					buffer.put((byte) (pixel & 0xFF));
+					buffer.put((byte) ((pixel >> 24) & 0xFF));
+				}
+			}
+			buffer.flip();
+			return new TextureData(buffer, width, height);
+		case RGB:
+			width = image.getWidth();
+			height = image.getHeight();
+			int[] pixelsRGB = new int[width * height];
+			image.getRGB(0, 0, width, height, pixelsRGB, 0, width);
 			buffer = BufferUtils.createByteBuffer(width * height * format.size);
 			for(int y = 0; y < height; y++){
 				for(int x = 0; x < width; x++){

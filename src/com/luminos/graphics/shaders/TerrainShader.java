@@ -7,9 +7,7 @@ import static com.luminos.ConfigData.TEXTURES;
 import java.util.List;
 
 import com.luminos.graphics.gameobjects.PointLight;
-import com.luminos.tools.maths.matrix.Matrix4f;
 import com.luminos.tools.maths.vector.Vector3f;
-import com.luminos.tools.maths.vector.Vector4f;
 
 /**
  * 
@@ -22,7 +20,7 @@ import com.luminos.tools.maths.vector.Vector4f;
 
 public class TerrainShader extends ShaderProgram{
 	
-	private static final int MAX_LIGHTS = 20;
+	private static final int MAX_LIGHTS = 4;
 	
 	public static String VERT = "terrain.vert";
 	public static String FRAG = "terrain.frag";
@@ -62,17 +60,12 @@ public class TerrainShader extends ShaderProgram{
 		createUniform("bTexture");
 		createUniform("blendMap");
 		createUniform("shadowMap");
-//		createUniform("plane");
 		createUniform("toShadowMapSpace");
-		for(int i = 0; i < MAX_LIGHTS; i++){
-			createUniform("lightPosition[" + i + "]");
-			createUniform("lightColor[" + i + "]");
-			createUniform("attenuation[" + i + "]");
-		}
 		createUniform("density");
 		createUniform("gradient");
-		createUniform("maxLights");
 		createUniform("tileFactor");
+		createUniformPointLights("pointLights");
+		createUniformDirectionalLight("sun");
 	}
 	
 	/**
@@ -85,44 +78,6 @@ public class TerrainShader extends ShaderProgram{
 		setUniform(getLocation("bTexture"), 3);
 		setUniform(getLocation("blendMap"), 4);
 		setUniform(getLocation("shadowMap"), 5);
-	}
-	
-	/**
-	 * Loads shadow space matrix to shader
-	 * 
-	 * @param matrix	Shadow Space Matrix
-	 */
-	public void loadToShadowSpaceMatrix(Matrix4f matrix) {
-		setUniform(getLocation("toShadowMapSpace"), matrix);
-	}
-	
-	/**
-	 * Loads sky color
-	 * 
-	 * @param skyColor		Sky color
-	 */
-	public void loadSkyColor(Vector3f skyColor){
-		setUniform(getLocation("skyColor"), skyColor);
-	}
-	
-	/**
-	 * Loads shine values to shader
-	 * 
-	 * @param damper		Damper value
-	 * @param reflectivity	Reflectivity value
-	 */
-	public void loadShineVariables(float damper, float reflectivity){
-		setUniform(getLocation("shineDamper"), damper);
-		setUniform(getLocation("reflectivity"), reflectivity);
-	}
-	
-	/**
-	 * Loads transformation matrix to shader
-	 * 
-	 * @param matrix	Transformation matrix
-	 */
-	public void loadTransformationMatrix(Matrix4f matrix){
-		setUniform(getLocation("transformationMatrix"), matrix);
 	}
 	
 	/**
@@ -142,69 +97,6 @@ public class TerrainShader extends ShaderProgram{
 				setUniform(getLocation("attenuation[" + i + "]"), new Vector3f(1, 0, 0));
 			}
 		}
-	}
-	
-	/**
-	 * Loads view matrix to shader
-	 * 
-	 * @param camera	Camera to load view matrix of
-	 */
-	public void loadViewMatrix(Matrix4f viewMatrix){
-		setUniform(getLocation("viewMatrix"), viewMatrix);
-	}
-	
-	/**
-	 * Loads projection matrix to shader
-	 * 
-	 * @param projection	Projection matrix
-	 */
-	public void loadProjectionMatrix(Matrix4f projection){
-		setUniform(getLocation("projectionMatrix"), projection);
-	}
-	
-	/**
-	 * Loads clip plane to shader
-	 * 
-	 * @param clipPlane	Clipping plane
-	 */
-	public void loadClipPlane(Vector4f clipPlane) {
-//		setUniform(getLocation("plane"), clipPlane);
-	}
-	
-	/**
-	 * Loads density to shader
-	 * 
-	 * @param density	density of fog
-	 */
-	public void loadDensity(float density) {
-		setUniform(getLocation("density"), density);
-	}
-	
-	/**
-	 * Loads gradient to shader
-	 * 
-	 * @param gradient	gradient of fog
-	 */
-	public void loadGradient(float gradient) {
-		setUniform(getLocation("gradient"), gradient);
-	}
-	
-	/**
-	 * Loads maximum light count to shader
-	 * 
-	 * @param light_count	PointLight count
-	 */
-	public void loadMaxPointLights(int light_count) {
-		setUniform(getLocation("maxLights"), light_count);
-	}
-	
-	/**
-	 * Loads tiling factor for terrain texture
-	 * 
-	 * @param tileFactor		tiling factor for repetition of textures
-	 */
-	public void loadTileFactor(int tileFactor) {
-		setUniform(getLocation("tileFactor"), tileFactor);
 	}
 	
 }

@@ -139,8 +139,8 @@ public class TextRenderer {
 		glBindVertexArray(text.getMesh());
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
-		shader.loadColor(text.getColor());
-		shader.loadTranslation(text.getPosition());
+		shader.setUniform("color", text.getColor());
+		shader.setUniform("translation", text.getPosition());
 		glDrawArrays(GL_TRIANGLES, 0, text.getVertexCount());
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);

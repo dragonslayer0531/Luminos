@@ -46,6 +46,7 @@ public class Terrain {
 	private TerrainTexturePack texturePack;
 	private TerrainTexture blendMap;
 	private boolean renderable = true;
+	private FractalNoise noise;
 
 	private float[][] heights;
 
@@ -65,7 +66,8 @@ public class Terrain {
 		this.x = gridX * SIZE;
 		this.z = gridZ * SIZE;
 		this.seed = seed;
-		this.model = generateTerrain(loader, new FractalNoise((int) gridX, (int) gridZ, VERTEX_COUNT, seed, TerrainType.Type.HILLS));
+		this.noise = new FractalNoise((int) gridX, (int) gridZ, VERTEX_COUNT, seed, TerrainType.Type.HILLS);
+		this.model = generateTerrain(loader, noise);
 		this.blendMap = new TerrainTexture(loader.loadTexture(ProceduralTerrainTexture.generateTerrainMap(this)));
 	}
 
@@ -431,6 +433,10 @@ public class Terrain {
 	
 	public boolean isRenderable() {
 		return renderable;
+	}
+	
+	public FractalNoise getNoise() {
+		return noise;
 	}
 
 

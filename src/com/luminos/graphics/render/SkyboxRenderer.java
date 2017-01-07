@@ -16,7 +16,6 @@ import static org.lwjgl.opengl.GL32.GL_TEXTURE_CUBE_MAP_SEAMLESS;
 
 import java.io.IOException;
 
-import com.luminos.graphics.gameobjects.Camera;
 import com.luminos.graphics.models.RawModel;
 import com.luminos.graphics.shaders.SkyboxShader;
 import com.luminos.loaders.Loader;
@@ -108,7 +107,7 @@ public class SkyboxRenderer {
 		this.shader = shader;
 		shader.start();
 		shader.connectTextureUnits();
-		shader.loadProjectionMatrix(projectionMatrix);
+		shader.setUniform("projectionMatrix", projectionMatrix);
 		shader.stop();
 	}
 	
@@ -118,12 +117,12 @@ public class SkyboxRenderer {
 	 * @param camera	Camera to be projected from
 	 * @param skyColor 	SkyColor
 	 */
-	public void render(Camera camera, Vector3f skyColor){
+	public void render(Matrix4f viewMatrix, Vector3f skyColor){
 		shader.start();
-		shader.loadViewMatrix(camera);
-		shader.loadFogColor(skyColor);
-		shader.loadLowerLimit(lowerLimit);
-		shader.loadUpperLimit(upperLimit);
+		shader.setUniform("viewMatrix", shader.createViewMatrix(viewMatrix));
+		shader.setUniform("fogColor", skyColor);
+		shader.setUniform("lowerLimit", lowerLimit);
+		shader.setUniform("upperLimit", upperLimit);
 		glBindVertexArray(cube.getVaoID());
 		glEnableVertexAttribArray(0);
 		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
@@ -203,7 +202,7 @@ public class SkyboxRenderer {
 		glBindTexture(GL_TEXTURE_CUBE_MAP, texture1);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, texture2);
-		shader.loadBlendFactor(blendFactor);
+		shader.setUniform("blendFactor", blendFactor);
 	}
 	
 }

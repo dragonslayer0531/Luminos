@@ -16,6 +16,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_REFRESH_RATE;
 import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
 import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
 import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
+import static org.lwjgl.glfw.GLFW.glfwFocusWindow;
 import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
@@ -48,7 +49,6 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +65,7 @@ import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 
 import com.luminos.ConfigData;
+import com.luminos.filesystem.ResourceLoader;
 import com.luminos.graphics.render.GuiRenderer;
 import com.luminos.graphics.shaders.GuiShader;
 import com.luminos.graphics.textures.GUITexture;
@@ -229,8 +230,7 @@ public class Window {
 		Loader loader = new Loader();
 		GuiShader shader = new GuiShader();
 		GuiRenderer gr = new GuiRenderer(shader, loader);
-		URL url = getClass().getClassLoader().getResource("logo.png");
-		BufferedImage image = ImageIO.read(url);
+		BufferedImage image = ResourceLoader.loadImage("/logo.png");
 		GUITexture logo = new GUITexture(loader.loadTexture(image), new Vector2f(0, 0), new Vector2f(1, 1));
 		List<GUITexture> textures = new ArrayList<GUITexture>();
 		textures.add(logo);
@@ -238,7 +238,7 @@ public class Window {
 		gr.cleanUp();
 		textures.clear();
 		GLFW.glfwSwapBuffers(window);
-
+		
 		FULLSCREEN = fullscreen;
 		VSYNC = vsync;
 		RESIZABLE = resizable;
@@ -556,6 +556,7 @@ public class Window {
 	
 	public void showWindow() {
 		glfwShowWindow(window);
+		glfwFocusWindow(window);
 	}
 
 }
@@ -581,7 +582,7 @@ class FrameRateCounter {
 	 * @throws LuminosException		Checks if GLFW has been initialized
 	 */
 	public void start() throws Exception {
-		if(GLFW.glfwInit()) {
+		if(glfwInit()) {
 			start = GLFW.glfwGetTime();
 		} else {
 			throw new Exception("GLFW NOT INITIALISED");
@@ -594,7 +595,7 @@ class FrameRateCounter {
 	 * @throws LuminosException		Checks if GLFW has been initialized
 	 */
 	public void calculate() throws Exception {
-		if(GLFW.glfwInit()) {
+		if(glfwInit()) {
 			end = GLFW.glfwGetTime();
 		} else {
 			throw new Exception("GLFW NOT INITIALISED");

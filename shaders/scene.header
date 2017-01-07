@@ -1,21 +1,7 @@
-#version 330 core
-
-struct Attenuation {
-	float constant;
-	float linear;
-	float exponent;
-};
-
 struct PointLight {
 	vec3 color;
 	vec3 position;
-	Attenuation attenuation;
-};
-
-struct Material {
-	vec3 color;
-	int useColor;
-	float reflectance;
+	vec3 attenuation;
 };
 
 struct DirectionalLight {

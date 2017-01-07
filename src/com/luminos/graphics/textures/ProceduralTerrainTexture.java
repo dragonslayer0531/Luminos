@@ -6,8 +6,8 @@ import static com.luminos.ConfigData.TEXTURE_SIZE;
 import java.awt.image.BufferedImage;
 
 import com.luminos.graphics.terrains.Terrain;
-import com.luminos.tools.maths.vector.Vector3f;
 import com.luminos.tools.Maths;
+import com.luminos.tools.maths.vector.Vector3f;
 
 /**
  * 
@@ -53,7 +53,7 @@ public class ProceduralTerrainTexture {
 		
 		int BLACK = Maths.rgbToInt(new Vector3f(0, 0, 0));
 		int RED = Maths.rgbToInt(new Vector3f(255, 0, 0));
-				
+		
 		for(int x = 0; x < TEXTURE_SIZE; x++) {
 			for(int y = 0; y < TEXTURE_SIZE; y++) {
 				float wX = terrain.getX();
@@ -66,7 +66,6 @@ public class ProceduralTerrainTexture {
 				float worldZ = wZ + fracZ;
 				
 				float height = terrain.getHeightOfTerrain(worldX, worldZ);
-				
 				if(height > 5) {
 					image.setRGB(x, y, BLACK);
 				} else if (height > 0 && height <= 5) {

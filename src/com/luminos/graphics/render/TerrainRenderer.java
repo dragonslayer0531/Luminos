@@ -49,8 +49,8 @@ public class TerrainRenderer {
 	public TerrainRenderer(TerrainShader shader, Matrix4f projectionMatrix) {
 		this.shader = shader;
 		shader.start();
-		shader.loadProjectionMatrix(projectionMatrix);
-		shader.loadTileFactor(tileFactor);
+		shader.setUniform("projectionMatrix", projectionMatrix);
+		shader.setUniform("tileFactor", tileFactor);
 		shader.connectTextureUnits();
 		shader.stop();
 	}
@@ -62,12 +62,12 @@ public class TerrainRenderer {
 	 * @param toShadowSpace	Loads shadow space to shader
 	 */
 	public void render(List<Terrain> terrains, Matrix4f toShadowSpace) {
-		shader.loadToShadowSpaceMatrix(toShadowSpace);
+		shader.setUniform("toShadowMapSpace", toShadowSpace);
 		for (Terrain terrain : terrains) {
 			prepareTerrain(terrain);
 			loadModelMatrix(terrain);
-			shader.loadDensity(density);
-			shader.loadGradient(gradient);
+			shader.setUniform("density", density);
+			shader.setUniform("gradient", gradient);
 			glDrawElements(GL_TRIANGLES, terrain.getRawModel().getVertexCount(),
 					GL_UNSIGNED_INT, 0);
 			unbindTexturedModel();
@@ -128,7 +128,8 @@ public class TerrainRenderer {
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
 		bindTextures(terrain);
-		shader.loadShineVariables(1, 0);
+		shader.setUniform("shineDamper", 1f);
+		shader.setUniform("reflectivity", 0f);
 	}
 	
 	/**
@@ -168,7 +169,7 @@ public class TerrainRenderer {
 	private void loadModelMatrix(Terrain terrain) {
 		Matrix4f transformationMatrix = Maths.createTransformationMatrix(
 				new Vector3f(terrain.getX(), 0, terrain.getZ()), 0, 0, 0, 1);
-		shader.loadTransformationMatrix(transformationMatrix);
+		shader.setUniform("transformationMatrix", transformationMatrix);
 	}
 
 }

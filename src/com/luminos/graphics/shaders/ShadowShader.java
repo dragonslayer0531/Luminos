@@ -1,8 +1,7 @@
 package com.luminos.graphics.shaders;
 
 import static com.luminos.ConfigData.POSITION;
-
-import com.luminos.tools.maths.matrix.Matrix4f;
+import static com.luminos.ConfigData.TEXTURES;
 
 /**
  * 
@@ -29,15 +28,6 @@ public class ShadowShader extends ShaderProgram {
     public void getAllUniformLocations() {
        createUniform("mvpMatrix");  
     }
-     
-    /**
-     * Loads Model View Projection matrix to shader
-     * 
-     * @param mvpMatrix		Model View Projection matrix	
-     */
-    public void loadMvpMatrix(Matrix4f mvpMatrix){
-    	setUniform(getLocation("mvpMatrix"), mvpMatrix);
-    }
  
     /*
      * (non-Javadoc)
@@ -45,7 +35,7 @@ public class ShadowShader extends ShaderProgram {
      */
     public void bindAttributes() {
         super.bindAttribute(POSITION, "in_position");
-        super.bindAttribute(1,  "in_tesxtureCoords");
+        super.bindAttribute(TEXTURES, "in_textureCoords");
     }
 	
 }

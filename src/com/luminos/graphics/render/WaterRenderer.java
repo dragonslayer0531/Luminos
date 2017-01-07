@@ -78,12 +78,12 @@ public class WaterRenderer {
 		normalTexture = loader.loadTexture(normal);
 		shader.start();
 		shader.connectTextureUnits();
-		shader.loadProjectionMatrix(projectionMatrix);
-		shader.loadSkyColor(MasterRenderer.SKY_COLOR);
-		shader.loadTiling(tiling);
-		shader.loadWaveStrength(waveStrength);
-		shader.loadShineDamper(shineDamper);
-		shader.loadReflectivity(reflectivity);
+		shader.setUniform("projectionMatrix", projectionMatrix);
+		shader.setUniform("skyColor", MasterRenderer.SKY_COLOR);
+		shader.setUniform("tiling", tiling);
+		shader.setUniform("waveStrength", waveStrength);
+		shader.setUniform("shineDamper", shineDamper);
+		shader.setUniform("reflectivity", reflectivity);
 		shader.stop();
 		setUpVAO(loader);
 	}
@@ -104,7 +104,7 @@ public class WaterRenderer {
 			for (WaterTile tile : water) {
 				if (Maths.getDistance(new Vector3f(tile.getX(), 0, tile.getZ()), camera.getPosition()) > 500) continue;
 				Matrix4f modelMatrix = Maths.createWaterTransformationMatrix(new Vector3f(tile.getX(), tile.getHeight(), tile.getZ()), 0, 0, 0, tile.getScale());
-				shader.loadModelMatrix(modelMatrix);
+				shader.setUniform("modelMatrix", modelMatrix);
 				glDrawArrays(GL_TRIANGLES, 0, quad.getVertexCount());
 			}
 		}
@@ -123,7 +123,7 @@ public class WaterRenderer {
 		for (WaterTile tile : water) {
 			if (Maths.getDistance(new Vector3f(tile.getX(), 0, tile.getZ()), camera.getPosition()) > 500) continue;
 			Matrix4f modelMatrix = Maths.createTransformationMatrix(new Vector3f(tile.getX(), tile.getHeight(), tile.getZ()), 0, 0, 0, tile.getFloatScale());
-			shader.loadModelMatrix(modelMatrix);
+			shader.setUniform("modelMatrix", modelMatrix);
 			glDrawArrays(GL_TRIANGLES, 0, quad.getVertexCount());
 		}
 	}
@@ -210,11 +210,13 @@ public class WaterRenderer {
 	 */
 	private void prepareRender(Camera camera, PointLight sun){
 		shader.start();
-		shader.loadViewMatrix(camera);
+		shader.setUniform("viewMatrix", Maths.createViewMatrix(camera));
+		shader.setUniform("cameraPosition", camera.getPosition());
 		moveFactor += WAVE_SPEED * 0.001;
 		moveFactor %= 1;
-		shader.loadMoveFactor(moveFactor);
-		shader.loadRenderBox(MasterRenderer.NEAR_PLANE, MasterRenderer.FAR_PLANE);
+		shader.setUniform("moveFactor", moveFactor);
+		shader.setUniform("near", MasterRenderer.NEAR_PLANE);
+		shader.setUniform("far", MasterRenderer.FAR_PLANE);
 		shader.loadPointLight(sun);
 		glBindVertexArray(quad.getVaoID());
 		glEnableVertexAttribArray(0);

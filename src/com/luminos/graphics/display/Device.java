@@ -63,8 +63,7 @@ public class Device {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Refresh Rate: " + refreshRate + System.lineSeparator());
 		builder.append("Bit Depth:    " + bitDepth + System.lineSeparator());
-		builder.append("Colors:       " + colors + System.lineSeparator());
-		builder.append("Dimensions:   " + dimensions.x + "," + dimensions.y);
+		builder.append("Dimensions:   " + dimensions.x + " x " + dimensions.y);
 		return builder.toString();
 	}
 

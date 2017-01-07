@@ -69,7 +69,7 @@ public class GuiRenderer {
 				glActiveTexture(GL_TEXTURE0);
 				glBindTexture(GL_TEXTURE_2D, gui.getID());
 				Matrix4f matrix = Maths.createTransformationMatrix(gui.getPosition(), gui.getScale());
-				shader.loadTransformation(matrix);
+				shader.setUniform("transformationMatrix", matrix);
 				glDrawArrays(GL_TRIANGLE_STRIP, 0, quad.getVertexCount());
 			}
 			glEnable(GL_DEPTH_TEST);

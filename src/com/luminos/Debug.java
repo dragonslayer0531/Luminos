@@ -79,7 +79,7 @@ public class Debug {
 	 * @param sb		String builder to append to
 	 */
 	private static void appendNewLine(Throwable e, StringBuilder sb) {
-		sb.append(e.getStackTrace());
+		sb.append(e.getMessage());
 		sb.append(System.lineSeparator());
 	}
 	

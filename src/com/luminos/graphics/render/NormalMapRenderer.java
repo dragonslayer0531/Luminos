@@ -22,6 +22,7 @@ import com.luminos.graphics.shaders.NormalMapShader;
 import com.luminos.graphics.textures.Material;
 import com.luminos.tools.Maths;
 import com.luminos.tools.maths.matrix.Matrix4f;
+import com.luminos.tools.maths.vector.Vector2f;
 
 /**
  * 
@@ -45,7 +46,7 @@ public class NormalMapRenderer {
     public NormalMapRenderer(NormalMapShader nms, Matrix4f projectionMatrix) {
         this.shader = nms;
         shader.start();
-        shader.loadProjectionMatrix(projectionMatrix);
+        shader.setUniform("projectionMatrix", projectionMatrix);
         shader.connectTextureUnits();
         shader.stop();
     }
@@ -84,11 +85,12 @@ public class NormalMapRenderer {
         glEnableVertexAttribArray(2);
         glEnableVertexAttribArray(3);
         Material texture = model.getMaterial();
-        shader.loadNumberOfRows(texture.getRows());
+        shader.setUniform("numberOfRows", texture.getRows());
         if (texture.hasTransparency()) {
             MasterRenderer.disableCulling();
         }
-        shader.loadShineVariables(texture.getShineDamper(), texture.getReflectivity());
+        shader.setUniform("shineDamper", texture.getShineDamper()); 
+        shader.setUniform("reflectivity", texture.getReflectivity());
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, model.getMaterial().getDiffuseID());
         glActiveTexture(GL_TEXTURE1);
@@ -106,8 +108,8 @@ public class NormalMapRenderer {
  
     private void prepareInstance(GameObject entity) {
         Matrix4f transformationMatrix = Maths.createTransformationMatrix(entity.getPosition(), entity.getRotation(), entity.getScale());
-        shader.loadTransformationMatrix(transformationMatrix);
-        shader.loadOffset(0, 0);
+        shader.setUniform("transformationMatrix", transformationMatrix);
+        shader.setUniform("offset", new Vector2f(0, 0));
     }
 	
 }

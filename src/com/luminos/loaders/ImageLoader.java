@@ -19,6 +19,8 @@ import static org.lwjgl.opengl.GL11.glGetFloat;
 import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL11.glTexParameterf;
 import static org.lwjgl.opengl.GL11.glTexParameteri;
+import static org.lwjgl.opengl.GL12.GL_TEXTURE_MAX_LOD;
+import static org.lwjgl.opengl.GL12.GL_TEXTURE_MIN_LOD;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE_CUBE_MAP;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X;
@@ -28,9 +30,7 @@ import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 
-import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.EXTTextureFilterAnisotropic;
 import org.lwjgl.opengl.GL12;
 
@@ -58,30 +58,13 @@ public class ImageLoader {
 	 * @return 				Integer describing the image's location on the GPU
 	 */	
 	protected int loadTexture(BufferedImage bImage) {
-		BufferedImage image = bImage;
-
-		int[] pixels = new int[image.getWidth() * image.getHeight()];
-		image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
-
-		ByteBuffer buffer = BufferUtils.createByteBuffer(image.getWidth() * image.getHeight() * 4); //4 for RGBA, 3 for RGB
-
-		for(int y = 0; y < image.getHeight(); y++){
-			for(int x = 0; x < image.getWidth(); x++){
-				int pixel = pixels[y * image.getWidth() + x];
-				buffer.put((byte) ((pixel >> 16) & 0xFF));
-				buffer.put((byte) ((pixel >> 8) & 0xFF));
-				buffer.put((byte) (pixel & 0xFF));
-				buffer.put((byte) ((pixel >> 24) & 0xFF));
-			}
-		}
-
-		buffer.flip();
+		LuminosImage image = LuminosImage.loadImage(bImage, Format.RGBA);
 
 		int textureID = glGenTextures();
 		
 		glGenerateMipmap(GL_TEXTURE_2D);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -1f);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -0.6f);
 		
 		if(getCapabilities().GL_EXT_texture_filter_anisotropic) {
 			float amount = Math.min(4f, glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
@@ -97,7 +80,7 @@ public class ImageLoader {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getBuffer());
 				
 		Loader.textures.add(textureID);
 		return textureID;
@@ -117,6 +100,8 @@ public class ImageLoader {
 		
 		glGenerateMipmap(GL_TEXTURE_2D);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_LOD, -50.f);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_LOD, 5.0f);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -.6f);
 		
 		if(getCapabilities().GL_EXT_texture_filter_anisotropic) {

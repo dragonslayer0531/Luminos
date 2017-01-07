@@ -28,6 +28,7 @@ import com.luminos.graphics.textures.ParticleTexture;
 import com.luminos.loaders.Loader;
 import com.luminos.tools.Maths;
 import com.luminos.tools.maths.matrix.Matrix4f;
+import com.luminos.tools.maths.vector.Vector2f;
 import com.luminos.tools.maths.vector.Vector3f;
 
 /**
@@ -57,7 +58,7 @@ public class ParticleRenderer {
 		quad = loader.loadToVAO(VERTICES, 2);
 		this.shader = shader;
 		shader.start();
-		shader.loadProjectionMatrix(projectionMatrix);
+		shader.setUniform("projectionMatrix", projectionMatrix);
 		shader.stop();
 	}
 	
@@ -76,7 +77,9 @@ public class ParticleRenderer {
 			glBindTexture(GL_TEXTURE_2D, texture.getID());
 			for(Particle particle : particles.get(texture)) {
 				updateModelViewMatrix(particle.getPosition(), particle.getRotation(), particle.getScale(), viewMatrix);
-				shader.loadTextureCoordInfo(particle.getOffsetOne(), particle.getOffsetTwo(), texture.getNumberOfRows(), particle.getBlend());
+				shader.setUniform("texOffset1", particle.getOffsetOne());
+				shader.setUniform("texOffset2", particle.getOffsetTwo());
+				shader.setUniform("texCoordInfo", new Vector2f(texture.getNumberOfRows(), particle.getBlend()));
 				glDrawArrays(GL_TRIANGLE_STRIP, 0, quad.getVertexCount());
 			}
 		}
@@ -139,7 +142,7 @@ public class ParticleRenderer {
 		Matrix4f.rotate((float) Math.toRadians(rotation), new Vector3f(0, 0, 1), modelMatrix, modelMatrix);
 		Matrix4f.scale(new Vector3f(scale, scale, scale), modelMatrix, modelMatrix);
 		Matrix4f modelViewMatrix = Matrix4f.mul(viewMatrix, modelMatrix, null);
-		shader.loadModelViewMatrix(modelViewMatrix);
+		shader.setUniform("modelViewMatrix", modelViewMatrix);
 	}
 
 }

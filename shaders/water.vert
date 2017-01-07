@@ -1,4 +1,4 @@
-in vec2 position;
+layout (location = 0) in vec2 position;
 
 out vec4 clipSpace;
 out vec2 textureCoords;

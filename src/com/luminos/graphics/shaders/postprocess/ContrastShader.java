@@ -41,14 +41,5 @@ public class ContrastShader extends ShaderProgram implements PostProcess {
 	public void bindAttributes() {
 
 	}
-	
-	/**
-	 * Sets contrast factor.  Default should be set to 0
-	 * 
-	 * @param contrast		Contrast factor
-	 */
-	public void setContrast(float contrast) {
-		setUniform(getLocation("contrast"), contrast);
-	}
 
 }

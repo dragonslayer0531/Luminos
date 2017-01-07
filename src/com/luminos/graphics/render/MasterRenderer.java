@@ -28,6 +28,7 @@ import java.util.Map;
 
 import com.luminos.graphics.display.Window;
 import com.luminos.graphics.gameobjects.Camera;
+import com.luminos.graphics.gameobjects.DirectionalLight;
 import com.luminos.graphics.gameobjects.GameObject;
 import com.luminos.graphics.gameobjects.PointLight;
 import com.luminos.graphics.gui.GUIObject;
@@ -143,11 +144,12 @@ public class MasterRenderer {
 	 * @param entities		Entities to be rendered
 	 * @param terrains		Terrains to be rendered
 	 * @param lights		Lights to be passed into shader
+	 * @param sun 
 	 * @param focalPoint	Location of camera focus
 	 * @param camera		Camera to be renderer
 	 * @param clipPlane		Plane to clip all rendering beyond
 	 */
-	public void renderScene(List<GameObject> entities, List<Terrain> terrains, List<PointLight> lights, Vector3f focalPoint, Camera camera, Vector4f clipPlane) {
+	public void renderScene(List<GameObject> entities, List<Terrain> terrains, List<PointLight> lights, DirectionalLight sun, Vector3f focalPoint, Camera camera, Vector4f clipPlane) {
 		if (entities != null) {
 			for (GameObject entity : entities) {
 				if (entity.isRenderable() && Maths.getDistance(entity.getPosition(), camera.getPosition()) < entity.getRenderDistance())
@@ -164,7 +166,7 @@ public class MasterRenderer {
 		if (lights == null) {
 			lights = new ArrayList<PointLight>();
 		}
-		render(lights, camera, clipPlane);
+		render(lights, sun, camera, clipPlane);
 	}
 
 	/**
@@ -255,13 +257,13 @@ public class MasterRenderer {
 	 * @param focalPoint	Passed to renderScene
 	 * @param camera		Calculates FBOs and passed to renderScene
 	 */
-	public void prepareWater(List<GameObject> gameObjects, List<Terrain> terrains, List<PointLight> lights, Vector3f focalPoint, Camera camera) {
+	public void prepareWater(List<GameObject> gameObjects, List<Terrain> terrains, List<PointLight> lights, DirectionalLight sun, Vector3f focalPoint, Camera camera) {
 		glEnable(GL_CLIP_DISTANCE0);
 		buffers.bindReflectionFrameBuffer();
 		float distance = 2 * (camera.getPosition().y);
 		camera.getPosition().y -= distance;
 		camera.invertPitch();
-		renderScene(gameObjects, terrains, lights, focalPoint, camera, new Vector4f(0, 1, 0, 1));
+		renderScene(gameObjects, terrains, lights, sun, focalPoint, camera, new Vector4f(0, 1, 0, 1));
 		camera.getPosition().y += distance;
 		camera.invertPitch();
 		buffers.bindRefractionFrameBuffer();
@@ -269,7 +271,7 @@ public class MasterRenderer {
 		for(GameObject entity : gameObjects) {
 			if(entity.getPosition().y < 0) ents.add(entity);
 		}
-		renderScene(ents, terrains, lights, focalPoint, camera, new Vector4f(0, -1, 0, 0));
+		renderScene(ents, terrains, lights, sun, focalPoint, camera, new Vector4f(0, -1, 0, 0));
 		glDisable(GL_CLIP_DISTANCE0);
 		buffers.unbindCurrentFrameBuffer();
 	}
@@ -282,7 +284,7 @@ public class MasterRenderer {
 	 * @param lights		Light to reflect
 	 */
 	public void renderWater(List<WaterTile> tiles, Camera camera, List<PointLight> lights) {
-		waterShader.loadTiling(6);
+		waterShader.setUniform("tiling", 6);
 		waterRenderer.render(tiles, camera, lights);
 	}
 
@@ -300,10 +302,11 @@ public class MasterRenderer {
 	 * Renders {@link GameObject}
 	 * 
 	 * @param lights	Passes lights to shaders
+	 * @param sun 
 	 * @param camera	Camera to create transformation matrix of
 	 * @param clipPlane	Plane to clip all rendering beyond
 	 */
-	public void render(List<PointLight> lights, Camera camera, Vector4f clipPlane){
+	public void render(List<PointLight> lights, DirectionalLight sun, Camera camera, Vector4f clipPlane){
 		prepare();
 		Matrix4f viewMatrix = Maths.createViewMatrix(camera);
 //		normalMapShader.start();
@@ -316,7 +319,8 @@ public class MasterRenderer {
 //		normalMapShader.stop();
 		gameObjectShader.start();
 		gameObjectShader.setUniform(gameObjectShader.getLocation("skyColor"), new Vector3f(RED, GREEN, BLUE));
-		gameObjectShader.loadPointLights(lights);
+		gameObjectShader.setUniform("pointLights", lights);
+		gameObjectShader.setUniform("sun", sun);
 		gameObjectShader.setUniform(gameObjectShader.getLocation("viewMatrix"), viewMatrix);
 		gameObjectRenderer.render(entities);
 		gameObjectShader.stop();
@@ -325,14 +329,13 @@ public class MasterRenderer {
 		terrainShader.start();
 		glActiveTexture(GL_TEXTURE5);
 		glBindTexture(GL_TEXTURE_2D, getShadowMapTexture());
-		terrainShader.loadClipPlane(clipPlane);
-		terrainShader.loadSkyColor(SKY_COLOR);
-		terrainShader.loadMaxPointLights(lights.size());
-		terrainShader.loadPointLights(lights);
-		terrainShader.loadViewMatrix(viewMatrix);
+		terrainShader.setUniform("skyColor", SKY_COLOR);
+		terrainShader.setUniform("pointLights", lights);
+		terrainShader.setUniform("sun", sun);
+		terrainShader.setUniform("viewMatrix", viewMatrix);
 		terrainRenderer.render(terrains, shadowRenderer.getToShadowMapSpaceMatrix());
 		terrainShader.stop();
-		skyboxRenderer.render(camera, SKY_COLOR);
+		skyboxRenderer.render(viewMatrix, SKY_COLOR);
 		terrains.clear();
 		entities.clear();
 		normalMapEntities.clear();
@@ -401,14 +404,19 @@ public class MasterRenderer {
 	 * @param focalPoint	Central rendering point
 	 * @param sun			Focal light
 	 */
-	public void renderShadowMap(List<GameObject> ents, Vector3f focalPoint, PointLight sun) {
+	public void renderShadowMap(List<GameObject> ents, List<Terrain> ters, Vector3f focalPoint, DirectionalLight sun) {
 		for(GameObject entity : ents) {
 			if(Maths.getDistance(entity.getPosition(), focalPoint) < 2 * ShadowBox.SHADOW_DISTANCE) {
 				processGameObject(entity);
 			}
 		}
-		shadowRenderer.render(entities, sun);
+		for (Terrain terrain : ters) {
+			if (Maths.getDistance((Vector3f) terrain.getPosition(), focalPoint) < 2 * ShadowBox.SHADOW_DISTANCE) 
+				processTerrain(terrain);
+		}
+		shadowRenderer.render(entities, terrains, sun);
 		entities.clear();
+		terrains.clear();
 	}
 
 	/**

@@ -21,7 +21,7 @@ public class FractalNoise {
 	private int xOffset = 0;
 	private int zOffset = 0;
 	
-	private float amplitude = 100;
+	public float amplitude = 100;
 	private float octaves = 4;
 	private float roughness = .1f;
 	

@@ -116,4 +116,8 @@ public class Material {
 		return reflectivity;
 	}
 
+	public void setFakeLighting(int fakeLighting) {
+		this.fakeLighting = fakeLighting;		
+	}
+
 }

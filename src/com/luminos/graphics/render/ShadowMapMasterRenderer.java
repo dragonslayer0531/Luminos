@@ -9,12 +9,13 @@ import java.util.List;
 import java.util.Map;
 
 import com.luminos.graphics.gameobjects.Camera;
+import com.luminos.graphics.gameobjects.DirectionalLight;
 import com.luminos.graphics.gameobjects.GameObject;
-import com.luminos.graphics.gameobjects.PointLight;
 import com.luminos.graphics.models.TexturedModel;
 import com.luminos.graphics.shaders.ShadowShader;
 import com.luminos.graphics.shadows.ShadowBox;
 import com.luminos.graphics.shadows.ShadowFrameBuffer;
+import com.luminos.graphics.terrains.Terrain;
 import com.luminos.tools.maths.matrix.Matrix4f;
 import com.luminos.tools.maths.vector.Vector2f;
 import com.luminos.tools.maths.vector.Vector3f;
@@ -61,12 +62,11 @@ public class ShadowMapMasterRenderer {
      * @param entities		List of all rendered entities
      * @param sun			Focal light to render to shadow map
      */
-    public void render(Map<TexturedModel, List<GameObject>> entities, PointLight sun) {
+    public void render(Map<TexturedModel, List<GameObject>> entities, List<Terrain> terrains, DirectionalLight sun) {
         shadowBox.update();
-        Vector3f sunPosition = sun.getPosition();
-        Vector3f lightDirection = new Vector3f(-sunPosition.x, -sunPosition.y, -sunPosition.z);
+        Vector3f lightDirection = new Vector3f(-sun.getDirection().x, -sun.getDirection().y, -sun.getDirection().z);
         prepare(lightDirection, shadowBox);
-        entityRenderer.render(entities);
+        entityRenderer.render(entities, terrains);
         finish();
     }
 
@@ -115,7 +115,7 @@ public class ShadowMapMasterRenderer {
      */
     private void prepare(Vector3f lightDirection, ShadowBox box) {
         updateOrthoProjectionMatrix(box.getWidth(), box.getHeight(), box.getLength());
-        updatePointLightViewMatrix(lightDirection, box.getCenter());
+        updateDirectionalLightViewMatrix(lightDirection, box.getCenter());
         Matrix4f.mul(projectionMatrix, lightViewMatrix, projectionViewMatrix);
         shadowFbo.bindFrameBuffer();
         glEnable(GL_DEPTH_TEST);
@@ -137,7 +137,7 @@ public class ShadowMapMasterRenderer {
      * @param direction		Direction the light view matrix is facing
      * @param center		Center of the light view matrix
      */
-    private void updatePointLightViewMatrix(Vector3f direction, Vector3f center) {
+    private void updateDirectionalLightViewMatrix(Vector3f direction, Vector3f center) {
         direction.normalize();
         center.negate();
         lightViewMatrix.setIdentity();

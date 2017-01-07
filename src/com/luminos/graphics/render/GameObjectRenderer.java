@@ -24,6 +24,7 @@ import com.luminos.graphics.shaders.GameObjectShader;
 import com.luminos.graphics.textures.Material;
 import com.luminos.tools.Maths;
 import com.luminos.tools.maths.matrix.Matrix4f;
+import com.luminos.tools.maths.vector.Vector2f;
 import com.luminos.tools.maths.vector.Vector3f;
 
 /**
@@ -39,7 +40,7 @@ public class GameObjectRenderer {
 
 	private GameObjectShader shader;
 	private float gradient = 5.0f;
-	private float density = 0.0035f;
+	private float density = 0.001f;
 	
 	/**
 	 * Constructor of GameObjectRenderer
@@ -50,7 +51,7 @@ public class GameObjectRenderer {
 	public GameObjectRenderer(GameObjectShader shader, Matrix4f projectionMatrix) {
 		this.shader = shader;
 		shader.start();
-		shader.loadProjectionMatrix(projectionMatrix);
+		shader.setUniform(shader.getLocation("projectionMatrix"), projectionMatrix);
 		shader.stop();
 	}
 
@@ -136,14 +137,15 @@ public class GameObjectRenderer {
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
 		Material texture = model.getMaterial();
-		shader.loadNumberOfRows(texture.getRows());
+		shader.setUniform(shader.getLocation("numberOfRows"), texture.getRows());
 		if(texture.hasTransparency()){
 			MasterRenderer.disableCulling();
 		}
-		shader.loadFakePointLightingVariable(texture.useFakeLighting());
-		shader.loadShineVariables(texture.getShineDamper(), texture.getReflectivity());
-		shader.loadDensity(density);
-		shader.loadGradient(gradient);
+		shader.setUniform(shader.getLocation("useFakeLighting"), texture.useFakeLighting());
+		shader.setUniform(shader.getLocation("shineDamper"), texture.getShineDamper());
+		shader.setUniform(shader.getLocation("reflectivity"), texture.getReflectivity());
+		shader.setUniform(shader.getLocation("density"), density);
+		shader.setUniform(shader.getLocation("gradient"), gradient);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, model.getMaterial().getDiffuseID());
 	}
@@ -167,8 +169,8 @@ public class GameObjectRenderer {
 	private void prepareInstance(GameObject entity) {
 		Matrix4f transformationMatrix = Maths.createTransformationMatrix((Vector3f) entity.getPosition(),
 				entity.getRotation(), entity.getScale());
-		shader.loadTransformationMatrix(transformationMatrix);
-		shader.loadOffset(0, 0);
+		shader.setUniform(shader.getLocation("transformationMatrix"), transformationMatrix);
+		shader.setUniform(shader.getLocation("offset"), new Vector2f(0, 0));
 	}
 
 }

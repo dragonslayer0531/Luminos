@@ -4,7 +4,7 @@ import com.luminos.input.Keyboard;
 
 public class ConfigData {
 		
-	public static final String VERSION = "1.0.0";
+	public static final String VERSION = "0.0.1a";
 	
 	public static Integer WIDTH = 1280;
 	public static Integer HEIGHT = 720;
@@ -19,7 +19,7 @@ public class ConfigData {
 	
 	public static Long SEED = 0l;
 	
-	public static Integer UPS = 30;
+	public static Integer UPS = 60;
 	public static Integer FPS = 60;
 	
 	public static Integer WATER_FBO_REFRAC_WIDTH = 1920;

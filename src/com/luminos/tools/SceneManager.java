@@ -6,6 +6,7 @@ import java.util.List;
 import com.luminos.ConfigData;
 import com.luminos.graphics.FrameBufferObject;
 import com.luminos.graphics.gameobjects.Camera;
+import com.luminos.graphics.gameobjects.DirectionalLight;
 import com.luminos.graphics.gameobjects.GameObject;
 import com.luminos.graphics.gameobjects.PointLight;
 import com.luminos.graphics.gui.GUIObject;
@@ -34,11 +35,11 @@ public class SceneManager {
 		postProcessRenderer.loadShader(new ImageShader());
 	}
 
-	public void renderWorld(List<GameObject> entities, List<Terrain> terrains, List<PointLight> lights, List<WaterTile> waterTiles, Vector3f focalPoint, Camera camera) {
-		masterRenderer.prepareWater(entities, terrains, lights, focalPoint, camera);
+	public void renderWorld(List<GameObject> entities, List<Terrain> terrains, List<PointLight> lights, DirectionalLight sun, List<WaterTile> waterTiles, Vector3f focalPoint, Camera camera) {
+		masterRenderer.prepareWater(entities, terrains, lights, sun, focalPoint, camera);
 		if(ConfigData.POSTPROCESS) 
 			input.bindFrameBuffer();
-		masterRenderer.renderScene(entities, terrains, lights, focalPoint, camera, new Vector4f(0, 1, 0, Float.POSITIVE_INFINITY));
+		masterRenderer.renderScene(entities, terrains, lights, sun, focalPoint, camera, new Vector4f(0, 1, 0, Float.POSITIVE_INFINITY));
 		masterRenderer.renderWater(waterTiles, camera, lights);
 		masterRenderer.renderGuiText();
 		if(ConfigData.POSTPROCESS) {
@@ -48,8 +49,8 @@ public class SceneManager {
 		}
 	}
 	
-	public void renderShadowMap(List<GameObject> entities, Camera camera, PointLight sun) {
-		masterRenderer.renderShadowMap(entities, camera.getPosition(), sun);
+	public void renderShadowMap(List<GameObject> entities, List<Terrain> terrains, Camera camera, DirectionalLight sun) {
+		masterRenderer.renderShadowMap(entities, terrains, camera.getPosition(), sun);
 	}
 
 	public void renderOverlay(ArrayList<GUITexture> guiTextures, ArrayList<GUIObject> guiObjects)	{

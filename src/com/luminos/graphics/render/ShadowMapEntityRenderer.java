@@ -18,6 +18,7 @@ import com.luminos.graphics.gameobjects.GameObject;
 import com.luminos.graphics.models.RawModel;
 import com.luminos.graphics.models.TexturedModel;
 import com.luminos.graphics.shaders.ShadowShader;
+import com.luminos.graphics.terrains.Terrain;
 import com.luminos.tools.Maths;
 import com.luminos.tools.maths.matrix.Matrix4f;
 import com.luminos.tools.maths.vector.Vector3f;
@@ -52,7 +53,7 @@ public class ShadowMapEntityRenderer {
 	 * 
 	 * @param entities	Defines entities to render to shadow map
 	 */
-	protected void render(Map<TexturedModel, List<GameObject>> entities) {
+	protected void render(Map<TexturedModel, List<GameObject>> entities, List<Terrain> terrains) {
 		for (TexturedModel model : entities.keySet()) {
 			RawModel rawModel = model.getRawModel();
 			bindModel(rawModel);
@@ -65,6 +66,13 @@ public class ShadowMapEntityRenderer {
 				glDrawElements(GL_TRIANGLES, rawModel.getVertexCount(),
 						GL_UNSIGNED_INT, 0);
 			}
+		}
+		for (Terrain terrain : terrains) {
+			RawModel model = terrain.getRawModel();
+			glBindTexture(GL_TEXTURE_2D, terrain.getTexturePack().getBackgroundTexture().getID());
+			bindModel(model);
+			prepareInstance(terrain);
+			glDrawElements(GL_TRIANGLES, model.getVertexCount(), GL_UNSIGNED_INT, 0);
 		}
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
@@ -93,7 +101,14 @@ public class ShadowMapEntityRenderer {
 		Matrix4f modelMatrix = Maths.createTransformationMatrix((Vector3f) entity.getPosition(),
 				entity.getRotation(), entity.getScale());
 		Matrix4f mvpMatrix = Matrix4f.mul(projectionViewMatrix, modelMatrix, null);
-		shader.loadMvpMatrix(mvpMatrix);
+		shader.setUniform("mvpMatrix", mvpMatrix);
+	}
+	
+	private void prepareInstance(Terrain terrain) {
+		Matrix4f modelMatrix = Maths.createTransformationMatrix((Vector3f) terrain.getPosition(), new Vector3f(0, 0, 0),
+				1);
+		Matrix4f mvpMatrix = Matrix4f.mul(projectionViewMatrix, modelMatrix, null);
+		shader.setUniform("mvpMatrix", mvpMatrix);
 	}
 
 }

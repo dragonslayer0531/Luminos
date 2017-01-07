@@ -3,9 +3,6 @@ package com.luminos.graphics.shaders;
 import static com.luminos.ConfigData.POSITION;
 import static com.luminos.ConfigData.TEXTURES;
 
-import com.luminos.tools.maths.vector.Vector2f;
-import com.luminos.tools.maths.vector.Vector3f;
-
 
 /**
  * 
@@ -45,33 +42,6 @@ public class TextShader extends ShaderProgram {
 	public void bindAttributes() {
 		super.bindAttribute(POSITION, "position");
 		super.bindAttribute(TEXTURES, "textureCoords");
-	}
-	
-	/**
-	 * Loads color of text to shader
-	 * 
-	 * @param color	Color of text
-	 */
-	public void loadColor(Vector3f color) {
-		setUniform(getLocation("color"), color);
-	}
-	
-	/**
-	 * Loads position of text to shader
-	 * 
-	 * @param translation	Position of text
-	 */
-	public void loadTranslation(Vector2f translation) {
-		setUniform(getLocation("translation"), translation);
-	}
-	
-	/**
-	 * Loads font ID to shader
-	 * 
-	 * @param font	Font GPU ID
-	 */
-	public void loadFont(float font) {
-		setUniform(getLocation("font"), font);
 	}
 
 }
