@@ -69,8 +69,7 @@ public class GameObjectRenderer {
 				prepareInstance(entity);
 				if(model.getMaterial().isRenderDoubleSided()) {
 					glFrontFace(GL_CW);
-					glDrawElements(GL_TRIANGLES, model.getRawModel().getVertexCount(),
-							GL_UNSIGNED_INT, 0);
+					glDrawElements(GL_TRIANGLES, model.getRawModel().getVertexCount(), GL_UNSIGNED_INT, 0);
 				}
 				glFrontFace(GL_CCW);
 				glDrawElements(GL_TRIANGLES, model.getRawModel().getVertexCount(),

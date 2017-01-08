@@ -42,7 +42,6 @@ public class Engine {
 	 */
 	public void start(Window window) {
 		window.showWindow();
-		window.printDeviceData();
 	}
 	
 	/**

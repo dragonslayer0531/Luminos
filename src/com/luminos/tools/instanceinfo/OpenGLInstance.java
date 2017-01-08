@@ -1,7 +1,6 @@
 package com.luminos.tools.instanceinfo;
 
 import static org.lwjgl.opengl.GL.getCapabilities;
-import static org.lwjgl.opengl.GL11.GL_EXTENSIONS;
 import static org.lwjgl.opengl.GL11.GL_RENDERER;
 import static org.lwjgl.opengl.GL11.GL_VENDOR;
 import static org.lwjgl.opengl.GL11.GL_VERSION;
@@ -49,16 +48,6 @@ public class OpenGLInstance {
 	}
 	
 	/**
-	 * Gets all extensions in use by OpenGL
-	 * 
-	 * @return		Extensions in use by OpenGL
-	 */
-	public static String getOpenGLExtensions() {
-		assert(getCapabilities() != null);
-		return glGetString(GL_EXTENSIONS);
-	}
-	
-	/**
 	 * Compiles OpenGL context information
 	 * 
 	 * @return		OpenGL context information
@@ -71,12 +60,6 @@ public class OpenGLInstance {
 		contextInfo.append(new String("GRAPHICS CARD MANUFACTURER: ") + getGraphicsCardManufacturer());
 		appendNewLine(contextInfo);
 		contextInfo.append(new String("RENDERING GRAPHICS CARD: ") + getRenderer());
-		appendNewLine(contextInfo);
-		if(getOpenGLExtensions() != null) {
-			contextInfo.append(new String("OPENGL EXTENSIONS: ") + getOpenGLExtensions());
-		} else {
-			contextInfo.append(new String("OPENGL EXTENSIONS: ") + "null");
-		}
 		appendNewLine(contextInfo);
 		
 		return contextInfo.toString();

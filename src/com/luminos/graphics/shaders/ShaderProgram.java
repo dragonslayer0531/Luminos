@@ -55,7 +55,7 @@ import com.luminos.tools.maths.vector.Vector4f;
  */
 public abstract class ShaderProgram {
 
-	private int programID;
+	private final int programID;
 	
 	public static String VERSION = GLSLVersion.getHeader(GLSLVersion.VERSION400, true) + "//\n";
 	private static FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
@@ -258,11 +258,11 @@ public abstract class ShaderProgram {
 	 * @param value		Value of variable to be bound
 	 */
 	public void setUniform(int location, boolean value){
-		float toLoad = 0;
+		int toLoad = 0;
 		if(value){
 			toLoad = 1;
 		}
-		glUniform1f(location, toLoad);
+		glUniform1i(location, toLoad);
 	}
 	
 	public void setUniform(String name, boolean value) {

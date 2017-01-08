@@ -55,7 +55,7 @@ public class WaterRenderer {
 	private float moveFactor = 0;
 	private int dudvTexture, normalTexture;
 	
-	private float tiling = 5;
+	private int   tiling = 5;
 	private float waveStrength = 0.04f;
 	private float shineDamper = 10.0f;
 	private float reflectivity = 0.05f;
@@ -142,7 +142,7 @@ public class WaterRenderer {
 	 * 
 	 * @param tiling	tiles per quad
 	 */
-	public void setTiling(float tiling) {
+	public void setTiling(int tiling) {
 		this.tiling = tiling;
 	}
 	

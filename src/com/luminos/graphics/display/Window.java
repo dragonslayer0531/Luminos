@@ -10,10 +10,13 @@ import static org.lwjgl.glfw.GLFW.GLFW_CLIENT_API;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MAJOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MINOR;
 import static org.lwjgl.glfw.GLFW.GLFW_DOUBLEBUFFER;
+import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
 import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_API;
+import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_DEBUG_CONTEXT;
 import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_FORWARD_COMPAT;
 import static org.lwjgl.glfw.GLFW.GLFW_REFRESH_RATE;
 import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
+import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
 import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
 import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
 import static org.lwjgl.glfw.GLFW.glfwFocusWindow;
@@ -36,7 +39,6 @@ import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL11.GL_FRONT;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
-import static org.lwjgl.opengl.GL11.GL_TRUE;
 import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glEnable;
@@ -63,8 +65,11 @@ import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
+import org.lwjgl.system.Callback;
+import org.lwjgl.system.Configuration;
 
 import com.luminos.ConfigData;
+import com.luminos.DebugUtil;
 import com.luminos.filesystem.ResourceLoader;
 import com.luminos.graphics.render.GuiRenderer;
 import com.luminos.graphics.shaders.GuiShader;
@@ -94,6 +99,7 @@ public class Window {
 	private GLFWCursorPosCallback cursorPosCallback;
 	private GLFWFramebufferSizeCallback framebufferCallback;
 	private GLFWWindowSizeCallback windowSizeCallback;
+	private Callback glErrorCallback;
 
 	private Keyboard keyboard;
 	private Mouse mouse;
@@ -149,12 +155,14 @@ public class Window {
 
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-		glfwWindowHint(GLFW_VISIBLE, visible ? GL_TRUE : GL_FALSE);
-		glfwWindowHint(GLFW_RESIZABLE, resizable ? GL_TRUE : GL_FALSE);
-		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+		glfwWindowHint(GLFW_VISIBLE, visible ? GLFW_TRUE : GLFW_FALSE);
+		glfwWindowHint(GLFW_RESIZABLE, resizable ? GLFW_TRUE : GLFW_FALSE);
+		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
 		glfwWindowHint(GLFW_REFRESH_RATE, REFRESH_RATE);
-		glfwWindowHint(GLFW_DOUBLEBUFFER, GL_TRUE);
+		glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
+		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+
 
 		if(fullscreen) {
 			window = glfwCreateWindow(width, height, title, glfwGetPrimaryMonitor(), NULL);
@@ -216,7 +224,12 @@ public class Window {
 		glfwSwapInterval(vsync ? 1 : 0);
 
 		createCapabilities();
-
+		
+		glErrorCallback = DebugUtil.setupDebugMessageCallback((source, type, id, severity, message) -> {
+			System.err.println(severity + " " + source + " " + type + ": " + message);
+		});
+		Configuration.DEBUG.set(true);
+		
 		glEnable(GL_MULTISAMPLE);
 
 		if(!vismouse) {
@@ -270,12 +283,13 @@ public class Window {
 	 * Releases all callbacks and disposes of the window
 	 */
 	public void close() {
-		keyCallback.close();
-		mouseButtonCallback.close();
-		cursorPosCallback.close();
-		framebufferCallback.close();
-		windowSizeCallback.close();
-		errorCallback.close();
+		keyCallback.free();
+		mouseButtonCallback.free();
+		cursorPosCallback.free();
+		framebufferCallback.free();
+		windowSizeCallback.free();
+		errorCallback.free();
+		glErrorCallback.free();
 		glfwTerminate();
 	}
 

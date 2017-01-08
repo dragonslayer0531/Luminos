@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.luminos.graphics.display.Window;
 import com.luminos.graphics.gameobjects.Camera;
+import com.luminos.graphics.gameobjects.DirectionalLight;
 import com.luminos.graphics.gameobjects.GameObject;
 import com.luminos.graphics.gameobjects.PointLight;
 import com.luminos.graphics.render.MasterRenderer;
@@ -52,6 +53,8 @@ public interface Scene {
 	 * @return	Lights in scenario
 	 */
 	public List<PointLight> getPointLights();
+	
+	public DirectionalLight getDirectionalLight();
 	
 	/**
 	 * Renders logic to world

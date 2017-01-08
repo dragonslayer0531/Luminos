@@ -63,8 +63,7 @@ public class ShadowMapEntityRenderer {
 				if (!entity.isRenderable())
 					continue;
 				prepareInstance(entity);
-				glDrawElements(GL_TRIANGLES, rawModel.getVertexCount(),
-						GL_UNSIGNED_INT, 0);
+				glDrawElements(GL_TRIANGLES, rawModel.getVertexCount(), GL_UNSIGNED_INT, 0);
 			}
 		}
 		for (Terrain terrain : terrains) {

@@ -59,7 +59,7 @@ public class ImageRenderer {
 		shader.start();
 		glBindTexture(GL_TEXTURE_2D, textureID);
 		glClear(GL_COLOR_BUFFER_BIT);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, quad.getVertexCount());
 		shader.stop();
 		glEnable(GL_DEPTH_TEST);
 		glDisableVertexAttribArray(ConfigData.POSITION);

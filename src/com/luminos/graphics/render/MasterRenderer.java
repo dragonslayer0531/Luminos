@@ -2,23 +2,18 @@ package com.luminos.graphics.render;
 
 import static com.luminos.ConfigData.HEIGHT;
 import static com.luminos.ConfigData.WIDTH;
-import static org.lwjgl.opengl.GL11.GL_BACK;
+import static com.luminos.Luminos.BACK_FACE;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
 import static org.lwjgl.opengl.GL11.GL_LESS;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glBindTexture;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glCullFace;
 import static org.lwjgl.opengl.GL11.glDepthFunc;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE5;
-import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL30.GL_CLIP_DISTANCE0;
 
 import java.util.ArrayList;
@@ -114,6 +109,7 @@ public class MasterRenderer {
 	 */
 	public MasterRenderer(Loader loader, Camera camera) throws Exception {
 		enableCulling();
+		cullFace(BACK_FACE);
 		gameObjectShader = new GameObjectShader();
 		guiShader = new GuiShader();
 		normalMapShader = new NormalMapShader();
@@ -272,8 +268,8 @@ public class MasterRenderer {
 			if(entity.getPosition().y < 0) ents.add(entity);
 		}
 		renderScene(ents, terrains, lights, sun, focalPoint, camera, new Vector4f(0, -1, 0, 0));
-		glDisable(GL_CLIP_DISTANCE0);
 		buffers.unbindCurrentFrameBuffer();
+		glDisable(GL_CLIP_DISTANCE0);
 	}
 
 	/**
@@ -284,7 +280,6 @@ public class MasterRenderer {
 	 * @param lights		Light to reflect
 	 */
 	public void renderWater(List<WaterTile> tiles, Camera camera, List<PointLight> lights) {
-		waterShader.setUniform("tiling", 6);
 		waterRenderer.render(tiles, camera, lights);
 	}
 
@@ -292,10 +287,10 @@ public class MasterRenderer {
 	 * Prepares rendering
 	 */
 	public void prepare() {
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LESS);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClearColor(RED, GREEN, BLUE, 1);
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
 	}
 
 	/**
@@ -324,16 +319,12 @@ public class MasterRenderer {
 		gameObjectShader.setUniform(gameObjectShader.getLocation("viewMatrix"), viewMatrix);
 		gameObjectRenderer.render(entities);
 		gameObjectShader.stop();
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, getShadowMapTexture());
 		terrainShader.start();
-		glActiveTexture(GL_TEXTURE5);
-		glBindTexture(GL_TEXTURE_2D, getShadowMapTexture());
 		terrainShader.setUniform("skyColor", SKY_COLOR);
 		terrainShader.setUniform("pointLights", lights);
 		terrainShader.setUniform("sun", sun);
 		terrainShader.setUniform("viewMatrix", viewMatrix);
-		terrainRenderer.render(terrains, shadowRenderer.getToShadowMapSpaceMatrix());
+		terrainRenderer.render(terrains, shadowRenderer.getToShadowMapSpaceMatrix(), getShadowMapTexture());
 		terrainShader.stop();
 		skyboxRenderer.render(viewMatrix, SKY_COLOR);
 		terrains.clear();
@@ -446,7 +437,10 @@ public class MasterRenderer {
 	 */
 	public static void enableCulling(){
 		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);		
+	}
+	
+	public static void cullFace(int faceID) {
+		glCullFace(faceID);		
 	}
 
 	/**

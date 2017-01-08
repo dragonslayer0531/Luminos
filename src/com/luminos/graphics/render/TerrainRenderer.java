@@ -10,6 +10,7 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE2;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE4;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE5;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
@@ -61,10 +62,10 @@ public class TerrainRenderer {
 	 * @param terrains		List of terrains to be rendered
 	 * @param toShadowSpace	Loads shadow space to shader
 	 */
-	public void render(List<Terrain> terrains, Matrix4f toShadowSpace) {
+	public void render(List<Terrain> terrains, Matrix4f toShadowSpace, int shadowMap) {
 		shader.setUniform("toShadowMapSpace", toShadowSpace);
 		for (Terrain terrain : terrains) {
-			prepareTerrain(terrain);
+			prepareTerrain(terrain, shadowMap);
 			loadModelMatrix(terrain);
 			shader.setUniform("density", density);
 			shader.setUniform("gradient", gradient);
@@ -121,13 +122,13 @@ public class TerrainRenderer {
 	 * 
 	 * @param terrain  Terrain to be prepared
 	 */
-	private void prepareTerrain(Terrain terrain) {
+	private void prepareTerrain(Terrain terrain, int shadowMap) {
 		RawModel rawModel = terrain.getRawModel();
 		glBindVertexArray(rawModel.getVaoID());
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
-		bindTextures(terrain);
+		bindTextures(terrain, shadowMap);
 		shader.setUniform("shineDamper", 1f);
 		shader.setUniform("reflectivity", 0f);
 	}
@@ -137,7 +138,7 @@ public class TerrainRenderer {
 	 * 
 	 * @param terrain	Reference to textures to be bound
 	 */
-	private void bindTextures(Terrain terrain){
+	private void bindTextures(Terrain terrain, int shadowMap){
 		TerrainTexturePack texturePack = terrain.getTexturePack();
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texturePack.getBackgroundTexture().getID());
@@ -149,6 +150,8 @@ public class TerrainRenderer {
 		glBindTexture(GL_TEXTURE_2D, texturePack.getbTexture().getID());
 		glActiveTexture(GL_TEXTURE4);
 		glBindTexture(GL_TEXTURE_2D, terrain.getBlendMap().getID());
+		glActiveTexture(GL_TEXTURE5);
+		glBindTexture(GL_TEXTURE_2D, shadowMap);
 	}
 
 	/**
