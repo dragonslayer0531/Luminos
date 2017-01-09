@@ -40,6 +40,7 @@ import org.lwjgl.BufferUtils;
 import com.luminos.filesystem.ResourceLoader;
 import com.luminos.graphics.gameobjects.DirectionalLight;
 import com.luminos.graphics.gameobjects.PointLight;
+import com.luminos.graphics.gameobjects.SpotLight;
 import com.luminos.tools.maths.matrix.Matrix4f;
 import com.luminos.tools.maths.vector.Vector2f;
 import com.luminos.tools.maths.vector.Vector3f;
@@ -56,6 +57,9 @@ import com.luminos.tools.maths.vector.Vector4f;
 public abstract class ShaderProgram {
 
 	private final int programID;
+	
+	public static final Integer MAX_POINT_LIGHTS = 4;
+	public static final Integer MAX_SPOT_LIGHTS = 4;
 	
 	public static String VERSION = GLSLVersion.getHeader(GLSLVersion.VERSION400, true) + "//\n";
 	private static FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
@@ -86,23 +90,57 @@ public abstract class ShaderProgram {
 	}
 	
 	public void createUniformPointLights(String uniformName) {
-		for (int i = 0; i < 4; i++) {
-			String name = uniformName + "[" + i + "].color";
-			int uniformLocation = glGetUniformLocation(programID, name);
-			UNIFORMS.put(name, uniformLocation);
-			name = uniformName + "[" + i + "].position";
-			uniformLocation = glGetUniformLocation(programID, name);
-			UNIFORMS.put(name, uniformLocation);
-			name = uniformName + "[" + i + "].attenuation";
-			uniformLocation = glGetUniformLocation(programID, name);
-			UNIFORMS.put(name, uniformLocation);
+		for (int i = 0; i < MAX_POINT_LIGHTS; i++) {
+			createUniformPointLight(uniformName, i);
 		}
+	}
+	
+	public void createUniformPointLight(String uniformName, int arrayLocation) {
+		String name = uniformName + "[" + arrayLocation + "].color";
+		int uniformLocation = glGetUniformLocation(programID, name);
+		UNIFORMS.put(name, uniformLocation);
+		name = uniformName + "[" + arrayLocation + "].position";
+		uniformLocation = glGetUniformLocation(programID, name);
+		UNIFORMS.put(name, uniformLocation);
+		name = uniformName + "[" + arrayLocation + "].attenuation";
+		uniformLocation = glGetUniformLocation(programID, name);
+		UNIFORMS.put(name, uniformLocation);
+	}
+	
+	public void createUniformPointLight(String uniformName) {
+		String name = uniformName + ".color";
+		int uniformLocation = glGetUniformLocation(programID, name);
+		UNIFORMS.put(name, uniformLocation);
+		name = uniformName + ".position";
+		uniformLocation = glGetUniformLocation(programID, name);
+		UNIFORMS.put(name, uniformLocation);
+		name = uniformName + ".attenuation";
+		uniformLocation = glGetUniformLocation(programID, name);
+		UNIFORMS.put(name, uniformLocation);
 	}
 	
 	public void createUniformDirectionalLight(String uniformName) {
 		UNIFORMS.put(uniformName + ".color", glGetUniformLocation(programID, uniformName + ".color"));
 		UNIFORMS.put(uniformName + ".direction", glGetUniformLocation(programID, uniformName + ".direction"));
 		UNIFORMS.put(uniformName + ".intensity", glGetUniformLocation(programID, uniformName + ".intensity"));
+	}
+	
+	public void createUniformSpotLights(String uniformName) {
+		for (int i = 0; i < MAX_SPOT_LIGHTS; i++) {
+			createUniformSpotLight(uniformName, i);
+		}
+	}
+	
+	public void createUniformSpotLight(String uniformName, int arrayLocation) {
+		createUniformPointLight(uniformName + "[" + arrayLocation + "].light");
+		UNIFORMS.put(uniformName + "[" + arrayLocation + "].direction", glGetUniformLocation(programID, uniformName + "[" + arrayLocation + "].direction"));
+		UNIFORMS.put(uniformName + "[" + arrayLocation + "].angle", glGetUniformLocation(programID, uniformName + "[" + arrayLocation + "].angle"));
+	}
+	
+	public void createUniformSpotLight(String uniformName) {
+		createUniformPointLight(uniformName + ".light");
+		UNIFORMS.put(uniformName + ".direction", glGetUniformLocation(programID, uniformName + ".direction"));
+		UNIFORMS.put(uniformName + ".angle", glGetUniformLocation(programID, uniformName + ".angle"));
 	}
 
 	/**
@@ -269,27 +307,7 @@ public abstract class ShaderProgram {
 		setUniform(getLocation(name), value);
 	}
 	
-	/**
-	 * Loads lights to shaders
-	 * 
-	 * @param lights	List of lights
-	 */
-	public void setUniformPointLights(List<PointLight> lights){
-		for(int i = 0; i < 4; i++){
-			if(i < lights.size()){
-				setUniform(getLocation("lightPosition[" + i + "]"), lights.get(i).getPosition());
-				setUniform(getLocation("lightColor[" + i + "]"), lights.get(i).getColor());
-				setUniform(getLocation("attenuation[" + i + "]"), lights.get(i).getAttenuation());
-			} 
-			else {
-				setUniform(getLocation("lightPosition[" + i + "]"), new Vector3f(0, 0, 0));
-				setUniform(getLocation("lightColor[" + i + "]"), new Vector3f(0, 0, 0));
-				setUniform(getLocation("attenuation[" + i + "]"), new Vector3f(1, 0, 0));
-			}
-		}
-	}
-	
-	public void setUniform(String name, List<PointLight> lights) {
+	public void setUniformPointLights(String name, List<PointLight> lights) {
 		for (int i = 0; i < 4; i++) {
 			if (i < lights.size()) {
 				setUniform(getLocation(name + "[" + i + "].position"), lights.get(i).getPosition());
@@ -304,10 +322,22 @@ public abstract class ShaderProgram {
 		}
 	}
 	
-	public void setUniform(String name, DirectionalLight light) {
+	public void setUniformPointLight(String name, PointLight light) {
+		setUniform(getLocation(name + ".position"), light.getPosition());
+		setUniform(getLocation(name + ".color"), light.getColor());
+		setUniform(getLocation(name + "].attenuation"), light.getAttenuation());
+	}
+	
+	public void setUniformDirectionalLight(String name, DirectionalLight light) {
 		setUniform(getLocation(name + ".color"), light.getColor());
 		setUniform(getLocation(name + ".direction"), light.getDirection());
 		setUniform(getLocation(name + ".intensity"), light.getIntensity());
+	}
+	
+	public void setUniformSpotLights(String name, List<SpotLight> lights) {
+		for (int i = 0; i < MAX_SPOT_LIGHTS; i++) {
+			
+		}
 	}
 	
 	public void setUniform(String name, Matrix4f value) {

@@ -224,9 +224,10 @@ public class Window {
 		glfwSwapInterval(vsync ? 1 : 0);
 
 		createCapabilities();
-		
 		glErrorCallback = DebugUtil.setupDebugMessageCallback((source, type, id, severity, message) -> {
-			System.err.println(severity + " " + source + " " + type + ": " + message);
+			if (!severity.equalsIgnoreCase("NOTIFICATION")) {
+				System.err.println(severity + "//\n" + source + "//\n " + type + "//\n" + message);
+			}	
 		});
 		Configuration.DEBUG.set(true);
 		

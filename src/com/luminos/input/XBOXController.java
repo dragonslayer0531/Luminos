@@ -36,6 +36,8 @@ public class XBOXController {
 	 * @return	Horizontal movement
 	 */
 	public static float getHorizontalAxis() {
+		if(!XBOXController.isControllerConnected()) 
+			return 0;
 		return glfwGetJoystickAxes(GLFW_JOYSTICK_1).get(0);
 	}
 	
@@ -45,6 +47,8 @@ public class XBOXController {
 	 * @return	Vertical movement
 	 */
 	public static float getVerticalAxis() {
+		if(!XBOXController.isControllerConnected()) 
+			return 0;
 		return glfwGetJoystickAxes(GLFW_JOYSTICK_1).get(1);
 	}
 	
@@ -54,6 +58,8 @@ public class XBOXController {
 	 * @return	Horizontal look movement
 	 */
 	public static float getHorizontalAxisLook() {
+		if(!XBOXController.isControllerConnected()) 
+			return 0;
 		return glfwGetJoystickAxes(GLFW_JOYSTICK_1).get(2);
 	}
 	
@@ -63,6 +69,8 @@ public class XBOXController {
 	 * @return	Vertical look movement
 	 */
 	public static float getVerticalAxisLook() {
+		if(!XBOXController.isControllerConnected()) 
+			return 0;
 		return glfwGetJoystickAxes(GLFW_JOYSTICK_1).get(3);
 	}
 	
@@ -73,7 +81,8 @@ public class XBOXController {
 	 * @return			Is the button down
 	 */
 	public static boolean isButtonDown(int buttonID) {
-		if(!XBOXController.isControllerConnected()) return false;
+		if(!XBOXController.isControllerConnected()) 
+			return false;
 		return glfwGetJoystickButtons(XBOXController.GLFW_JOYSTICK_1).get(buttonID) == 1;
 	}
 	
@@ -83,6 +92,8 @@ public class XBOXController {
 	 * @return The amount that the left trigger is pressed
 	 */
 	public static float leftTriggerPower() {
+		if(!XBOXController.isControllerConnected()) 
+			return 0;
 		return (glfwGetJoystickAxes(XBOXController.GLFW_JOYSTICK_1).get(4) + 1) / 2;
 	}
 	
@@ -92,6 +103,8 @@ public class XBOXController {
 	 * @return The amount that the right trigger is pressed
 	 */
 	public static float rightTriggerPower() {
+		if(!XBOXController.isControllerConnected()) 
+			return 0;
 		return (glfwGetJoystickAxes(XBOXController.GLFW_JOYSTICK_1).get(5) + 1) / 2;
 	}
 

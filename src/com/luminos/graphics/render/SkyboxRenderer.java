@@ -108,6 +108,8 @@ public class SkyboxRenderer {
 		shader.start();
 		shader.connectTextureUnits();
 		shader.setUniform("projectionMatrix", projectionMatrix);
+		shader.setUniform("lowerLimit", lowerLimit);
+		shader.setUniform("upperLimit", upperLimit);
 		shader.stop();
 	}
 	
@@ -119,10 +121,8 @@ public class SkyboxRenderer {
 	 */
 	public void render(Matrix4f viewMatrix, Vector3f skyColor){
 		shader.start();
-		shader.setUniform("viewMatrix", shader.createViewMatrix(viewMatrix));
 		shader.setUniform("fogColor", skyColor);
-		shader.setUniform("lowerLimit", lowerLimit);
-		shader.setUniform("upperLimit", upperLimit);
+		shader.setUniform("viewMatrix", shader.createViewMatrix(viewMatrix));
 		glBindVertexArray(cube.getVaoID());
 		glEnableVertexAttribArray(0);
 		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);

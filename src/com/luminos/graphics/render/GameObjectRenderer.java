@@ -52,6 +52,8 @@ public class GameObjectRenderer {
 		this.shader = shader;
 		shader.start();
 		shader.setUniform(shader.getLocation("projectionMatrix"), projectionMatrix);
+		shader.setUniform(shader.getLocation("density"), density);
+		shader.setUniform(shader.getLocation("gradient"), gradient);
 		shader.stop();
 	}
 
@@ -143,8 +145,6 @@ public class GameObjectRenderer {
 		shader.setUniform(shader.getLocation("useFakeLighting"), texture.useFakeLighting());
 		shader.setUniform(shader.getLocation("shineDamper"), texture.getShineDamper());
 		shader.setUniform(shader.getLocation("reflectivity"), texture.getReflectivity());
-		shader.setUniform(shader.getLocation("density"), density);
-		shader.setUniform(shader.getLocation("gradient"), gradient);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, model.getMaterial().getDiffuseID());
 	}

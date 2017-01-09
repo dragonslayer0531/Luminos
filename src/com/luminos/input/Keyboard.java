@@ -103,7 +103,7 @@ public class Keyboard extends GLFWKeyCallback {
 	 * @return 	Is Down
 	 */
 	public static boolean isDown(int key) {
-		if(key <= KEY_LAST) {
+		if(key <= KEY_LAST && key <= 0) {
 			return keyDown[key] == 1;
 		}
 		return false;
@@ -116,7 +116,7 @@ public class Keyboard extends GLFWKeyCallback {
 	 * @return	Is pressed
 	 */
 	public static boolean isPressed(int key) {
-		if(key <= KEY_LAST) {
+		if(key <= KEY_LAST && key <= 0) {
 			return keyState[key] == 1;
 		}
 		return false;
@@ -129,7 +129,7 @@ public class Keyboard extends GLFWKeyCallback {
 	 * @return			Is released
 	 */
 	public static boolean isReleased(int key) {
-		if(key <= KEY_LAST) {
+		if(key <= KEY_LAST && key <= 0) {
 			return keyState[key] == 0;
 		}
 		return false;
@@ -139,7 +139,7 @@ public class Keyboard extends GLFWKeyCallback {
 	 * GLFW Invoke Method
 	 */
 	public void invoke(long window, int key, int scancode, int action, int mods) {
-		if(key <= KEY_LAST) {
+		if(key <= KEY_LAST && key <= 0) {
 			keyState[key] = action;
 			keyDown[key] = action != GLFW_RELEASE ? 1 : 0;
 		}

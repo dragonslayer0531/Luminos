@@ -2,7 +2,7 @@ package com.luminos.graphics.gameobjects;
 
 import com.luminos.tools.maths.vector.Vector3f;
 
-public interface Light {
+public interface Light extends SceneObject {
 	
 	public Vector3f getColor();
 

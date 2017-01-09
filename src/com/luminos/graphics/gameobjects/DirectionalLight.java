@@ -7,6 +7,7 @@ public class DirectionalLight implements Light {
 	private Vector3f color;
 	private Vector3f direction;
 	private float intensity;
+	private String id;
 
 	public DirectionalLight(Vector3f color, Vector3f direction, float intensity) {
 		this.color = color;
@@ -37,6 +38,16 @@ public class DirectionalLight implements Light {
 	
 	public float getIntensity() {
 		return intensity;
+	}
+	
+	@Override
+	public void setID(String id) {
+		this.id = id;
+	}
+	
+	@Override
+	public String getID() {
+		return id;
 	}
 
 }

@@ -34,7 +34,7 @@ void main(void){
 	for(int x=-pcfCount; x<=pcfCount; x++){
 		for(int y=-pcfCount; y<=pcfCount; y++){
 			float textureDepth = texture(shadowMap, shadowCoords.xy + vec2(x, y) * 1 / textureSize(shadowMap, 0)).r;
-			total += (shadowCoords.z - 0.01 > textureDepth) ? 1 : 0;
+			total += (shadowCoords.z - 0.02 > textureDepth) ? 1 : 0;
 		}
 	}
 	

@@ -15,7 +15,7 @@ import com.luminos.tools.maths.vector.Vector3f;
  *
  */
 
-public interface GameObject {
+public interface GameObject extends SceneObject {
 	
 	public boolean isRenderable();
 	public float getRenderDistance(); // TODO FADE OBJECTS BASED ON RENDER DISTANCE

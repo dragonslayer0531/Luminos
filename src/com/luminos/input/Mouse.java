@@ -51,7 +51,7 @@ public class Mouse extends GLFWMouseButtonCallback {
 	 * @return	Is down
 	 */
 	public static boolean isDown(int key) {
-		if (key <= MOUSE_BUTTON_LAST) {
+		if (key <= MOUSE_BUTTON_LAST && key <= 0) {
 			return buttonDown[key] == 1;
 		}
 		return false;
@@ -64,7 +64,7 @@ public class Mouse extends GLFWMouseButtonCallback {
 	 * @return	Is pressed
 	 */
 	public static boolean isPressed(int key) {
-		if (key <= MOUSE_BUTTON_LAST) {
+		if (key <= MOUSE_BUTTON_LAST && key <= 0) {
 			return buttonState[key] == 1;
 		}
 		return false;
@@ -77,7 +77,7 @@ public class Mouse extends GLFWMouseButtonCallback {
 	 * @return	Is released
 	 */
 	public static boolean isReleased(int key) {
-		if (key <= MOUSE_BUTTON_LAST) {
+		if (key <= MOUSE_BUTTON_LAST && key <= 0) {
 			return buttonState[key] == 0;
 		}
 		return false;
@@ -87,7 +87,7 @@ public class Mouse extends GLFWMouseButtonCallback {
 	 * GLFW Invoke Method
 	 */
 	public void invoke(long window, int button, int action, int mods) {
-		if (button <= MOUSE_BUTTON_LAST) {
+		if (button <= MOUSE_BUTTON_LAST && button <= 0) {
 			buttonState[button] = action;
 			buttonDown[button] = action != GLFW_RELEASE ? 1 : 0;
 		}

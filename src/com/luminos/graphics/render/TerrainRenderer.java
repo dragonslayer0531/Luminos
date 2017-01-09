@@ -52,6 +52,10 @@ public class TerrainRenderer {
 		shader.start();
 		shader.setUniform("projectionMatrix", projectionMatrix);
 		shader.setUniform("tileFactor", tileFactor);
+		shader.setUniform("density", density);
+		shader.setUniform("gradient", gradient);
+		shader.setUniform("shineDamper", 1f);
+		shader.setUniform("reflectivity", 0f);
 		shader.connectTextureUnits();
 		shader.stop();
 	}
@@ -67,8 +71,6 @@ public class TerrainRenderer {
 		for (Terrain terrain : terrains) {
 			prepareTerrain(terrain, shadowMap);
 			loadModelMatrix(terrain);
-			shader.setUniform("density", density);
-			shader.setUniform("gradient", gradient);
 			glDrawElements(GL_TRIANGLES, terrain.getRawModel().getVertexCount(),
 					GL_UNSIGNED_INT, 0);
 			unbindTexturedModel();
@@ -129,8 +131,6 @@ public class TerrainRenderer {
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
 		bindTextures(terrain, shadowMap);
-		shader.setUniform("shineDamper", 1f);
-		shader.setUniform("reflectivity", 0f);
 	}
 	
 	/**

@@ -78,6 +78,8 @@ public class WaterRenderer {
 		normalTexture = loader.loadTexture(normal);
 		shader.start();
 		shader.connectTextureUnits();
+		shader.setUniform("near", MasterRenderer.NEAR_PLANE);
+		shader.setUniform("far", MasterRenderer.FAR_PLANE);
 		shader.setUniform("projectionMatrix", projectionMatrix);
 		shader.setUniform("skyColor", MasterRenderer.SKY_COLOR);
 		shader.setUniform("tiling", tiling);
@@ -215,8 +217,6 @@ public class WaterRenderer {
 		moveFactor += WAVE_SPEED * 0.001;
 		moveFactor %= 1;
 		shader.setUniform("moveFactor", moveFactor);
-		shader.setUniform("near", MasterRenderer.NEAR_PLANE);
-		shader.setUniform("far", MasterRenderer.FAR_PLANE);
 		shader.loadPointLight(sun);
 		glBindVertexArray(quad.getVaoID());
 		glEnableVertexAttribArray(0);

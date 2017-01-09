@@ -16,6 +16,7 @@ public class PointLight implements Light {
 	private Vector3f position;
 	private Vector3f color;
 	private Attenuation attenuation;
+	private String id;
 	
 	/**
 	 * Constructor using position and color
@@ -81,6 +82,16 @@ public class PointLight implements Light {
 	 */
 	public Vector3f getColor() {
 		return color;
+	}
+	
+	@Override
+	public void setID(String id) {
+		this.id = id;
+	}
+	
+	@Override
+	public String getID() {
+		return id;
 	}
 
 }
