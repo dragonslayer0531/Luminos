@@ -5,7 +5,7 @@ out vec2 textureCoords;
 out vec3 toCameraVector;
 out vec3 fromLightVector;
 
-uniform float tiling;
+uniform int tiling;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 modelMatrix;

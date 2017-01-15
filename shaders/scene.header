@@ -9,3 +9,9 @@ struct DirectionalLight {
 	vec3 direction;
 	float intensity;
 };
+
+struct SpotLight {
+	PointLight light;
+	vec3 direction;
+	float angle;
+};
