@@ -1,0 +1,9 @@
+vec2 linearInterpolation(in vec2 one, in vec2 two, in float floatBlendFactor) {
+	
+	vec2 vec;
+	floatBlendFactor = clamp(floatBlendFactor, 0, 1);
+	vec.x = one.x * floatBlendFactor + two.x * (1 - floatBlendFactor);
+	vec.y = one.y * floatBlendFactor * two.y * (1 - floatBlendFactor);
+	return(vec);
+	
+}
