@@ -92,6 +92,12 @@ public class FrameBufferObject {
         initialiseFrameBuffer(depthBufferType);
     }
     
+    /**
+     * Constructor 
+     * 
+     * @param width				Width of the FBO
+     * @param height			Height of the FBO
+     */
     public FrameBufferObject(int width, int height) {
         this.width = width;
         this.height = height;
@@ -111,8 +117,7 @@ public class FrameBufferObject {
     }
  
     /**
-     * Binds the frame buffer, setting it as the current render target. Anything
-     * rendered after this will be rendered to this FBO, and not to the screen.
+     * Binds the current FBO to be drawn to
      */
     public void bindFrameBuffer() {
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frameBuffer);
@@ -120,9 +125,7 @@ public class FrameBufferObject {
     }
  
     /**
-     * Unbinds the frame buffer, setting the default frame buffer as the current
-     * render target. Anything rendered after this will be rendered to the
-     * screen, and not this FBO.
+     * Unbinds the current FBO and sets the default frame buffer as the draw buffer
      */
     public void unbindFrameBuffer() {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -130,7 +133,7 @@ public class FrameBufferObject {
     }
  
     /**
-     * Binds the current FBO to be read from (not used in tutorial 43).
+     * Binds the FBO to be read from
      */
     public void bindToRead() {
         glBindFramebuffer(GL_READ_FRAMEBUFFER, frameBuffer);
@@ -152,9 +155,8 @@ public class FrameBufferObject {
     }
     
     /**
-     * Resolves frame buffer to another frame buffer
+     * Resolves the contents of the current frame buffer to another
      * 
-     * @param readBuffer	Buffer to read from
      * @param fbo			FrameBufferObject to be resolved to
      */
     public void resolveToFBO(FrameBufferObject fbo) {
@@ -175,14 +177,6 @@ public class FrameBufferObject {
     	this.unbindFrameBuffer();
     }
  
-    /**
-     * Creates the FBO along with a color buffer texture attachment, and
-     * possibly a depth buffer.
-     * 
-     * @param type
-     *            - the type of depth buffer attachment to be attached to the
-     *            FBO.
-     */
     private void initialiseFrameBuffer(int type) {
         createFrameBuffer();
         if(multisample) {
@@ -208,22 +202,12 @@ public class FrameBufferObject {
     	glDrawBuffers(drawBuffers);
     }
  
-    /**
-     * Creates a new frame buffer object and sets the buffer to which drawing
-     * will occur - color attachment 0. This is the attachment where the color
-     * buffer texture is.
-     * 
-     */
     private void createFrameBuffer() {
         frameBuffer = glGenFramebuffers();
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
         determineDrawBuffers();
     }
- 
-    /**
-     * Creates a texture and sets it as the color buffer attachment for this
-     * FBO.
-     */
+
     private void createTextureAttachment() {
         colorTexture = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, colorTexture);
@@ -235,10 +219,7 @@ public class FrameBufferObject {
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTexture,
                 0);
     }
-    
-    /**
-     * Creates a color attachment with multiple samples
-     */
+
     private int createMultisampleColorAttachment(int attachment) {
     	int colorBuffer = glGenRenderbuffers();
     	glBindRenderbuffer(GL_RENDERBUFFER, colorBuffer);
@@ -246,11 +227,7 @@ public class FrameBufferObject {
     	glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, colorBuffer);
     	return colorBuffer;
     }
- 
-    /**
-     * Adds a depth buffer to the FBO in the form of a texture, which can later
-     * be sampled.
-     */
+
     private void createDepthTextureAttachment() {
         depthTexture = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, depthTexture);
@@ -260,11 +237,7 @@ public class FrameBufferObject {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0);
     }
- 
-    /**
-     * Adds a depth buffer to the FBO in the form of a render buffer. This can't
-     * be used for sampling in the shaders.
-     */
+
     private void createDepthBufferAttachment() {
         depthBuffer = glGenRenderbuffers();
         glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);

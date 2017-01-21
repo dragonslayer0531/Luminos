@@ -20,7 +20,8 @@ public class ImageShader extends ShaderProgram implements PostProcess {
 	
 	/**
 	 * Constructor
-	 * @throws Exception 
+	 * @throws Exception 		Thrown if shader file cannot be found, compiled, validated
+	 * 							or linked
 	 */
 	public ImageShader() throws Exception {
 		super(vertexFile, fragmentFile);

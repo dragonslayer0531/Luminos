@@ -19,9 +19,9 @@ import tk.luminos.graphics.models.RawModel;
 import tk.luminos.graphics.models.TexturedModel;
 import tk.luminos.graphics.shaders.ShadowShader;
 import tk.luminos.graphics.terrains.Terrain;
-import tk.luminos.tools.Maths;
-import tk.luminos.tools.maths.matrix.Matrix4f;
-import tk.luminos.tools.maths.vector.Vector3f;
+import tk.luminos.maths.MathUtils;
+import tk.luminos.maths.matrix.Matrix4f;
+import tk.luminos.maths.vector.Vector3f;
 
 /**
  * 
@@ -97,14 +97,14 @@ public class ShadowMapEntityRenderer {
 	 * @param entity		Entity to be prepared
 	 */
 	private void prepareInstance(GameObject entity) {
-		Matrix4f modelMatrix = Maths.createTransformationMatrix((Vector3f) entity.getPosition(),
+		Matrix4f modelMatrix = MathUtils.createTransformationMatrix((Vector3f) entity.getPosition(),
 				entity.getRotation(), entity.getScale());
 		Matrix4f mvpMatrix = Matrix4f.mul(projectionViewMatrix, modelMatrix, null);
 		shader.setUniform("mvpMatrix", mvpMatrix);
 	}
 	
 	private void prepareInstance(Terrain terrain) {
-		Matrix4f modelMatrix = Maths.createTransformationMatrix((Vector3f) terrain.getPosition(), new Vector3f(0, 0, 0),
+		Matrix4f modelMatrix = MathUtils.createTransformationMatrix((Vector3f) terrain.getPosition(), new Vector3f(0, 0, 0),
 				1);
 		Matrix4f mvpMatrix = Matrix4f.mul(projectionViewMatrix, modelMatrix, null);
 		shader.setUniform("mvpMatrix", mvpMatrix);

@@ -19,7 +19,8 @@ public class WaterShader extends ShaderProgram {
 
 	/**
 	 * Constructor
-	 * @throws Exception 
+	 * @throws Exception 		Thrown if shader file cannot be found, compiled, validated
+	 * 							or linked
 	 */
 	public WaterShader() throws Exception {
 		super(VERT, FRAG);
@@ -37,7 +38,7 @@ public class WaterShader extends ShaderProgram {
 	 * (non-Javadoc)
 	 * @see graphics.shaders.ShaderProgram#getAllUniformLocations()
 	 */
-	public void getAllUniformLocations() {
+	public void getAllUniformLocations() throws Exception {
 		createUniform("projectionMatrix");
 		createUniform("viewMatrix");
 		createUniform("modelMatrix");

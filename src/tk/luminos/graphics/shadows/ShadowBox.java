@@ -5,9 +5,9 @@ import static tk.luminos.ConfigData.WIDTH;
 
 import tk.luminos.graphics.gameobjects.Camera;
 import tk.luminos.graphics.render.MasterRenderer;
-import tk.luminos.tools.maths.matrix.Matrix4f;
-import tk.luminos.tools.maths.vector.Vector3f;
-import tk.luminos.tools.maths.vector.Vector4f;
+import tk.luminos.maths.matrix.Matrix4f;
+import tk.luminos.maths.vector.Vector3f;
+import tk.luminos.maths.vector.Vector4f;
 
 /**
  * 

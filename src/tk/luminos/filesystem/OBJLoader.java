@@ -12,11 +12,27 @@ import tk.luminos.Debug;
 import tk.luminos.graphics.models.RawModel;
 import tk.luminos.graphics.models.Vertex;
 import tk.luminos.loaders.Loader;
-import tk.luminos.tools.maths.vector.Vector2f;
-import tk.luminos.tools.maths.vector.Vector3f;
+import tk.luminos.maths.vector.Vector2f;
+import tk.luminos.maths.vector.Vector3f;
+
+/**
+ * 
+ * Loads OBJ file to OpenGL
+ * 
+ * @author Nick Clark
+ * @version 1.1
+ *
+ */
 
 public class OBJLoader {
 
+	/**
+	 * Loads OBJ model to GPU
+	 * 
+	 * @param fileName		Name of OBJ file
+	 * @param loader		Loader used to add data to GPU
+	 * @return				RawModel containing basic file information
+	 */
 	public static RawModel loadObjModel(String fileName, Loader loader) {
 		FileReader fr = null;
 		try {
@@ -98,6 +114,13 @@ public class OBJLoader {
 
 	}
 
+	/**
+	 * Loads OBJ to OpenGL
+	 * 
+	 * @param objFileName		File holding OBJ data
+	 * @param loader			Loader used to data to GPU
+	 * @return					Model data for file
+	 */
 	public static RawModel loadOBJ(String objFileName, Loader loader) {
 		FileReader isr = null;
 		File objFile = new File(objFileName);

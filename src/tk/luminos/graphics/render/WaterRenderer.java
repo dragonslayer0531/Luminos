@@ -31,9 +31,9 @@ import tk.luminos.graphics.shaders.WaterShader;
 import tk.luminos.graphics.water.WaterFrameBuffers;
 import tk.luminos.graphics.water.WaterTile;
 import tk.luminos.loaders.Loader;
-import tk.luminos.tools.Maths;
-import tk.luminos.tools.maths.matrix.Matrix4f;
-import tk.luminos.tools.maths.vector.Vector3f;
+import tk.luminos.maths.MathUtils;
+import tk.luminos.maths.matrix.Matrix4f;
+import tk.luminos.maths.vector.Vector3f;
 
 /**
  * 
@@ -104,8 +104,8 @@ public class WaterRenderer {
 		for (PointLight light : lights) {
 			prepareRender(camera, light); 
 			for (WaterTile tile : water) {
-				if (Maths.getDistance(new Vector3f(tile.getX(), 0, tile.getZ()), camera.getPosition()) > 500) continue;
-				Matrix4f modelMatrix = Maths.createWaterTransformationMatrix(new Vector3f(tile.getX(), tile.getHeight(), tile.getZ()), 0, 0, 0, tile.getScale());
+				if (MathUtils.getDistance(new Vector3f(tile.getX(), 0, tile.getZ()), camera.getPosition()) > 500) continue;
+				Matrix4f modelMatrix = MathUtils.createTransformationMatrix(new Vector3f(tile.getX(), tile.getHeight(), tile.getZ()), new Vector3f(), tile.getScale());
 				shader.setUniform("modelMatrix", modelMatrix);
 				glDrawArrays(GL_TRIANGLES, 0, quad.getVertexCount());
 			}
@@ -123,8 +123,8 @@ public class WaterRenderer {
 	public void renderTile(List<WaterTile> water, Camera camera, PointLight sun) {
 		prepareRender(camera, sun);
 		for (WaterTile tile : water) {
-			if (Maths.getDistance(new Vector3f(tile.getX(), 0, tile.getZ()), camera.getPosition()) > 500) continue;
-			Matrix4f modelMatrix = Maths.createTransformationMatrix(new Vector3f(tile.getX(), tile.getHeight(), tile.getZ()), 0, 0, 0, tile.getFloatScale());
+			if (MathUtils.getDistance(new Vector3f(tile.getX(), 0, tile.getZ()), camera.getPosition()) > 500) continue;
+			Matrix4f modelMatrix = MathUtils.createTransformationMatrix(new Vector3f(tile.getX(), tile.getHeight(), tile.getZ()), 0, 0, 0, tile.getFloatScale());
 			shader.setUniform("modelMatrix", modelMatrix);
 			glDrawArrays(GL_TRIANGLES, 0, quad.getVertexCount());
 		}
@@ -212,7 +212,7 @@ public class WaterRenderer {
 	 */
 	private void prepareRender(Camera camera, PointLight sun){
 		shader.start();
-		shader.setUniform("viewMatrix", Maths.createViewMatrix(camera));
+		shader.setUniform("viewMatrix", MathUtils.createViewMatrix(camera));
 		shader.setUniform("cameraPosition", camera.getPosition());
 		moveFactor += WAVE_SPEED * 0.001;
 		moveFactor %= 1;

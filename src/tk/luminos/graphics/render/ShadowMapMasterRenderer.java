@@ -16,9 +16,9 @@ import tk.luminos.graphics.shaders.ShadowShader;
 import tk.luminos.graphics.shadows.ShadowBox;
 import tk.luminos.graphics.shadows.ShadowFrameBuffer;
 import tk.luminos.graphics.terrains.Terrain;
-import tk.luminos.tools.maths.matrix.Matrix4f;
-import tk.luminos.tools.maths.vector.Vector2f;
-import tk.luminos.tools.maths.vector.Vector3f;
+import tk.luminos.maths.matrix.Matrix4f;
+import tk.luminos.maths.vector.Vector2f;
+import tk.luminos.maths.vector.Vector3f;
 
 /**
  * 
@@ -60,6 +60,7 @@ public class ShadowMapMasterRenderer {
      * Renders shadow map to buffer
      * 
      * @param entities		List of all rendered entities
+     * @param terrains		List of all rendered terrains
      * @param sun			Focal light to render to shadow map
      */
     public void render(Map<TexturedModel, List<GameObject>> entities, List<Terrain> terrains, DirectionalLight sun) {

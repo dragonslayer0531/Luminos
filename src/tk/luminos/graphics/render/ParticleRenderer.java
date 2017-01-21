@@ -26,10 +26,10 @@ import tk.luminos.graphics.particles.Particle;
 import tk.luminos.graphics.shaders.ParticleShader;
 import tk.luminos.graphics.textures.ParticleTexture;
 import tk.luminos.loaders.Loader;
-import tk.luminos.tools.Maths;
-import tk.luminos.tools.maths.matrix.Matrix4f;
-import tk.luminos.tools.maths.vector.Vector2f;
-import tk.luminos.tools.maths.vector.Vector3f;
+import tk.luminos.maths.MathUtils;
+import tk.luminos.maths.matrix.Matrix4f;
+import tk.luminos.maths.vector.Vector2f;
+import tk.luminos.maths.vector.Vector3f;
 
 /**
  * 
@@ -69,7 +69,7 @@ public class ParticleRenderer {
 	 * @param camera			Defines camera to get view matrix of
 	 */
 	public void render(Map<ParticleTexture, List<Particle>> particles, Camera camera){
-		Matrix4f viewMatrix = Maths.createViewMatrix(camera);
+		Matrix4f viewMatrix = MathUtils.createViewMatrix(camera);
 		prepare();
 		
 		for(ParticleTexture texture : particles.keySet()) {

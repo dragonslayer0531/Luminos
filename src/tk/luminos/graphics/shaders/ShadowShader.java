@@ -17,6 +17,11 @@ public class ShadowShader extends ShaderProgram {
     public static String VERT = "shadow.vert";
     public static String FRAG = "shadow.frag";
     
+    /**
+     * Constructor
+     * @throws Exception		Thrown if shader file cannot be found, compiled, validated
+	 * 							or linked
+     */
 	public ShadowShader() throws Exception {
         super(VERT, FRAG);
     }
@@ -25,7 +30,7 @@ public class ShadowShader extends ShaderProgram {
 	 * (non-Javadoc)
 	 * @see graphics.shaders.ShaderProgram#getAllUniformLocations()
 	 */
-    public void getAllUniformLocations() {
+    public void getAllUniformLocations() throws Exception {
        createUniform("mvpMatrix");  
     }
  

@@ -8,14 +8,32 @@ import org.lwjgl.BufferUtils;
 
 import tk.luminos.filesystem.xml.XMLNode;
 import tk.luminos.filesystem.xml.XMLParser;
-import tk.luminos.tools.File;
-import tk.luminos.tools.maths.matrix.Matrix4f;
-import tk.luminos.tools.maths.vector.Vector2f;
-import tk.luminos.tools.maths.vector.Vector3f;
-import tk.luminos.tools.maths.vector.Vector4f;
+import tk.luminos.maths.matrix.Matrix4f;
+import tk.luminos.maths.vector.Vector2f;
+import tk.luminos.maths.vector.Vector3f;
+import tk.luminos.maths.vector.Vector4f;
+import tk.luminos.utilities.File;
+
+/**
+ * 
+ * Loads Collada (DAE) files to the engine for usage.  It loads the 
+ * controllers, visual scenes, animation, and geometry libraries.
+ * 
+ * @author Nick Clark
+ * @version 1.0
+ *
+ */
 
 public class ColladaLoader {
 	
+	/**
+	 * Loads the controllers, scene, and geometry to a AnimatedModelData
+	 * 
+	 * @param file			File to load animation from
+	 * @param maxWeights	Maximum weight of the vertices
+	 * @return				Model data containing the joints and mesh data
+	 * @throws Exception	Thrown if file cannot be found
+	 */
 	public static AnimatedModelData loadColladaModel(File file, int maxWeights) throws Exception {
 		XMLNode node = XMLParser.loadXMLFile(file);
 		SkinLoader skinLoader = new SkinLoader(node.getChild("library_controllers"), maxWeights);
@@ -30,7 +48,14 @@ public class ColladaLoader {
 		return new AnimatedModelData(jointsData, meshData);
 	}
 	
-	public static AnimationData loadColladaAnimation(File colladaFile) throws Exception{
+	/**
+	 * Loads the collada animation to an AnimationData object
+	 * 
+	 * @param colladaFile		File to be loaded
+	 * @return					Data containing information on animation	
+	 * @throws Exception		Thrown if file cannot be found
+	 */
+	public static AnimationData loadColladaAnimation(File colladaFile) throws Exception {
 		XMLNode node = XMLParser.loadXMLFile(colladaFile);
 		AnimationLoader a = new AnimationLoader(node.getChild("library_animations"));
 		AnimationData animData = a.extractAnimation();

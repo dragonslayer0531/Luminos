@@ -20,9 +20,9 @@ import tk.luminos.graphics.models.RawModel;
 import tk.luminos.graphics.models.TexturedModel;
 import tk.luminos.graphics.shaders.NormalMapShader;
 import tk.luminos.graphics.textures.Material;
-import tk.luminos.tools.Maths;
-import tk.luminos.tools.maths.matrix.Matrix4f;
-import tk.luminos.tools.maths.vector.Vector2f;
+import tk.luminos.maths.MathUtils;
+import tk.luminos.maths.matrix.Matrix4f;
+import tk.luminos.maths.vector.Vector2f;
 
 /**
  * 
@@ -107,7 +107,7 @@ public class NormalMapRenderer {
     }
  
     private void prepareInstance(GameObject entity) {
-        Matrix4f transformationMatrix = Maths.createTransformationMatrix(entity.getPosition(), entity.getRotation(), entity.getScale());
+        Matrix4f transformationMatrix = MathUtils.createTransformationMatrix(entity.getPosition(), entity.getRotation(), entity.getScale());
         shader.setUniform("transformationMatrix", transformationMatrix);
         shader.setUniform("offset", new Vector2f(0, 0));
     }

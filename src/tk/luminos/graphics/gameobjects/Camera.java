@@ -1,6 +1,6 @@
 package tk.luminos.graphics.gameobjects;
 
-import tk.luminos.tools.maths.vector.Vector3f;
+import tk.luminos.maths.vector.Vector3f;
 
 /**
  * 
@@ -15,13 +15,10 @@ public class Camera {
 	
 	private static float distanceFromPlayer = -.05f;
 	private float angleAroundPlayer = 0;
-	
 	private Vector3f position = new Vector3f(0, 0, 0);
-	public float pitch = 0;
-	public static float pitchChangeSpeed = 0;
-	static float yaw = 0;
-	
-	private float roll;
+	private float pitch = 0;
+	private float yaw = 0;
+	private float roll = 0;
 	
 	private GameObject player;
 	
@@ -41,7 +38,7 @@ public class Camera {
 		float horizontalDistance = calculateHorizontalDistance();
 		float verticalDistance = calculateVerticalDistance();
 		calculateCameraPosition(horizontalDistance, verticalDistance);
-		Camera.yaw = 180 - (player.getRotation().y + angleAroundPlayer);
+		yaw = 180 - (player.getRotation().y + angleAroundPlayer);
 		yaw%=360;
 	}
 
@@ -86,6 +83,15 @@ public class Camera {
 	 */
 	public void invertPitch() {
 		pitch *= -1;
+	}
+	
+	/**
+	 * Set pitch of camera
+	 * 
+	 * @param pitch		Pitch of camera
+	 */
+	public void setPitch(float pitch) {
+		this.pitch = pitch;
 	}
 	
 	//**********************************Private Methods*******************************************//

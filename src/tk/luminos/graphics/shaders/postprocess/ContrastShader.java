@@ -18,7 +18,8 @@ public class ContrastShader extends ShaderProgram implements PostProcess {
 	
 	/**
 	 * Constructor
-	 * @throws Exception 
+	 * @throws Exception 		Thrown if shader file cannot be found, compiled, validated
+	 * 							or linked
 	 */
 	public ContrastShader() throws Exception {
 		super(VERT, FRAG);
@@ -29,7 +30,7 @@ public class ContrastShader extends ShaderProgram implements PostProcess {
 	 * @see tk.luminos.graphics.shaders.ShaderProgram#getAllUniformLocations()
 	 */
 	@Override
-	public void getAllUniformLocations() {
+	public void getAllUniformLocations() throws Exception {
 		createUniform("contrast");
 	}
 

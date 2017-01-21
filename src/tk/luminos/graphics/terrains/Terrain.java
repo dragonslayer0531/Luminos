@@ -19,11 +19,11 @@ import tk.luminos.graphics.textures.ProceduralTerrainTexture;
 import tk.luminos.graphics.textures.TerrainTexture;
 import tk.luminos.graphics.textures.TerrainTexturePack;
 import tk.luminos.loaders.Loader;
-import tk.luminos.tools.maths.vector.Vector;
-import tk.luminos.tools.maths.vector.Vector2f;
-import tk.luminos.tools.maths.vector.Vector3f;
-import tk.luminos.tools.Maths;
-import tk.luminos.tools.algorithms.FractalNoise;
+import tk.luminos.maths.MathUtils;
+import tk.luminos.maths.vector.Vector;
+import tk.luminos.maths.vector.Vector2f;
+import tk.luminos.maths.vector.Vector3f;
+import tk.luminos.utilities.algorithms.FractalNoise;
 /**
  * 
  * Terrain class
@@ -233,11 +233,11 @@ public class Terrain {
 		float answer;
 
 		if (xCoord <= (1-zCoord)) {
-			answer = Maths.barryCentric(new Vector3f(0, heights[gridX][gridZ], 0), new Vector3f(1,
+			answer = MathUtils.barryCentric(new Vector3f(0, heights[gridX][gridZ], 0), new Vector3f(1,
 					heights[gridX + 1][gridZ], 0), new Vector3f(0,
 							heights[gridX][gridZ + 1], 1), new Vector2f(xCoord, zCoord));
 		} else {
-			answer = Maths.barryCentric(new Vector3f(1, heights[gridX + 1][gridZ], 0), new Vector3f(1,
+			answer = MathUtils.barryCentric(new Vector3f(1, heights[gridX + 1][gridZ], 0), new Vector3f(1,
 					heights[gridX + 1][gridZ + 1], 1), new Vector3f(0,
 							heights[gridX][gridZ + 1], 1), new Vector2f(xCoord, zCoord));
 		}

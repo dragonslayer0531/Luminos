@@ -1,6 +1,6 @@
 package tk.luminos.graphics.water;
 
-import tk.luminos.tools.maths.vector.Vector2f;
+import tk.luminos.maths.vector.Vector2f;
 
 /**
  * 

@@ -1,7 +1,7 @@
 package tk.luminos.graphics.text;
 
-import tk.luminos.tools.maths.vector.Vector2f;
-import tk.luminos.tools.maths.vector.Vector3f;
+import tk.luminos.maths.vector.Vector2f;
+import tk.luminos.maths.vector.Vector3f;
 
 /**
  * 

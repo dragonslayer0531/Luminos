@@ -39,7 +39,8 @@ public class ImageRenderer {
 	 * Constructor
 	 * 
 	 * @param loader		Creates quad to render to
-	 * @throws Exception 
+	 * @throws Exception 	Thrown if shader file cannot be found, compiled, validated
+	 * 						or linked
 	 */
 	public ImageRenderer(Loader loader) throws Exception {
 		quad = loader.loadToVAO(POSITIONS, 2);

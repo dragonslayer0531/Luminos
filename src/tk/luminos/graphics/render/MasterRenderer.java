@@ -46,10 +46,10 @@ import tk.luminos.graphics.textures.GUITexture;
 import tk.luminos.graphics.water.WaterFrameBuffers;
 import tk.luminos.graphics.water.WaterTile;
 import tk.luminos.loaders.Loader;
-import tk.luminos.tools.Maths;
-import tk.luminos.tools.maths.matrix.Matrix4f;
-import tk.luminos.tools.maths.vector.Vector3f;
-import tk.luminos.tools.maths.vector.Vector4f;
+import tk.luminos.maths.MathUtils;
+import tk.luminos.maths.matrix.Matrix4f;
+import tk.luminos.maths.vector.Vector3f;
+import tk.luminos.maths.vector.Vector4f;
 
 /**
  * 
@@ -140,7 +140,7 @@ public class MasterRenderer {
 	 * @param entities		Entities to be rendered
 	 * @param terrains		Terrains to be rendered
 	 * @param lights		Lights to be passed into shader
-	 * @param sun 
+	 * @param sun 			Light used as main source
 	 * @param focalPoint	Location of camera focus
 	 * @param camera		Camera to be renderer
 	 * @param clipPlane		Plane to clip all rendering beyond
@@ -148,7 +148,7 @@ public class MasterRenderer {
 	public void renderScene(List<GameObject> entities, List<Terrain> terrains, List<PointLight> lights, DirectionalLight sun, Vector3f focalPoint, Camera camera, Vector4f clipPlane) {
 		if (entities != null) {
 			for (GameObject entity : entities) {
-				if (entity.isRenderable() && Maths.getDistance(entity.getPosition(), camera.getPosition()) < entity.getRenderDistance())
+				if (entity.isRenderable() && MathUtils.getDistance(entity.getPosition(), camera.getPosition()) < entity.getRenderDistance())
 					processGameObject(entity);
 			}
 		}
@@ -247,11 +247,12 @@ public class MasterRenderer {
 	/**
 	 * Prepares water for rendering
 	 * 
-	 * @param gameObjects	Passed to renderScene
-	 * @param terrains		Passed to renderScene
-	 * @param lights		Passed to renderScene
-	 * @param focalPoint	Passed to renderScene
-	 * @param camera		Calculates FBOs and passed to renderScene
+	 * @param gameObjects		Passed to render scene
+	 * @param terrains			Passed to render scene
+	 * @param lights			Passed to render scene
+	 * @param sun				Passed to render scene
+	 * @param focalPoint		Passed to render scene
+	 * @param camera			Passed to render scene
 	 */
 	public void prepareWater(List<GameObject> gameObjects, List<Terrain> terrains, List<PointLight> lights, DirectionalLight sun, Vector3f focalPoint, Camera camera) {
 		glEnable(GL_CLIP_DISTANCE0);
@@ -297,13 +298,13 @@ public class MasterRenderer {
 	 * Renders {@link GameObject}
 	 * 
 	 * @param lights	Passes lights to shaders
-	 * @param sun 
+	 * @param sun 		Main light source of scene
 	 * @param camera	Camera to create transformation matrix of
 	 * @param clipPlane	Plane to clip all rendering beyond
 	 */
 	public void render(List<PointLight> lights, DirectionalLight sun, Camera camera, Vector4f clipPlane){
 		prepare();
-		Matrix4f viewMatrix = Maths.createViewMatrix(camera);
+		Matrix4f viewMatrix = MathUtils.createViewMatrix(camera);
 //		normalMapShader.start();
 //		normalMapShader.loadClipPlane(clipPlane);
 //		normalMapShader.loadSkyColor(MasterRenderer.RED, MasterRenderer.GREEN, MasterRenderer.BLUE);
@@ -391,18 +392,19 @@ public class MasterRenderer {
 	/**
 	 * Render a shadow map
 	 * 
-	 * @param ents	Entities to have shadows
+	 * @param ents			Entities to have shadows
+	 * @param ters			Terrains to have shadows
 	 * @param focalPoint	Central rendering point
 	 * @param sun			Focal light
 	 */
 	public void renderShadowMap(List<GameObject> ents, List<Terrain> ters, Vector3f focalPoint, DirectionalLight sun) {
 		for(GameObject entity : ents) {
-			if(Maths.getDistance(entity.getPosition(), focalPoint) < 2 * ShadowBox.SHADOW_DISTANCE) {
+			if(MathUtils.getDistance(entity.getPosition(), focalPoint) < 2 * ShadowBox.SHADOW_DISTANCE) {
 				processGameObject(entity);
 			}
 		}
 		for (Terrain terrain : ters) {
-			if (Maths.getDistance((Vector3f) terrain.getPosition(), focalPoint) < 2 * ShadowBox.SHADOW_DISTANCE) 
+			if (MathUtils.getDistance((Vector3f) terrain.getPosition(), focalPoint) < 2 * ShadowBox.SHADOW_DISTANCE) 
 				processTerrain(terrain);
 		}
 		shadowRenderer.render(entities, terrains, sun);

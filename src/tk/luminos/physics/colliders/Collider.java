@@ -1,9 +1,25 @@
 package tk.luminos.physics.colliders;
 
-public interface Collider {
+/**
+ * Collider abstract class
+ * 
+ * @author Nick Clark
+ * @version 1.0
+ */
+public abstract class Collider {
 	
-	public boolean checkIntersection();
-	public boolean isColliding();
-	public void response(float interval);
+	/**
+	 * Checks for intersection
+	 * 
+	 * @return If intersecting
+	 */
+	public abstract boolean isColliding();
+	
+	/**
+	 * Response of collider
+	 * 
+	 * @param delta		Factor of response
+	 */
+	public abstract void response(float delta);
 
 }

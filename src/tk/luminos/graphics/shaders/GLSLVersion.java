@@ -20,6 +20,13 @@ public enum GLSLVersion {
 		this.name = name;
 	}
 	
+	/**
+	 * Gets the header for shaders of the provided GLSL version
+	 * 
+	 * @param version		GLSL Version
+	 * @param core			Uses GLSL core
+	 * @return				Header of shaders
+	 */
 	public static String getHeader(GLSLVersion version, boolean core) {
 		if (core) 
 			return version.name + " core";

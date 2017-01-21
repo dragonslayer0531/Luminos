@@ -1,5 +1,8 @@
 package tk.luminos;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.lwjgl.system.Callback;
 import org.lwjgl.system.Configuration;
 
@@ -7,8 +10,8 @@ import tk.luminos.graphics.display.Window;
 import tk.luminos.graphics.render.MasterRenderer;
 import tk.luminos.graphics.shaders.GLSLVersion;
 import tk.luminos.loaders.Loader;
-import tk.luminos.tools.SceneManager;
-import tk.luminos.tools.Timer;
+import tk.luminos.utilities.SceneManager;
+import tk.luminos.utilities.Timer;
 
 /**
  * 
@@ -28,14 +31,19 @@ public class Engine {
 	private float interval = 1f / ConfigData.UPS;
 	private Callback glErrorCallback;
 	
-	public static final GLSLVersion GLSL_VERSION = GLSLVersion.VERSION400;
+	private List<EngineComponent> components = new ArrayList<EngineComponent>();
+	
+	/**
+	 * Current version of GLSL used by the engine.
+	 */
+	public static final GLSLVersion GLSL_VERSION = GLSLVersion.VERSION330;
 	
 	/**
 	 * Creates a new Engine
 	 * 
 	 * @param masterRenderer	Wraps all required renderers
 	 * @param loader			Loads the required objects to the GPU
-	 * @throws Exception 
+	 * @throws Exception 		Thrown if shader programs do not compile properly
 	 */
 	public Engine(MasterRenderer masterRenderer, Loader loader) throws Exception {
 		this.manager = new SceneManager(masterRenderer, loader);
@@ -47,7 +55,8 @@ public class Engine {
 	 * 
 	 * @param masterRenderer	Wraps all required renderers
 	 * @param loader			Loads the required objects to the GPU
-	 * @throws Exception 
+	 * @param glslVersion		Version of GLSL to use in shader programs
+	 * @throws Exception 		Thrown if shader programs do not compile properly
 	 */
 	public Engine(MasterRenderer masterRenderer, Loader loader, GLSLVersion glslVersion) throws Exception {
 		this.manager = new SceneManager(masterRenderer, loader);
@@ -73,10 +82,8 @@ public class Engine {
 	 * Renders GameLogic to the scene
 	 * 
 	 * @param logic						Logic to render
-	 * @param entity					Entity controlled by user
-	 * @param camera					Camera to render with
 	 * @param window					Window to render to
-	 * @throws Exception 
+	 * @throws Exception 				Thrown if shader program cannot be created or other code fails
 	 */
 	public void render(Scene logic, Window window) throws Exception {
 		elapsedTime = timer.getElapsedTime();
@@ -92,7 +99,32 @@ public class Engine {
 			sync();
 	}
 	
+	/**
+	 * Attaches {@link EngineComponent} to the engine
+	 * 	
+	 * @param component		Component to add
+	 */
+	public void attach(EngineComponent component) {
+		this.components.add(component);
+	}
+	
+	/**
+	 * Removes {@link EngineComponent} from the engine
+	 * 	
+	 * @param component		Component to remove
+	 */
+	public void remove(EngineComponent component) {
+		this.components.remove(component);
+	}
+	
+	/**
+	 * Closes engine
+	 */
 	public void close() {
+		for (EngineComponent component : components) {
+			component.close();
+		}
+		components.clear();
 		glErrorCallback.free();
 		manager.dispose();
 	}

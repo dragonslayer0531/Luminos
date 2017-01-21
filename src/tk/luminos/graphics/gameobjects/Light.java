@@ -1,9 +1,23 @@
 package tk.luminos.graphics.gameobjects;
 
-import tk.luminos.tools.maths.vector.Vector3f;
+import tk.luminos.maths.vector.Vector3f;
+
+/**
+ * 
+ * Light interface
+ * 
+ * @author Nick Clark
+ * @version 1.0
+ *
+ */
 
 public interface Light extends SceneObject {
 	
+	/**
+	 * Gets the color of the light
+	 * 
+	 * @return		Light color
+	 */
 	public Vector3f getColor();
 
 }

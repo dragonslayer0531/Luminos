@@ -6,11 +6,12 @@ import tk.luminos.graphics.display.Window;
 import tk.luminos.graphics.gameobjects.Camera;
 import tk.luminos.graphics.gameobjects.DirectionalLight;
 import tk.luminos.graphics.gameobjects.GameObject;
+import tk.luminos.graphics.gameobjects.Light;
 import tk.luminos.graphics.gameobjects.PointLight;
 import tk.luminos.graphics.render.MasterRenderer;
 import tk.luminos.graphics.terrains.Terrain;
 import tk.luminos.graphics.water.WaterTile;
-import tk.luminos.tools.SceneManager;
+import tk.luminos.utilities.SceneManager;
 
 /**
  * 
@@ -75,13 +76,44 @@ public interface Scene {
 	
 	/**
 	 * Updates physics for GameLogic
+	 * 
+	 * @param interval		Update interval
 	 */
 	public void update(float interval);
 	
+	/**
+	 * Gets the focal object of the scene
+	 * 
+	 * @return		Scene's focal game object
+	 */
 	public GameObject getFocalObject();
 	
+	/**
+	 * Gets the camera used to render the scene
+	 * 
+	 * @return		Camera used by scene
+	 */
 	public Camera getCamera();
 	
+	/**
+	 * Gets the master renderer that renders the scene to the screen
+	 * 
+	 * @return		Renderer which renders to screen
+	 */
 	public MasterRenderer getRenderer();
+
+	/**
+	 * Adds game object to the scene
+	 * 
+	 * @param object		Object added to scene
+	 */
+	void addObject(GameObject object);
+
+	/**
+	 * Adds light to the scene
+	 * 
+	 * @param light			Light added to scene
+	 */
+	void addLight(Light light);
 
 }

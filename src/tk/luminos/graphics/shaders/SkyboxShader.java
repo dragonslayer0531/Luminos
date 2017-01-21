@@ -3,8 +3,8 @@ package tk.luminos.graphics.shaders;
 import static tk.luminos.ConfigData.POSITION;
 
 import tk.luminos.ConfigData;
-import tk.luminos.tools.maths.matrix.Matrix4f;
-import tk.luminos.tools.maths.vector.Vector3f;
+import tk.luminos.maths.matrix.Matrix4f;
+import tk.luminos.maths.vector.Vector3f;
 
 /**
  * 
@@ -24,7 +24,8 @@ public class SkyboxShader extends ShaderProgram {
      
     /** 
      * Constructor
-     * @throws Exception 
+     * @throws Exception 		Thrown if shader file cannot be found, compiled, validated
+	 * 							or linked
      */
     public SkyboxShader() throws Exception {
         super(VERT, FRAG);
@@ -33,7 +34,8 @@ public class SkyboxShader extends ShaderProgram {
     /**
      * Loads view matrix to shader
      * 
-     * @param camera	Camera to create view matrix of
+     * @param matrix	View matrix of scene
+     * @return 			Updated view matrix
      */
     public Matrix4f createViewMatrix(Matrix4f matrix){
         matrix.m30 = 0;
@@ -48,7 +50,7 @@ public class SkyboxShader extends ShaderProgram {
      * (non-Javadoc)
      * @see graphics.shaders.ShaderProgram#getAllUniformLocations()
      */
-    public void getAllUniformLocations() {
+    public void getAllUniformLocations() throws Exception {
         createUniform("projectionMatrix");
         createUniform("viewMatrix");
         createUniform("fogColor");
@@ -67,6 +69,9 @@ public class SkyboxShader extends ShaderProgram {
         super.bindAttribute(POSITION, "position");
     }
     
+    /**
+     * Connects texture units to location in shader
+     */
     public void connectTextureUnits() {
     	super.setUniform("cubeMap", 0);
     	super.setUniform("cubeMap2", 1);

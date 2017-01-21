@@ -19,9 +19,9 @@ import java.io.IOException;
 import tk.luminos.graphics.models.RawModel;
 import tk.luminos.graphics.shaders.SkyboxShader;
 import tk.luminos.loaders.Loader;
-import tk.luminos.tools.DateUtils;
-import tk.luminos.tools.maths.matrix.Matrix4f;
-import tk.luminos.tools.maths.vector.Vector3f;
+import tk.luminos.maths.matrix.Matrix4f;
+import tk.luminos.maths.vector.Vector3f;
+import tk.luminos.utilities.DateUtils;
 
 /**
  * 
@@ -116,8 +116,8 @@ public class SkyboxRenderer {
 	/**
 	 * Render skybox
 	 * 
-	 * @param camera	Camera to be projected from
-	 * @param skyColor 	SkyColor
+	 * @param viewMatrix	View matrix of relevant camera
+	 * @param skyColor 		SkyColor
 	 */
 	public void render(Matrix4f viewMatrix, Vector3f skyColor){
 		shader.start();

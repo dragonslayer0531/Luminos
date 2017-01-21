@@ -17,7 +17,8 @@ public class GuiShader extends ShaderProgram {
 
 	/**
 	 * Constructor
-	 * @throws Exception 
+	 * @throws Exception 		Thrown if shader file cannot be found, compiled, validated
+	 * 							or linked
 	 */
 	public GuiShader() throws Exception {
 		super(VERT, FRAG);
@@ -27,7 +28,7 @@ public class GuiShader extends ShaderProgram {
 	 * (non-Javadoc)
 	 * @see graphics.shaders.ShaderProgram#getAllUniformLocations()
 	 */
-	public void getAllUniformLocations() {
+	public void getAllUniformLocations() throws Exception {
 		createUniform("transformationMatrix");
 	}
 

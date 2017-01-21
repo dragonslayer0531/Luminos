@@ -6,8 +6,8 @@ import static tk.luminos.ConfigData.TEXTURE_SIZE;
 import java.awt.image.BufferedImage;
 
 import tk.luminos.graphics.terrains.Terrain;
-import tk.luminos.tools.Maths;
-import tk.luminos.tools.maths.vector.Vector3f;
+import tk.luminos.maths.MathUtils;
+import tk.luminos.maths.vector.Vector3f;
 
 /**
  * 
@@ -51,8 +51,8 @@ public class ProceduralTerrainTexture {
 		 
 		 */
 		
-		int BLACK = Maths.rgbToInt(new Vector3f(0, 0, 0));
-		int RED = Maths.rgbToInt(new Vector3f(255, 0, 0));
+		int BLACK = MathUtils.rgbToInt(new Vector3f(0, 0, 0));
+		int RED = MathUtils.rgbToInt(new Vector3f(255, 0, 0));
 		
 		for(int x = 0; x < TEXTURE_SIZE; x++) {
 			for(int y = 0; y < TEXTURE_SIZE; y++) {
@@ -70,8 +70,8 @@ public class ProceduralTerrainTexture {
 					image.setRGB(x, y, BLACK);
 				} else if (height > 0 && height <= 5) {
 					float blend = (height / 5);
-					int r = (int) Maths.CosineInterpolation(255, 0, blend);
-					image.setRGB(x, y, Maths.rgbToInt(r, 0, 0));
+					int r = (int) MathUtils.CosineInterpolation(255, 0, blend);
+					image.setRGB(x, y, MathUtils.rgbToInt(r, 0, 0));
 				} else {
 					image.setRGB(x, y, RED);
 				}

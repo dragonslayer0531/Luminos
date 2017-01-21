@@ -2,8 +2,8 @@ package tk.luminos.graphics.particles;
 
 import tk.luminos.graphics.display.Window;
 import tk.luminos.graphics.textures.ParticleTexture;
-import tk.luminos.tools.maths.vector.Vector2f;
-import tk.luminos.tools.maths.vector.Vector3f;
+import tk.luminos.maths.vector.Vector2f;
+import tk.luminos.maths.vector.Vector3f;
 
 /**
  * 
@@ -111,7 +111,7 @@ public class Particle {
 	/**
 	 * Updates particle position and velocity
 	 * 
-	 * @param window	{@link GLFWWindow} to get the frame time of
+	 * @param window	{@link Window} to get the frame time of
 	 * @return boolean 	Whether the particle is alive
 	 */
 	public boolean update(Window window) {

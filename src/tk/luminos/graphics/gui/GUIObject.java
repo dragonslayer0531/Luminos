@@ -3,7 +3,7 @@ package tk.luminos.graphics.gui;
 import java.util.List;
 
 import tk.luminos.graphics.textures.GUITexture;
-import tk.luminos.tools.maths.vector.Vector2f;
+import tk.luminos.maths.vector.Vector2f;
 
 /**
  * Interface used by all GUI Objects

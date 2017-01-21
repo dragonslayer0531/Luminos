@@ -1,5 +1,4 @@
 in float visibility;
-in int pass_maxLights;
 in PointLight pass_PointLights[_MAX_LIGHTS_];
 in vec2 pass_textureCoordinates;
 in vec3 surfaceNormal;
@@ -20,7 +19,6 @@ uniform int tileFactor;
 uniform float shineDamper;
 uniform float reflectivity;
 uniform vec3 skyColor;
-uniform int maxLights;
 
 const int pcfCount = 2;
 const float totalTexels = (pcfCount * 2.0 + 1.0) * (pcfCount * 2.0 + 1.0);

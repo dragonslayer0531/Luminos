@@ -22,10 +22,10 @@ import tk.luminos.graphics.models.RawModel;
 import tk.luminos.graphics.models.TexturedModel;
 import tk.luminos.graphics.shaders.GameObjectShader;
 import tk.luminos.graphics.textures.Material;
-import tk.luminos.tools.Maths;
-import tk.luminos.tools.maths.matrix.Matrix4f;
-import tk.luminos.tools.maths.vector.Vector2f;
-import tk.luminos.tools.maths.vector.Vector3f;
+import tk.luminos.maths.MathUtils;
+import tk.luminos.maths.matrix.Matrix4f;
+import tk.luminos.maths.vector.Vector2f;
+import tk.luminos.maths.vector.Vector3f;
 
 /**
  * 
@@ -61,7 +61,6 @@ public class GameObjectRenderer {
 	 * Renders entities to screen
 	 * 
 	 * @param entities			Defines the map of entities to render
-	 * @param shadowMapSpace	Matrix defining the shadow map transformation
 	 */
 	public void render(Map<TexturedModel, List<GameObject>> entities) {
 		for (TexturedModel model : entities.keySet()) {
@@ -166,7 +165,7 @@ public class GameObjectRenderer {
 	 * Prepares instance of entity for rendering
 	 */
 	private void prepareInstance(GameObject entity) {
-		Matrix4f transformationMatrix = Maths.createTransformationMatrix((Vector3f) entity.getPosition(),
+		Matrix4f transformationMatrix = MathUtils.createTransformationMatrix((Vector3f) entity.getPosition(),
 				entity.getRotation(), entity.getScale());
 		shader.setUniform(shader.getLocation("transformationMatrix"), transformationMatrix);
 		shader.setUniform(shader.getLocation("offset"), new Vector2f(0, 0));

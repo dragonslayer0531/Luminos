@@ -22,9 +22,9 @@ import tk.luminos.graphics.models.RawModel;
 import tk.luminos.graphics.shaders.TerrainShader;
 import tk.luminos.graphics.terrains.Terrain;
 import tk.luminos.graphics.textures.TerrainTexturePack;
-import tk.luminos.tools.Maths;
-import tk.luminos.tools.maths.matrix.Matrix4f;
-import tk.luminos.tools.maths.vector.Vector3f;
+import tk.luminos.maths.MathUtils;
+import tk.luminos.maths.matrix.Matrix4f;
+import tk.luminos.maths.vector.Vector3f;
 
 /**
  * 
@@ -65,6 +65,7 @@ public class TerrainRenderer {
 	 * 
 	 * @param terrains		List of terrains to be rendered
 	 * @param toShadowSpace	Loads shadow space to shader
+	 * @param shadowMap		Shadow map texture id
 	 */
 	public void render(List<Terrain> terrains, Matrix4f toShadowSpace, int shadowMap) {
 		shader.setUniform("toShadowMapSpace", toShadowSpace);
@@ -170,7 +171,7 @@ public class TerrainRenderer {
 	 * @param terrain	Terrain to calculate Model Matrix of
 	 */
 	private void loadModelMatrix(Terrain terrain) {
-		Matrix4f transformationMatrix = Maths.createTransformationMatrix(
+		Matrix4f transformationMatrix = MathUtils.createTransformationMatrix(
 				new Vector3f(terrain.getX(), 0, terrain.getZ()), 0, 0, 0, 1);
 		shader.setUniform("transformationMatrix", transformationMatrix);
 	}

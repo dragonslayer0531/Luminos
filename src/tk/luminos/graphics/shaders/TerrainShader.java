@@ -7,7 +7,7 @@ import static tk.luminos.ConfigData.TEXTURES;
 import java.util.List;
 
 import tk.luminos.graphics.gameobjects.PointLight;
-import tk.luminos.tools.maths.vector.Vector3f;
+import tk.luminos.maths.vector.Vector3f;
 
 /**
  * 
@@ -27,7 +27,8 @@ public class TerrainShader extends ShaderProgram{
 
 	/**
 	 * Constructor
-	 * @throws Exception 
+	 * @throws Exception 		Thrown if shader file cannot be found, compiled, validated
+	 * 							or linked
 	 */
 	public TerrainShader() throws Exception {
 		super(VERT, FRAG);
@@ -47,7 +48,7 @@ public class TerrainShader extends ShaderProgram{
 	 * (non-Javadoc)
 	 * @see graphics.shaders.ShaderProgram#getAllUniformLocations()
 	 */
-	public void getAllUniformLocations() {
+	public void getAllUniformLocations() throws Exception {
 		createUniform("transformationMatrix");
 		createUniform("projectionMatrix");
 		createUniform("viewMatrix");

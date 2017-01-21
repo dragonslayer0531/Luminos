@@ -1,7 +1,7 @@
 package tk.luminos.graphics.gameobjects;
 
-import tk.luminos.tools.maths.vector.Vector;
-import tk.luminos.tools.maths.vector.Vector3f;
+import tk.luminos.maths.vector.Vector;
+import tk.luminos.maths.vector.Vector3f;
 
 /**
  * 
@@ -84,11 +84,21 @@ public class PointLight implements Light {
 		return color;
 	}
 	
+	/**
+	 * Sets the ID of the light
+	 * 
+	 * @param id		ID of light
+	 */
 	@Override
 	public void setID(String id) {
 		this.id = id;
 	}
 	
+	/**
+	 * Gets the ID of the light
+	 * 
+	 * @return		ID of light
+	 */
 	@Override
 	public String getID() {
 		return id;

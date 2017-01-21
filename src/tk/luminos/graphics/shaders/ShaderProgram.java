@@ -42,10 +42,10 @@ import tk.luminos.filesystem.ResourceLoader;
 import tk.luminos.graphics.gameobjects.DirectionalLight;
 import tk.luminos.graphics.gameobjects.PointLight;
 import tk.luminos.graphics.gameobjects.SpotLight;
-import tk.luminos.tools.maths.matrix.Matrix4f;
-import tk.luminos.tools.maths.vector.Vector2f;
-import tk.luminos.tools.maths.vector.Vector3f;
-import tk.luminos.tools.maths.vector.Vector4f;
+import tk.luminos.maths.matrix.Matrix4f;
+import tk.luminos.maths.vector.Vector2f;
+import tk.luminos.maths.vector.Vector3f;
+import tk.luminos.maths.vector.Vector4f;
 
 /**
  * 
@@ -71,7 +71,8 @@ public abstract class ShaderProgram {
 	 * 
 	 * @param vertexFile	Vertex shader file
 	 * @param fragmentFile	Fragment shader file
-	 * @throws Exception  
+	 * @throws Exception  	Thrown if shader file cannot be found, compiled, validated
+	 * 						or linked
 	 */
 	public ShaderProgram(String vertexFile, String fragmentFile) throws Exception {
 		programID = createProgram(loadShader(vertexFile, GL_VERTEX_SHADER), loadShader(fragmentFile, GL_FRAGMENT_SHADER));
@@ -80,21 +81,48 @@ public abstract class ShaderProgram {
 		this.stop();
 	}
 
-	public void createUniform(String uniformName) {
+	/**
+	 * Gets the uniform in the current shader and attaches it to the relevant
+	 * uniform location map.  This caches the uniform, as glGetUniformLocation() 
+	 * is a slow method.
+	 * 
+	 * @param uniformName		Name of uniform to get location of from GPU
+	 * @throws Exception		Thrown if the uniform location is -1, which means the uniform does
+	 * 							not exist of is compile out of the code.  If it is compiled out
+	 * 							of the code, it had no effect (direct or indirect) on the final
+	 * 							outputs of the respective shader.
+	 */
+	public void createUniform(String uniformName) throws Exception {
 		int uniformLocation = glGetUniformLocation(programID, uniformName);
 		if (uniformLocation == -1) {
-			System.err.println("COULD NOT LOCATE: " + uniformName + ".  Uniform may not exist or is not used in the "
+			throw new Exception("COULD NOT LOCATE: " + uniformName + ".  Uniform may not exist or is not used in the "
 					+ "final output.");
 		}
 		UNIFORMS.put(uniformName, uniformLocation);
 	}
 	
+	/**
+	 * Gets the uniform in the current shader and attaches it to the relevant
+	 * uniform location map.  This caches the uniform, as glGetUniformLocation() 
+	 * is a slow method.  This is used for an array of point lights.  By default, 
+	 * it will create 4 in the shader. 
+	 * 
+	 * @param uniformName		Name of uniform to get location of from GPU
+	 */
 	public void createUniformPointLights(String uniformName) {
 		for (int i = 0; i < MAX_POINT_LIGHTS; i++) {
 			createUniformPointLight(uniformName, i);
 		}
 	}
 	
+	/**
+	 * Gets the uniform in the current shader and attaches it to the relevant
+	 * uniform location map.  This caches the uniform, as glGetUniformLocation() 
+	 * is a slow method.  This is used for a single point light in an array.
+	 * 
+	 * @param uniformName		Name of uniform to get location of from GPU
+	 * @param arrayLocation		Location in array of point lights
+	 */
 	public void createUniformPointLight(String uniformName, int arrayLocation) {
 		String name = uniformName + "[" + arrayLocation + "].color";
 		int uniformLocation = glGetUniformLocation(programID, name);
@@ -107,6 +135,13 @@ public abstract class ShaderProgram {
 		UNIFORMS.put(name, uniformLocation);
 	}
 	
+	/**
+	 * Gets the uniform in the current shader and attaches it to the relevant
+	 * uniform location map.  This caches the uniform, as glGetUniformLocation() 
+	 * is a slow method.  This is used for a single point light.
+	 * 
+	 * @param uniformName		Name of uniform to get location of from GPU
+	 */
 	public void createUniformPointLight(String uniformName) {
 		String name = uniformName + ".color";
 		int uniformLocation = glGetUniformLocation(programID, name);
@@ -119,24 +154,53 @@ public abstract class ShaderProgram {
 		UNIFORMS.put(name, uniformLocation);
 	}
 	
+	/**
+	 * Gets the uniform in the current shader and attaches it to the relevant
+	 * uniform location map.  This caches the uniform, as glGetUniformLocation() 
+	 * is a slow method.  This is used for a single directional light.
+	 * 
+	 * @param uniformName		Name of uniform to get location of from GPU
+	 */
 	public void createUniformDirectionalLight(String uniformName) {
 		UNIFORMS.put(uniformName + ".color", glGetUniformLocation(programID, uniformName + ".color"));
 		UNIFORMS.put(uniformName + ".direction", glGetUniformLocation(programID, uniformName + ".direction"));
 		UNIFORMS.put(uniformName + ".intensity", glGetUniformLocation(programID, uniformName + ".intensity"));
 	}
 	
+	/**
+	 * Gets the uniform in the current shader and attaches it to the relevant
+	 * uniform location map.  This caches the uniform, as glGetUniformLocation() 
+	 * is a slow method.  This is used for an array of spot lights.
+	 * 
+	 * @param uniformName		Name of uniform to get location of from GPU
+	 */
 	public void createUniformSpotLights(String uniformName) {
 		for (int i = 0; i < MAX_SPOT_LIGHTS; i++) {
 			createUniformSpotLight(uniformName, i);
 		}
 	}
 	
+	/**
+	 * Gets the uniform in the current shader and attaches it to the relevant
+	 * uniform location map.  This caches the uniform, as glGetUniformLocation() 
+	 * is a slow method.  This is used for a single spot light in an array.
+	 * 
+	 * @param uniformName		Name of uniform to get location of from GPU
+	 * @param arrayLocation		Location in array of spot lights
+	 */
 	public void createUniformSpotLight(String uniformName, int arrayLocation) {
 		createUniformPointLight(uniformName + "[" + arrayLocation + "].light");
 		UNIFORMS.put(uniformName + "[" + arrayLocation + "].direction", glGetUniformLocation(programID, uniformName + "[" + arrayLocation + "].direction"));
 		UNIFORMS.put(uniformName + "[" + arrayLocation + "].angle", glGetUniformLocation(programID, uniformName + "[" + arrayLocation + "].angle"));
 	}
 	
+	/**
+	 * Gets the uniform in the current shader and attaches it to the relevant
+	 * uniform location map.  This caches the uniform, as glGetUniformLocation() 
+	 * is a slow method.  This is used for a single point light.
+	 * 
+	 * @param uniformName		Name of uniform to get location of from GPU
+	 */
 	public void createUniformSpotLight(String uniformName) {
 		createUniformPointLight(uniformName + ".light");
 		UNIFORMS.put(uniformName + ".direction", glGetUniformLocation(programID, uniformName + ".direction"));
@@ -145,8 +209,9 @@ public abstract class ShaderProgram {
 
 	/**
 	 * Gets uniform locations
+	 * @throws Exception	Thrown if shader cannot find location of uniform
 	 */
-	public abstract void getAllUniformLocations();
+	public abstract void getAllUniformLocations() throws Exception;
 
 	/**
 	 * Starts shader
@@ -185,6 +250,12 @@ public abstract class ShaderProgram {
 		glBindAttribLocation(programID, attribute, variableName);
 	}
 	
+	/**
+	 * Sets uniform value from a {@link Uniform} object
+	 * 
+	 * @param uniform			Uniform to load to shader
+	 * @throws Exception		Thrown if the data type is not accepted
+	 */
 	public void setUniform(Uniform uniform) throws Exception {
 		if (uniform.getType().equals(Float.class)) {
 			Float f = (float) uniform.getValue();
@@ -229,6 +300,12 @@ public abstract class ShaderProgram {
 		glUniform1f(location, value);
 	}
 	
+	/**
+	 * Loads float to shader
+	 * 
+	 * @param name		Name of variable to be bound
+	 * @param value		Value of variable to be bound
+	 */
 	public void setUniform(String name, float value) {
 		setUniform(getLocation(name), value);
 	}
@@ -243,6 +320,12 @@ public abstract class ShaderProgram {
 		glUniform1i(location, value);
 	}
 	
+	/**
+	 * Loads integer to shader
+	 * 
+	 * @param name		Name of variable to be bound
+	 * @param value		Value of variable to be bound
+	 */
 	public void setUniform(String name, int value) {
 		setUniform(getLocation(name), value);
 	}
@@ -257,6 +340,12 @@ public abstract class ShaderProgram {
 		glUniform3f(location,vector.x,vector.y,vector.z);
 	}
 	
+	/**
+	 * Loads Vector3f to shader
+	 * 
+	 * @param name		Name of variable to be bound
+	 * @param value		Value of variable to be bound
+	 */
 	public void setUniform(String name, Vector3f value) {
 		setUniform(getLocation(name), value);
 	}
@@ -271,6 +360,12 @@ public abstract class ShaderProgram {
 		glUniform4f(location, vector.x, vector.y, vector.z, vector.w);
 	}
 	
+	/**
+	 * Loads Vector4f to shader
+	 * 
+	 * @param name		Name of variable to be bound
+	 * @param value	Value of variable to be bound
+	 */
 	public void setUniform(String name, Vector4f value) {
 		setUniform(getLocation(name), value);
 	}
@@ -285,6 +380,12 @@ public abstract class ShaderProgram {
 		glUniform2f(location,vector.x,vector.y);
 	}
 	
+	/**
+	 * Loads Vector2D to shader
+	 * 
+	 * @param name		Name of variable to be bound
+	 * @param value		Value of variable to be bound
+	 */
 	public void setUniform(String name, Vector2f value) {
 		setUniform(getLocation(name), value);
 	}
@@ -303,10 +404,22 @@ public abstract class ShaderProgram {
 		glUniform1i(location, toLoad);
 	}
 	
+	/**
+	 * Loads Boolean to shader
+	 * 
+	 * @param name		Name of variable to be bound
+	 * @param value		Value of variable to be bound
+	 */
 	public void setUniform(String name, boolean value) {
 		setUniform(getLocation(name), value);
 	}
 	
+	/**
+	 * Loads a list of point lights to shader
+	 * 
+	 * @param name		Name of uniform (No []) to be bound
+	 * @param lights	Value of variable to be bound
+	 */
 	public void setUniformPointLights(String name, List<PointLight> lights) {
 		for (int i = 0; i < 4; i++) {
 			if (i < lights.size()) {
@@ -322,24 +435,48 @@ public abstract class ShaderProgram {
 		}
 	}
 	
+	/**
+	 * Loads a point light to shader
+	 * 
+	 * @param name			Name of uniform to be bound
+	 * @param light			Value of variable to be bound
+	 */
 	public void setUniformPointLight(String name, PointLight light) {
 		setUniform(getLocation(name + ".position"), light.getPosition());
 		setUniform(getLocation(name + ".color"), light.getColor());
-		setUniform(getLocation(name + "].attenuation"), light.getAttenuation());
+		setUniform(getLocation(name + ".attenuation"), light.getAttenuation());
 	}
 	
+	/**
+	 * Loads a directional light to shader
+	 * 
+	 * @param name			Name of uniform to be bound
+	 * @param light			Value of variable to be bound
+	 */
 	public void setUniformDirectionalLight(String name, DirectionalLight light) {
 		setUniform(getLocation(name + ".color"), light.getColor());
 		setUniform(getLocation(name + ".direction"), light.getDirection());
 		setUniform(getLocation(name + ".intensity"), light.getIntensity());
 	}
 	
+	/**
+	 * Loads a list of spot lights to shader
+	 * 
+	 * @param name			Name of uniform (No []) to be bound
+	 * @param lights		Value of variable to be bound
+	 */
 	public void setUniformSpotLights(String name, List<SpotLight> lights) {
 		for (int i = 0; i < MAX_SPOT_LIGHTS; i++) {
 			
 		}
 	}
 	
+	/**
+	 * Loads Matrix4f to shader
+	 * 
+	 * @param name			Name of variable to be bound
+	 * @param value			Value of variable to be bound
+	 */
 	public void setUniform(String name, Matrix4f value) {
 		setUniform(getLocation(name), value);
 	}
@@ -356,8 +493,25 @@ public abstract class ShaderProgram {
 		glUniformMatrix4fv(location, false, matrixBuffer);
 	}
 
+	/**
+	 * Gets the location of a cached uniform
+	 * 
+	 * @param name		Name of variable to search for
+	 * @return			Location of uniform variable in current shader
+	 * @throws NullPointerException		Thrown if uniform variable cannot be found in cache or shader
+	 */
 	public int getLocation(String name) throws NullPointerException {
-		return UNIFORMS.get(name);
+		try {
+			return UNIFORMS.get(name);
+		}
+		catch (NullPointerException e) {
+			int loc = glGetUniformLocation(programID, name);
+			if (loc != -1) {
+				UNIFORMS.put(name, loc);
+				return loc;
+			}
+			throw new NullPointerException("Could not located uniform variable: " + name);
+		}
 	}
 
 	//*******************************Private Methods**********************************//
@@ -384,6 +538,7 @@ public abstract class ShaderProgram {
 		glShaderSource(shaderID, shader);
 		glCompileShader(shaderID);
 		if (glGetShaderi(shaderID, GL_COMPILE_STATUS) == GL_FALSE){
+			System.out.println(file + ": " + glGetShaderInfoLog(shaderID, 1024));
 			throw new Exception(glGetShaderInfoLog(shaderID, 1024));
 		}
 		return shaderID;
@@ -403,6 +558,7 @@ public abstract class ShaderProgram {
 		glDetachShader(programID, frag);
 		glDeleteShader(vert);
 		glDeleteShader(frag);
+		System.out.println(glGetProgramInfoLog(programID, 1024));
 		return programID;
 	}
 
