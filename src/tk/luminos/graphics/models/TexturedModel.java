@@ -1,6 +1,6 @@
 package tk.luminos.graphics.models;
 
-import tk.luminos.graphics.textures.Material;
+import tk.luminos.graphics.Material;
 
 /**
  * 

@@ -1,8 +1,5 @@
 package tk.luminos.graphics.shaders;
 
-import static tk.luminos.ConfigData.POSITION;
-import static tk.luminos.ConfigData.TEXTURES;
-
 /**
  * 
  * Shadow Shader for Shadow Renderers
@@ -39,8 +36,7 @@ public class ShadowShader extends ShaderProgram {
      * @see graphics.shaders.ShaderProgram#bindAttributes()
      */
     public void bindAttributes() {
-        super.bindAttribute(POSITION, "in_position");
-        super.bindAttribute(TEXTURES, "in_textureCoords");
+    	
     }
 	
 }

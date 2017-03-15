@@ -1,9 +1,5 @@
 package tk.luminos.graphics.shaders;
 
-import static tk.luminos.ConfigData.POSITION;
-
-import tk.luminos.graphics.shaders.postprocess.PostProcess;
-
 /**
  * 
  * Creates Image Shader for Image Renderer
@@ -40,7 +36,7 @@ public class ImageShader extends ShaderProgram implements PostProcess {
 	 * @see graphics.shaders.ShaderProgram#bindAttributes()
 	 */
 	public void bindAttributes() {
-		super.bindAttribute(POSITION, "position");
+
 	}
 
 }

@@ -24,10 +24,10 @@ import static tk.luminos.filesystem.serialization.SerializationUtils.writeBytes;
 
 public class LArray extends LBase {
 
-	public static final byte CONTAINER_TYPE = ContainerType.ARRAY;
-	public byte type;
-	public int count;
-	public byte[] data;
+	protected static final byte CONTAINER_TYPE = ContainerType.ARRAY;
+	protected byte type;
+	protected int count;
+	protected byte[] data;
 	
 	private short[] shortData;
 	private char[] charData;

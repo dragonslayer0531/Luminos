@@ -24,8 +24,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import tk.luminos.graphics.gameobjects.Camera;
-import tk.luminos.graphics.gameobjects.PointLight;
+import tk.luminos.graphics.Camera;
+import tk.luminos.graphics.PointLight;
 import tk.luminos.graphics.models.RawModel;
 import tk.luminos.graphics.shaders.WaterShader;
 import tk.luminos.graphics.water.WaterFrameBuffers;

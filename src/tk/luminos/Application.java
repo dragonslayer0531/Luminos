@@ -16,7 +16,7 @@ import tk.luminos.graphics.display.Window;
 
 public class Application extends Thread {
 	
-	private List<Action> actions = new ArrayList<Action>();
+	private List<Event> actions = new ArrayList<Event>();
 	private List<Thread> threads = new ArrayList<Thread>();
 	private Scene scene;
 	
@@ -45,26 +45,25 @@ public class Application extends Thread {
 	/**
 	 * Renders the current scene to the default frame buffer
 	 * 
-	 * @param engine		Engine to use for rendering
 	 * @param window		Window to render to
 	 * @throws Exception	Thrown if rendering failed
 	 */
-	public void render(Engine engine, Window window) throws Exception {
+	public void render(Window window) throws Exception {
 		while (!window.shouldClose() && !shouldClose) {
-			engine.render(scene, window);
-			for (Action action : actions) {
-				if (action.actionPerformed())
+			Engine.update(scene, window);
+			for (Event action : actions) {
+				if (action.eventPerformed())
 					action.act();
 			}
 		}
 	}
 	
 	/**
-	 * Adds {@link Action} to the application
+	 * Adds {@link Event} to the application
 	 * 
 	 * @param action		Action to add
 	 */
-	public void addAction(Action action) {
+	public void addEvent(Event action) {
 		this.actions.add(action);
 	}
 	

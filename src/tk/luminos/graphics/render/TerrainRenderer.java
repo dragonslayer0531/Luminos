@@ -18,10 +18,10 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 import java.util.List;
 
+import tk.luminos.gameobjects.Terrain;
+import tk.luminos.graphics.TerrainTexturePack;
 import tk.luminos.graphics.models.RawModel;
 import tk.luminos.graphics.shaders.TerrainShader;
-import tk.luminos.graphics.terrains.Terrain;
-import tk.luminos.graphics.textures.TerrainTexturePack;
 import tk.luminos.maths.MathUtils;
 import tk.luminos.maths.matrix.Matrix4f;
 import tk.luminos.maths.vector.Vector3f;

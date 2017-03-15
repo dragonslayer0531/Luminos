@@ -1,9 +1,5 @@
 package tk.luminos.graphics.shaders;
 
-import static tk.luminos.ConfigData.NORMALS;
-import static tk.luminos.ConfigData.POSITION;
-import static tk.luminos.ConfigData.TEXTURES;
-
 /**
  * 
  * Entity Shader to use in Entity Renderer
@@ -31,9 +27,7 @@ public class GameObjectShader extends ShaderProgram {
 	 * @see graphics.shaders.ShaderProgram#bindAttributes()
 	 */
 	public void bindAttributes() {
-		super.bindAttribute(POSITION, "position");
-		super.bindAttribute(TEXTURES, "textureCoordinates");
-		super.bindAttribute(NORMALS, "normal");
+
 	}
 
 	/*
@@ -54,6 +48,8 @@ public class GameObjectShader extends ShaderProgram {
 		createUniform("density");
 		createUniform("gradient");
 		createUniform("modelTexture");
+		createUniform("numPointLights");
+//		createUniform("numSpotLights");
 		createUniformDirectionalLight("sun");
 	}
 	

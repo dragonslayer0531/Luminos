@@ -1,8 +1,6 @@
 package tk.luminos.graphics.shaders;
 
-import static tk.luminos.ConfigData.POSITION;
-
-import tk.luminos.graphics.gameobjects.PointLight;
+import tk.luminos.graphics.PointLight;
 
 /**
  * 
@@ -31,7 +29,7 @@ public class WaterShader extends ShaderProgram {
 	 * @see graphics.shaders.ShaderProgram#bindAttributes()
 	 */
 	public void bindAttributes() {
-		bindAttribute(POSITION, "position");
+
 	}
 
 	/*

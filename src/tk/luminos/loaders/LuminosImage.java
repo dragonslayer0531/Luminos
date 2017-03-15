@@ -12,7 +12,7 @@ import javax.imageio.ImageIO;
 
 import org.lwjgl.BufferUtils;
 
-import tk.luminos.graphics.textures.TextureData;
+import tk.luminos.graphics.TextureData;
 
 /**
  * 

@@ -39,9 +39,9 @@ import org.lwjgl.BufferUtils;
 
 import tk.luminos.Engine;
 import tk.luminos.filesystem.ResourceLoader;
-import tk.luminos.graphics.gameobjects.DirectionalLight;
-import tk.luminos.graphics.gameobjects.PointLight;
-import tk.luminos.graphics.gameobjects.SpotLight;
+import tk.luminos.graphics.DirectionalLight;
+import tk.luminos.graphics.PointLight;
+import tk.luminos.graphics.SpotLight;
 import tk.luminos.maths.matrix.Matrix4f;
 import tk.luminos.maths.vector.Vector2f;
 import tk.luminos.maths.vector.Vector3f;
@@ -59,8 +59,8 @@ public abstract class ShaderProgram {
 
 	private final int programID;
 	
-	public static final Integer MAX_POINT_LIGHTS = 4;
-	public static final Integer MAX_SPOT_LIGHTS = 4;
+	public static final Integer SCENE_POINT_LIGHTS = 4;
+	public static final Integer SCENE_SPOT_LIGHTS = 4;
 
 	private static FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
 	public final Map<String, Integer> UNIFORMS = new HashMap<String, Integer>();
@@ -110,7 +110,7 @@ public abstract class ShaderProgram {
 	 * @param uniformName		Name of uniform to get location of from GPU
 	 */
 	public void createUniformPointLights(String uniformName) {
-		for (int i = 0; i < MAX_POINT_LIGHTS; i++) {
+		for (int i = 0; i < SCENE_POINT_LIGHTS; i++) {
 			createUniformPointLight(uniformName, i);
 		}
 	}
@@ -175,7 +175,7 @@ public abstract class ShaderProgram {
 	 * @param uniformName		Name of uniform to get location of from GPU
 	 */
 	public void createUniformSpotLights(String uniformName) {
-		for (int i = 0; i < MAX_SPOT_LIGHTS; i++) {
+		for (int i = 0; i < SCENE_SPOT_LIGHTS; i++) {
 			createUniformSpotLight(uniformName, i);
 		}
 	}
@@ -466,7 +466,7 @@ public abstract class ShaderProgram {
 	 * @param lights		Value of variable to be bound
 	 */
 	public void setUniformSpotLights(String name, List<SpotLight> lights) {
-		for (int i = 0; i < MAX_SPOT_LIGHTS; i++) {
+		for (int i = 0; i < SCENE_SPOT_LIGHTS; i++) {
 			
 		}
 	}
@@ -558,7 +558,6 @@ public abstract class ShaderProgram {
 		glDetachShader(programID, frag);
 		glDeleteShader(vert);
 		glDeleteShader(frag);
-		System.out.println(glGetProgramInfoLog(programID, 1024));
 		return programID;
 	}
 

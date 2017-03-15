@@ -1,8 +1,6 @@
 package tk.luminos.graphics.render;
 
-import static tk.luminos.ConfigData.HEIGHT;
-import static tk.luminos.ConfigData.WIDTH;
-import static tk.luminos.Luminos.BACK_FACE;
+import static org.lwjgl.opengl.GL11.GL_BACK;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
@@ -15,21 +13,26 @@ import static org.lwjgl.opengl.GL11.glDepthFunc;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL30.GL_CLIP_DISTANCE0;
+import static tk.luminos.ConfigData.HEIGHT;
+import static tk.luminos.ConfigData.WIDTH;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import tk.luminos.gameobjects.GameObject;
+import tk.luminos.gameobjects.Terrain;
+import tk.luminos.graphics.Camera;
+import tk.luminos.graphics.DirectionalLight;
+import tk.luminos.graphics.GUITexture;
+import tk.luminos.graphics.Particle;
+import tk.luminos.graphics.ParticleMaster;
+import tk.luminos.graphics.PointLight;
+import tk.luminos.graphics.ShadowBox;
 import tk.luminos.graphics.display.Window;
-import tk.luminos.graphics.gameobjects.Camera;
-import tk.luminos.graphics.gameobjects.DirectionalLight;
-import tk.luminos.graphics.gameobjects.GameObject;
-import tk.luminos.graphics.gameobjects.PointLight;
-import tk.luminos.graphics.gui.GUIObject;
 import tk.luminos.graphics.models.TexturedModel;
-import tk.luminos.graphics.particles.Particle;
-import tk.luminos.graphics.particles.ParticleMaster;
 import tk.luminos.graphics.shaders.GameObjectShader;
 import tk.luminos.graphics.shaders.GuiShader;
 import tk.luminos.graphics.shaders.NormalMapShader;
@@ -39,10 +42,7 @@ import tk.luminos.graphics.shaders.SkyboxShader;
 import tk.luminos.graphics.shaders.TerrainShader;
 import tk.luminos.graphics.shaders.TextShader;
 import tk.luminos.graphics.shaders.WaterShader;
-import tk.luminos.graphics.shadows.ShadowBox;
-import tk.luminos.graphics.terrains.Terrain;
 import tk.luminos.graphics.text.GUIText;
-import tk.luminos.graphics.textures.GUITexture;
 import tk.luminos.graphics.water.WaterFrameBuffers;
 import tk.luminos.graphics.water.WaterTile;
 import tk.luminos.loaders.Loader;
@@ -109,7 +109,7 @@ public class MasterRenderer {
 	 */
 	public MasterRenderer(Loader loader, Camera camera) throws Exception {
 		enableCulling();
-		cullFace(BACK_FACE);
+		cullFace(GL_BACK);
 		gameObjectShader = new GameObjectShader();
 		guiShader = new GuiShader();
 		normalMapShader = new NormalMapShader();
@@ -146,17 +146,21 @@ public class MasterRenderer {
 	 * @param clipPlane		Plane to clip all rendering beyond
 	 */
 	public void renderScene(List<GameObject> entities, List<Terrain> terrains, List<PointLight> lights, DirectionalLight sun, Vector3f focalPoint, Camera camera, Vector4f clipPlane) {
-		if (entities != null) {
-			for (GameObject entity : entities) {
-				if (entity.isRenderable() && MathUtils.getDistance(entity.getPosition(), camera.getPosition()) < entity.getRenderDistance())
-					processGameObject(entity);
-			}
+		if (entities == null)
+			entities = new ArrayList<GameObject>();
+		Iterator<GameObject> gameObjectIterator = entities.iterator();
+		while (gameObjectIterator.hasNext()) {
+			GameObject entity = gameObjectIterator.next();
+			if (entity.isRenderable() && MathUtils.getDistance(entity.getPosition(), camera.getPosition()) < entity.getRenderDistance())
+				processGameObject(entity);
 		}
-		if (terrains != null) {
-			for (Terrain terrain : terrains) {
-				if (terrain.isRenderable())
-					processTerrain(terrain);
-			}
+		if (terrains == null) 
+			terrains = new ArrayList<Terrain>();
+		Iterator<Terrain> terrainIterator = terrains.iterator();
+		while (terrainIterator.hasNext()) {
+			Terrain terrain = terrainIterator.next();
+			if (terrain.isRenderable())
+				processTerrain(terrain);
 		}
 
 		if (lights == null) {
@@ -168,15 +172,10 @@ public class MasterRenderer {
 	/**
 	 * Renders GUI Textures to screen
 	 * 
-	 * @param objects	GUIObjects to be rendered
+	 * @param textures	GUITextures to be rendered
 	 */	
-	public void renderGUI(List<GUIObject> objects) {
-		for(GUIObject object : objects) {
-			guiRenderer.render(object.getTextures());
-		}
-	}
 
-	public void renderGUI(ArrayList<GUITexture> textures) {
+	public void renderGUI(List<GUITexture> textures) {
 		guiRenderer.render(textures);
 	}
 
@@ -305,19 +304,12 @@ public class MasterRenderer {
 	public void render(List<PointLight> lights, DirectionalLight sun, Camera camera, Vector4f clipPlane){
 		prepare();
 		Matrix4f viewMatrix = MathUtils.createViewMatrix(camera);
-//		normalMapShader.start();
-//		normalMapShader.loadClipPlane(clipPlane);
-//		normalMapShader.loadSkyColor(MasterRenderer.RED, MasterRenderer.GREEN, MasterRenderer.BLUE);
-//		normalMapShader.loadMaxPointLights(1);
-//		normalMapShader.loadPointLights(lights, viewMatrix);
-//		normalMapShader.loadViewMatrix(viewMatrix);
-//		normalMapRenderer.render(normalMapEntities);
-//		normalMapShader.stop();
 		gameObjectShader.start();
 		gameObjectShader.setUniform(gameObjectShader.getLocation("skyColor"), new Vector3f(RED, GREEN, BLUE));
 		gameObjectShader.setUniformPointLights("pointLights", lights);
 		gameObjectShader.setUniformDirectionalLight("sun", sun);
 		gameObjectShader.setUniform(gameObjectShader.getLocation("viewMatrix"), viewMatrix);
+		gameObjectShader.setUniform("numPointLights", 4);
 		gameObjectRenderer.render(entities);
 		gameObjectShader.stop();
 		terrainShader.start();
@@ -325,6 +317,7 @@ public class MasterRenderer {
 		terrainShader.setUniformPointLights("pointLights", lights);
 		terrainShader.setUniformDirectionalLight("sun", sun);
 		terrainShader.setUniform("viewMatrix", viewMatrix);
+		terrainShader.setUniform("numPointLights", 4);
 		terrainRenderer.render(terrains, shadowRenderer.getToShadowMapSpaceMatrix(), getShadowMapTexture());
 		terrainShader.stop();
 		skyboxRenderer.render(viewMatrix, SKY_COLOR);
@@ -373,23 +366,6 @@ public class MasterRenderer {
 	}
 
 	/**
-	 * Processes {@link GameObject} with a normal map
-	 * 
-	 * @param entity		GameObject to be processed
-	 */
-	public void processNormalMapGameObject(GameObject entity){
-		TexturedModel entityModel = entity.getModel();
-		List<GameObject> batch = normalMapEntities.get(entityModel);
-		if(batch!=null){
-			batch.add(entity);
-		}else{
-			List<GameObject> newBatch = new ArrayList<GameObject>();
-			newBatch.add(entity);
-			normalMapEntities.put(entityModel, newBatch);		
-		}
-	}
-
-	/**
 	 * Render a shadow map
 	 * 
 	 * @param ents			Entities to have shadows
@@ -398,18 +374,26 @@ public class MasterRenderer {
 	 * @param sun			Focal light
 	 */
 	public void renderShadowMap(List<GameObject> ents, List<Terrain> ters, Vector3f focalPoint, DirectionalLight sun) {
-		for(GameObject entity : ents) {
-			if(MathUtils.getDistance(entity.getPosition(), focalPoint) < 2 * ShadowBox.SHADOW_DISTANCE) {
+		if (ents == null) 
+			ents = new ArrayList<GameObject>();
+		Iterator<GameObject> gameObjects = ents.iterator();
+		while (gameObjects.hasNext()) {
+			GameObject entity = gameObjects.next();
+			if(entity.isRenderable() && MathUtils.getDistance(entity.getPosition(), focalPoint) < 2 * ShadowBox.SHADOW_DISTANCE) {
 				processGameObject(entity);
 			}
 		}
-		for (Terrain terrain : ters) {
+		if (ters == null)
+			ters = new ArrayList<Terrain>();
+		Iterator<Terrain> terrains = ters.iterator();
+		while (terrains.hasNext()) {
+			Terrain terrain = terrains.next();
 			if (MathUtils.getDistance((Vector3f) terrain.getPosition(), focalPoint) < 2 * ShadowBox.SHADOW_DISTANCE) 
 				processTerrain(terrain);
 		}
-		shadowRenderer.render(entities, terrains, sun);
-		entities.clear();
-		terrains.clear();
+		shadowRenderer.render(this.entities, this.terrains, sun);
+		this.entities.clear();
+		this.terrains.clear();
 	}
 
 	/**

@@ -2,7 +2,7 @@ package tk.luminos.maths;
 
 import java.util.List;
 
-import tk.luminos.graphics.gameobjects.Camera;
+import tk.luminos.graphics.Camera;
 import tk.luminos.maths.matrix.Matrix4f;
 import tk.luminos.maths.vector.Vector2f;
 import tk.luminos.maths.vector.Vector3f;
@@ -90,19 +90,12 @@ public class MathUtils {
 	 * Creates transformation matrix
 	 * 
 	 * @param translation	3D Translation
-	 * @param rot			Rotation
+	 * @param rotation		3D Rotation
 	 * @param scale			2D scale
 	 * @return 				Transformation Matrix
 	 */
-	public static Matrix4f createTransformationMatrix(Vector3f translation, Vector3f rot, Vector2f scale) {
-		Matrix4f matrix = new Matrix4f();
-		matrix.setIdentity();
-		Matrix4f.translate(translation, matrix, matrix);
-		Matrix4f.rotate((float) Math.toRadians(rot.x), new Vector3f(1, 0, 0), matrix, matrix);
-		Matrix4f.rotate((float) Math.toRadians(rot.y), new Vector3f(0, 1, 0), matrix, matrix);
-		Matrix4f.rotate((float) Math.toRadians(rot.z), new Vector3f(0, 0, 1), matrix, matrix);
-		Matrix4f.scale(new Vector3f(scale.x, 1, scale.y), matrix, matrix);
-		return matrix;
+	public static Matrix4f createTransformationMatrix(Vector3f translation, Vector3f rotation, Vector2f scale) {
+		return createTransformationMatrix(translation, rotation, new Vector3f(scale.x, 1, scale.y));
 	}
 
 	/**
@@ -210,28 +203,6 @@ public class MathUtils {
 			if(getDistance(origin, points.get(i)) > distance) {
 				distance = getDistance(origin, points.get(i));
 				positionVector = points.get(i);
-			}
-		}
-		
-		return positionVector;
-		
-	}
-	
-	/**
-	 * Determines furthest point from origin
-	 * 
-	 * @param origin	Point of origin
-	 * @param points	Points to be checked
-	 * @return 			Furthest point
-	 */
-	public static Vector3f getFurthestPoint(Vector3f origin, Vector3f[] points) {
-		float distance = getDistance(origin, points[0]);
-		Vector3f positionVector = points[0];
-		
-		for(int i = 0; i < points.length; i++) {
-			if(getDistance(origin, points[i]) > distance) {
-				distance = getDistance(origin, points[i]);
-				positionVector = points[i];
 			}
 		}
 		
@@ -387,6 +358,28 @@ public class MathUtils {
 			if(val > max) max = val;
 		}
 		return max;
+	}
+	
+	public static Matrix4f storeFloatsInMatrix4f(float[] data) {
+		Matrix4f mat = new Matrix4f();
+		mat.setZero();
+		mat.m00 = data[0];
+		mat.m01 = data[1];
+		mat.m02 = data[2];
+		mat.m03 = data[3];
+		mat.m10 = data[4];
+		mat.m11 = data[5];
+		mat.m12 = data[6];
+		mat.m13 = data[7];
+		mat.m20 = data[8];
+		mat.m21 = data[9];
+		mat.m22 = data[10];
+		mat.m23 = data[11];
+		mat.m30 = data[12];
+		mat.m31 = data[13];
+		mat.m32 = data[14];
+		mat.m33 = data[15];
+		return mat;
 	}
 
 }

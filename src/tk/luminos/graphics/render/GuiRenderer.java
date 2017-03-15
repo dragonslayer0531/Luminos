@@ -19,9 +19,9 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 import java.util.List;
 
+import tk.luminos.graphics.GUITexture;
 import tk.luminos.graphics.models.RawModel;
 import tk.luminos.graphics.shaders.GuiShader;
-import tk.luminos.graphics.textures.GUITexture;
 import tk.luminos.loaders.Loader;
 import tk.luminos.maths.MathUtils;
 import tk.luminos.maths.matrix.Matrix4f;

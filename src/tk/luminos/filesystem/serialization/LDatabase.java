@@ -25,11 +25,11 @@ import java.util.List;
 
 public class LDatabase extends LBase {
 
-	public static final byte[] HEADER = "LDB".getBytes();
-	public static final short VERSION = 0x0100;
-	public static final byte CONTAINER_TYPE = ContainerType.DATABASE;
+	protected static final byte[] HEADER = "LDB".getBytes();
+	protected static final short VERSION = 0x0100;
+	protected static final byte CONTAINER_TYPE = ContainerType.DATABASE;
 	private short objectCount;
-	public List<LObject> objects = new ArrayList<LObject>();
+	protected List<LObject> objects = new ArrayList<LObject>();
 	
 	/**
 	 * Private Constructor

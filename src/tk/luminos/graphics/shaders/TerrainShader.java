@@ -1,13 +1,8 @@
 package tk.luminos.graphics.shaders;
 
-import static tk.luminos.ConfigData.NORMALS;
-import static tk.luminos.ConfigData.POSITION;
-import static tk.luminos.ConfigData.TEXTURES;
-
 import java.util.List;
 
-import tk.luminos.graphics.gameobjects.PointLight;
-import tk.luminos.maths.vector.Vector3f;
+import tk.luminos.graphics.PointLight;
 
 /**
  * 
@@ -19,9 +14,7 @@ import tk.luminos.maths.vector.Vector3f;
  */
 
 public class TerrainShader extends ShaderProgram{
-	
-	private static final int MAX_LIGHTS = 4;
-	
+
 	public static String VERT = "terrain.vert";
 	public static String FRAG = "terrain.frag";
 
@@ -39,9 +32,7 @@ public class TerrainShader extends ShaderProgram{
 	 * @see graphics.shaders.ShaderProgram#bindAttributes()
 	 */
 	public void bindAttributes() {
-		super.bindAttribute(POSITION, "position");
-		super.bindAttribute(TEXTURES, "textureCoordinates");
-		super.bindAttribute(NORMALS, "normal");
+
 	}
 
 	/*
@@ -65,10 +56,12 @@ public class TerrainShader extends ShaderProgram{
 		createUniform("density");
 		createUniform("gradient");
 		createUniform("tileFactor");
+		createUniform("numPointLights");
+//		createUniform("numSpotLights");
 		createUniformPointLights("pointLights");
 		createUniformDirectionalLight("sun");
 	}
-	
+
 	/**
 	 * Connect texture units
 	 */
@@ -80,24 +73,20 @@ public class TerrainShader extends ShaderProgram{
 		setUniform(getLocation("blendMap"), 4);
 		setUniform(getLocation("shadowMap"), 5);
 	}
-	
+
 	/**
 	 * Loads lights to shader
 	 * 
 	 * @param lights	List of {@link PointLight}s
 	 */
-	public void loadPointLights(List<PointLight> lights){
-		for(int i=0;i<MAX_LIGHTS;i++){
-			if(i<lights.size()){
-				setUniform(getLocation("lightPosition[" + i + "]"), lights.get(i).getPosition());
-				setUniform(getLocation("lightColor[" + i + "]"), lights.get(i).getColor());
-				setUniform(getLocation("attenuation[" + i + "]"), lights.get(i).getAttenuation());
-			}else{
-				setUniform(getLocation("lightPosition[" + i + "]"), new Vector3f(0, 0, 0));
-				setUniform(getLocation("lightColor[" + i + "]"), new Vector3f(0, 0, 0));
-				setUniform(getLocation("attenuation[" + i + "]"), new Vector3f(1, 0, 0));
-			}
+	public void loadPointLights(List<PointLight> lights) {
+		for (int i = 0; i < lights.size(); i++) {
+			if (i >= 20)
+				break;
+			setUniform(getLocation("lightPosition[" + i + "]"), lights.get(i).getPosition());
+			setUniform(getLocation("lightColor[" + i + "]"), lights.get(i).getColor());
+			setUniform(getLocation("attenuation[" + i + "]"), lights.get(i).getAttenuation());
 		}
 	}
-	
+
 }

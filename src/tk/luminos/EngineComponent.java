@@ -11,36 +11,13 @@ package tk.luminos;
  */
 public abstract class EngineComponent extends Thread {
 	
-	private Engine engine;
-	
-	/**
-	 * Attaches the component to the engine
-	 * 
-	 * @param engine		Engine to attach this to
-	 */
-	public void attachTo(Engine engine) {
-		this.engine = engine;
-		engine.attach(this);
-	}
-	
-	/**
-	 * Detaches the component from the relevant engine
-	 */
-	public void detach() {
-		engine.remove(this);
-	}
-	
 	/**
 	 * Updates the current component state
 	 * 
-	 * @param delta		Factor to update by
+	 * @param scene		Scene to draw
 	 */
-	public abstract void update(float delta);
+	public abstract void update(Scene scene);
 	
-	/**
-	 * Used to close component and native resources
-	 * held by the engine component
-	 */
-	public abstract void close();
+	public abstract void dispose();
 
 }

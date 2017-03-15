@@ -1,7 +1,5 @@
 package tk.luminos.graphics.shaders;
 
-import static tk.luminos.ConfigData.POSITION;
-
 /**
  * 
  * Gui Shader to use in GuiRenderer
@@ -37,7 +35,7 @@ public class GuiShader extends ShaderProgram {
 	 * @see graphics.shaders.ShaderProgram#bindAttributes()
 	 */
 	public void bindAttributes() {
-		super.bindAttribute(POSITION, "position");
+
 	}
 
 }

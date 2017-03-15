@@ -15,11 +15,11 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import java.util.List;
 import java.util.Map;
 
-import tk.luminos.graphics.gameobjects.GameObject;
+import tk.luminos.gameobjects.GameObject;
+import tk.luminos.graphics.Material;
 import tk.luminos.graphics.models.RawModel;
 import tk.luminos.graphics.models.TexturedModel;
 import tk.luminos.graphics.shaders.NormalMapShader;
-import tk.luminos.graphics.textures.Material;
 import tk.luminos.maths.MathUtils;
 import tk.luminos.maths.matrix.Matrix4f;
 import tk.luminos.maths.vector.Vector2f;

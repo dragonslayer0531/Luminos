@@ -7,9 +7,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import tk.luminos.utilities.DateUtils;
-import tk.luminos.utilities.instanceinfo.GLFWInstance;
-import tk.luminos.utilities.instanceinfo.JavaEnvironmentInstance;
-import tk.luminos.utilities.instanceinfo.OpenGLInstance;
+import tk.luminos.utilities.GLFWInstance;
+import tk.luminos.utilities.JavaEnvironmentInstance;
+import tk.luminos.utilities.OpenGLInstance;
 
 /**
  * 

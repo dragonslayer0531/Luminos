@@ -1,9 +1,5 @@
 package tk.luminos.graphics.shaders;
 
-import static tk.luminos.ConfigData.POSITION;
-import static tk.luminos.ConfigData.TEXTURES;
-
-
 /**
  * 
  * Text Shader for Text Renderer
@@ -41,8 +37,7 @@ public class TextShader extends ShaderProgram {
 	 * @see graphics.shaders.ShaderProgram#bindAttributes()
 	 */
 	public void bindAttributes() {
-		super.bindAttribute(POSITION, "position");
-		super.bindAttribute(TEXTURES, "textureCoords");
+
 	}
 
 }

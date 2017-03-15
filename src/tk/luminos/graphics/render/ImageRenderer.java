@@ -21,7 +21,6 @@ import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
-import tk.luminos.ConfigData;
 import tk.luminos.graphics.models.RawModel;
 import tk.luminos.graphics.shaders.ImageShader;
 import tk.luminos.loaders.Loader;
@@ -54,7 +53,7 @@ public class ImageRenderer {
 	 */
 	public void render(int textureID) {
 		glBindVertexArray(quad.getVaoID());
-		glEnableVertexAttribArray(ConfigData.POSITION);
+		glEnableVertexAttribArray(0);
 		glDisable(GL_DEPTH_TEST);
 		glActiveTexture(GL_TEXTURE0);
 		shader.start();
@@ -63,7 +62,7 @@ public class ImageRenderer {
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, quad.getVertexCount());
 		shader.stop();
 		glEnable(GL_DEPTH_TEST);
-		glDisableVertexAttribArray(ConfigData.POSITION);
+		glDisableVertexAttribArray(0);
 		glBindVertexArray(0);
 	}
 	

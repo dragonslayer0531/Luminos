@@ -20,11 +20,11 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import java.util.List;
 import java.util.Map;
 
-import tk.luminos.graphics.gameobjects.Camera;
+import tk.luminos.graphics.Camera;
+import tk.luminos.graphics.Particle;
+import tk.luminos.graphics.ParticleTexture;
 import tk.luminos.graphics.models.RawModel;
-import tk.luminos.graphics.particles.Particle;
 import tk.luminos.graphics.shaders.ParticleShader;
-import tk.luminos.graphics.textures.ParticleTexture;
 import tk.luminos.loaders.Loader;
 import tk.luminos.maths.MathUtils;
 import tk.luminos.maths.matrix.Matrix4f;

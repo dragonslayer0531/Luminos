@@ -3,8 +3,8 @@ package tk.luminos.utilities;
 import java.util.List;
 
 import tk.luminos.ConfigData;
-import tk.luminos.graphics.gameobjects.Camera;
-import tk.luminos.graphics.terrains.Terrain;
+import tk.luminos.gameobjects.Terrain;
+import tk.luminos.graphics.Camera;
 import tk.luminos.maths.MathUtils;
 import tk.luminos.maths.matrix.Matrix4f;
 import tk.luminos.maths.vector.Vector2f;

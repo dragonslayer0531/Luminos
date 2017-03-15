@@ -17,15 +17,13 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import java.util.List;
 import java.util.Map;
 
-import tk.luminos.graphics.gameobjects.GameObject;
+import tk.luminos.gameobjects.GameObject;
+import tk.luminos.graphics.Material;
 import tk.luminos.graphics.models.RawModel;
 import tk.luminos.graphics.models.TexturedModel;
 import tk.luminos.graphics.shaders.GameObjectShader;
-import tk.luminos.graphics.textures.Material;
-import tk.luminos.maths.MathUtils;
 import tk.luminos.maths.matrix.Matrix4f;
 import tk.luminos.maths.vector.Vector2f;
-import tk.luminos.maths.vector.Vector3f;
 
 /**
  * 
@@ -165,9 +163,7 @@ public class GameObjectRenderer {
 	 * Prepares instance of entity for rendering
 	 */
 	private void prepareInstance(GameObject entity) {
-		Matrix4f transformationMatrix = MathUtils.createTransformationMatrix((Vector3f) entity.getPosition(),
-				entity.getRotation(), entity.getScale());
-		shader.setUniform(shader.getLocation("transformationMatrix"), transformationMatrix);
+		shader.setUniform(shader.getLocation("transformationMatrix"), entity.getModelMatrix());
 		shader.setUniform(shader.getLocation("offset"), new Vector2f(0, 0));
 	}
 

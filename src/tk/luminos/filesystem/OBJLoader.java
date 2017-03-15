@@ -33,7 +33,7 @@ public class OBJLoader {
 	 * @param loader		Loader used to add data to GPU
 	 * @return				RawModel containing basic file information
 	 */
-	public static RawModel loadObjModel(String fileName, Loader loader) {
+	public static RawModel loadOBJModel(String fileName, Loader loader) {
 		FileReader fr = null;
 		try {
 			fr = new FileReader(new File(fileName));
@@ -121,7 +121,7 @@ public class OBJLoader {
 	 * @param loader			Loader used to data to GPU
 	 * @return					Model data for file
 	 */
-	public static RawModel loadOBJ(String objFileName, Loader loader) {
+	public static RawModel loadOBJModelWithTangents(String objFileName, Loader loader) {
 		FileReader isr = null;
 		File objFile = new File(objFileName);
 		try {

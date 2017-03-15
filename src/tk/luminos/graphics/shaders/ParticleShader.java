@@ -1,7 +1,5 @@
 package tk.luminos.graphics.shaders;
 
-import static tk.luminos.ConfigData.POSITION;
-
 /**
  * 
  * Particle Shader for Particle Renderer
@@ -42,7 +40,7 @@ public class ParticleShader extends ShaderProgram {
 	 * @see graphics.shaders.ShaderProgram#bindAttributes()
 	 */
 	public void bindAttributes() {
-		super.bindAttribute(POSITION, "position");
+
 	}
 	
 }

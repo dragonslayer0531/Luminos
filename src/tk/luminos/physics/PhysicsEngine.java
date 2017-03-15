@@ -3,20 +3,21 @@ package tk.luminos.physics;
 import java.util.ArrayList;
 import java.util.List;
 
-import tk.luminos.ConfigData;
 import tk.luminos.EngineComponent;
-import tk.luminos.physics.colliders.Collider;
+import tk.luminos.Scene;
 
 public class PhysicsEngine extends EngineComponent {
 	
 	private List<Collider> colliders;	
-	private boolean running = false;
+	private Scene scene;
+	private boolean running = true;
 	
 	/**
 	 * Creates physics engine
 	 */
-	public PhysicsEngine() {
+	public PhysicsEngine(Scene scene) {
 		colliders = new ArrayList<Collider>();
+		this.scene = scene;
 	}
 	
 	/**
@@ -24,30 +25,26 @@ public class PhysicsEngine extends EngineComponent {
 	 */
 	@Override
 	public void run() {
-		running = true;
 		Thread.currentThread().setName("LUMINOS_ENGINE:_PHYSICS");
-		while (running) {
-			update(1 / ConfigData.UPS);
+		while(running) {
+			update(scene);
 		}
-	}
-
-	/**
-	 * Closes physics engine
-	 */
-	@Override
-	public void close() {
-		running = false;
 	}
 	
 	/**
 	 * Updates engine
 	 */
 	@Override
-	public void update(float delta) {
+	public void update(Scene scene) {
 		for (Collider collider : colliders) {
 			if (collider.isColliding())
-				collider.response(delta);
+				collider.response(1f / 30f);
 		}
+	}
+	
+	@Override
+	public void dispose() {
+		running = false;
 	}
 	
 	/**

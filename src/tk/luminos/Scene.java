@@ -2,16 +2,16 @@ package tk.luminos;
 
 import java.util.List;
 
+import tk.luminos.gameobjects.GameObject;
+import tk.luminos.gameobjects.Terrain;
+import tk.luminos.graphics.Camera;
+import tk.luminos.graphics.DirectionalLight;
+import tk.luminos.graphics.Light;
+import tk.luminos.graphics.PointLight;
+import tk.luminos.graphics.SceneManager;
 import tk.luminos.graphics.display.Window;
-import tk.luminos.graphics.gameobjects.Camera;
-import tk.luminos.graphics.gameobjects.DirectionalLight;
-import tk.luminos.graphics.gameobjects.GameObject;
-import tk.luminos.graphics.gameobjects.Light;
-import tk.luminos.graphics.gameobjects.PointLight;
 import tk.luminos.graphics.render.MasterRenderer;
-import tk.luminos.graphics.terrains.Terrain;
 import tk.luminos.graphics.water.WaterTile;
-import tk.luminos.utilities.SceneManager;
 
 /**
  * 
@@ -63,23 +63,14 @@ public interface Scene {
 	 * @param mangager		Abstracts the rendering process
 	 * @param camera		Camera to view from
 	 */
-	public void render(SceneManager mangager, Camera camera);
+	public void render(SceneManager mangager);
 	
 	/**
 	 * Manages inputs to logic
 	 * 
 	 * @param window	Window to render to
-	 * @param entity	Entity that is focal to scene
-	 * @param camera	Camera that is used for rendering
 	 */
-	public void input(Window window, GameObject entity, Camera camera);
-	
-	/**
-	 * Updates physics for GameLogic
-	 * 
-	 * @param interval		Update interval
-	 */
-	public void update(float interval);
+	public void input(Window window);
 	
 	/**
 	 * Gets the focal object of the scene
@@ -107,7 +98,14 @@ public interface Scene {
 	 * 
 	 * @param object		Object added to scene
 	 */
-	void addObject(GameObject object);
+	void addGameObject(GameObject object);
+	
+	/**
+	 * Adds terrain to the scene
+	 * 
+	 * @param terrain		Terrain added to scene
+	 */
+	void addTerrain(Terrain terrain);
 
 	/**
 	 * Adds light to the scene

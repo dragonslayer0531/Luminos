@@ -1,7 +1,5 @@
 package tk.luminos.graphics.shaders;
 
-import static tk.luminos.ConfigData.POSITION;
-
 import tk.luminos.ConfigData;
 import tk.luminos.maths.matrix.Matrix4f;
 import tk.luminos.maths.vector.Vector3f;
@@ -66,7 +64,7 @@ public class SkyboxShader extends ShaderProgram {
      * @see graphics.shaders.ShaderProgram#bindAttributes()
      */
     public void bindAttributes() {
-        super.bindAttribute(POSITION, "position");
+    	
     }
     
     /**
