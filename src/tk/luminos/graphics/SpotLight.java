@@ -1,6 +1,6 @@
 package tk.luminos.graphics;
 
-import tk.luminos.maths.vector.Vector3f;
+import tk.luminos.maths.Vector3;
 
 /**
  * 
@@ -14,7 +14,7 @@ import tk.luminos.maths.vector.Vector3f;
 public class SpotLight implements Light {
 
 	private PointLight pointLight;
-	private Vector3f direction;
+	private Vector3 direction;
 	private float angle;
 	
 	/**
@@ -24,7 +24,7 @@ public class SpotLight implements Light {
 	 * @param direction		Direction the spot light should face
 	 * @param angle			How large the code of the light is
 	 */
-	public SpotLight(PointLight pointLight, Vector3f direction, float angle) {
+	public SpotLight(PointLight pointLight, Vector3 direction, float angle) {
 		this.pointLight = pointLight;
 		this.direction = direction;
 		this.angle = angle;
@@ -53,7 +53,7 @@ public class SpotLight implements Light {
 	 * 
 	 * @return	direction of light
 	 */
-	public Vector3f getDirection() {
+	public Vector3 getDirection() {
 		return direction;
 	}
 
@@ -62,7 +62,7 @@ public class SpotLight implements Light {
 	 * 
 	 * @param direction		Direction of light
 	 */
-	public void setDirection(Vector3f direction) {
+	public void setDirection(Vector3 direction) {
 		this.direction = direction;
 	}
 
@@ -112,7 +112,7 @@ public class SpotLight implements Light {
 	 * @return	Color of light
 	 */
 	@Override
-	public Vector3f getColor() {
+	public Vector3 getColor() {
 		return pointLight.getColor();
 	}	
 	

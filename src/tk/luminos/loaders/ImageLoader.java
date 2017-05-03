@@ -46,11 +46,11 @@ import tk.luminos.loaders.LuminosImage.Format;
  */
 
 public class ImageLoader {
-		
+
 	protected ImageLoader() {
-		
+
 	}
-	
+
 	/**
 	 * Loads buffered image to graphics card
 	 * 
@@ -61,31 +61,31 @@ public class ImageLoader {
 		LuminosImage image = LuminosImage.loadImage(bImage, Format.RGBA);
 
 		int textureID = glGenTextures();
-		
+
 		glGenerateMipmap(GL_TEXTURE_2D);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -0.6f);
-		
+
 		if(getCapabilities().GL_EXT_texture_filter_anisotropic) {
 			float amount = Math.min(4f, glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
 			glTexParameterf(GL_TEXTURE_2D, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT, amount);
 		}
-		
+
 		glBindTexture(GL_TEXTURE_2D, textureID);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
 
-		
+
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getBuffer());
-				
+
 		Loader.textures.add(textureID);
 		return textureID;
 	}
-	
+
 	/**
 	 * Loads a PNG File to the graphics card
 	 * 
@@ -93,45 +93,45 @@ public class ImageLoader {
 	 * @return				Integer describing the location of the image on the GPU
 	 * @throws IOException 	Exception for if file isn't found or cannot be handled
 	 */
-	protected int loadTexture(String fileName) throws IOException {
+	protected int loadTexture(String fileName) throws Exception {
 		LuminosImage image = LuminosImage.loadImage(fileName, Format.RGBA);
 
 		int textureID = glGenTextures();
-		
+
 		glGenerateMipmap(GL_TEXTURE_2D);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_LOD, -50.f);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_LOD, 5.0f);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -.6f);
-		
+
 		if(getCapabilities().GL_EXT_texture_filter_anisotropic) {
 			float amount = Math.min(4f, glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
 			glTexParameterf(GL_TEXTURE_2D, EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT, amount);
 		}
-		
+
 		glBindTexture(GL_TEXTURE_2D, textureID);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-		
+
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getBuffer());
-						
+
 		Loader.textures.add(textureID);
 		return textureID;
 	}
-	
+
 	/**
 	 * Loads cube map of PNG files to GPU
 	 * 
 	 * @param textureFiles		Array of strings pointing to files for the cube map
 	 * @return 					Integer describing the cube map index on the graphics card
-	 * @throws IOException 		Exception for if file isn't found or cannot be handled
+	 * @throws Exception 		Exception for if file isn't found or cannot be handled
 	 */
-	protected int loadCubeMap(String[] textureFiles) throws IOException {
+	protected int loadCubeMap(String[] textureFiles) throws Exception {
 		int textureID = glGenTextures();
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
@@ -141,10 +141,10 @@ public class ImageLoader {
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, data.getFormat().getGLImageFormat(), data.getWidth(), data.getHeight(), 0,
 					GL_RGBA, GL_UNSIGNED_BYTE, data.getBuffer());
 		}
-		
+
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		
+
 		Loader.textures.add(textureID);
 		return textureID;
 	}

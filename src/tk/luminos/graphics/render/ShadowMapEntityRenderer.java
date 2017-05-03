@@ -20,8 +20,8 @@ import tk.luminos.graphics.models.RawModel;
 import tk.luminos.graphics.models.TexturedModel;
 import tk.luminos.graphics.shaders.ShadowShader;
 import tk.luminos.maths.MathUtils;
-import tk.luminos.maths.matrix.Matrix4f;
-import tk.luminos.maths.vector.Vector3f;
+import tk.luminos.maths.Matrix4;
+import tk.luminos.maths.Vector3;
 
 /**
  * 
@@ -34,7 +34,7 @@ import tk.luminos.maths.vector.Vector3f;
 
 public class ShadowMapEntityRenderer {
 
-	private Matrix4f projectionViewMatrix;
+	private Matrix4 projectionViewMatrix;
 	private ShadowShader shader;
 
 	/**
@@ -43,7 +43,7 @@ public class ShadowMapEntityRenderer {
 	 * @param shader				Defines shader to use
 	 * @param projectionViewMatrix	Defines projectionView matrix for rendering
 	 */
-	protected ShadowMapEntityRenderer(ShadowShader shader, Matrix4f projectionViewMatrix) {
+	protected ShadowMapEntityRenderer(ShadowShader shader, Matrix4 projectionViewMatrix) {
 		this.shader = shader;
 		this.projectionViewMatrix = projectionViewMatrix;
 	}
@@ -60,8 +60,6 @@ public class ShadowMapEntityRenderer {
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, model.getMaterial().getDiffuseID());
 			for (GameObject entity : entities.get(model)) {
-				if (!entity.isRenderable())
-					continue;
 				prepareInstance(entity);
 				glDrawElements(GL_TRIANGLES, rawModel.getVertexCount(), GL_UNSIGNED_INT, 0);
 			}
@@ -97,16 +95,16 @@ public class ShadowMapEntityRenderer {
 	 * @param entity		Entity to be prepared
 	 */
 	private void prepareInstance(GameObject entity) {
-		Matrix4f modelMatrix = MathUtils.createTransformationMatrix((Vector3f) entity.getPosition(),
+		Matrix4 modelMatrix = MathUtils.createTransformationMatrix((Vector3) entity.getPosition(),
 				entity.getRotation(), entity.getScale());
-		Matrix4f mvpMatrix = Matrix4f.mul(projectionViewMatrix, modelMatrix, null);
+		Matrix4 mvpMatrix = Matrix4.mul(projectionViewMatrix, modelMatrix, null);
 		shader.setUniform("mvpMatrix", mvpMatrix);
 	}
 	
 	private void prepareInstance(Terrain terrain) {
-		Matrix4f modelMatrix = MathUtils.createTransformationMatrix((Vector3f) terrain.getPosition(), new Vector3f(0, 0, 0),
+		Matrix4 modelMatrix = MathUtils.createTransformationMatrix((Vector3) terrain.getPosition(), new Vector3(0, 0, 0),
 				1);
-		Matrix4f mvpMatrix = Matrix4f.mul(projectionViewMatrix, modelMatrix, null);
+		Matrix4 mvpMatrix = Matrix4.mul(projectionViewMatrix, modelMatrix, null);
 		shader.setUniform("mvpMatrix", mvpMatrix);
 	}
 

@@ -1,7 +1,5 @@
 package tk.luminos.gameobjects;
 
-import static tk.luminos.ConfigData.SIZE;
-
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +7,7 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import tk.luminos.Application;
 import tk.luminos.Debug;
 import tk.luminos.filesystem.serialization.LDatabase;
 import tk.luminos.filesystem.serialization.LField;
@@ -19,9 +18,9 @@ import tk.luminos.graphics.TerrainTexturePack;
 import tk.luminos.graphics.models.RawModel;
 import tk.luminos.loaders.Loader;
 import tk.luminos.maths.MathUtils;
-import tk.luminos.maths.vector.Vector;
-import tk.luminos.maths.vector.Vector2f;
-import tk.luminos.maths.vector.Vector3f;
+import tk.luminos.maths.Vector;
+import tk.luminos.maths.Vector2;
+import tk.luminos.maths.Vector3;
 import tk.luminos.utilities.FractalNoise;
 /**
  * 
@@ -37,6 +36,8 @@ public class Terrain {
 	public static int VERTEX_COUNT = 32;
 	private static float MAX_HEIGHT = 40;
 	private static final float MAX_PIXEL_COLOUR = 256 * 256 * 256;
+	
+	private static Integer SIZE = Application.getValue("SIZE");
 
 	private float x;
 	private float z;
@@ -98,9 +99,9 @@ public class Terrain {
 	 * @param loader		Loader to use
 	 * @param gridX			Grid X coordinate
 	 * @param gridZ			Grid Z coordinate
-	 * @throws IOException	Exception for if file isn't found or cannot be handled
+	 * @throws Exception	Exception for if file isn't found or cannot be handled
 	 */
-	public Terrain(RawModel model, float[][] heights, List<String> textures, BufferedImage blendMap, Loader loader, float gridX, float gridZ) throws IOException {
+	public Terrain(RawModel model, float[][] heights, List<String> textures, BufferedImage blendMap, Loader loader, float gridX, float gridZ) throws Exception {
 		this.model = model;
 		this.heights = heights;
 		this.texturePack = new TerrainTexturePack(new TerrainTexture(loader.loadTexture(textures.get(0))), 
@@ -137,7 +138,7 @@ public class Terrain {
 	 * @param pos		Position to calculate with
 	 * @return 			Inside terrain bounds
 	 */
-	public boolean isOnTerrain(Vector3f pos) {
+	public boolean isOnTerrain(Vector3 pos) {
 		float xMin = this.getX();
 		float xMax = this.getX() + this.getScale();
 		float zMin = this.getZ();
@@ -155,7 +156,7 @@ public class Terrain {
 	 * @return 			Inside terrain bounds
 	 */
 	public boolean isOnTerrain(GameObject entity) {
-		return isOnTerrain((Vector3f) entity.getPosition());
+		return isOnTerrain((Vector3) entity.getPosition());
 	}
 
 	/**
@@ -232,13 +233,13 @@ public class Terrain {
 		float answer;
 
 		if (xCoord <= (1-zCoord)) {
-			answer = MathUtils.barryCentric(new Vector3f(0, heights[gridX][gridZ], 0), new Vector3f(1,
-					heights[gridX + 1][gridZ], 0), new Vector3f(0,
-							heights[gridX][gridZ + 1], 1), new Vector2f(xCoord, zCoord));
+			answer = MathUtils.barryCentric(new Vector3(0, heights[gridX][gridZ], 0), new Vector3(1,
+					heights[gridX + 1][gridZ], 0), new Vector3(0,
+							heights[gridX][gridZ + 1], 1), new Vector2(xCoord, zCoord));
 		} else {
-			answer = MathUtils.barryCentric(new Vector3f(1, heights[gridX + 1][gridZ], 0), new Vector3f(1,
-					heights[gridX + 1][gridZ + 1], 1), new Vector3f(0,
-							heights[gridX][gridZ + 1], 1), new Vector2f(xCoord, zCoord));
+			answer = MathUtils.barryCentric(new Vector3(1, heights[gridX + 1][gridZ], 0), new Vector3(1,
+					heights[gridX + 1][gridZ + 1], 1), new Vector3(0,
+							heights[gridX][gridZ + 1], 1), new Vector2(xCoord, zCoord));
 		}
 
 		return answer;
@@ -270,7 +271,7 @@ public class Terrain {
 				vertices[vertexPointer * 3 + 1] = height;
 				heights[j][i] = height;
 				vertices[vertexPointer * 3 + 2] = (float) i / ((float) VERTEX_COUNT - 1) * SIZE;
-				Vector3f normal = calculateNormal(j, i, noise);
+				Vector3 normal = calculateNormal(j, i, noise);
 				normals[vertexPointer * 3] = normal.x;
 				normals[vertexPointer * 3 + 1] = normal.y;
 				normals[vertexPointer * 3 + 2] = normal.z;
@@ -331,7 +332,7 @@ public class Terrain {
 				vertices[vertexPointer * 3 + 1] = height;
 				heights[j][i] = height;
 				vertices[vertexPointer * 3 + 2] = (float) i / ((float) VERTEX_COUNT - 1) * SIZE;
-				Vector3f normal = calculateNormal(j, i, image);
+				Vector3 normal = calculateNormal(j, i, image);
 				normals[vertexPointer * 3] = normal.x;
 				normals[vertexPointer * 3 + 1] = normal.y;
 				normals[vertexPointer * 3 + 2] = normal.z;
@@ -398,11 +399,11 @@ public class Terrain {
 	}
 	
 	public Vector getPosition() {
-		return new Vector3f(x, 0, z);
+		return new Vector3(x, 0, z);
 	}
 	
 	public void increasePosition(Vector delta) {
-		Vector2f increase = (Vector2f) delta;
+		Vector2 increase = (Vector2) delta;
 		this.x += increase.x;
 		this.z += increase.y;
 	}
@@ -449,12 +450,12 @@ public class Terrain {
 	 * @param image 	Image to use
 	 * @return Normal vector
 	 */
-	private Vector3f calculateNormal(int x, int z, BufferedImage image){
+	private Vector3 calculateNormal(int x, int z, BufferedImage image){
 		float heightL = getHeight(x-1, z, image);
 		float heightR = getHeight(x+1, z, image);
 		float heightD = getHeight(x, z-1, image);
 		float heightU = getHeight(x, z+1, image);
-		Vector3f normal = new Vector3f(heightL-heightR, 2f, heightD - heightU);
+		Vector3 normal = new Vector3(heightL-heightR, 2f, heightD - heightU);
 		normal.normalize();
 		return normal;
 	}
@@ -468,12 +469,12 @@ public class Terrain {
 	 * @return Normal vector
 	 * 
 	 */
-	private Vector3f calculateNormal(int x, int z, FractalNoise noise) {
+	private Vector3 calculateNormal(int x, int z, FractalNoise noise) {
 		float heightL = getHeight(x - 1, z, noise);
 		float heightR = getHeight(x + 1, z, noise);
 		float heightD = getHeight(x, z - 1, noise);
 		float heightU = getHeight(x, z + 1, noise);
-		Vector3f normal = new Vector3f(heightL - heightR, 2f, heightD - heightU);
+		Vector3 normal = new Vector3(heightL - heightR, 2f, heightD - heightU);
 		normal.normalize();
 		return normal; 
 	}

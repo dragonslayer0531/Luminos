@@ -28,7 +28,7 @@ import static org.lwjgl.opengl.GL32.glFramebufferTexture;
 
 import java.nio.ByteBuffer;
 
-import tk.luminos.ConfigData;
+import tk.luminos.Application;
 
 /**
  * 
@@ -66,7 +66,7 @@ public class ShadowFrameBuffer {
     
     public void unbindFrameBuffer() {
     	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    	glViewport(0, 0, ConfigData.WIDTH, ConfigData.HEIGHT);
+    	glViewport(0, 0, Application.getValue("WIDTH"), Application.getValue("HEIGHT"));
     }
     
     public int getShadowMap() {

@@ -17,7 +17,5 @@ public abstract class EngineComponent extends Thread {
 	 * @param scene		Scene to draw
 	 */
 	public abstract void update(Scene scene);
-	
-	public abstract void dispose();
 
 }

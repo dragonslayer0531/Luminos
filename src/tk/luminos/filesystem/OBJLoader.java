@@ -12,8 +12,8 @@ import tk.luminos.Debug;
 import tk.luminos.graphics.models.RawModel;
 import tk.luminos.graphics.models.Vertex;
 import tk.luminos.loaders.Loader;
-import tk.luminos.maths.vector.Vector2f;
-import tk.luminos.maths.vector.Vector3f;
+import tk.luminos.maths.Vector2;
+import tk.luminos.maths.Vector3;
 
 /**
  * 
@@ -43,9 +43,9 @@ public class OBJLoader {
 		}
 		BufferedReader reader = new BufferedReader(fr);
 		String line;
-		List<Vector3f> vertices = new ArrayList<Vector3f>();
-		List<Vector2f> textures = new ArrayList<Vector2f>();
-		List<Vector3f> normals = new ArrayList<Vector3f>();
+		List<Vector3> vertices = new ArrayList<Vector3>();
+		List<Vector2> textures = new ArrayList<Vector2>();
+		List<Vector3> normals = new ArrayList<Vector3>();
 		List<Integer> indices = new ArrayList<Integer>();
 		float[] verticesArray = null;
 		float[] normalsArray = null;
@@ -57,15 +57,15 @@ public class OBJLoader {
 				line = reader.readLine();
 				String[] currentLine = line.split(" ");
 				if (line.startsWith("v ")) {
-					Vector3f vertex = new Vector3f(Float.parseFloat(currentLine[1]),
+					Vector3 vertex = new Vector3(Float.parseFloat(currentLine[1]),
 							Float.parseFloat(currentLine[2]), Float.parseFloat(currentLine[3]));
 					vertices.add(vertex);
 				} else if (line.startsWith("vt ")) {
-					Vector2f texture = new Vector2f(Float.parseFloat(currentLine[1]),
+					Vector2 texture = new Vector2(Float.parseFloat(currentLine[1]),
 							Float.parseFloat(currentLine[2]));
 					textures.add(texture);
 				} else if (line.startsWith("vn ")) {
-					Vector3f normal = new Vector3f(Float.parseFloat(currentLine[1]),
+					Vector3 normal = new Vector3(Float.parseFloat(currentLine[1]),
 							Float.parseFloat(currentLine[2]), Float.parseFloat(currentLine[3]));
 					normals.add(normal);
 				} else if (line.startsWith("f ")) {
@@ -100,7 +100,7 @@ public class OBJLoader {
 		indicesArray = new int[indices.size()];
 
 		int vertexPointer = 0;
-		for(Vector3f vertex:vertices){
+		for(Vector3 vertex:vertices){
 			verticesArray[vertexPointer++] = vertex.x;
 			verticesArray[vertexPointer++] = vertex.y;
 			verticesArray[vertexPointer++] = vertex.z;
@@ -133,15 +133,15 @@ public class OBJLoader {
 		BufferedReader reader = new BufferedReader(isr);
 		String line;
 		List<Vertex> vertices = new ArrayList<Vertex>();
-		List<Vector2f> textures = new ArrayList<Vector2f>();
-		List<Vector3f> normals = new ArrayList<Vector3f>();
+		List<Vector2> textures = new ArrayList<Vector2>();
+		List<Vector3> normals = new ArrayList<Vector3>();
 		List<Integer> indices = new ArrayList<Integer>();
 		try {
 			while (true) {
 				line = reader.readLine();
 				if (line.startsWith("v ")) {
 					String[] currentLine = line.split(" ");
-					Vector3f vertex = new Vector3f((float) Float.valueOf(currentLine[1]),
+					Vector3 vertex = new Vector3((float) Float.valueOf(currentLine[1]),
 							(float) Float.valueOf(currentLine[2]),
 							(float) Float.valueOf(currentLine[3]));
 					Vertex newVertex = new Vertex(vertices.size(), vertex);
@@ -149,12 +149,12 @@ public class OBJLoader {
 
 				} else if (line.startsWith("vt ")) {
 					String[] currentLine = line.split(" ");
-					Vector2f texture = new Vector2f((float) Float.valueOf(currentLine[1]),
+					Vector2 texture = new Vector2((float) Float.valueOf(currentLine[1]),
 							(float) Float.valueOf(currentLine[2]));
 					textures.add(texture);
 				} else if (line.startsWith("vn ")) {
 					String[] currentLine = line.split(" ");
-					Vector3f normal = new Vector3f((float) Float.valueOf(currentLine[1]),
+					Vector3 normal = new Vector3((float) Float.valueOf(currentLine[1]),
 							(float) Float.valueOf(currentLine[2]),
 							(float) Float.valueOf(currentLine[3]));
 					normals.add(normal);
@@ -189,19 +189,19 @@ public class OBJLoader {
 	}
 
 	private static void calculateTangents(Vertex v0, Vertex v1, Vertex v2,
-			List<Vector2f> textures) {
-		Vector3f delatPos1 = Vector3f.sub(v1.getPosition(), v0.getPosition(), null);
-		Vector3f delatPos2 = Vector3f.sub(v2.getPosition(), v0.getPosition(), null);
-		Vector2f uv0 = textures.get(v0.getTextureIndex());
-		Vector2f uv1 = textures.get(v1.getTextureIndex());
-		Vector2f uv2 = textures.get(v2.getTextureIndex());
-		Vector2f deltaUv1 = Vector2f.sub(uv1, uv0, null);
-		Vector2f deltaUv2 = Vector2f.sub(uv2, uv0, null);
+			List<Vector2> textures) {
+		Vector3 delatPos1 = Vector3.sub(v1.getPosition(), v0.getPosition(), null);
+		Vector3 delatPos2 = Vector3.sub(v2.getPosition(), v0.getPosition(), null);
+		Vector2 uv0 = textures.get(v0.getTextureIndex());
+		Vector2 uv1 = textures.get(v1.getTextureIndex());
+		Vector2 uv2 = textures.get(v2.getTextureIndex());
+		Vector2 deltaUv1 = Vector2.sub(uv1, uv0, null);
+		Vector2 deltaUv2 = Vector2.sub(uv2, uv0, null);
 
 		float r = 1.0f / (deltaUv1.x * deltaUv2.y - deltaUv1.y * deltaUv2.x);
 		delatPos1.scale(deltaUv2.y);
 		delatPos2.scale(deltaUv1.y);
-		Vector3f tangent = Vector3f.sub(delatPos1, delatPos2, null);
+		Vector3 tangent = Vector3.sub(delatPos1, delatPos2, null);
 		tangent.scale(r);
 		v0.addTangent(tangent);
 		v1.addTangent(tangent);
@@ -233,8 +233,8 @@ public class OBJLoader {
 		return indicesArray;
 	}
 
-	private static float convertDataToArrays(List<Vertex> vertices, List<Vector2f> textures,
-			List<Vector3f> normals, float[] verticesArray, float[] texturesArray,
+	private static float convertDataToArrays(List<Vertex> vertices, List<Vector2> textures,
+			List<Vector3> normals, float[] verticesArray, float[] texturesArray,
 			float[] normalsArray, float[] tangentsArray) {
 		float furthestPoint = 0;
 		for (int i = 0; i < vertices.size(); i++) {
@@ -242,10 +242,10 @@ public class OBJLoader {
 			if (currentVertex.getLength() > furthestPoint) {
 				furthestPoint = currentVertex.getLength();
 			}
-			Vector3f position = currentVertex.getPosition();
-			Vector2f textureCoord = textures.get(currentVertex.getTextureIndex());
-			Vector3f normalVector = normals.get(currentVertex.getNormalIndex());
-			Vector3f tangent = currentVertex.getAverageTangent();
+			Vector3 position = currentVertex.getPosition();
+			Vector2 textureCoord = textures.get(currentVertex.getTextureIndex());
+			Vector3 normalVector = normals.get(currentVertex.getNormalIndex());
+			Vector3 tangent = currentVertex.getAverageTangent();
 			verticesArray[i * 3] = position.x;
 			verticesArray[i * 3 + 1] = position.y;
 			verticesArray[i * 3 + 2] = position.z;
@@ -297,14 +297,14 @@ public class OBJLoader {
 
 
 	private static void processVertex(String[] vertexData, List<Integer> indices,
-			List<Vector2f> textures, List<Vector3f> normals, float[] textureArray,
+			List<Vector2> textures, List<Vector3> normals, float[] textureArray,
 			float[] normalsArray) {
 		int currentVertexPointer = Integer.parseInt(vertexData[0]) - 1;
 		indices.add(currentVertexPointer);
-		Vector2f currentTex = textures.get(Integer.parseInt(vertexData[1])-1);
+		Vector2 currentTex = textures.get(Integer.parseInt(vertexData[1])-1);
 		textureArray[currentVertexPointer*2] = currentTex.x;
 		textureArray[currentVertexPointer*2+1] = 1 - currentTex.y;
-		Vector3f currentNorm = normals.get(Integer.parseInt(vertexData[2])-1);
+		Vector3 currentNorm = normals.get(Integer.parseInt(vertexData[2])-1);
 		normalsArray[currentVertexPointer*3] = currentNorm.x;
 		normalsArray[currentVertexPointer*3+1] = currentNorm.y;
 		normalsArray[currentVertexPointer*3+2] = currentNorm.z;	

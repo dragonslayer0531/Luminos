@@ -1,6 +1,6 @@
 package tk.luminos.physics;
 
-import tk.luminos.maths.vector.Vector3f;
+import tk.luminos.maths.Vector3;
 
 /**
  * Creates plane for intersection
@@ -10,7 +10,7 @@ import tk.luminos.maths.vector.Vector3f;
  */
 public class Plane {
 	
-	private Vector3f normal;
+	private Vector3 normal;
 	private float distance;
 	
 	/**
@@ -19,7 +19,7 @@ public class Plane {
 	 * @param normal		Normal of plane
 	 * @param distance		Distance from origin
 	 */
-	public Plane(Vector3f normal, float distance) {
+	public Plane(Vector3 normal, float distance) {
 		this.normal = normal;
 		this.distance = distance;
 	}
@@ -30,8 +30,8 @@ public class Plane {
 	 * @return	Normalized Plane
 	 */
 	public Plane normalize() {
-		float mag = new Vector3f(normal.x, normal.y, normal.z).magnitude();
-		return new Plane(new Vector3f(normal.x / mag, normal.y / mag, normal.z / mag), distance);
+		float mag = new Vector3(normal.x, normal.y, normal.z).magnitude();
+		return new Plane(new Vector3(normal.x / mag, normal.y / mag, normal.z / mag), distance);
 	}
 	
 	/**
@@ -41,7 +41,7 @@ public class Plane {
 	 * @return			Intersection data
 	 */
 	public IntersectData intersect(BoundingSphere sphere) {
-		float distanceFromSphereCenter = Vector3f.dot(normal, sphere.getLocation()) + distance;
+		float distanceFromSphereCenter = Vector3.dot(normal, sphere.getLocation()) + distance;
 		distanceFromSphereCenter = Math.abs(distanceFromSphereCenter);
 		float distanceFromSphere = distanceFromSphereCenter - sphere.getRadius();
 		return new IntersectData(distanceFromSphere < 0, distanceFromSphere);
@@ -52,7 +52,7 @@ public class Plane {
 	 * 
 	 * @return		Plane normal
 	 */
-	public Vector3f getNormal() {
+	public Vector3 getNormal() {
 		return normal;
 	}
 	

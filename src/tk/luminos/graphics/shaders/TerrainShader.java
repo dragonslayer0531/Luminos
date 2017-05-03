@@ -57,9 +57,11 @@ public class TerrainShader extends ShaderProgram{
 		createUniform("gradient");
 		createUniform("tileFactor");
 		createUniform("numPointLights");
-//		createUniform("numSpotLights");
 		createUniformPointLights("pointLights");
 		createUniformDirectionalLight("sun");
+		createUniform("pcfCount");
+		createUniform("shadowDistance");
+		createUniform("transitionDistance");
 	}
 
 	/**

@@ -19,7 +19,6 @@ import tk.luminos.utilities.OpenGLInstance;
  * @version 1.1
  *
  */
-
 public class Debug {
 		
 	private static StringBuilder debug_data = new StringBuilder();

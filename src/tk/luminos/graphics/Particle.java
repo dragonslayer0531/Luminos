@@ -1,8 +1,8 @@
 package tk.luminos.graphics;
 
-import tk.luminos.graphics.display.Window;
-import tk.luminos.maths.vector.Vector2f;
-import tk.luminos.maths.vector.Vector3f;
+import tk.luminos.display.Window;
+import tk.luminos.maths.Vector2;
+import tk.luminos.maths.Vector3;
 
 /**
  * 
@@ -15,8 +15,8 @@ import tk.luminos.maths.vector.Vector3f;
 
 public class Particle {
 	
-	private Vector3f position;
-	private Vector3f velocity;
+	private Vector3 position;
+	private Vector3 velocity;
 	private float grav;
 	private float life;
 	private float rotation;
@@ -24,15 +24,15 @@ public class Particle {
 	private ParticleTexture texture;
 	private float elapsedTime = 0;
 	
-	private Vector2f offsetOne = new Vector2f();
-	private Vector2f offsetTwo = new Vector2f();
+	private Vector2 offsetOne = new Vector2();
+	private Vector2 offsetTwo = new Vector2();
 	private float blend;
 
-	public Vector2f getOffsetOne() {
+	public Vector2 getOffsetOne() {
 		return offsetOne;
 	}
 
-	public Vector2f getOffsetTwo() {
+	public Vector2 getOffsetTwo() {
 		return offsetTwo;
 	}
 
@@ -51,7 +51,7 @@ public class Particle {
 	 * @param rotation		Describes the original rotation
 	 * @param scale			Describes the original scale
 	 */
-	public Particle(ParticleTexture texture, Vector3f position, Vector3f velocity, float grav, float life, float rotation, float scale) {
+	public Particle(ParticleTexture texture, Vector3 position, Vector3 velocity, float grav, float life, float rotation, float scale) {
 		this.texture = texture;
 		this.position = position;
 		this.velocity = velocity;
@@ -66,7 +66,7 @@ public class Particle {
 	 * 
 	 * @return Velocity of particle
 	 */
-	public Vector3f getVelocity() {
+	public Vector3 getVelocity() {
 		return velocity;
 	}
 
@@ -115,9 +115,9 @@ public class Particle {
 	 */
 	public boolean update(Window window) {
 		velocity.y += 50 * grav * window.getFrameTime();
-		Vector3f change = new Vector3f(velocity.x, velocity.y, velocity.z);
+		Vector3 change = new Vector3(velocity.x, velocity.y, velocity.z);
 		change.scale(window.getFrameTime());
-		Vector3f.add(change, position, position);
+		Vector3.add(change, position, position);
 		updateTextureCoordInfo();
 		elapsedTime += window.getFrameTime();
 		return elapsedTime < life;
@@ -128,7 +128,7 @@ public class Particle {
 	 * 
 	 * @return Vector describing world position 
 	 */
-	public Vector3f getPosition() {
+	public Vector3 getPosition() {
 		return position;
 	}
 
@@ -173,7 +173,7 @@ public class Particle {
 	 * @param offset	Previous offset
 	 * @param index		Current position
 	 */
-	private void setTextureOffset(Vector2f offset, int index) {
+	private void setTextureOffset(Vector2 offset, int index) {
 		int column = index % texture.getNumberOfRows();
 		int row = index / texture.getNumberOfRows();
 		offset.x = (float) column / texture.getNumberOfRows();

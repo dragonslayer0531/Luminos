@@ -19,14 +19,13 @@ uniform int tileFactor;
 uniform float shineDamper;
 uniform float reflectivity;
 uniform vec3 skyColor;
+uniform int numPointLights;
 
-const int pcfCount = 2;
-const float totalTexels = (pcfCount * 2.0 + 1.0) * (pcfCount * 2.0 + 1.0);
+uniform int pcfCount;
+float totalTexels = (pcfCount * 2.0 + 1.0) * (pcfCount * 2.0 + 1.0);
 
 void main(void){
 	
-	float mapSize = 2048 * 4;
-	float texelSize = 1.0 / mapSize;
 	float total = 0.0;
 	
 	for(int x=-pcfCount; x<=pcfCount; x++){
@@ -36,6 +35,7 @@ void main(void){
 		}
 	}
 	
+	total *= sun.intensity;
 	total /= totalTexels;
 	
 	float lightFactor = 1.0 - (total * shadowCoords.w);
@@ -57,7 +57,7 @@ void main(void){
 	vec3 totalDiffuse = vec3(0.0);
 	vec3 totalSpecular = vec3(0.0);
 	
-	for(int i = 0; i < _MAX_LIGHTS_; i++){
+	for(int i = 0; i < numPointLights; i++){
 		float distance = length(toLightVector[i]);
 		float attFactor = pass_PointLights[i].attenuation.x + (pass_PointLights[i].attenuation.y * distance) + (pass_PointLights[i].attenuation.z * distance * distance);
 		vec3 unitLightVector = normalize(toLightVector[i]);	

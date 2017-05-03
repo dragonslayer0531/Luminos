@@ -23,8 +23,8 @@ import tk.luminos.graphics.TerrainTexturePack;
 import tk.luminos.graphics.models.RawModel;
 import tk.luminos.graphics.shaders.TerrainShader;
 import tk.luminos.maths.MathUtils;
-import tk.luminos.maths.matrix.Matrix4f;
-import tk.luminos.maths.vector.Vector3f;
+import tk.luminos.maths.Matrix4;
+import tk.luminos.maths.Vector3;
 
 /**
  * 
@@ -47,7 +47,7 @@ public class TerrainRenderer {
 	 * @param shader			Shader Program that is used to render terrains
 	 * @param projectionMatrix	Projectioon matrix used to render terrains
 	 */
-	public TerrainRenderer(TerrainShader shader, Matrix4f projectionMatrix) {
+	public TerrainRenderer(TerrainShader shader, Matrix4 projectionMatrix) {
 		this.shader = shader;
 		shader.start();
 		shader.setUniform("projectionMatrix", projectionMatrix);
@@ -56,6 +56,9 @@ public class TerrainRenderer {
 		shader.setUniform("gradient", gradient);
 		shader.setUniform("shineDamper", 1f);
 		shader.setUniform("reflectivity", 0f);
+		shader.setUniform("pcfCount", 2);
+		shader.setUniform("shadowDistance", 200.0f);
+		shader.setUniform("transitionDistance", 20.0f);
 		shader.connectTextureUnits();
 		shader.stop();
 	}
@@ -67,7 +70,7 @@ public class TerrainRenderer {
 	 * @param toShadowSpace	Loads shadow space to shader
 	 * @param shadowMap		Shadow map texture id
 	 */
-	public void render(List<Terrain> terrains, Matrix4f toShadowSpace, int shadowMap) {
+	public void render(List<Terrain> terrains, Matrix4 toShadowSpace, int shadowMap) {
 		shader.setUniform("toShadowMapSpace", toShadowSpace);
 		for (Terrain terrain : terrains) {
 			prepareTerrain(terrain, shadowMap);
@@ -171,8 +174,8 @@ public class TerrainRenderer {
 	 * @param terrain	Terrain to calculate Model Matrix of
 	 */
 	private void loadModelMatrix(Terrain terrain) {
-		Matrix4f transformationMatrix = MathUtils.createTransformationMatrix(
-				new Vector3f(terrain.getX(), 0, terrain.getZ()), 0, 0, 0, 1);
+		Matrix4 transformationMatrix = MathUtils.createTransformationMatrix(
+				new Vector3(terrain.getX(), 0, terrain.getZ()), 0, 0, 0, 1);
 		shader.setUniform("transformationMatrix", transformationMatrix);
 	}
 

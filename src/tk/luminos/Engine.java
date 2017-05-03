@@ -3,9 +3,9 @@ package tk.luminos;
 import org.lwjgl.system.Callback;
 import org.lwjgl.system.Configuration;
 
+import tk.luminos.display.Window;
 import tk.luminos.graphics.RenderEngine;
 import tk.luminos.graphics.SceneManager;
-import tk.luminos.graphics.display.Window;
 import tk.luminos.graphics.render.MasterRenderer;
 import tk.luminos.graphics.shaders.GLSLVersion;
 import tk.luminos.loaders.Loader;
@@ -97,6 +97,7 @@ public class Engine {
 	public static void update(Scene scene, Window window) throws Exception {
 		scene.input(window);
 		renderEngine.update(scene);
+		physicsEngine.update(scene);
 		window.update();
 		if (window.isVsync())
 			sync();
@@ -104,10 +105,11 @@ public class Engine {
 	
 	/**
 	 * Closes engine
+	 * 
+	 * @throws Exception	thrown if error in joining threads
 	 */
 	public static void close() throws Exception {
 		if (physicsEngine != null) {
-			physicsEngine.dispose();
 			physicsEngine.join();
 		}
 		renderEngine.dispose();
@@ -115,6 +117,11 @@ public class Engine {
 		glErrorCallback.free();
 	}
 	
+	/**
+	 * Adds physics engine to the engine context
+	 * 
+	 * @param engine	physics engine to add
+	 */
 	public static void addPhysicsEngine(PhysicsEngine engine) {
 		Engine.physicsEngine = engine;
 	}

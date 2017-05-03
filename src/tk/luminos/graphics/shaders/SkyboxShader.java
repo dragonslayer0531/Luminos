@@ -1,8 +1,8 @@
 package tk.luminos.graphics.shaders;
 
-import tk.luminos.ConfigData;
-import tk.luminos.maths.matrix.Matrix4f;
-import tk.luminos.maths.vector.Vector3f;
+import tk.luminos.Application;
+import tk.luminos.maths.Matrix4;
+import tk.luminos.maths.Vector3;
 
 /**
  * 
@@ -35,12 +35,12 @@ public class SkyboxShader extends ShaderProgram {
      * @param matrix	View matrix of scene
      * @return 			Updated view matrix
      */
-    public Matrix4f createViewMatrix(Matrix4f matrix){
+    public Matrix4 createViewMatrix(Matrix4 matrix){
         matrix.m30 = 0;
         matrix.m31 = 0;
         matrix.m32 = 0;
-        rotation += 1f / ConfigData.FPS * 0.001f;
-        Matrix4f.rotate((float) Math.toRadians(rotation), new Vector3f(0,1,0), matrix, matrix);
+        rotation += 1f / Application.getValue("FPS") * 0.001f;
+        Matrix4.rotate((float) Math.toRadians(rotation), new Vector3(0,1,0), matrix, matrix);
         return matrix;
     }
      

@@ -1,6 +1,6 @@
 package tk.luminos.physics;
 
-import tk.luminos.maths.vector.Vector3f;
+import tk.luminos.maths.Vector3;
 
 /**
  * Creates bounding sphere
@@ -10,7 +10,7 @@ import tk.luminos.maths.vector.Vector3f;
  */
 public class BoundingSphere {
 	
-	private Vector3f location;
+	private Vector3 location;
 	private float radius;
 	
 	/**
@@ -19,7 +19,7 @@ public class BoundingSphere {
 	 * @param location		Center
 	 * @param radius		Size
 	 */
-	public BoundingSphere(Vector3f location, float radius) {
+	public BoundingSphere(Vector3 location, float radius) {
 		this.location = location;
 		this.radius = radius;
 	}
@@ -29,7 +29,7 @@ public class BoundingSphere {
 	 * 
 	 * @return	Center of sphere
 	 */
-	public Vector3f getLocation() {
+	public Vector3 getLocation() {
 		return location;
 	}
 	
@@ -38,7 +38,7 @@ public class BoundingSphere {
 	 * 
 	 * @param location		New center
 	 */
-	public void setLocation(Vector3f location) {
+	public void setLocation(Vector3 location) {
 		this.location = location;
 	}
 	
@@ -68,7 +68,7 @@ public class BoundingSphere {
 	 */
 	public IntersectData intersect(BoundingSphere sphere) {
 		float radiusDistance = this.radius + sphere.radius;
-		float centerDistance = Vector3f.sub(sphere.location, this.location, null).magnitude();
+		float centerDistance = Vector3.sub(sphere.location, this.location, null).magnitude();
 		return new IntersectData(centerDistance < radiusDistance, centerDistance - radiusDistance);
 	}
 

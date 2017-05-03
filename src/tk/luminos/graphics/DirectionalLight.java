@@ -1,6 +1,6 @@
 package tk.luminos.graphics;
 
-import tk.luminos.maths.vector.Vector3f;
+import tk.luminos.maths.Vector3;
 
 /**
  * 
@@ -15,8 +15,8 @@ import tk.luminos.maths.vector.Vector3f;
 
 public class DirectionalLight implements Light {
 	
-	private Vector3f color;
-	private Vector3f direction;
+	private Vector3 color;
+	private Vector3 direction;
 	private float intensity;
 	private String id;
 
@@ -27,7 +27,7 @@ public class DirectionalLight implements Light {
 	 * @param direction		Direction of light
 	 * @param intensity		Intensity of light
 	 */
-	public DirectionalLight(Vector3f color, Vector3f direction, float intensity) {
+	public DirectionalLight(Vector3 color, Vector3 direction, float intensity) {
 		this.color = color;
 		this.direction = direction;
 		this.intensity = intensity;
@@ -38,7 +38,7 @@ public class DirectionalLight implements Light {
 	 * 
 	 * @param direction		Direction of light
 	 */
-	public void setDirection(Vector3f direction) {
+	public void setDirection(Vector3 direction) {
 		this.direction = direction;
 	}
 	
@@ -47,7 +47,7 @@ public class DirectionalLight implements Light {
 	 * 
 	 * @param color		Color of light
 	 */
-	public void setColor(Vector3f color) {
+	public void setColor(Vector3 color) {
 		this.color = color;
 	}
 	
@@ -66,7 +66,7 @@ public class DirectionalLight implements Light {
 	 * @return 	Light color
 	 */
 	@Override
-	public Vector3f getColor() {
+	public Vector3 getColor() {
 		return color;
 	}
 	
@@ -75,7 +75,7 @@ public class DirectionalLight implements Light {
 	 * 
 	 * @return		Light direction
 	 */
-	public Vector3f getDirection() {
+	public Vector3 getDirection() {
 		return direction;
 	}
 	

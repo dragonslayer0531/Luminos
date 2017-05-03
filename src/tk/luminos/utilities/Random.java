@@ -1,6 +1,6 @@
 package tk.luminos.utilities;
 
-import static tk.luminos.ConfigData.SEED;
+import tk.luminos.Application;
 
 /**
  * Random for Engine
@@ -17,7 +17,7 @@ public class Random extends java.util.Random {
 	 */
 	public Random() {
 		super();
-		this.setSeed(SEED);;
+		this.setSeed(Application.getValue("SEED"));;
 	}
 
 }

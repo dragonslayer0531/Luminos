@@ -22,8 +22,8 @@ import tk.luminos.graphics.Material;
 import tk.luminos.graphics.models.RawModel;
 import tk.luminos.graphics.models.TexturedModel;
 import tk.luminos.graphics.shaders.GameObjectShader;
-import tk.luminos.maths.matrix.Matrix4f;
-import tk.luminos.maths.vector.Vector2f;
+import tk.luminos.maths.Matrix4;
+import tk.luminos.maths.Vector2;
 
 /**
  * 
@@ -46,7 +46,7 @@ public class GameObjectRenderer {
 	 * @param shader			{@link GameObjectShader} that is used for rendering entities
 	 * @param projectionMatrix	Projection Matrix that is used to draw the screen
 	 */
-	public GameObjectRenderer(GameObjectShader shader, Matrix4f projectionMatrix) {
+	public GameObjectRenderer(GameObjectShader shader, Matrix4 projectionMatrix) {
 		this.shader = shader;
 		shader.start();
 		shader.setUniform(shader.getLocation("projectionMatrix"), projectionMatrix);
@@ -164,7 +164,7 @@ public class GameObjectRenderer {
 	 */
 	private void prepareInstance(GameObject entity) {
 		shader.setUniform(shader.getLocation("transformationMatrix"), entity.getModelMatrix());
-		shader.setUniform(shader.getLocation("offset"), new Vector2f(0, 0));
+		shader.setUniform(shader.getLocation("offset"), new Vector2(0, 0));
 	}
 
 }

@@ -1,7 +1,7 @@
 package tk.luminos.graphics;
 
 import tk.luminos.gameobjects.GameObject;
-import tk.luminos.maths.vector.Vector3f;
+import tk.luminos.maths.Vector3;
 
 /**
  * 
@@ -16,7 +16,7 @@ public class Camera {
 	
 	private static float distanceFromPlayer = -.05f;
 	private float angleAroundPlayer = 0;
-	private Vector3f position = new Vector3f(0, 0, 0);
+	private Vector3 position = new Vector3(0, 0, 0);
 	private float pitch = 0;
 	private float yaw = 0;
 	private float roll = 0;
@@ -48,7 +48,7 @@ public class Camera {
 	 * 
 	 * @return Value containing the positon of the camera
 	 */
-	public Vector3f getPosition() {
+	public Vector3 getPosition() {
 		return position;
 	}
 
@@ -107,7 +107,7 @@ public class Camera {
 		float theta = player.getRotation().y + angleAroundPlayer;
 		float offsetX = (float) (horizDistance * Math.sin(Math.toRadians(theta)));
 		float offsetZ = (float) (horizDistance * Math.cos(Math.toRadians(theta)));
-		Vector3f pos = (Vector3f) (player.getPosition());
+		Vector3 pos = (Vector3) (player.getPosition());
 		position.x = pos.x - offsetX;
 		position.z = pos.z - offsetZ;
 		position.y = pos.y + verticDistance + 1f;

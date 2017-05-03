@@ -1,11 +1,9 @@
 package tk.luminos.loaders;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.openal.AL10;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL30;
@@ -27,11 +25,9 @@ public class Loader {
 	protected static List<Integer> vaos = new ArrayList<Integer>();
 	protected static List<Integer> vbos = new ArrayList<Integer>();
 	protected static List<Integer> textures = new ArrayList<Integer>();
-	protected static List<Integer> sounds = new ArrayList<Integer>();
 	
 	private ModelLoader modelLoader = new ModelLoader();
 	private ImageLoader imageLoader = new ImageLoader();
-	private AudioLoader audioLoader = new AudioLoader();
 
 	/**
 	 * Loads an array of positions to the graphics card
@@ -42,6 +38,10 @@ public class Loader {
 	 */
 	public RawModel loadToVAO(float[] positions, int dimensions) {
 		return modelLoader.loadToVAO(positions, dimensions);
+	}
+	
+	public RawModel loadToVAO(float[] positions, int[] indices) {
+		return modelLoader.loadToVAO(positions, indices);
 	}
 	
 	/**
@@ -116,9 +116,9 @@ public class Loader {
 	 * 
 	 * @param textureFiles	Array of strings describing the location of texture files
 	 * @return				Integer describing the cube map's index on the GPU
-	 * @throws IOException	Exception for if file isn't found or cannot be handled
+	 * @throws Exception	Exception for if file isn't found or cannot be handled
 	 */
-	public int loadCubeMap(String[] textureFiles) throws IOException {
+	public int loadCubeMap(String[] textureFiles) throws Exception {
 		return imageLoader.loadCubeMap(textureFiles);
 	}
 	
@@ -127,9 +127,9 @@ public class Loader {
 	 * 
 	 * @param fileName		String describing the location of the texture file
 	 * @return				Integer describing the texture's index on the GPU
-	 * @throws IOException	Exception for if file isn't found or cannot be handled
+	 * @throws Exception	Exception for if file isn't found or cannot be handled
 	 */
-	public int loadTexture(String fileName) throws IOException {
+	public int loadTexture(String fileName) throws Exception {
 		return imageLoader.loadTexture(fileName);
 	}
 	
@@ -144,24 +144,12 @@ public class Loader {
 	}
 	
 	/**
-	 * Loads audio file to the sound card
-	 * 
-	 * @param fileName		Location to audio file
-	 * @return				Buffer ID of sound
-	 * @throws Exception	Exception for if sound cannot be handled
-	 */
-	public int loadSound(String fileName) throws Exception {
-		return audioLoader.loadSoundBuffer(fileName);
-	}
-	
-	/**
 	 * Removes all VAOs, VBOs, and Textures from the VRAM
 	 */
 	public void cleanUp() {
 		for (Integer vao : vaos) GL30.glDeleteVertexArrays(vao);
 		for (Integer vbo : vbos) GL15.glDeleteBuffers(vbo);
 		for (Integer texture : textures) GL11.glDeleteTextures(texture);
-		for (Integer sound : sounds) AL10.alDeleteBuffers(sound);
 	}
 
 }

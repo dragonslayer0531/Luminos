@@ -3,9 +3,6 @@ package tk.luminos.maths;
 import java.util.List;
 
 import tk.luminos.graphics.Camera;
-import tk.luminos.maths.matrix.Matrix4f;
-import tk.luminos.maths.vector.Vector2f;
-import tk.luminos.maths.vector.Vector3f;
 
 /**
  * 
@@ -25,11 +22,11 @@ public class MathUtils {
 	 * @param scale			2D Scale
 	 * @return 				Transformation Matrix
 	 */
-	public static Matrix4f createTransformationMatrix(Vector2f translation, Vector2f scale) {
-		Matrix4f matrix = new Matrix4f();
+	public static Matrix4 createTransformationMatrix(Vector2 translation, Vector2 scale) {
+		Matrix4 matrix = new Matrix4();
 		matrix.setIdentity();
-		Matrix4f.translate(translation, matrix, matrix);
-		Matrix4f.scale(new Vector3f(scale.x, scale.y, 1f), matrix, matrix);
+		Matrix4.translate(translation, matrix, matrix);
+		Matrix4.scale(new Vector3(scale.x, scale.y, 1f), matrix, matrix);
 		return matrix;
 	}
 
@@ -43,15 +40,15 @@ public class MathUtils {
 	 * @param scale			Uniform scale
 	 * @return 				Transformation Matrix
 	 */
-	public static Matrix4f createTransformationMatrix(Vector3f translation, float rx, float ry,
+	public static Matrix4 createTransformationMatrix(Vector3 translation, float rx, float ry,
 			float rz, float scale) {
-		Matrix4f matrix = new Matrix4f();
+		Matrix4 matrix = new Matrix4();
 		matrix.setIdentity();
-		Matrix4f.translate(translation, matrix, matrix);
-		Matrix4f.rotate((float) Math.toRadians(rx), new Vector3f(1,0,0), matrix, matrix);
-		Matrix4f.rotate((float) Math.toRadians(ry), new Vector3f(0,1,0), matrix, matrix);
-		Matrix4f.rotate((float) Math.toRadians(rz), new Vector3f(0,0,1), matrix, matrix);
-		Matrix4f.scale(new Vector3f(scale,scale,scale), matrix, matrix);
+		Matrix4.translate(translation, matrix, matrix);
+		Matrix4.rotate((float) Math.toRadians(rx), new Vector3(1,0,0), matrix, matrix);
+		Matrix4.rotate((float) Math.toRadians(ry), new Vector3(0,1,0), matrix, matrix);
+		Matrix4.rotate((float) Math.toRadians(rz), new Vector3(0,0,1), matrix, matrix);
+		Matrix4.scale(new Vector3(scale,scale,scale), matrix, matrix);
 		return matrix;
 	}
 		
@@ -63,7 +60,7 @@ public class MathUtils {
 	 * @param scale			Uniform Scale
 	 * @return 				Transformation Matrix
 	 */
-	public static Matrix4f createTransformationMatrix(Vector3f translation, Vector3f rotation, float scale) {
+	public static Matrix4 createTransformationMatrix(Vector3 translation, Vector3 rotation, float scale) {
 		return MathUtils.createTransformationMatrix(translation, rotation.x, rotation.y, rotation.z, scale);
 	}
 	
@@ -75,14 +72,14 @@ public class MathUtils {
 	 * @param scale			3D Scale
 	 * @return				Transformation Matrix
 	 */
-	public static Matrix4f createTransformationMatrix(Vector3f translation, Vector3f rotation, Vector3f scale) {
-		Matrix4f matrix = new Matrix4f();
+	public static Matrix4 createTransformationMatrix(Vector3 translation, Vector3 rotation, Vector3 scale) {
+		Matrix4 matrix = new Matrix4();
 		matrix.setIdentity();
-		Matrix4f.translate(translation, matrix, matrix);
-		Matrix4f.rotate((float) Math.toRadians(rotation.x), new Vector3f(1,0,0), matrix, matrix);
-		Matrix4f.rotate((float) Math.toRadians(rotation.y), new Vector3f(0,1,0), matrix, matrix);
-		Matrix4f.rotate((float) Math.toRadians(rotation.z), new Vector3f(0,0,1), matrix, matrix);
-		Matrix4f.scale(scale, matrix, matrix);
+		Matrix4.translate(translation, matrix, matrix);
+		Matrix4.rotate((float) Math.toRadians(rotation.x), new Vector3(1,0,0), matrix, matrix);
+		Matrix4.rotate((float) Math.toRadians(rotation.y), new Vector3(0,1,0), matrix, matrix);
+		Matrix4.rotate((float) Math.toRadians(rotation.z), new Vector3(0,0,1), matrix, matrix);
+		Matrix4.scale(scale, matrix, matrix);
 		return matrix;
 	}
 	
@@ -94,8 +91,8 @@ public class MathUtils {
 	 * @param scale			2D scale
 	 * @return 				Transformation Matrix
 	 */
-	public static Matrix4f createTransformationMatrix(Vector3f translation, Vector3f rotation, Vector2f scale) {
-		return createTransformationMatrix(translation, rotation, new Vector3f(scale.x, 1, scale.y));
+	public static Matrix4 createTransformationMatrix(Vector3 translation, Vector3 rotation, Vector2 scale) {
+		return createTransformationMatrix(translation, rotation, new Vector3(scale.x, 1, scale.y));
 	}
 
 	/**
@@ -105,16 +102,16 @@ public class MathUtils {
 	 * @param rotation		Rotation vector
 	 * @return				Location vector of rotated point vector
 	 */
-	public static Vector3f rotate(Vector3f point, Vector3f rotation) {
-		Matrix4f matrix = new Matrix4f();
+	public static Vector3 rotate(Vector3 point, Vector3 rotation) {
+		Matrix4 matrix = new Matrix4();
 		matrix.setIdentity();
 		matrix.m00 = point.x;
 		matrix.m11 = point.y;
 		matrix.m22 = point.z;
-		Matrix4f.rotate((float) Math.toRadians(rotation.x), new Vector3f(1, 0, 0), matrix, matrix);
-		Matrix4f.rotate((float) Math.toRadians(rotation.y), new Vector3f(0, 1, 0), matrix, matrix);
-		Matrix4f.rotate((float) Math.toRadians(rotation.z), new Vector3f(0, 0, 1), matrix, matrix);
-		return new Vector3f(matrix.m00, matrix.m11, matrix.m22);
+		Matrix4.rotate((float) Math.toRadians(rotation.x), new Vector3(1, 0, 0), matrix, matrix);
+		Matrix4.rotate((float) Math.toRadians(rotation.y), new Vector3(0, 1, 0), matrix, matrix);
+		Matrix4.rotate((float) Math.toRadians(rotation.z), new Vector3(0, 0, 1), matrix, matrix);
+		return new Vector3(matrix.m00, matrix.m11, matrix.m22);
 	}
 	
 	/**
@@ -125,7 +122,7 @@ public class MathUtils {
 	 * @param error		Value of difference allowed to pass
 	 * @return			Are the points similar within the error
 	 */
-	public static boolean checkEquivalence(Vector3f one, Vector3f two, float error) {
+	public static boolean checkEquivalence(Vector3 one, Vector3 two, float error) {
 		if(one.x - two.x < error || one.y - two.y < error || one.z - two.z < error) return true;
 		return false;
 	}
@@ -139,7 +136,7 @@ public class MathUtils {
 	 * @param pos		Position inside values
 	 * @return 			Weighted value
 	 */
-	public static float barryCentric(Vector3f p1, Vector3f p2, Vector3f p3, Vector2f pos) {
+	public static float barryCentric(Vector3 p1, Vector3 p2, Vector3 p3, Vector2 pos) {
 		float det = (p2.z - p3.z) * (p1.x - p3.x) + (p3.x - p2.x) * (p1.z - p3.z);
 		float l1 = ((p2.z - p3.z) * (pos.x - p3.x) + (p3.x - p2.x) * (pos.y - p3.z)) / det;
 		float l2 = ((p3.z - p1.z) * (pos.x - p3.x) + (p1.x - p3.x) * (pos.y - p3.z)) / det;
@@ -153,15 +150,15 @@ public class MathUtils {
 	 * @param camera	Camera for view matrix
 	 * @return 			View Matrix
 	 */
-	public static Matrix4f createViewMatrix(Camera camera) {
-		Matrix4f viewMatrix = new Matrix4f();
+	public static Matrix4 createViewMatrix(Camera camera) {
+		Matrix4 viewMatrix = new Matrix4();
 		viewMatrix.setIdentity();
-		Matrix4f.rotate((float) Math.toRadians(camera.getPitch()), new Vector3f(1, 0, 0), viewMatrix,
+		Matrix4.rotate((float) Math.toRadians(camera.getPitch()), new Vector3(1, 0, 0), viewMatrix,
 				viewMatrix);
-		Matrix4f.rotate((float) Math.toRadians(camera.getYaw()), new Vector3f(0, 1, 0), viewMatrix, viewMatrix);
-		Vector3f cameraPos = camera.getPosition();
-		Vector3f negativeCameraPos = new Vector3f(-cameraPos.x,-cameraPos.y,-cameraPos.z);
-		Matrix4f.translate(negativeCameraPos, viewMatrix, viewMatrix);
+		Matrix4.rotate((float) Math.toRadians(camera.getYaw()), new Vector3(0, 1, 0), viewMatrix, viewMatrix);
+		Vector3 cameraPos = camera.getPosition();
+		Vector3 negativeCameraPos = new Vector3(-cameraPos.x,-cameraPos.y,-cameraPos.z);
+		Matrix4.translate(negativeCameraPos, viewMatrix, viewMatrix);
 		return viewMatrix;
 	}
 
@@ -172,20 +169,12 @@ public class MathUtils {
 	 * @param pointTwo	Second Point
 	 * @return 			Distance
 	 */
-	public static float getDistance(Vector3f pointOne, Vector3f pointTwo) {
-		float distance = 0;
+	public static float getDistance(Vector3 pointOne, Vector3 pointTwo) {
+		float dx = pointOne.x - pointTwo.x;
+	    float dy = pointOne.y - pointTwo.y;
+	    float dz = pointOne.z - pointTwo.z;
 
-		float x1 = pointOne.x;
-		float y1 = pointOne.y;
-		float z1 = pointOne.z;
-
-		float x2 = pointTwo.x;
-		float y2 = pointTwo.y;
-		float z2 = pointTwo.z;
-
-		distance = (float) Math.pow((Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2) + Math.pow(z1 - z2, 2)), .5f);
-
-		return distance;
+	    return (float) Math.sqrt(dx*dx + dy*dy + dz*dz);
 	}
 	
 	/**
@@ -195,9 +184,9 @@ public class MathUtils {
 	 * @param points	Points to be checked
 	 * @return 			Furthest point
 	 */
-	public static Vector3f getFurthestPoint(Vector3f origin, List<Vector3f> points) {
+	public static Vector3 getFurthestPoint(Vector3 origin, List<Vector3> points) {
 		float distance = getDistance(origin, points.get(0));
-		Vector3f positionVector = points.get(0);
+		Vector3 positionVector = points.get(0);
 		
 		for(int i = 0; i < points.size(); i++) {
 			if(getDistance(origin, points.get(i)) > distance) {
@@ -217,12 +206,12 @@ public class MathUtils {
 	 * @param points	Points to be checked	
 	 * @return 			Closest point
 	 */
-	public static Vector3f getClosestPoint(Vector3f origin, List<Vector3f> points) {
+	public static Vector3 getClosestPoint(Vector3 origin, List<Vector3> points) {
 		
 		float distance = getDistance(origin, points.get(0));
-		Vector3f positionVector = points.get(0);
+		Vector3 positionVector = points.get(0);
 		
-		for(Vector3f point : points) {
+		for(Vector3 point : points) {
 			float distance_cur = getDistance(origin, point);
 			if(distance_cur < distance) {
 				distance = distance_cur;
@@ -242,14 +231,14 @@ public class MathUtils {
 	 * @param pos3		Position Three
 	 * @return 			Normal of plane
 	 */
-	public static Vector3f getNormal(Vector3f pos1, Vector3f pos2, Vector3f pos3) {
+	public static Vector3 getNormal(Vector3 pos1, Vector3 pos2, Vector3 pos3) {
 		
-		Vector3f normalVector = null;
+		Vector3 normalVector = null;
 		
-		Vector3f vec1 = Vector3f.sub(pos2, pos1, null);
-		Vector3f vec2 = Vector3f.sub(pos3, pos1, null);
+		Vector3 vec1 = Vector3.sub(pos2, pos1, null);
+		Vector3 vec2 = Vector3.sub(pos3, pos1, null);
 		
-		normalVector = new Vector3f(vec1.x * vec2.x, vec1.y * vec2.y, vec1.z * vec2.z);
+		normalVector = new Vector3(vec1.x * vec2.x, vec1.y * vec2.y, vec1.z * vec2.z);
 		
 		
 		return normalVector;
@@ -311,7 +300,7 @@ public class MathUtils {
 	 * @param color		0-255 float values for each component
 	 * @return			Integer value of the color
 	 */
-	public static int rgbToInt(Vector3f color) {
+	public static int rgbToInt(Vector3 color) {
 		int red = (int) color.x;
 		int green = (int) color.y;
 		int blue = (int) color.z;
@@ -329,7 +318,7 @@ public class MathUtils {
 	 * @return 			int value of color
 	 */
 	public static int rgbToInt(int r, int g, int b) {
-		return rgbToInt(new Vector3f(r, g, b));
+		return rgbToInt(new Vector3(r, g, b));
 	}
 	
 	/**
@@ -358,28 +347,6 @@ public class MathUtils {
 			if(val > max) max = val;
 		}
 		return max;
-	}
-	
-	public static Matrix4f storeFloatsInMatrix4f(float[] data) {
-		Matrix4f mat = new Matrix4f();
-		mat.setZero();
-		mat.m00 = data[0];
-		mat.m01 = data[1];
-		mat.m02 = data[2];
-		mat.m03 = data[3];
-		mat.m10 = data[4];
-		mat.m11 = data[5];
-		mat.m12 = data[6];
-		mat.m13 = data[7];
-		mat.m20 = data[8];
-		mat.m21 = data[9];
-		mat.m22 = data[10];
-		mat.m23 = data[11];
-		mat.m30 = data[12];
-		mat.m31 = data[13];
-		mat.m32 = data[14];
-		mat.m33 = data[15];
-		return mat;
 	}
 
 }

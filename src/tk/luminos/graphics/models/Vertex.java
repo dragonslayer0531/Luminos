@@ -3,7 +3,7 @@ package tk.luminos.graphics.models;
 import java.util.ArrayList;
 import java.util.List;
 
-import tk.luminos.maths.vector.Vector3f;
+import tk.luminos.maths.Vector3;
 
 /**
  * 
@@ -18,14 +18,14 @@ public class Vertex {
 
 	private static final int NO_INDEX = -1;
 
-	private Vector3f position;
+	private Vector3 position;
 	private int textureIndex = NO_INDEX;
 	private int normalIndex = NO_INDEX;
 	private Vertex duplicateVertex = null;
 	private int index;
 	private float length;
-	private List<Vector3f> tangents = new ArrayList<Vector3f>();
-	private Vector3f averagedTangent = new Vector3f(0, 0, 0);
+	private List<Vector3> tangents = new ArrayList<Vector3>();
+	private Vector3 averagedTangent = new Vector3(0, 0, 0);
 
 	/**
 	 * Constructor
@@ -33,7 +33,7 @@ public class Vertex {
 	 * @param index			Vertex index position
 	 * @param position		Position of vertex
 	 */
-	public Vertex(int index, Vector3f position) {
+	public Vertex(int index, Vector3 position) {
 		this.index = index;
 		this.position = position;
 		this.length = position.magnitude();
@@ -44,7 +44,7 @@ public class Vertex {
 	 * 
 	 * @param tangent	Tangent to add
 	 */
-	public void addTangent(Vector3f tangent){
+	public void addTangent(Vector3 tangent){
 		tangents.add(tangent);
 	}
 
@@ -55,8 +55,8 @@ public class Vertex {
 		if(tangents.isEmpty()){
 			return;
 		}
-		for(Vector3f tangent : tangents){
-			Vector3f.add(averagedTangent, tangent, averagedTangent);
+		for(Vector3 tangent : tangents){
+			Vector3.add(averagedTangent, tangent, averagedTangent);
 		}
 		averagedTangent.normalize();
 	}
@@ -66,7 +66,7 @@ public class Vertex {
 	 * 
 	 * @return		Average tangent
 	 */
-	public Vector3f getAverageTangent(){
+	public Vector3 getAverageTangent(){
 		return averagedTangent;
 	}
 
@@ -131,7 +131,7 @@ public class Vertex {
 	 * 
 	 * @return	Vertex position
 	 */
-	public Vector3f getPosition() {
+	public Vector3 getPosition() {
 		return position;
 	}
 

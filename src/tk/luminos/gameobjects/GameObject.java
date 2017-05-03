@@ -1,13 +1,11 @@
 package tk.luminos.gameobjects;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import tk.luminos.graphics.SceneObject;
 import tk.luminos.graphics.models.TexturedModel;
-import tk.luminos.maths.matrix.Matrix4f;
-import tk.luminos.maths.vector.Vector3f;
+import tk.luminos.maths.Matrix4;
+import tk.luminos.maths.Vector3;
 
 /**
  * 
@@ -18,71 +16,157 @@ import tk.luminos.maths.vector.Vector3f;
  *
  */
 
-public abstract class GameObject implements SceneObject {
+public abstract class GameObject extends ComponentEntity implements SceneObject {
 	
-	private Transformation<Matrix4f> transform;
 	private TexturedModel model;
 	private boolean isRenderable;
 	private float renderDistance;
-	
-	private Map<String, Component<?>> components = new HashMap<String, Component<?>>();
-	
-	public GameObject(TexturedModel model, Vector3f position, Vector3f rotation, Vector3f scale) {
+	private Transformation transform;
+		
+	/**
+	 * Creates new game object
+	 * 
+	 * @param model		model to render
+	 * @param position	position of object
+	 * @param rotation	rotation of object
+	 * @param scale		scale of object
+	 */
+	public GameObject(TexturedModel model, Vector3 position, Vector3 rotation, Vector3 scale) {
 		this.model = model;
-		transform = new Transformation<Matrix4f>(position, rotation, scale);
+		transform = new Transformation(position, rotation, scale);
 		transform.constructModelMatrix();
 		isRenderable = true;
 	}
 	
-	public void setPosition(Vector3f position) {
+	/**
+	 * Sets position of object
+	 * 
+	 * @param position	new position
+	 */
+	public void setPosition(Vector3 position) {
 		transform.position = position;
 		transform.constructModelMatrix();
 	}
 	
-	public void setRotation(Vector3f rotation) {
+	/**
+	 * Sets rotation of object
+	 * 
+	 * @param rotation	new rotation
+	 */
+	public void setRotation(Vector3 rotation) {
 		transform.rotation = rotation;
 		transform.constructModelMatrix();
 	}
 	
-	public void setScale(Vector3f scale) {
+	/**
+	 * Sets scale of object
+	 * 
+	 * @param scale		new scale
+	 */
+	public void setScale(Vector3 scale) {
 		transform.scale = scale;
 		transform.constructModelMatrix();
 	}
 	
-	public Matrix4f getModelMatrix() {
+	/**
+	 * Gets the model matrix
+	 * 
+	 * @return	model matrix
+	 */
+	public Matrix4 getModelMatrix() {
 		return transform.getComponent();
 	}
 	
+	/**
+	 * Gets model
+	 * 
+	 * @return	model
+	 */
 	public TexturedModel getModel() {
 		return model;
 	}
 	
-	public Vector3f getPosition() {
+	/**
+	 * Gets transformation position
+	 * 
+	 * @return	position
+	 */
+	public Vector3 getPosition() {
 		return transform.position;
 	}
 	
-	public Vector3f getRotation() {
+	/**
+	 * Gets transformation rotation
+	 * 
+	 * @return	rotation
+	 */
+	public Vector3 getRotation() {
 		return transform.rotation;
 	}
 	
-	public Vector3f getScale() {
+	/**
+	 * Gets transformation scale
+	 * 
+	 * @return	scale
+	 */
+	public Vector3 getScale() {
 		return transform.scale;
 	}
 	
+	/**
+	 * Gets if game object is renderable
+	 * 
+	 * @return	is object renderable
+	 */
 	public boolean isRenderable() {
 		return isRenderable;
 	}
 	
+	/**
+	 * Gets the maximum render distance of an object
+	 * 
+	 * @return		render distance
+	 */
 	public float getRenderDistance() {
 		return renderDistance;
 	}
 
+	/**
+	 * Sets the maximum render distance of an object
+	 * 
+	 * @param renderDistance		new render distance
+	 */
 	public void setRenderDistance(float renderDistance) {
 		this.renderDistance = renderDistance;
 	}
 
+	/**
+	 * Sets is object is renderable
+	 * 
+	 * @param isRenderable		is object renderable
+	 */
 	public void setRenderable(boolean isRenderable) {
 		this.isRenderable = isRenderable;
+	}
+	
+	/**
+	 * Gets object id
+	 * 
+	 * @return id
+	 */
+	@Override
+	public String getID() {
+		return null;
+	}
+	
+	/**
+	 * Sets object id
+	 * 
+	 * @param id 	new id
+	 */
+	@Override
+	public void setID(String id) {
+		
 	}
 
 	/**
@@ -91,14 +175,8 @@ public abstract class GameObject implements SceneObject {
 	 * @param terrains		Terrain list of world
 	 * @param factor		Factor of movement
 	 */
-	public abstract void move(List<Terrain> terrains, float factor);
-	
-	/**
-	 * Gets the map of components associated with the GameObject
-	 * 
-	 * @return		Map of components attached to entity
-	 */
-	public Map<String, Component<?>> getComponents() {
-		return components;
+	public void move(List<Terrain> terrains, float factor) {
+		
 	}
+	
 }

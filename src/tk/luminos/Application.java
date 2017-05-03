@@ -1,9 +1,11 @@
 package tk.luminos;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import tk.luminos.graphics.display.Window;
+import tk.luminos.display.Window;
+import tk.luminos.utilities.Configuration;
 
 /**
  * 
@@ -14,11 +16,25 @@ import tk.luminos.graphics.display.Window;
  *
  */
 
-public class Application extends Thread {
+public class Application extends Thread implements Runnable {
 	
 	private List<Event> actions = new ArrayList<Event>();
 	private List<Thread> threads = new ArrayList<Thread>();
 	private Scene scene;
+	
+	private static Configuration config;
+	
+	public static void loadSettings(String file) throws IOException {
+		config = Configuration.loadSettings(file);
+	}
+	
+	public static void setValue(String setting, Integer value)  {
+		config.setValue(setting, value);
+	}
+	
+	public static Integer getValue(String setting) {
+		return config.getValue(setting);
+	}
 	
 	/**
 	 * Represents whether or not the application should close.  It is

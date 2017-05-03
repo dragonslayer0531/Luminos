@@ -11,13 +11,13 @@ package tk.luminos.gameobjects;
 
 public class Component<Type> {
 	
-	protected Object obj;
+	protected Type obj;
 	/**
 	 * Constructor that wraps object
 	 * 
-	 * @param o		Object to be wrapped into a component
+	 * @param obj		Object to be wrapped into a component
 	 */
-	public Component(Object obj) {
+	public Component(Type obj) {
 		this.obj = obj;
 	}
 	
@@ -26,9 +26,8 @@ public class Component<Type> {
 	 * 
 	 * @return Object	Object wrapped by component 
 	 */
-	@SuppressWarnings("unchecked")
 	public Type getComponent() {
-		return (Type) obj;
+		return obj;
 	}
 
 }

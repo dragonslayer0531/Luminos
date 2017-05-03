@@ -21,8 +21,8 @@ import tk.luminos.graphics.models.RawModel;
 import tk.luminos.graphics.models.TexturedModel;
 import tk.luminos.graphics.shaders.NormalMapShader;
 import tk.luminos.maths.MathUtils;
-import tk.luminos.maths.matrix.Matrix4f;
-import tk.luminos.maths.vector.Vector2f;
+import tk.luminos.maths.Matrix4;
+import tk.luminos.maths.Vector2;
 
 /**
  * 
@@ -43,7 +43,7 @@ public class NormalMapRenderer {
 	 * @param nms					Shader to use
 	 * @param projectionMatrix		Projection matrix to use
 	 */
-    public NormalMapRenderer(NormalMapShader nms, Matrix4f projectionMatrix) {
+    public NormalMapRenderer(NormalMapShader nms, Matrix4 projectionMatrix) {
         this.shader = nms;
         shader.start();
         shader.setUniform("projectionMatrix", projectionMatrix);
@@ -107,9 +107,9 @@ public class NormalMapRenderer {
     }
  
     private void prepareInstance(GameObject entity) {
-        Matrix4f transformationMatrix = MathUtils.createTransformationMatrix(entity.getPosition(), entity.getRotation(), entity.getScale());
+        Matrix4 transformationMatrix = MathUtils.createTransformationMatrix(entity.getPosition(), entity.getRotation(), entity.getScale());
         shader.setUniform("transformationMatrix", transformationMatrix);
-        shader.setUniform("offset", new Vector2f(0, 0));
+        shader.setUniform("offset", new Vector2(0, 0));
     }
 	
 }

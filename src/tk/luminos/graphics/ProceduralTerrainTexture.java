@@ -1,13 +1,11 @@
 package tk.luminos.graphics;
 
-import static tk.luminos.ConfigData.SIZE;
-import static tk.luminos.ConfigData.TEXTURE_SIZE;
-
 import java.awt.image.BufferedImage;
 
+import tk.luminos.Application;
 import tk.luminos.gameobjects.Terrain;
 import tk.luminos.maths.MathUtils;
-import tk.luminos.maths.vector.Vector3f;
+import tk.luminos.maths.Vector3;
 
 /**
  * 
@@ -19,6 +17,9 @@ import tk.luminos.maths.vector.Vector3f;
  */
 
 public class ProceduralTerrainTexture {
+	
+	private static int TEXTURE_SIZE = Application.getValue("TEXTURE_SIZE");
+	private static int SIZE = Application.getValue("SIZE");
 	
 	/**
 	 * Generates a blend map for the texture
@@ -51,8 +52,8 @@ public class ProceduralTerrainTexture {
 		 
 		 */
 		
-		int BLACK = MathUtils.rgbToInt(new Vector3f(0, 0, 0));
-		int RED = MathUtils.rgbToInt(new Vector3f(255, 0, 0));
+		int BLACK = MathUtils.rgbToInt(new Vector3(0, 0, 0));
+		int RED = MathUtils.rgbToInt(new Vector3(255, 0, 0));
 		
 		for(int x = 0; x < TEXTURE_SIZE; x++) {
 			for(int y = 0; y < TEXTURE_SIZE; y++) {

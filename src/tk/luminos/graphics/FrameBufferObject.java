@@ -50,7 +50,7 @@ import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 
-import tk.luminos.ConfigData;
+import tk.luminos.Application;
  
 /**
  * 
@@ -78,6 +78,9 @@ public class FrameBufferObject {
     private int colorBuffer;
     
     private boolean multisample = false;
+    
+    private static int WIDTH = Application.getValue("WIDTH");
+    private static int HEIGHT = Application.getValue("HEIGHT");
  
     /**
      * Constructor
@@ -129,7 +132,7 @@ public class FrameBufferObject {
      */
     public void unbindFrameBuffer() {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glViewport(0, 0, ConfigData.WIDTH, ConfigData.HEIGHT);
+        glViewport(0, 0, WIDTH, HEIGHT);
     }
  
     /**
@@ -173,7 +176,7 @@ public class FrameBufferObject {
     	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     	glBindFramebuffer(GL_READ_FRAMEBUFFER, this.frameBuffer);
     	glDrawBuffer(GL_BACK);
-    	glBlitFramebuffer(0, 0, ConfigData.WIDTH, ConfigData.HEIGHT, 0, 0, ConfigData.WIDTH, ConfigData.HEIGHT, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    	glBlitFramebuffer(0, 0, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT, GL_COLOR_BUFFER_BIT, GL_NEAREST);
     	this.unbindFrameBuffer();
     }
  

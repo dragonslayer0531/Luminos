@@ -16,13 +16,13 @@ public interface SceneObject {
 	 * 
 	 * @return	ID of object
 	 */
-	public String getID();
+	public default String getID() { return null; }
 	
 	/**
 	 * Sets the ID of the object
 	 * 
 	 * @param id		ID of object
 	 */
-	public void setID(String id);
+	public default void setID(String id) { return; }
 
 }

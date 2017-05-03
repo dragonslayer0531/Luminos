@@ -6,18 +6,23 @@ import java.util.List;
 import tk.luminos.EngineComponent;
 import tk.luminos.Scene;
 
+/**
+ * Necessary functionality for physics engines 
+ * 
+ * @author Nick Clark
+ * @version 1.0
+ */
 public class PhysicsEngine extends EngineComponent {
 	
 	private List<Collider> colliders;	
-	private Scene scene;
-	private boolean running = true;
 	
 	/**
 	 * Creates physics engine
+	 * 
+	 * @param scene		Scene to be attached to engine
 	 */
-	public PhysicsEngine(Scene scene) {
+	public PhysicsEngine() {
 		colliders = new ArrayList<Collider>();
-		this.scene = scene;
 	}
 	
 	/**
@@ -26,9 +31,6 @@ public class PhysicsEngine extends EngineComponent {
 	@Override
 	public void run() {
 		Thread.currentThread().setName("LUMINOS_ENGINE:_PHYSICS");
-		while(running) {
-			update(scene);
-		}
 	}
 	
 	/**
@@ -40,11 +42,6 @@ public class PhysicsEngine extends EngineComponent {
 			if (collider.isColliding())
 				collider.response(1f / 30f);
 		}
-	}
-	
-	@Override
-	public void dispose() {
-		running = false;
 	}
 	
 	/**

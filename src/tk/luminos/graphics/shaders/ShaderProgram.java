@@ -42,10 +42,10 @@ import tk.luminos.filesystem.ResourceLoader;
 import tk.luminos.graphics.DirectionalLight;
 import tk.luminos.graphics.PointLight;
 import tk.luminos.graphics.SpotLight;
-import tk.luminos.maths.matrix.Matrix4f;
-import tk.luminos.maths.vector.Vector2f;
-import tk.luminos.maths.vector.Vector3f;
-import tk.luminos.maths.vector.Vector4f;
+import tk.luminos.maths.Matrix4;
+import tk.luminos.maths.Vector2;
+import tk.luminos.maths.Vector3;
+import tk.luminos.maths.Vector4;
 
 /**
  * 
@@ -57,7 +57,7 @@ import tk.luminos.maths.vector.Vector4f;
  */
 public abstract class ShaderProgram {
 
-	private final int programID;
+	protected final int programID;
 	
 	public static final Integer SCENE_POINT_LIGHTS = 4;
 	public static final Integer SCENE_SPOT_LIGHTS = 4;
@@ -251,46 +251,6 @@ public abstract class ShaderProgram {
 	}
 	
 	/**
-	 * Sets uniform value from a {@link Uniform} object
-	 * 
-	 * @param uniform			Uniform to load to shader
-	 * @throws Exception		Thrown if the data type is not accepted
-	 */
-	public void setUniform(Uniform uniform) throws Exception {
-		if (uniform.getType().equals(Float.class)) {
-			Float f = (float) uniform.getValue();
-			setUniform(uniform.getLocation(), f);
-		}
-		else if (uniform.getType().equals(Integer.class)) {
-			Integer f = (Integer) uniform.getValue();
-			setUniform(uniform.getLocation(), f);
-		}
-		else if (uniform.getType().equals(Vector2f.class)) {
-			Vector2f f = (Vector2f) uniform.getValue();
-			setUniform(uniform.getLocation(), f);
-		}
-		else if (uniform.getType().equals(Vector3f.class)) {
-			Vector3f f = (Vector3f) uniform.getValue();
-			setUniform(uniform.getLocation(), f);
-		}
-		else if (uniform.getType().equals(Vector4f.class)) {
-			Vector4f f = (Vector4f) uniform.getValue();
-			setUniform(uniform.getLocation(), f);
-		}
-		else if (uniform.getType().equals(Matrix4f.class)) {
-			Matrix4f f = (Matrix4f) uniform.getValue();
-			setUniform(uniform.getLocation(), f);
-		}
-		else if (uniform.getType().equals(Boolean.class)) {
-			Boolean f = (Boolean) uniform.getValue();
-			setUniform(uniform.getLocation(), f);
-		}
-		else {
-			throw new Exception("Data Type Not Accepted");
-		}
-	}
-	
-	/**
 	 * Loads float to shader
 	 * 
 	 * @param location	Location of variable to be bound
@@ -336,7 +296,7 @@ public abstract class ShaderProgram {
 	 * @param location	Location of variable to be bound
 	 * @param vector	Value of variable to be bound
 	 */
-	public void setUniform(int location, Vector3f vector){
+	public void setUniform(int location, Vector3 vector){
 		glUniform3f(location,vector.x,vector.y,vector.z);
 	}
 	
@@ -346,7 +306,7 @@ public abstract class ShaderProgram {
 	 * @param name		Name of variable to be bound
 	 * @param value		Value of variable to be bound
 	 */
-	public void setUniform(String name, Vector3f value) {
+	public void setUniform(String name, Vector3 value) {
 		setUniform(getLocation(name), value);
 	}
 
@@ -356,7 +316,7 @@ public abstract class ShaderProgram {
 	 * @param location	Location of variable to be bound
 	 * @param vector	Value of variable to be bound
 	 */
-	public void setUniform(int location, Vector4f vector){
+	public void setUniform(int location, Vector4 vector){
 		glUniform4f(location, vector.x, vector.y, vector.z, vector.w);
 	}
 	
@@ -366,7 +326,7 @@ public abstract class ShaderProgram {
 	 * @param name		Name of variable to be bound
 	 * @param value	Value of variable to be bound
 	 */
-	public void setUniform(String name, Vector4f value) {
+	public void setUniform(String name, Vector4 value) {
 		setUniform(getLocation(name), value);
 	}
 
@@ -376,7 +336,7 @@ public abstract class ShaderProgram {
 	 * @param location	Location of variable to be bound
 	 * @param vector	Value of variable to be bound
 	 */
-	public void setUniform(int location, Vector2f vector){
+	public void setUniform(int location, Vector2 vector){
 		glUniform2f(location,vector.x,vector.y);
 	}
 	
@@ -386,7 +346,7 @@ public abstract class ShaderProgram {
 	 * @param name		Name of variable to be bound
 	 * @param value		Value of variable to be bound
 	 */
-	public void setUniform(String name, Vector2f value) {
+	public void setUniform(String name, Vector2 value) {
 		setUniform(getLocation(name), value);
 	}
 
@@ -428,9 +388,9 @@ public abstract class ShaderProgram {
 				setUniform(getLocation(name + "[" + i + "].attenuation"), lights.get(i).getAttenuation());
 			}
 			else {
-				setUniform(getLocation(name + "[" + i + "].color"), new Vector3f(0, 0, 0));
-				setUniform(getLocation(name + "[" + i + "].position"), new Vector3f(0, 0, 0));
-				setUniform(getLocation(name + "[" + i + "].attenuation"), new Vector3f(1, 0, 0));
+				setUniform(getLocation(name + "[" + i + "].color"), new Vector3(0, 0, 0));
+				setUniform(getLocation(name + "[" + i + "].position"), new Vector3(0, 0, 0));
+				setUniform(getLocation(name + "[" + i + "].attenuation"), new Vector3(1, 0, 0));
 			}
 		}
 	}
@@ -477,7 +437,7 @@ public abstract class ShaderProgram {
 	 * @param name			Name of variable to be bound
 	 * @param value			Value of variable to be bound
 	 */
-	public void setUniform(String name, Matrix4f value) {
+	public void setUniform(String name, Matrix4 value) {
 		setUniform(getLocation(name), value);
 	}
 
@@ -487,7 +447,7 @@ public abstract class ShaderProgram {
 	 * @param location	Location of variable to be bound
 	 * @param matrix	Value of variable to be bound
 	 */
-	public void setUniform(int location, Matrix4f matrix){
+	public void setUniform(int location, Matrix4 matrix){
 		matrix.store(matrixBuffer);
 		matrixBuffer.flip();
 		glUniformMatrix4fv(location, false, matrixBuffer);

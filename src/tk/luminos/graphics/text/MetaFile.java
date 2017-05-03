@@ -1,8 +1,5 @@
 package tk.luminos.graphics.text;
 
-import static tk.luminos.ConfigData.HEIGHT;
-import static tk.luminos.ConfigData.WIDTH;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -10,6 +7,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import tk.luminos.Application;
 import tk.luminos.Debug;
 
 /**
@@ -53,7 +51,7 @@ public class MetaFile {
      * @param file		File to be loaded
      */
     protected MetaFile(File file) {
-        this.aspectRatio = (double) WIDTH / (double) HEIGHT;
+        this.aspectRatio = (double) Application.getValue("WIDTH") / (double) Application.getValue("HEIGHT");
         openFile(file);
         loadPaddingData();
         loadLineSizes();

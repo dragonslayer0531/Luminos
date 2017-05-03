@@ -1,5 +1,11 @@
 package tk.luminos.graphics.shaders;
 
+/**
+ * Enumerates OpenGL versions
+ * 
+ * @author Nick Clark
+ * @version 1.0
+ */
 public enum GLSLVersion {
 	
 	VERSION110("#version 110"),
@@ -16,6 +22,7 @@ public enum GLSLVersion {
 	VERSION450("#version 450");
 	
 	private String name;
+	
 	private GLSLVersion(String name) {
 		this.name = name;
 	}

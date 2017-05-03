@@ -1,7 +1,7 @@
 package tk.luminos.graphics;
 
-import tk.luminos.maths.vector.Vector;
-import tk.luminos.maths.vector.Vector3f;
+import tk.luminos.maths.Vector;
+import tk.luminos.maths.Vector3;
 
 /**
  * 
@@ -13,8 +13,8 @@ import tk.luminos.maths.vector.Vector3f;
  */
 public class PointLight implements Light {
 	
-	private Vector3f position;
-	private Vector3f color;
+	private Vector3 position;
+	private Vector3 color;
 	private Attenuation attenuation;
 	private String id;
 	
@@ -24,7 +24,7 @@ public class PointLight implements Light {
 	 * @param position		Initial position of the light
 	 * @param color			Initial color of the light
 	 */
-	public PointLight(Vector3f position, Vector3f color) {
+	public PointLight(Vector3 position, Vector3 color) {
 		this.position = position;
 		this.color = color;
 		this.attenuation = new Attenuation();
@@ -38,7 +38,7 @@ public class PointLight implements Light {
 	 * @param color			Initial color of the light
 	 * @param attenuation	Initial attenuation of the light
 	 */
-	public PointLight(Vector3f position, Vector3f color, Attenuation attenuation) {
+	public PointLight(Vector3 position, Vector3 color, Attenuation attenuation) {
 		this.position = position;
 		this.color = color;
 		this.attenuation = attenuation;
@@ -51,7 +51,7 @@ public class PointLight implements Light {
 	 * @param delta		amount to increase
 	 */
 	public void increasePosition(Vector delta) {
-		Vector3f d = (Vector3f) delta;
+		Vector3 d = (Vector3) delta;
 		position.x += d.x;
 		position.y += d.y;
 		position.z += d.z;
@@ -62,7 +62,7 @@ public class PointLight implements Light {
 	 * 
 	 * @return Attenuation of light 
 	 */
-	public Vector3f getAttenuation(){
+	public Vector3 getAttenuation(){
 		return attenuation.getAttenuation();
 	}
 
@@ -71,7 +71,7 @@ public class PointLight implements Light {
 	 * 
 	 * @return Position of light
 	 */
-	public Vector3f getPosition() {
+	public Vector3 getPosition() {
 		return position;
 	}
 
@@ -80,7 +80,7 @@ public class PointLight implements Light {
 	 * 
 	 * @return Color of light
 	 */
-	public Vector3f getColor() {
+	public Vector3 getColor() {
 		return color;
 	}
 	
