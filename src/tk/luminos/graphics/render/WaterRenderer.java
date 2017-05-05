@@ -201,6 +201,13 @@ public class WaterRenderer {
 		this.reflectivity = reflectivity;
 	}
 	
+	/**
+	 * Disposes of resources held by the WaterRenderer
+	 */
+	public void dispose() {
+		shader.dispose();
+	}
+	
 //**************************************Private Methods********************************************//	
 
 	/**

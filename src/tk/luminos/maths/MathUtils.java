@@ -348,5 +348,17 @@ public class MathUtils {
 		}
 		return max;
 	}
+	
+	/**
+	 * Checks if object is within distance
+	 * 
+	 * @param object		location to check
+	 * @param focal			focal location
+	 * @param distance		maximum distance
+	 * @return if object is within distance
+	 */
+	public static boolean withinDistance(Vector3 object, Vector3 focal, float distance) {
+		return (object.x * focal.x + object.y + focal.y + object.z + focal.z) < distance * distance;
+	}
 
 }

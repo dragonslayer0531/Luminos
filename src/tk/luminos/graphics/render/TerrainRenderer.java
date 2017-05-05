@@ -117,8 +117,8 @@ public class TerrainRenderer {
 		this.gradient = gradient;
 	}
 	
-	public void cleanUp() {
-		shader.cleanUp();
+	public void dispose() {
+		shader.dispose();
 	}
 
 //**********************************Private Methods*****************************************//	

@@ -83,8 +83,8 @@ public class ShadowMapMasterRenderer {
     /**
      * Cleans up shader and fbo
      */
-    public void cleanUp() {
-        shader.cleanUp();
+    public void dispose() {
+        shader.dispose();
         shadowFbo.cleanUp();
     }
     

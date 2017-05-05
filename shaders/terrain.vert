@@ -8,7 +8,6 @@ out vec3 toLightVector[_MAX_LIGHTS_];
 out vec3 toCameraVector;
 out float visibility;
 out vec4 shadowCoords;
-out mat4 pass_iMVP;
 out vec4 pass_Position;
 out PointLight pass_PointLights[_MAX_LIGHTS_];
 
@@ -34,9 +33,7 @@ void main(void){
 	vec4 positionRelativeToCam = viewMatrix * worldPosition;
 	gl_Position = projectionMatrix * positionRelativeToCam;
 	pass_Position = gl_Position;
-	
-	pass_iMVP = inverse(projectionMatrix * viewMatrix * transformationMatrix);
-	
+		
 	pass_textureCoordinates = textureCoordinates;
 	
 	surfaceNormal = (transformationMatrix * vec4(normal,0.0)).xyz;

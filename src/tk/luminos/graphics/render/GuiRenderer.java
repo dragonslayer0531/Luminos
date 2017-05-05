@@ -84,7 +84,7 @@ public class GuiRenderer {
 	/**
 	 * Cleans up shader
 	 */
-	public void cleanUp(){
-		shader.cleanUp();
+	public void dispose(){
+		shader.dispose();
 	}
 }

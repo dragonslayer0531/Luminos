@@ -168,6 +168,13 @@ public class SkyboxRenderer {
 		this.upperLimit = upperLimit;
 	}
 	
+	/**
+	 * Disposes of resources held by SkyboxRenderer
+	 */
+	public void dispose() {
+		shader.dispose();
+	}
+	
 //**************************************Private Methods************************************//	
 
 	/**

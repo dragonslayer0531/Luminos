@@ -117,8 +117,8 @@ public class GameObjectRenderer {
 	/**
 	 * Cleans up shader program
 	 */
-	public void cleanUp() {
-		shader.cleanUp();
+	public void dispose() {
+		shader.dispose();
 	}
 	
 //***********************************Private Methods*********************************//	

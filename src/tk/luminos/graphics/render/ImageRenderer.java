@@ -69,8 +69,8 @@ public class ImageRenderer {
 	/**
 	 * Cleans up {@link ImageShader} program
 	 */
-	public void cleanUp() {
-		shader.cleanUp();
+	public void dispose() {
+		shader.dispose();
 	}
 
 }

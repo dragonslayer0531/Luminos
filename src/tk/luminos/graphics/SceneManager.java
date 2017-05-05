@@ -85,8 +85,8 @@ public class SceneManager {
 	 * Disposes of manager
 	 */
 	public void dispose() {
-		masterRenderer.cleanUp();
-		postProcessRenderer.cleanUp();
+		masterRenderer.dispose();
+		postProcessRenderer.dispose();
 		input.cleanUp();
 		output.cleanUp();
 	}

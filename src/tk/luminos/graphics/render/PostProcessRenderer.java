@@ -63,7 +63,7 @@ public class PostProcessRenderer {
 	 * @param process		{@link PostProcess} to remove from pipeline
 	 */
 	public void removeShader(PostProcess process) {
-		process.cleanUp();
+		process.dispose();
 		processes.remove(process);
 	}
 	
@@ -92,8 +92,8 @@ public class PostProcessRenderer {
 	/**
 	 * Cleans up all post processing shaders
 	 */
-	public void cleanUp() {
-		for(PostProcess shader : processes) shader.cleanUp();
+	public void dispose() {
+		for(PostProcess shader : processes) shader.dispose();
 	}
 	
 	/**

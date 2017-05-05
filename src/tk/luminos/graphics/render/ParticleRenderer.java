@@ -113,8 +113,8 @@ public class ParticleRenderer {
 	/**
 	 * Cleans up shader
 	 */
-	public void cleanUp() {
-		shader.cleanUp();
+	public void dispose() {
+		shader.dispose();
 	}
 	
 //*******************************Private Methods*****************************************//

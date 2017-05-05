@@ -414,13 +414,15 @@ public class MasterRenderer {
 	/**
 	 * Cleans up all shaders used
 	 */
-	public void cleanUp(){
-		gameObjectRenderer.cleanUp();
-		guiRenderer.cleanUp();
-		normalMapRenderer.cleanUp();
-		shadowRenderer.cleanUp();
-		terrainRenderer.cleanUp();
-		textRenderer.cleanUp();
+	public void dispose(){
+		gameObjectRenderer.dispose();
+		guiRenderer.dispose();
+		normalMapRenderer.dispose();
+		shadowRenderer.dispose();
+		skyboxRenderer.dispose();
+		terrainRenderer.dispose();
+		textRenderer.dispose();
+		waterRenderer.dispose();
 	}
 
 	/**

@@ -24,6 +24,6 @@ public interface PostProcess {
 	/**
 	 * Cleans up the shader.  This method should be the same as in the ShaderProgram
 	 */
-	public void cleanUp();
+	public void dispose();
 
 }

@@ -258,7 +258,7 @@ public class Window {
 		List<GUITexture> textures = new ArrayList<GUITexture>();
 		textures.add(logo);
 		gr.render(textures);
-		gr.cleanUp();
+		gr.dispose();
 		textures.clear();
 		glfwSwapBuffers(window);
 		

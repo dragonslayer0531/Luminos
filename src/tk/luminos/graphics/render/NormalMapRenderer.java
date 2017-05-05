@@ -73,8 +73,8 @@ public class NormalMapRenderer {
     /**
      * Cleans up the shader
      */
-    public void cleanUp(){
-        shader.cleanUp();
+    public void dispose(){
+        shader.dispose();
     }
  
     private void prepareTexturedModel(TexturedModel model) {

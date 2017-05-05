@@ -5,7 +5,6 @@ in vec3 surfaceNormal;
 in vec3 toCameraVector;
 in vec3 toLightVector[_MAX_LIGHTS_];
 in vec4 shadowCoords;
-in mat4 pass_iMVP;
 in vec4 pass_Position;
 
 out vec4 out_Color;
@@ -27,12 +26,7 @@ uniform int useWater;
 uniform int pcfCount;
 float totalTexels = (pcfCount * 2.0 + 1.0) * (pcfCount * 2.0 + 1.0);
 
-void main(void){
-
-	if ((pass_iMVP * pass_Position).y > 0) {
-		out_Color.a = useWater;
-		discard;
-	}
+void main(void) {
 	
 	float total = 0.0;
 	
@@ -95,4 +89,8 @@ void main(void){
 
 	out_Color =  vec4(totalDiffuse,1.0) * totalColor + vec4(totalSpecular,1.0);
 	out_Color = mix(vec4(skyColor,1.0),out_Color, visibility);
+	
+	if (useWater == 0 && (pass_Position).y > 0) {
+		out_Color.a = 0;
+	}
 }

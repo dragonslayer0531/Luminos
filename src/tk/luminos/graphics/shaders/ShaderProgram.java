@@ -230,7 +230,7 @@ public abstract class ShaderProgram {
 	/**
 	 * Cleans shader up
 	 */
-	public void cleanUp(){
+	public void dispose(){
 		stop();
 		glDeleteProgram(programID);
 	}
