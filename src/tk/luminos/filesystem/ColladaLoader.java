@@ -8,14 +8,32 @@ import org.lwjgl.BufferUtils;
 
 import tk.luminos.filesystem.xml.XMLNode;
 import tk.luminos.filesystem.xml.XMLParser;
-import tk.luminos.tools.File;
-import tk.luminos.tools.maths.matrix.Matrix4f;
-import tk.luminos.tools.maths.vector.Vector2f;
-import tk.luminos.tools.maths.vector.Vector3f;
-import tk.luminos.tools.maths.vector.Vector4f;
+import tk.luminos.maths.Matrix4;
+import tk.luminos.maths.Vector2;
+import tk.luminos.maths.Vector3;
+import tk.luminos.maths.Vector4;
+import tk.luminos.utilities.File;
+
+/**
+ * 
+ * Loads Collada (DAE) files to the engine for usage.  It loads the 
+ * controllers, visual scenes, animation, and geometry libraries.
+ * 
+ * @author Nick Clark
+ * @version 1.0
+ *
+ */
 
 public class ColladaLoader {
 	
+	/**
+	 * Loads the controllers, scene, and geometry to a AnimatedModelData
+	 * 
+	 * @param file			File to load animation from
+	 * @param maxWeights	Maximum weight of the vertices
+	 * @return				Model data containing the joints and mesh data
+	 * @throws Exception	Thrown if file cannot be found
+	 */
 	public static AnimatedModelData loadColladaModel(File file, int maxWeights) throws Exception {
 		XMLNode node = XMLParser.loadXMLFile(file);
 		SkinLoader skinLoader = new SkinLoader(node.getChild("library_controllers"), maxWeights);
@@ -30,7 +48,14 @@ public class ColladaLoader {
 		return new AnimatedModelData(jointsData, meshData);
 	}
 	
-	public static AnimationData loadColladaAnimation(File colladaFile) throws Exception{
+	/**
+	 * Loads the collada animation to an AnimationData object
+	 * 
+	 * @param colladaFile		File to be loaded
+	 * @return					Data containing information on animation	
+	 * @throws Exception		Thrown if file cannot be found
+	 */
+	public static AnimationData loadColladaAnimation(File colladaFile) throws Exception {
 		XMLNode node = XMLParser.loadXMLFile(colladaFile);
 		AnimationLoader a = new AnimationLoader(node.getChild("library_animations"));
 		AnimationData animData = a.extractAnimation();
@@ -104,9 +129,9 @@ class AnimationLoader {
 			buffer.clear();
 			buffer.put(matrixData);
 			buffer.flip();
-			Matrix4f transform = new Matrix4f();
+			Matrix4 transform = new Matrix4();
 			transform.load(buffer);
-			transform = Matrix4f.transpose(transform, null);
+			transform = Matrix4.transpose(transform, null);
 			keyFrames[i].addJointTransform(new JointTransformData(jointName, transform));
 		}
 	}
@@ -156,11 +181,11 @@ class GeometryLoader {
 	private float[] weightArray;
 	
 	List<Vertex> vertices = new ArrayList<Vertex>();
-	List<Vector2f> textures = new ArrayList<Vector2f>();
-	List<Vector3f> normals = new ArrayList<Vector3f>();
+	List<Vector2> textures = new ArrayList<Vector2>();
+	List<Vector3> normals = new ArrayList<Vector3>();
 	List<Integer> indices = new ArrayList<Integer>();
 	
-	private Matrix4f correction = Matrix4f.rotate((float) Math.toRadians(-90), new Vector3f(1, 0, 0), new Matrix4f(), null);
+	private Matrix4 correction = Matrix4.rotate((float) Math.toRadians(-90), new Vector3(1, 0, 0), new Matrix4(), null);
 	
 	public GeometryLoader(XMLNode geometryNode, List<VertexSkinData> vertexWeights) {
 		this.vertexWeights = vertexWeights;
@@ -199,9 +224,9 @@ class GeometryLoader {
 			float x = Float.parseFloat(posData[i * 3]);
 			float y = Float.parseFloat(posData[i * 3 + 1]);
 			float z = Float.parseFloat(posData[i * 3 + 2]);
-			Vector4f position = new Vector4f(x, y, z, 1);
-			Matrix4f.transform(correction,  position,  position);
-			vertices.add(new Vertex(vertices.size(), new Vector3f(position.x, position.y, position.z), vertexWeights.get(vertices.size())));
+			Vector4 position = new Vector4(x, y, z, 1);
+			Matrix4.transform(correction,  position,  position);
+			vertices.add(new Vertex(vertices.size(), new Vector3(position.x, position.y, position.z), vertexWeights.get(vertices.size())));
 		}
 	}
 	
@@ -215,9 +240,9 @@ class GeometryLoader {
 			float x = Float.parseFloat(normData[i * 3]);
 			float y = Float.parseFloat(normData[i * 3 + 1]);
 			float z = Float.parseFloat(normData[i * 3 + 2]);
-			Vector4f norm = new Vector4f(x, y, z, 0f);
-			Matrix4f.transform(correction, norm, norm);
-			normals.add(new Vector3f(norm.x, norm.y, norm.z));
+			Vector4 norm = new Vector4(x, y, z, 0f);
+			Matrix4.transform(correction, norm, norm);
+			normals.add(new Vector3(norm.x, norm.y, norm.z));
 		}
 	}
 	
@@ -230,7 +255,7 @@ class GeometryLoader {
 		for (int i = 0; i < count/2; i++) {
 			float s = Float.parseFloat(texData[i * 2]);
 			float t = Float.parseFloat(texData[i * 2 + 1]);
-			textures.add(new Vector2f(s, t));
+			textures.add(new Vector2(s, t));
 		}
 	}
 	
@@ -274,9 +299,9 @@ class GeometryLoader {
 			if (currentVertex.getLength() > furthestPoint) {
 				furthestPoint = currentVertex.getLength();
 			}
-			Vector3f position = currentVertex.getPosition();
-			Vector2f textureCoord = textures.get(currentVertex.getTextureIndex());
-			Vector3f normalVector = normals.get(currentVertex.getNormalIndex());
+			Vector3 position = currentVertex.getPosition();
+			Vector2 textureCoord = textures.get(currentVertex.getTextureIndex());
+			Vector3 normalVector = normals.get(currentVertex.getNormalIndex());
 			verticesArray[i * 3] = position.x;
 			verticesArray[i * 3 + 1] = position.y;
 			verticesArray[i * 3 + 2] = position.z;
@@ -344,18 +369,18 @@ class Vertex {
 	
 	private static final int NO_INDEX = -1;
 	
-	private Vector3f position;
+	private Vector3 position;
 	private int textureIndex = NO_INDEX;
 	private int normalIndex = NO_INDEX;
 	private Vertex duplicateVertex = null;
 	private int index;
 	private float length;
-	private List<Vector3f> tangents = new ArrayList<Vector3f>();
-	private Vector3f averagedTangent = new Vector3f(0, 0, 0);
+	private List<Vector3> tangents = new ArrayList<Vector3>();
+	private Vector3 averagedTangent = new Vector3(0, 0, 0);
 	
 	private VertexSkinData weightsData;
 	
-	public Vertex(int index,Vector3f position, VertexSkinData weightsData) {
+	public Vertex(int index,Vector3 position, VertexSkinData weightsData) {
 		this.index = index;
 		this.weightsData = weightsData;
 		this.position = position;
@@ -366,19 +391,19 @@ class Vertex {
 		return weightsData;
 	}
 	
-	public void addTangent(Vector3f tangent) {
+	public void addTangent(Vector3 tangent) {
 		tangents.add(tangent);
 	}
 	
 	public void averageTangents() {
 		if (tangents.isEmpty())
 			return;
-		for (Vector3f tangent : tangents)
-			Vector3f.add(averagedTangent, tangent, averagedTangent);
+		for (Vector3 tangent : tangents)
+			Vector3.add(averagedTangent, tangent, averagedTangent);
 		averagedTangent.normalize();
 	}
 	
-	public Vector3f getAverageTangent() {
+	public Vector3 getAverageTangent() {
 		return averagedTangent;
 	}
 	
@@ -406,7 +431,7 @@ class Vertex {
 		this.normalIndex = normalIndex;
 	}
 
-	public Vector3f getPosition() {
+	public Vector3 getPosition() {
 		return position;
 	}
 
@@ -490,9 +515,9 @@ class VertexSkinData {
 class JointTransformData {
 
 	public final String jointNameId;
-	public final Matrix4f jointLocalTransform;
+	public final Matrix4 jointLocalTransform;
 	
-	protected JointTransformData(String jointNameId, Matrix4f jointLocalTransform) {
+	protected JointTransformData(String jointNameId, Matrix4 jointLocalTransform) {
 		this.jointNameId = jointNameId;
 		this.jointLocalTransform = jointLocalTransform;
 	}
@@ -529,9 +554,9 @@ class JointsLoader {
 		String nameId = jointNode.getAttribute("id");
 		int index = boneOrder.indexOf(nameId);
 		String[] matrixData = jointNode.getChild("matrix").getData().split(" ");
-		Matrix4f matrix = new Matrix4f();
+		Matrix4 matrix = new Matrix4();
 		matrix.load(convertData(matrixData));
-		Matrix4f.transpose(matrix, matrix);
+		Matrix4.transpose(matrix, matrix);
 		jointCount++;
 		return new JointData(index, nameId, matrix);
 	}
@@ -565,11 +590,11 @@ class JointData {
 	
 	public final int index;
 	public final String name;
-	public final Matrix4f bindLocalTransform;
+	public final Matrix4 bindLocalTransform;
 	
 	public final List<JointData> children = new ArrayList<JointData>();
 	
-	public JointData(int index, String name, Matrix4f bindLocalTransform) {
+	public JointData(int index, String name, Matrix4 bindLocalTransform) {
 		this.index = index;
 		this.name = name;
 		this.bindLocalTransform = bindLocalTransform;

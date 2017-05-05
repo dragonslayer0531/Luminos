@@ -1,7 +1,7 @@
 package tk.luminos.graphics.text;
 
-import tk.luminos.tools.maths.vector.Vector2f;
-import tk.luminos.tools.maths.vector.Vector3f;
+import tk.luminos.maths.Vector2;
+import tk.luminos.maths.Vector3;
 
 /**
  * 
@@ -19,9 +19,9 @@ public class GUIText {
  
     private int textMeshVao;
     private int vertexCount;
-    private Vector3f colour = new Vector3f(1f, 1f, 1f);
+    private Vector3 colour = new Vector3(1f, 1f, 1f);
  
-    private Vector2f position;
+    private Vector2 position;
     private float lineMaxSize;
     private int numberOfLines;
  
@@ -39,7 +39,7 @@ public class GUIText {
      * @param maxLineLength		Maximum length of line (Screen Space)
      * @param centered			Centered on screen
      */
-    public GUIText(String text, float fontSize, FontType font, Vector2f position, float maxLineLength, boolean centered) {
+    public GUIText(String text, float fontSize, FontType font, Vector2 position, float maxLineLength, boolean centered) {
         this.textString = text;
         this.fontSize = fontSize;
         this.font = font;
@@ -75,7 +75,7 @@ public class GUIText {
      * 
      * @return Text color
      */
-    public Vector3f getColor() {
+    public Vector3 getColor() {
         return colour;
     }
  
@@ -93,7 +93,7 @@ public class GUIText {
      * 
      * @return Screen position (top left corner)
      */
-    public Vector2f getPosition() {
+    public Vector2 getPosition() {
         return position;
     }
  

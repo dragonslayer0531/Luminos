@@ -15,14 +15,14 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import java.util.List;
 import java.util.Map;
 
-import tk.luminos.graphics.gameobjects.GameObject;
+import tk.luminos.gameobjects.GameObject;
+import tk.luminos.graphics.Material;
 import tk.luminos.graphics.models.RawModel;
 import tk.luminos.graphics.models.TexturedModel;
 import tk.luminos.graphics.shaders.NormalMapShader;
-import tk.luminos.graphics.textures.Material;
-import tk.luminos.tools.Maths;
-import tk.luminos.tools.maths.matrix.Matrix4f;
-import tk.luminos.tools.maths.vector.Vector2f;
+import tk.luminos.maths.MathUtils;
+import tk.luminos.maths.Matrix4;
+import tk.luminos.maths.Vector2;
 
 /**
  * 
@@ -43,7 +43,7 @@ public class NormalMapRenderer {
 	 * @param nms					Shader to use
 	 * @param projectionMatrix		Projection matrix to use
 	 */
-    public NormalMapRenderer(NormalMapShader nms, Matrix4f projectionMatrix) {
+    public NormalMapRenderer(NormalMapShader nms, Matrix4 projectionMatrix) {
         this.shader = nms;
         shader.start();
         shader.setUniform("projectionMatrix", projectionMatrix);
@@ -73,8 +73,8 @@ public class NormalMapRenderer {
     /**
      * Cleans up the shader
      */
-    public void cleanUp(){
-        shader.cleanUp();
+    public void dispose(){
+        shader.dispose();
     }
  
     private void prepareTexturedModel(TexturedModel model) {
@@ -107,9 +107,9 @@ public class NormalMapRenderer {
     }
  
     private void prepareInstance(GameObject entity) {
-        Matrix4f transformationMatrix = Maths.createTransformationMatrix(entity.getPosition(), entity.getRotation(), entity.getScale());
+        Matrix4 transformationMatrix = MathUtils.createTransformationMatrix(entity.getPosition(), entity.getRotation(), entity.getScale());
         shader.setUniform("transformationMatrix", transformationMatrix);
-        shader.setUniform("offset", new Vector2f(0, 0));
+        shader.setUniform("offset", new Vector2(0, 0));
     }
 	
 }

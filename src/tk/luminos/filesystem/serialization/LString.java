@@ -17,8 +17,8 @@ import static tk.luminos.filesystem.serialization.SerializationUtils.writeBytes;
 
 public class LString extends LBase {
 	
-	public static final byte CONTAINER_TYPE = ContainerType.STRING;
-	public int count;
+	protected static final byte CONTAINER_TYPE = ContainerType.STRING;
+	protected int count;
 	private char[] characters;
 	
 	/**

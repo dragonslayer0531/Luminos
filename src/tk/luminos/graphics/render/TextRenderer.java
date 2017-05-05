@@ -72,8 +72,8 @@ public class TextRenderer {
 	/**
 	 * Cleans up shader
 	 */
-	public void cleanUp() {
-		shader.cleanUp();
+	public void dispose() {
+		shader.dispose();
 	}
 	
 	/**

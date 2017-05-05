@@ -45,6 +45,14 @@ public class ModelLoader {
 		return new RawModel(vaoID, positions.length / dimensions);
 	}
 	
+	protected RawModel loadToVAO(float[] positions, int[] elements) {
+		int vaoID = createVAO();
+		this.storeDataInAttributeList(0, 3, positions);
+		this.bindIndicesBuffer(elements);
+		this.unbindVAO();
+		return new RawModel(vaoID, positions.length / 3);
+	}
+	
 	/**
 	 * Loads positions and texture coordinates to the graphics card
 	 * 

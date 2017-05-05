@@ -1,9 +1,5 @@
 package tk.luminos.graphics.shaders;
 
-import static tk.luminos.ConfigData.POSITION;
-import static tk.luminos.ConfigData.TEXTURES;
-
-
 /**
  * 
  * Text Shader for Text Renderer
@@ -19,7 +15,8 @@ public class TextShader extends ShaderProgram {
 	
 	/**
 	 * Constructor
-	 * @throws Exception 
+	 * @throws Exception 		Thrown if shader file cannot be found, compiled, validated
+	 * 							or linked
 	 */
 	public TextShader() throws Exception {
 		super(VERT, FRAG);
@@ -29,7 +26,7 @@ public class TextShader extends ShaderProgram {
 	 * (non-Javadoc)
 	 * @see graphics.shaders.ShaderProgram#getAllUniformLocations()
 	 */
-	public void getAllUniformLocations() {
+	public void getAllUniformLocations() throws Exception {
 		createUniform("color");
 		createUniform("translation");
 		createUniform("font");
@@ -40,8 +37,7 @@ public class TextShader extends ShaderProgram {
 	 * @see graphics.shaders.ShaderProgram#bindAttributes()
 	 */
 	public void bindAttributes() {
-		super.bindAttribute(POSITION, "position");
-		super.bindAttribute(TEXTURES, "textureCoords");
+
 	}
 
 }

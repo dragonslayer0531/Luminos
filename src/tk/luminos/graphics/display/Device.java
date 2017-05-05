@@ -4,7 +4,17 @@ import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 
-import tk.luminos.tools.maths.vector.Vector2f;
+import tk.luminos.maths.Vector2;
+
+/**
+ * 
+ * Gathers data on the defined input device, such as
+ * refresh rate, bit depth, and dimensions
+ * 
+ * @author Nick Clark
+ * @version 1.0
+ *
+ */
 
 public class Device {
 	
@@ -14,12 +24,23 @@ public class Device {
 	private int refreshRate;
 	private int bitDepth;
 	private int colors;
-	private Vector2f dimensions;
+	private Vector2 dimensions;
 	
+	/**
+	 * Initializes the default device
+	 * 
+	 * @throws Exception		Thrown when device is unknown
+	 */
 	public Device() throws Exception {
 		init(-1);
 	}
 	
+	/**
+	 * Initializes to a specified device
+	 * 
+	 * @param deviceID			ID number of the device
+	 * @throws Exception		Thrown when device is unknown
+	 */
 	public Device(int deviceID) throws Exception {
 		init(deviceID);
 	}
@@ -39,25 +60,50 @@ public class Device {
 		refreshRate = mode.getRefreshRate();
 		bitDepth = mode.getBitDepth();
 		colors = (int) Math.pow(2, bitDepth);
-		dimensions = new Vector2f(mode.getWidth(), mode.getHeight());
+		dimensions = new Vector2(mode.getWidth(), mode.getHeight());
 	}
 
+	/**
+	 * Gets the refresh rate of the current device
+	 * 
+	 * @return		Refresh rate of current device
+	 */
 	public int getRefreshRate() {
 		return refreshRate;
 	}
 
+	/**
+	 * Gets the bit depth of the current deivce
+	 * 
+	 * @return		Bit depth of current device
+	 */
 	public int getBitDepth() {
 		return bitDepth;
 	}
 
+	/**
+	 * Gets the color range of the current device
+	 * 
+	 * @return		Color range of current device
+	 */
 	public int getColors() {
 		return colors;
 	}
 
-	public Vector2f getDimensions() {
+	/**
+	 * Gets the dimensions of the current device
+	 * 
+	 * @return		Dimensions of current device
+	 */
+	public Vector2 getDimensions() {
 		return dimensions;
 	}
 	
+	/**
+	 * Creates string of data representing the device
+	 * 
+	 * @return 		Data about device
+	 */
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();

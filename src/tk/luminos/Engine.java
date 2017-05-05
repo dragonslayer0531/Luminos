@@ -3,12 +3,14 @@ package tk.luminos;
 import org.lwjgl.system.Callback;
 import org.lwjgl.system.Configuration;
 
-import tk.luminos.graphics.display.Window;
+import tk.luminos.display.Window;
+import tk.luminos.graphics.RenderEngine;
+import tk.luminos.graphics.SceneManager;
 import tk.luminos.graphics.render.MasterRenderer;
 import tk.luminos.graphics.shaders.GLSLVersion;
 import tk.luminos.loaders.Loader;
-import tk.luminos.tools.SceneManager;
-import tk.luminos.tools.Timer;
+import tk.luminos.physics.PhysicsEngine;
+import tk.luminos.utilities.Timer;
 
 /**
  * 
@@ -18,27 +20,33 @@ import tk.luminos.tools.Timer;
  * @version 1.0
  *
  */
-
 public class Engine {
 	
-	private SceneManager manager;
-	private Timer timer = new Timer();
-	private float elapsedTime;
-	private float accumulator = 0f;
-	private float interval = 1f / ConfigData.UPS;
-	private Callback glErrorCallback;
+	private static Timer timer = new Timer();
+	private static Callback glErrorCallback;	
+	private static RenderEngine renderEngine;
+	private static PhysicsEngine physicsEngine;
+	private static Window window;
 	
-	public static final GLSLVersion GLSL_VERSION = GLSLVersion.VERSION400;
+	/**
+	 * Current version of GLSL used by the engine.
+	 */
+	public static final GLSLVersion GLSL_VERSION = GLSLVersion.VERSION330;
 	
+	/**
+	 * Current error stream of luminos engine
+	 */
+	public static final Stream ERROR_STREAM = new Stream();
+
 	/**
 	 * Creates a new Engine
 	 * 
 	 * @param masterRenderer	Wraps all required renderers
 	 * @param loader			Loads the required objects to the GPU
-	 * @throws Exception 
+	 * @throws Exception 		Thrown if shader programs do not compile properly
 	 */
-	public Engine(MasterRenderer masterRenderer, Loader loader) throws Exception {
-		this.manager = new SceneManager(masterRenderer, loader);
+	public static void createEngine(MasterRenderer masterRenderer, Loader loader) throws Exception {
+		renderEngine = new RenderEngine(new SceneManager(masterRenderer, loader));
 		Thread.currentThread().setName("LUMINOS_ENGINE:_GRAPHICS");
 	}
 	
@@ -47,10 +55,11 @@ public class Engine {
 	 * 
 	 * @param masterRenderer	Wraps all required renderers
 	 * @param loader			Loads the required objects to the GPU
-	 * @throws Exception 
+	 * @param glslVersion		Version of GLSL to use in shader programs
+	 * @throws Exception 		Thrown if shader programs do not compile properly
 	 */
-	public Engine(MasterRenderer masterRenderer, Loader loader, GLSLVersion glslVersion) throws Exception {
-		this.manager = new SceneManager(masterRenderer, loader);
+	public static void createEngine(MasterRenderer masterRenderer, Loader loader, GLSLVersion glslVersion) throws Exception {
+		renderEngine = new RenderEngine(new SceneManager(masterRenderer, loader));
 		Thread.currentThread().setName("LUMINOS_ENGINE:_GRAPHICS");
 	}
 	
@@ -59,45 +68,65 @@ public class Engine {
 	 * 
 	 * @param window		Window to open
 	 */
-	public void start(Window window) {
-		window.showWindow();
+	public static void start(Window window) {
+		Engine.window = window;
+		Engine.window.showWindow();
 		glErrorCallback = DebugUtil.setupDebugMessageCallback((source, type, id, severity, message) -> {
 			if (severity.equalsIgnoreCase("HIGH")) {
 				System.err.println(severity + "\n" + source + "\n" + type + "\n" + message);
 			}	
 		});
 		Configuration.DEBUG.set(true);
+		if (physicsEngine != null) {
+			if(System.getProperty("os.name").contains("mac")) {
+				physicsEngine.run();
+			}
+			else {
+				physicsEngine.start();
+			}
+		}
 	}
 	
 	/**
 	 * Renders GameLogic to the scene
 	 * 
-	 * @param logic						Logic to render
-	 * @param entity					Entity controlled by user
-	 * @param camera					Camera to render with
+	 * @param scene						Logic to render
 	 * @param window					Window to render to
-	 * @throws Exception 
+	 * @throws Exception 				Thrown if shader program cannot be created or other code fails
 	 */
-	public void render(Scene logic, Window window) throws Exception {
-		elapsedTime = timer.getElapsedTime();
-		accumulator += elapsedTime;
-		logic.input(window, logic.getFocalObject(), logic.getCamera());
-		while (accumulator >= interval) {
-			logic.update(interval);
-			accumulator -= interval;
-		}
-		logic.render(manager, logic.getCamera());
+	public static void update(Scene scene, Window window) throws Exception {
+		scene.input(window);
+		renderEngine.update(scene);
+		physicsEngine.update(scene);
 		window.update();
 		if (window.isVsync())
 			sync();
 	}
 	
-	public void close() {
+	/**
+	 * Closes engine
+	 * 
+	 * @throws Exception	thrown if error in joining threads
+	 */
+	public static void close() throws Exception {
+		if (physicsEngine != null) {
+			physicsEngine.join();
+		}
+		renderEngine.dispose();
+		renderEngine.join();
 		glErrorCallback.free();
-		manager.dispose();
 	}
 	
-	private void sync() throws InterruptedException {
+	/**
+	 * Adds physics engine to the engine context
+	 * 
+	 * @param engine	physics engine to add
+	 */
+	public static void addPhysicsEngine(PhysicsEngine engine) {
+		Engine.physicsEngine = engine;
+	}
+	
+	private static void sync() throws InterruptedException {
 		float loopSlot = 1f / Window.REFRESH_RATE;
 		double endTime = timer.getLastLoopTime() + loopSlot;
 		while (timer.getTime() < endTime) {

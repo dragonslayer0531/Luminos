@@ -8,6 +8,7 @@ out vec3 toLightVector[_MAX_LIGHTS_];
 out vec3 toCameraVector;
 out float visibility;
 out vec4 shadowCoords;
+out vec4 pass_Position;
 out PointLight pass_PointLights[_MAX_LIGHTS_];
 
 uniform mat4 transformationMatrix;
@@ -21,8 +22,8 @@ uniform mat4 toShadowMapSpace;
 uniform float density;
 uniform float gradient;
 
-const float shadowDistance = 100;
-const float transitionDistance = 30.0;
+uniform float shadowDistance;
+uniform float transitionDistance;
 
 void main(void){
 
@@ -31,12 +32,13 @@ void main(void){
 	
 	vec4 positionRelativeToCam = viewMatrix * worldPosition;
 	gl_Position = projectionMatrix * positionRelativeToCam;
+	pass_Position = gl_Position;
+		
 	pass_textureCoordinates = textureCoordinates;
 	
 	surfaceNormal = (transformationMatrix * vec4(normal,0.0)).xyz;
 	
 	for(int i = 0; i < _MAX_LIGHTS_; i++){
-//		toLightVector[i] = lightPosition[i] - worldPosition.xyz;
 		toLightVector[i] = pointLights[i].position - worldPosition.xyz;
 	}
 	
@@ -48,10 +50,11 @@ void main(void){
 	
 	distance = distance - (shadowDistance - transitionDistance);
 	distance = distance / transitionDistance;
-	shadowCoords.w = clamp(1-distance, 0, 1);
+	shadowCoords.w = clamp(1 - distance, 0, 1);
 	
 	for (int i = 0; i < _MAX_LIGHTS_; i++) {
-		pass_PointLights[i] = pointLights[i];
+		pass_PointLights[i].attenuation = pointLights[i].attenuation;
+		pass_PointLights[i].color = pointLights[i].color;
 	}
 
 }

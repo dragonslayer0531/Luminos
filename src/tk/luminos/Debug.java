@@ -6,10 +6,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import tk.luminos.tools.DateUtils;
-import tk.luminos.tools.instanceinfo.GLFWInstance;
-import tk.luminos.tools.instanceinfo.JavaEnvironmentInstance;
-import tk.luminos.tools.instanceinfo.OpenGLInstance;
+import tk.luminos.utilities.DateUtils;
+import tk.luminos.utilities.GLFWInstance;
+import tk.luminos.utilities.JavaEnvironmentInstance;
+import tk.luminos.utilities.OpenGLInstance;
 
 /**
  * 
@@ -19,7 +19,6 @@ import tk.luminos.tools.instanceinfo.OpenGLInstance;
  * @version 1.1
  *
  */
-
 public class Debug {
 		
 	private static StringBuilder debug_data = new StringBuilder();

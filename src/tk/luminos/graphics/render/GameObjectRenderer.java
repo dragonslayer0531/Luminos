@@ -17,15 +17,13 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import java.util.List;
 import java.util.Map;
 
-import tk.luminos.graphics.gameobjects.GameObject;
+import tk.luminos.gameobjects.GameObject;
+import tk.luminos.graphics.Material;
 import tk.luminos.graphics.models.RawModel;
 import tk.luminos.graphics.models.TexturedModel;
 import tk.luminos.graphics.shaders.GameObjectShader;
-import tk.luminos.graphics.textures.Material;
-import tk.luminos.tools.Maths;
-import tk.luminos.tools.maths.matrix.Matrix4f;
-import tk.luminos.tools.maths.vector.Vector2f;
-import tk.luminos.tools.maths.vector.Vector3f;
+import tk.luminos.maths.Matrix4;
+import tk.luminos.maths.Vector2;
 
 /**
  * 
@@ -48,7 +46,7 @@ public class GameObjectRenderer {
 	 * @param shader			{@link GameObjectShader} that is used for rendering entities
 	 * @param projectionMatrix	Projection Matrix that is used to draw the screen
 	 */
-	public GameObjectRenderer(GameObjectShader shader, Matrix4f projectionMatrix) {
+	public GameObjectRenderer(GameObjectShader shader, Matrix4 projectionMatrix) {
 		this.shader = shader;
 		shader.start();
 		shader.setUniform(shader.getLocation("projectionMatrix"), projectionMatrix);
@@ -61,7 +59,6 @@ public class GameObjectRenderer {
 	 * Renders entities to screen
 	 * 
 	 * @param entities			Defines the map of entities to render
-	 * @param shadowMapSpace	Matrix defining the shadow map transformation
 	 */
 	public void render(Map<TexturedModel, List<GameObject>> entities) {
 		for (TexturedModel model : entities.keySet()) {
@@ -120,8 +117,8 @@ public class GameObjectRenderer {
 	/**
 	 * Cleans up shader program
 	 */
-	public void cleanUp() {
-		shader.cleanUp();
+	public void dispose() {
+		shader.dispose();
 	}
 	
 //***********************************Private Methods*********************************//	
@@ -166,10 +163,8 @@ public class GameObjectRenderer {
 	 * Prepares instance of entity for rendering
 	 */
 	private void prepareInstance(GameObject entity) {
-		Matrix4f transformationMatrix = Maths.createTransformationMatrix((Vector3f) entity.getPosition(),
-				entity.getRotation(), entity.getScale());
-		shader.setUniform(shader.getLocation("transformationMatrix"), transformationMatrix);
-		shader.setUniform(shader.getLocation("offset"), new Vector2f(0, 0));
+		shader.setUniform(shader.getLocation("transformationMatrix"), entity.getModelMatrix());
+		shader.setUniform(shader.getLocation("offset"), new Vector2(0, 0));
 	}
 
 }

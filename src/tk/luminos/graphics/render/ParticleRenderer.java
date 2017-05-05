@@ -20,16 +20,16 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import java.util.List;
 import java.util.Map;
 
-import tk.luminos.graphics.gameobjects.Camera;
+import tk.luminos.graphics.Camera;
+import tk.luminos.graphics.Particle;
+import tk.luminos.graphics.ParticleTexture;
 import tk.luminos.graphics.models.RawModel;
-import tk.luminos.graphics.particles.Particle;
 import tk.luminos.graphics.shaders.ParticleShader;
-import tk.luminos.graphics.textures.ParticleTexture;
 import tk.luminos.loaders.Loader;
-import tk.luminos.tools.Maths;
-import tk.luminos.tools.maths.matrix.Matrix4f;
-import tk.luminos.tools.maths.vector.Vector2f;
-import tk.luminos.tools.maths.vector.Vector3f;
+import tk.luminos.maths.MathUtils;
+import tk.luminos.maths.Matrix4;
+import tk.luminos.maths.Vector2;
+import tk.luminos.maths.Vector3;
 
 /**
  * 
@@ -54,7 +54,7 @@ public class ParticleRenderer {
 	 * @param loader			Defines loader to use
 	 * @param projectionMatrix	Defines projection matrix
 	 */
-	public ParticleRenderer(ParticleShader shader, Loader loader, Matrix4f projectionMatrix) {
+	public ParticleRenderer(ParticleShader shader, Loader loader, Matrix4 projectionMatrix) {
 		quad = loader.loadToVAO(VERTICES, 2);
 		this.shader = shader;
 		shader.start();
@@ -69,7 +69,7 @@ public class ParticleRenderer {
 	 * @param camera			Defines camera to get view matrix of
 	 */
 	public void render(Map<ParticleTexture, List<Particle>> particles, Camera camera){
-		Matrix4f viewMatrix = Maths.createViewMatrix(camera);
+		Matrix4 viewMatrix = MathUtils.createViewMatrix(camera);
 		prepare();
 		
 		for(ParticleTexture texture : particles.keySet()) {
@@ -79,7 +79,7 @@ public class ParticleRenderer {
 				updateModelViewMatrix(particle.getPosition(), particle.getRotation(), particle.getScale(), viewMatrix);
 				shader.setUniform("texOffset1", particle.getOffsetOne());
 				shader.setUniform("texOffset2", particle.getOffsetTwo());
-				shader.setUniform("texCoordInfo", new Vector2f(texture.getNumberOfRows(), particle.getBlend()));
+				shader.setUniform("texCoordInfo", new Vector2(texture.getNumberOfRows(), particle.getBlend()));
 				glDrawArrays(GL_TRIANGLE_STRIP, 0, quad.getVertexCount());
 			}
 		}
@@ -113,8 +113,8 @@ public class ParticleRenderer {
 	/**
 	 * Cleans up shader
 	 */
-	public void cleanUp() {
-		shader.cleanUp();
+	public void dispose() {
+		shader.dispose();
 	}
 	
 //*******************************Private Methods*****************************************//
@@ -127,9 +127,9 @@ public class ParticleRenderer {
 	 * @param scale			Scale of particle
 	 * @param viewMatrix	View matrix of camera
 	 */
-	private void updateModelViewMatrix(Vector3f position, float rotation, float scale, Matrix4f viewMatrix) {
-		Matrix4f modelMatrix = new Matrix4f();
-		Matrix4f.translate(position, modelMatrix, modelMatrix);
+	private void updateModelViewMatrix(Vector3 position, float rotation, float scale, Matrix4 viewMatrix) {
+		Matrix4 modelMatrix = new Matrix4();
+		Matrix4.translate(position, modelMatrix, modelMatrix);
 		modelMatrix.m00 = viewMatrix.m00;
 		modelMatrix.m01 = viewMatrix.m10;
 		modelMatrix.m02 = viewMatrix.m20;
@@ -139,9 +139,9 @@ public class ParticleRenderer {
 		modelMatrix.m20 = viewMatrix.m02;
 		modelMatrix.m21 = viewMatrix.m12;
 		modelMatrix.m22 = viewMatrix.m22;
-		Matrix4f.rotate((float) Math.toRadians(rotation), new Vector3f(0, 0, 1), modelMatrix, modelMatrix);
-		Matrix4f.scale(new Vector3f(scale, scale, scale), modelMatrix, modelMatrix);
-		Matrix4f modelViewMatrix = Matrix4f.mul(viewMatrix, modelMatrix, null);
+		Matrix4.rotate((float) Math.toRadians(rotation), new Vector3(0, 0, 1), modelMatrix, modelMatrix);
+		Matrix4.scale(new Vector3(scale, scale, scale), modelMatrix, modelMatrix);
+		Matrix4 modelViewMatrix = Matrix4.mul(viewMatrix, modelMatrix, null);
 		shader.setUniform("modelViewMatrix", modelViewMatrix);
 	}
 

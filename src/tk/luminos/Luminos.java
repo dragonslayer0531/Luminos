@@ -2,18 +2,28 @@ package tk.luminos;
 
 public class Luminos {
 	
-	public static final Integer LUMINOS_FALSE = 0x0;
-	public static final Integer LUMINOS_TRUE = 0x1;
-	public static final Integer FRONT_FACE = 0x404;
-	public static final Integer BACK_FACE = 0x405;
-	public static final Integer FRONT_AND_BACK_FACE = 0x408;
+	/**Integer value representing false in the engine*/public static final Integer LUMINOS_FALSE = 0x0;
+	/**Integer value representing true in the engine*/public static final Integer LUMINOS_TRUE = 0x1;
 	
-	public static final Integer EXIT_UNEXPECTED = -0x1;
-	public static final Integer EXIT_SUCCESS = 0x0;
-	public static final Integer EXIT_FAILURE = 0x1;
+	public enum ExitStatus {
+		
+		SUCCESS(0x0),
+		FAILURE_GENERAL(0x1);
+		
+		private int status = 0;
+		private ExitStatus(int status) {
+			this.status = status;
+		}
+		
+	}
 	
-	public static void exit(Integer status) {
-		System.exit(status);
+	/**
+	 * Exits the engine with a given error code
+	 * 
+	 * @param status		Exit status
+	 */
+	public static void exit(ExitStatus status) {
+		System.exit(status.status);
 	}
 
 }

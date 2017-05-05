@@ -1,10 +1,8 @@
 package tk.luminos.graphics.shaders;
 
-import static tk.luminos.ConfigData.POSITION;
-
-import tk.luminos.ConfigData;
-import tk.luminos.tools.maths.matrix.Matrix4f;
-import tk.luminos.tools.maths.vector.Vector3f;
+import tk.luminos.Application;
+import tk.luminos.maths.Matrix4;
+import tk.luminos.maths.Vector3;
 
 /**
  * 
@@ -24,7 +22,8 @@ public class SkyboxShader extends ShaderProgram {
      
     /** 
      * Constructor
-     * @throws Exception 
+     * @throws Exception 		Thrown if shader file cannot be found, compiled, validated
+	 * 							or linked
      */
     public SkyboxShader() throws Exception {
         super(VERT, FRAG);
@@ -33,14 +32,15 @@ public class SkyboxShader extends ShaderProgram {
     /**
      * Loads view matrix to shader
      * 
-     * @param camera	Camera to create view matrix of
+     * @param matrix	View matrix of scene
+     * @return 			Updated view matrix
      */
-    public Matrix4f createViewMatrix(Matrix4f matrix){
+    public Matrix4 createViewMatrix(Matrix4 matrix){
         matrix.m30 = 0;
         matrix.m31 = 0;
         matrix.m32 = 0;
-        rotation += 1f / ConfigData.FPS * 0.001f;
-        Matrix4f.rotate((float) Math.toRadians(rotation), new Vector3f(0,1,0), matrix, matrix);
+        rotation += 1f / Application.getValue("FPS") * 0.001f;
+        Matrix4.rotate((float) Math.toRadians(rotation), new Vector3(0,1,0), matrix, matrix);
         return matrix;
     }
      
@@ -48,7 +48,7 @@ public class SkyboxShader extends ShaderProgram {
      * (non-Javadoc)
      * @see graphics.shaders.ShaderProgram#getAllUniformLocations()
      */
-    public void getAllUniformLocations() {
+    public void getAllUniformLocations() throws Exception {
         createUniform("projectionMatrix");
         createUniform("viewMatrix");
         createUniform("fogColor");
@@ -64,9 +64,12 @@ public class SkyboxShader extends ShaderProgram {
      * @see graphics.shaders.ShaderProgram#bindAttributes()
      */
     public void bindAttributes() {
-        super.bindAttribute(POSITION, "position");
+    	
     }
     
+    /**
+     * Connects texture units to location in shader
+     */
     public void connectTextureUnits() {
     	super.setUniform("cubeMap", 0);
     	super.setUniform("cubeMap2", 1);

@@ -18,9 +18,8 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import java.util.ArrayList;
 import java.util.List;
 
-import tk.luminos.ConfigData;
 import tk.luminos.graphics.models.RawModel;
-import tk.luminos.graphics.shaders.postprocess.PostProcess;
+import tk.luminos.graphics.shaders.PostProcess;
 import tk.luminos.loaders.Loader;
 
 /**
@@ -64,7 +63,7 @@ public class PostProcessRenderer {
 	 * @param process		{@link PostProcess} to remove from pipeline
 	 */
 	public void removeShader(PostProcess process) {
-		process.cleanUp();
+		process.dispose();
 		processes.remove(process);
 	}
 	
@@ -75,7 +74,7 @@ public class PostProcessRenderer {
 	 */
 	public void render(int textureID) {
 		glBindVertexArray(quad.getVaoID());
-		glEnableVertexAttribArray(ConfigData.POSITION);
+		glEnableVertexAttribArray(0);
 		glDisable(GL_DEPTH_TEST);
 		glActiveTexture(GL_TEXTURE0);
 		for(PostProcess shader : processes) {
@@ -86,15 +85,15 @@ public class PostProcessRenderer {
 			shader.stop();
 		}
 		glEnable(GL_DEPTH_TEST);
-		glDisableVertexAttribArray(ConfigData.POSITION);
+		glDisableVertexAttribArray(0);
 		glBindVertexArray(0);
 	}
 	
 	/**
 	 * Cleans up all post processing shaders
 	 */
-	public void cleanUp() {
-		for(PostProcess shader : processes) shader.cleanUp();
+	public void dispose() {
+		for(PostProcess shader : processes) shader.dispose();
 	}
 	
 	/**

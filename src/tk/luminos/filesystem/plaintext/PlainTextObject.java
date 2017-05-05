@@ -13,9 +13,9 @@ public class PlainTextObject {
 	/**
 	 * Entry variables
 	 */
-	public DataStruct type;
-	public Object value;
-	public String name;
+	protected DataStruct type;
+	protected Object value;
+	protected String name;
 	
 	/**
 	 * Creates new plain text object

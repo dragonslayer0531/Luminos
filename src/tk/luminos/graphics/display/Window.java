@@ -1,14 +1,11 @@
 package tk.luminos.graphics.display;
 
-import static tk.luminos.ConfigData.FULLSCREEN;
-import static tk.luminos.ConfigData.HEIGHT;
-import static tk.luminos.ConfigData.MOUSE_VISIBLE;
-import static tk.luminos.ConfigData.RESIZABLE;
-import static tk.luminos.ConfigData.VSYNC;
-import static tk.luminos.ConfigData.WIDTH;
 import static org.lwjgl.glfw.GLFW.GLFW_CLIENT_API;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MAJOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MINOR;
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR;
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_DISABLED;
+import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_NORMAL;
 import static org.lwjgl.glfw.GLFW.GLFW_DOUBLEBUFFER;
 import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
 import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_API;
@@ -25,7 +22,9 @@ import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwSetCursorPosCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetFramebufferSizeCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetInputMode;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowSizeCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowTitle;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
@@ -36,7 +35,6 @@ import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.opengl.GL.createCapabilities;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL11.GL_FRONT;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
 import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
@@ -47,6 +45,14 @@ import static org.lwjgl.opengl.GL11.glReadPixels;
 import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 import static org.lwjgl.system.MemoryUtil.NULL;
+import static tk.luminos.ConfigData.FULLSCREEN;
+import static tk.luminos.ConfigData.HEIGHT;
+import static tk.luminos.ConfigData.MOUSE_VISIBLE;
+import static tk.luminos.ConfigData.RESIZABLE;
+import static tk.luminos.ConfigData.VSYNC;
+import static tk.luminos.ConfigData.WIDTH;
+import static tk.luminos.Engine.ERROR_STREAM;
+import static tk.luminos.Luminos.ExitStatus.FAILURE_GENERAL;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -67,15 +73,16 @@ import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 
 import tk.luminos.ConfigData;
+import tk.luminos.Luminos;
 import tk.luminos.filesystem.ResourceLoader;
 import tk.luminos.graphics.render.GuiRenderer;
 import tk.luminos.graphics.shaders.GuiShader;
-import tk.luminos.graphics.textures.GUITexture;
+import tk.luminos.graphics.ui.GUITexture;
 import tk.luminos.input.Keyboard;
 import tk.luminos.input.Mouse;
 import tk.luminos.input.MousePosition;
 import tk.luminos.loaders.Loader;
-import tk.luminos.tools.maths.vector.Vector2f;
+import tk.luminos.maths.Vector2;
 
 /**
  * 
@@ -106,27 +113,27 @@ public class Window {
 	private boolean vsync, fullscreen, visible = false, resizable, vismouse;
 	private long window;
 	private FrameRateCounter frameRateCounter;
-
 	private float mouseX, mouseY, mouseDX, mouseDY;
-
 	private Device device;
-	public static int REFRESH_RATE;
+	
+	/**
+	 * Refresh rate of the {@link Device} displaying the window
+	 */
+	public static int REFRESH_RATE = 60;
 
 	/**
 	 * Constructor that initiates the GLFW and OpenGL contexts, as well as the window itself
 	 * 
 	 * @param title 		Sets the GLFW Window's title
+	 * @param width			Width of GLFW window
+	 * @param height		Height of GLFW window
 	 * @param vsync			Determines whether the window utilizes Vertical Synchronization
 	 * @param fullscreen 	Determines whether the window and OpenGL Viewport is fullscreen.  Overrides the Width and Height if true
-	 * @param visible		Determines if the window is visible on load
 	 * @param resizable		Determines if the window is resizable
 	 * @param vismouse		Determines if the mouse is visible when window is in focus
-	 * @throws Exception
-	 * @throws LuminosException 
+	 * @throws Exception	Thrown if GLFW cannot be initialized
 	 */
 	public Window(String title, int width, int height, boolean vsync, boolean fullscreen, boolean resizable, boolean vismouse) throws Exception {
-		device = new Device();
-		REFRESH_RATE = device.getRefreshRate();
 
 		this.title = title;
 		this.width = width;
@@ -137,6 +144,7 @@ public class Window {
 		this.vismouse = vismouse;
 
 		init();
+		
 	}
 
 	/**
@@ -145,9 +153,21 @@ public class Window {
 	 */
 	private void init() throws Exception {
 
+		errorCallback = new GLFWErrorCallback() {
+
+			@Override
+			public void invoke(int error, long description) {
+				ERROR_STREAM.append(error + ": " + description);
+				Luminos.exit(FAILURE_GENERAL);
+			}
+			
+		};
+		errorCallback.set();
+		
 		if(!glfwInit()) {
 			throw new Exception("COULD NOT INSTANTIATE GLFW INSTANCE");
 		}
+		
 
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
@@ -159,42 +179,30 @@ public class Window {
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
 		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 
-
 		if(fullscreen) {
 			window = glfwCreateWindow(width, height, title, glfwGetPrimaryMonitor(), NULL);
 		} else {
-			window = glfwCreateWindow(width, height, title, GL_FALSE, NULL);
-		}
-
-		if(window == NULL) {
-			throw new Exception("COULD NOT INSTANTIATE GLFW WINDOW");
+			window = glfwCreateWindow(width, height, title, NULL, NULL);
 		}
 
 		glfwMakeContextCurrent(window);
 
-		//Create Callbacks
+		//Create Callback
 
-		errorCallback = GLFWErrorCallback.createPrint();
-		errorCallback.set();
-
-		framebufferCallback = new GLFWFramebufferSizeCallback() {
+		glfwSetFramebufferSizeCallback(window, framebufferCallback = new GLFWFramebufferSizeCallback() {
 
 			public void invoke(long window, int width, int height) {
 				glViewport(0, 0, width, height);
 			}
 
-		};
-		framebufferCallback.set(window);
-
-		windowSizeCallback = new GLFWWindowSizeCallback() {
-
+		});
+		
+		glfwSetWindowSizeCallback(window, windowSizeCallback = new GLFWWindowSizeCallback() {
 			public void invoke(long window, int width, int height) {
 				Window.this.width = width;
-				Window.this.height = height;
+				Window.this.height = height;;
 			}
-
-		};
-		windowSizeCallback.set(window);
+		});
 
 		keyCallback = keyboard = new Keyboard();
 		keyCallback.set(window);
@@ -224,10 +232,10 @@ public class Window {
 		glEnable(GL_MULTISAMPLE);
 
 		if(!vismouse) {
-			glfwSetInputMode(window, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED);
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		} 
 		else 
-			glfwSetInputMode(window, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL);
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
 		frameRateCounter = new FrameRateCounter();
 
@@ -235,13 +243,13 @@ public class Window {
 		GuiShader shader = new GuiShader();
 		GuiRenderer gr = new GuiRenderer(shader, loader);
 		BufferedImage image = ResourceLoader.loadImage("/logo.png");
-		GUITexture logo = new GUITexture(loader.loadTexture(image), new Vector2f(0, 0), new Vector2f(1, 1));
+		GUITexture logo = new GUITexture(loader.loadTexture(image), new Vector2(0, 0), new Vector2(1, 1));
 		List<GUITexture> textures = new ArrayList<GUITexture>();
 		textures.add(logo);
 		gr.render(textures);
-		gr.cleanUp();
+		gr.dispose();
 		textures.clear();
-		GLFW.glfwSwapBuffers(window);
+		glfwSwapBuffers(window);
 		
 		FULLSCREEN = fullscreen;
 		VSYNC = vsync;
@@ -261,6 +269,8 @@ public class Window {
 
 	/** 
 	 * Updates the GLFW Window with the most recent buffer
+	 * 
+	 * @throws Exception		Thrown when method is called, but GLFW is not initialized
 	 */
 	public void update() throws Exception {
 		frameRateCounter.start();

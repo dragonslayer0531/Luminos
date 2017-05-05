@@ -22,9 +22,9 @@ import static tk.luminos.filesystem.serialization.SerializationUtils.writeBytes;
 
 public class LField extends LBase {
 
-	public static final byte CONTAINER_TYPE = ContainerType.FIELD;
-	public byte type;
-	public byte[] data;
+	protected static final byte CONTAINER_TYPE = ContainerType.FIELD;
+	protected byte type;
+	protected byte[] data;
 	
 	/**
 	 * Private Constructor

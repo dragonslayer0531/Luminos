@@ -21,10 +21,10 @@ import java.util.List;
 
 import tk.luminos.graphics.models.RawModel;
 import tk.luminos.graphics.shaders.GuiShader;
-import tk.luminos.graphics.textures.GUITexture;
+import tk.luminos.graphics.ui.GUITexture;
 import tk.luminos.loaders.Loader;
-import tk.luminos.tools.Maths;
-import tk.luminos.tools.maths.matrix.Matrix4f;
+import tk.luminos.maths.MathUtils;
+import tk.luminos.maths.Matrix4;
 
 /**
  * 
@@ -68,7 +68,7 @@ public class GuiRenderer {
 			for(GUITexture gui: guis){
 				glActiveTexture(GL_TEXTURE0);
 				glBindTexture(GL_TEXTURE_2D, gui.getID());
-				Matrix4f matrix = Maths.createTransformationMatrix(gui.getPosition(), gui.getScale());
+				Matrix4 matrix = MathUtils.createTransformationMatrix(gui.getPosition(), gui.getScale());
 				shader.setUniform("transformationMatrix", matrix);
 				glDrawArrays(GL_TRIANGLE_STRIP, 0, quad.getVertexCount());
 			}
@@ -84,7 +84,7 @@ public class GuiRenderer {
 	/**
 	 * Cleans up shader
 	 */
-	public void cleanUp(){
-		shader.cleanUp();
+	public void dispose(){
+		shader.dispose();
 	}
 }

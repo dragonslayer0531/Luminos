@@ -31,12 +31,12 @@ void main(void){
 	
 	vec4 positionRelativeToCam = viewMatrix * worldPosition;
 	gl_Position = projectionMatrix * positionRelativeToCam;
+	
 	pass_textureCoordinates = textureCoordinates;
 	
 	surfaceNormal = (transformationMatrix * vec4(normal,0.0)).xyz;
 	
 	for(int i = 0; i < _MAX_LIGHTS_; i++){
-//		toLightVector[i] = lightPosition[i] - worldPosition.xyz;
 		toLightVector[i] = pointLights[i].position - worldPosition.xyz;
 	}
 	
@@ -48,10 +48,11 @@ void main(void){
 	
 	distance = distance - (shadowDistance - transitionDistance);
 	distance = distance / transitionDistance;
-	shadowCoords.w = clamp(1-distance, 0, 1);
+	shadowCoords.w = clamp(1 - distance, 0, 1);
 	
 	for (int i = 0; i < _MAX_LIGHTS_; i++) {
-		pass_PointLights[i] = pointLights[i];
+		pass_PointLights[i].attenuation = pointLights[i].attenuation;
+		pass_PointLights[i].color = pointLights[i].color;
 	}
 
 }

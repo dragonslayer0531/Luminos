@@ -1,6 +1,6 @@
 package tk.luminos.graphics.water;
 
-import tk.luminos.tools.maths.vector.Vector2f;
+import tk.luminos.maths.Vector2;
 
 /**
  * 
@@ -15,7 +15,7 @@ public class WaterTile {
 	
 	private float height;
 	private float x,z;
-	private Vector2f scale;
+	private Vector2 scale;
 	
 	/**
 	 * Constructor
@@ -25,7 +25,7 @@ public class WaterTile {
 	 * @param height	Y Value of tile
 	 * @param scale		Scale of tile
 	 */
-	public WaterTile(float centerX, float centerZ, float height, Vector2f scale) {
+	public WaterTile(float centerX, float centerZ, float height, Vector2 scale) {
 		this.x = centerX;
 		this.z = centerZ;
 		this.height = height;
@@ -41,7 +41,7 @@ public class WaterTile {
 	 * @param height	Height of tile
 	 * @param scale		Scale of tile
 	 */
-	public WaterTile(Vector2f position, float height, float scale) {
+	public WaterTile(Vector2 position, float height, float scale) {
 		this.x = position.x;
 		this.z = position.y;
 		this.height = height;
@@ -80,7 +80,7 @@ public class WaterTile {
 	 * 
 	 * @return	scale
 	 */
-	public Vector2f getScale() {
+	public Vector2 getScale() {
 		return scale;
 	}
 	

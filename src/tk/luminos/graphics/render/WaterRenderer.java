@@ -20,20 +20,19 @@ import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import tk.luminos.graphics.gameobjects.Camera;
-import tk.luminos.graphics.gameobjects.PointLight;
+import tk.luminos.graphics.Camera;
+import tk.luminos.graphics.PointLight;
 import tk.luminos.graphics.models.RawModel;
 import tk.luminos.graphics.shaders.WaterShader;
 import tk.luminos.graphics.water.WaterFrameBuffers;
 import tk.luminos.graphics.water.WaterTile;
 import tk.luminos.loaders.Loader;
-import tk.luminos.tools.Maths;
-import tk.luminos.tools.maths.matrix.Matrix4f;
-import tk.luminos.tools.maths.vector.Vector3f;
+import tk.luminos.maths.MathUtils;
+import tk.luminos.maths.Matrix4;
+import tk.luminos.maths.Vector3;
 
 /**
  * 
@@ -69,9 +68,9 @@ public class WaterRenderer {
 	 * @param fbos				WaterFrameBuffers
 	 * @param dudv				DUDV map location
 	 * @param normal			Normal map location
-	 * @throws IOException		Exception for if file isn't found or cannot be handled
+	 * @throws Exception		Exception for if file isn't found or cannot be handled
 	 */
-	public WaterRenderer(Loader loader, WaterShader shader, Matrix4f projectionMatrix, WaterFrameBuffers fbos, String dudv, String normal) throws IOException {
+	public WaterRenderer(Loader loader, WaterShader shader, Matrix4 projectionMatrix, WaterFrameBuffers fbos, String dudv, String normal) throws Exception {
 		this.shader = shader;
 		this.fbos = fbos;
 		dudvTexture = loader.loadTexture(dudv);
@@ -104,8 +103,8 @@ public class WaterRenderer {
 		for (PointLight light : lights) {
 			prepareRender(camera, light); 
 			for (WaterTile tile : water) {
-				if (Maths.getDistance(new Vector3f(tile.getX(), 0, tile.getZ()), camera.getPosition()) > 500) continue;
-				Matrix4f modelMatrix = Maths.createWaterTransformationMatrix(new Vector3f(tile.getX(), tile.getHeight(), tile.getZ()), 0, 0, 0, tile.getScale());
+				if (MathUtils.getDistance(new Vector3(tile.getX(), 0, tile.getZ()), camera.getPosition()) > 800) continue;
+				Matrix4 modelMatrix = MathUtils.createTransformationMatrix(new Vector3(tile.getX(), tile.getHeight(), tile.getZ()), new Vector3(), tile.getScale());
 				shader.setUniform("modelMatrix", modelMatrix);
 				glDrawArrays(GL_TRIANGLES, 0, quad.getVertexCount());
 			}
@@ -123,8 +122,8 @@ public class WaterRenderer {
 	public void renderTile(List<WaterTile> water, Camera camera, PointLight sun) {
 		prepareRender(camera, sun);
 		for (WaterTile tile : water) {
-			if (Maths.getDistance(new Vector3f(tile.getX(), 0, tile.getZ()), camera.getPosition()) > 500) continue;
-			Matrix4f modelMatrix = Maths.createTransformationMatrix(new Vector3f(tile.getX(), tile.getHeight(), tile.getZ()), 0, 0, 0, tile.getFloatScale());
+			if (MathUtils.getDistance(new Vector3(tile.getX(), 0, tile.getZ()), camera.getPosition()) > 500) continue;
+			Matrix4 modelMatrix = MathUtils.createTransformationMatrix(new Vector3(tile.getX(), tile.getHeight(), tile.getZ()), 0, 0, 0, tile.getFloatScale());
 			shader.setUniform("modelMatrix", modelMatrix);
 			glDrawArrays(GL_TRIANGLES, 0, quad.getVertexCount());
 		}
@@ -202,6 +201,13 @@ public class WaterRenderer {
 		this.reflectivity = reflectivity;
 	}
 	
+	/**
+	 * Disposes of resources held by the WaterRenderer
+	 */
+	public void dispose() {
+		shader.dispose();
+	}
+	
 //**************************************Private Methods********************************************//	
 
 	/**
@@ -212,7 +218,7 @@ public class WaterRenderer {
 	 */
 	private void prepareRender(Camera camera, PointLight sun){
 		shader.start();
-		shader.setUniform("viewMatrix", Maths.createViewMatrix(camera));
+		shader.setUniform("viewMatrix", MathUtils.createViewMatrix(camera));
 		shader.setUniform("cameraPosition", camera.getPosition());
 		moveFactor += WAVE_SPEED * 0.001;
 		moveFactor %= 1;

@@ -19,13 +19,13 @@ import java.util.List;
 
 public class LObject extends LBase {
 
-	public static final byte CONTAINER_TYPE = ContainerType.OBJECT;
+	protected static final byte CONTAINER_TYPE = ContainerType.OBJECT;
 	private short fieldCount;
-	public List<LField> fields = new ArrayList<LField>();
+	protected List<LField> fields = new ArrayList<LField>();
 	private short stringCount;
-	public List<LString> strings = new ArrayList<LString>();
+	protected List<LString> strings = new ArrayList<LString>();
 	private short arrayCount;
-	public List<LArray> arrays = new ArrayList<LArray>();
+	protected List<LArray> arrays = new ArrayList<LArray>();
 	
 	/**
 	 * Private constructor

@@ -1,6 +1,6 @@
 package tk.luminos.graphics.models;
 
-import tk.luminos.graphics.textures.Material;
+import tk.luminos.graphics.Material;
 
 /**
  * 
@@ -20,7 +20,7 @@ public class TexturedModel {
 	 * Constructor wrapping models and textures
 	 * 
 	 * @param model		{@link RawModel} describing the vertices
-	 * @param texture	{@link Material} describing the texture
+	 * @param material	{@link Material} describing the texture
 	 */
 	public TexturedModel(RawModel model, Material material){
 		this.rawModel = model;

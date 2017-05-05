@@ -14,14 +14,12 @@ import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL32.GL_TEXTURE_CUBE_MAP_SEAMLESS;
 
-import java.io.IOException;
-
 import tk.luminos.graphics.models.RawModel;
 import tk.luminos.graphics.shaders.SkyboxShader;
 import tk.luminos.loaders.Loader;
-import tk.luminos.tools.DateUtils;
-import tk.luminos.tools.maths.matrix.Matrix4f;
-import tk.luminos.tools.maths.vector.Vector3f;
+import tk.luminos.maths.Matrix4;
+import tk.luminos.maths.Vector3;
+import tk.luminos.utilities.DateUtils;
 
 /**
  * 
@@ -35,8 +33,8 @@ import tk.luminos.tools.maths.vector.Vector3f;
 public class SkyboxRenderer {
 	
 	private static final float SIZE = 700f;
-	private float lowerLimit = -130.0f;
-	private float upperLimit = -100.0f;
+	private float lowerLimit = -530.0f;
+	private float upperLimit = -500.0f;
 	
 	private static final float[] VERTICES = {        
 	    -SIZE,  SIZE, -SIZE,
@@ -98,9 +96,9 @@ public class SkyboxRenderer {
 	 * @param shader			Defines shader to render with
 	 * @param loader			Loader used for rendering
 	 * @param projectionMatrix	Projection matrix of skybox
-	 * @throws IOException		Exception for if file isn't found or cannot be handled
+	 * @throws Exception		Exception for if file isn't found or cannot be handled
 	 */
-	public SkyboxRenderer(SkyboxShader shader, Loader loader, Matrix4f projectionMatrix) throws IOException {
+	public SkyboxRenderer(SkyboxShader shader, Loader loader, Matrix4 projectionMatrix) throws Exception {
 		cube = loader.loadToVAO(VERTICES, 3);
 		texture = loader.loadCubeMap(TEXTURE_FILES);
 		nightTexture = loader.loadCubeMap(NIGHT_TEXTURE_FILES);
@@ -116,10 +114,10 @@ public class SkyboxRenderer {
 	/**
 	 * Render skybox
 	 * 
-	 * @param camera	Camera to be projected from
-	 * @param skyColor 	SkyColor
+	 * @param viewMatrix	View matrix of relevant camera
+	 * @param skyColor 		SkyColor
 	 */
-	public void render(Matrix4f viewMatrix, Vector3f skyColor){
+	public void render(Matrix4 viewMatrix, Vector3 skyColor){
 		shader.start();
 		shader.setUniform("fogColor", skyColor);
 		shader.setUniform("viewMatrix", shader.createViewMatrix(viewMatrix));
@@ -168,6 +166,13 @@ public class SkyboxRenderer {
 	 */
 	public void setUpperLimit(float upperLimit) {
 		this.upperLimit = upperLimit;
+	}
+	
+	/**
+	 * Disposes of resources held by SkyboxRenderer
+	 */
+	public void dispose() {
+		shader.dispose();
 	}
 	
 //**************************************Private Methods************************************//	
