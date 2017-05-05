@@ -4,7 +4,7 @@ import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 
-import tk.luminos.maths.vector.Vector2f;
+import tk.luminos.maths.Vector2;
 
 /**
  * 
@@ -24,7 +24,7 @@ public class Device {
 	private int refreshRate;
 	private int bitDepth;
 	private int colors;
-	private Vector2f dimensions;
+	private Vector2 dimensions;
 	
 	/**
 	 * Initializes the default device
@@ -60,7 +60,7 @@ public class Device {
 		refreshRate = mode.getRefreshRate();
 		bitDepth = mode.getBitDepth();
 		colors = (int) Math.pow(2, bitDepth);
-		dimensions = new Vector2f(mode.getWidth(), mode.getHeight());
+		dimensions = new Vector2(mode.getWidth(), mode.getHeight());
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class Device {
 	 * 
 	 * @return		Dimensions of current device
 	 */
-	public Vector2f getDimensions() {
+	public Vector2 getDimensions() {
 		return dimensions;
 	}
 	

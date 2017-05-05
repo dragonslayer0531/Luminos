@@ -224,11 +224,6 @@ public class Vector3 implements Vector {
 		return new Vector3(x, y, z);
 	}
 	
-	/**
-	 * Gets max component of vector
-	 * 
-	 * @return	Max vector component
-	 */
 	public float maxComponent() {
 		return MathUtils.getMaximum(new float[] {x, y, z});
 	}
@@ -238,20 +233,6 @@ public class Vector3 implements Vector {
 	 */
 	public String toString() {
 		return "Vector3f [" + x + "," + y + "," + z + "]";
-	}
-	
-	/**
-	 * Linearly interpolates between two vector3 objects
-	 * 
-	 * @param left		left vector
-	 * @param right		right vector
-	 * @param blend		blend factor
-	 * @return			blended vector
-	 */
-	public static Vector3 lerp(Vector3 left, Vector3 right, float blend) {
-		return new Vector3(MathUtils.LinearInterpolation(left.x, right.x, blend),
-				MathUtils.LinearInterpolation(left.y, right.y, blend),
-				MathUtils.LinearInterpolation(left.z, right.z, blend));
 	}
 
 

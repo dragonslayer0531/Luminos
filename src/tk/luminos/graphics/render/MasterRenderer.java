@@ -61,7 +61,7 @@ import tk.luminos.maths.Vector4;
 
 public class MasterRenderer {
 
-	private static final boolean STREAMS = !false;
+	private static final boolean STREAMS = Application.getValue("STREAMS") == 1;
 
 	public static boolean WIREFRAME = Application.getValue("WIREFRAME") == 1;
 	public static boolean FRUSTUM_CULLING = Application.getValue("FRUSTUM_CULLING") == 1;
@@ -174,7 +174,8 @@ public class MasterRenderer {
 			}	
 		}
 		else {			
-			this.entities = entities.stream()
+			this.entities = entities
+					.stream()
 					.parallel()
 					.filter(entity -> MathUtils.getDistance(entity.getPosition(), camera.getPosition()) < entity.getRenderDistance())
 					.collect(Collectors.groupingBy(GameObject::getModel));
@@ -251,6 +252,9 @@ public class MasterRenderer {
 		camera.getPosition().y += distance;
 		camera.invertPitch();
 		buffers.bindRefractionFrameBuffer();
+		terrainShader.start();
+		terrainShader.setUniform("useWater", 0);
+		terrainShader.stop();
 		List<GameObject> ents = new ArrayList<GameObject>();
 		if (!STREAMS) {
 			for(GameObject entity : gameObjects) {
@@ -259,11 +263,14 @@ public class MasterRenderer {
 		}
 		else {
 			ents = gameObjects.stream().parallel()
-					                   .filter(entity -> entity.getPosition().y > 0)
-									   .filter(entity -> MathUtils.getDistance(camera.getPosition(), entity.getPosition()) < entity.getRenderDistance())
+					                   .filter(entity -> entity.getPosition().y < 0)
+					                   .filter(entity -> MathUtils.getDistance(camera.getPosition(), entity.getPosition()) < entity.getRenderDistance())
 									   .collect(Collectors.toList());
 		}
 		renderScene(ents, terrains, lights, sun, focalPoint, camera, new Vector4(0, -1, 0, 0));
+		terrainShader.start();
+		terrainShader.setUniform("useWater", 1);
+		terrainShader.stop();
 		buffers.unbindCurrentFrameBuffer();
 		glDisable(GL_CLIP_DISTANCE0);
 	}

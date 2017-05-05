@@ -645,28 +645,5 @@ public class Matrix4 {
 		mat.m33 = data[15];
 		return mat;
 	}
-	
-	/**
-	 * Create a Matrix4f representing an orthographic projection
-	 * 
-	 * @param left		left bound
-	 * @param right		right bound
-	 * @param bottom	bottom bound
-	 * @param top		top bound
-	 * @param near		near bound
-	 * @param far		far bound
-	 * @return			matrix representation
-	 */
-	public static Matrix4 ortho(float left, float right, float bottom, float top, float near, float far) {
-		Matrix4 mat4 = new Matrix4();
-		mat4.m00 = 2 / (right - left);
-		mat4.m11 = 2 / (top - bottom);
-		mat4.m22 = 2 / (far - near);
-		mat4.m03 = - (right + left) / (right - left);
-		mat4.m13 = - (top + bottom) / (top - bottom);
-		mat4.m23 = - (far + near) / (far - near);
-		mat4.m33 = 1;
-		return mat4;
-	}
 
 }

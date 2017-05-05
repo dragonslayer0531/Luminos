@@ -62,6 +62,7 @@ public class TerrainShader extends ShaderProgram{
 		createUniform("pcfCount");
 		createUniform("shadowDistance");
 		createUniform("transitionDistance");
+		createUniform("useWater");
 	}
 
 	/**

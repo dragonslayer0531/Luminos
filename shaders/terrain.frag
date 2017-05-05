@@ -5,6 +5,8 @@ in vec3 surfaceNormal;
 in vec3 toCameraVector;
 in vec3 toLightVector[_MAX_LIGHTS_];
 in vec4 shadowCoords;
+in mat4 pass_iMVP;
+in vec4 pass_Position;
 
 out vec4 out_Color;
 
@@ -20,11 +22,17 @@ uniform float shineDamper;
 uniform float reflectivity;
 uniform vec3 skyColor;
 uniform int numPointLights;
+uniform int useWater;
 
 uniform int pcfCount;
 float totalTexels = (pcfCount * 2.0 + 1.0) * (pcfCount * 2.0 + 1.0);
 
 void main(void){
+
+	if ((pass_iMVP * pass_Position).y > 0) {
+		out_Color.a = useWater;
+		discard;
+	}
 	
 	float total = 0.0;
 	

@@ -75,14 +75,14 @@ import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import tk.luminos.ConfigData;
 import tk.luminos.Luminos;
 import tk.luminos.filesystem.ResourceLoader;
-import tk.luminos.graphics.GUITexture;
 import tk.luminos.graphics.render.GuiRenderer;
 import tk.luminos.graphics.shaders.GuiShader;
+import tk.luminos.graphics.ui.GUITexture;
 import tk.luminos.input.Keyboard;
 import tk.luminos.input.Mouse;
 import tk.luminos.input.MousePosition;
 import tk.luminos.loaders.Loader;
-import tk.luminos.maths.vector.Vector2f;
+import tk.luminos.maths.Vector2;
 
 /**
  * 
@@ -243,7 +243,7 @@ public class Window {
 		GuiShader shader = new GuiShader();
 		GuiRenderer gr = new GuiRenderer(shader, loader);
 		BufferedImage image = ResourceLoader.loadImage("/logo.png");
-		GUITexture logo = new GUITexture(loader.loadTexture(image), new Vector2f(0, 0), new Vector2f(1, 1));
+		GUITexture logo = new GUITexture(loader.loadTexture(image), new Vector2(0, 0), new Vector2(1, 1));
 		List<GUITexture> textures = new ArrayList<GUITexture>();
 		textures.add(logo);
 		gr.render(textures);
