@@ -122,6 +122,20 @@ public class Window {
 	 * Refresh rate of the {@link Device} displaying the window
 	 */
 	public static int REFRESH_RATE = 60;
+	
+	private static Window instance;
+	
+	public static Window create(String title, int width, int height, boolean vsync, boolean fullscreen, boolean resizable, boolean vismouse) throws Exception {
+		if (instance != null) 
+			throw new RuntimeException("Loader already initialized!");
+		return (instance = new Window(title, width, height, vsync, fullscreen, resizable, vismouse));
+	}
+	
+	public static Window getInstance() {
+		if (instance == null)
+			throw new NullPointerException("Window is not initialized");
+		return instance;
+	}
 
 	/**
 	 * Constructor that initiates the GLFW and OpenGL contexts, as well as the window itself
@@ -135,7 +149,7 @@ public class Window {
 	 * @param vismouse		Determines if the mouse is visible when window is in focus
 	 * @throws Exception	Thrown if GLFW cannot be initialized
 	 */
-	public Window(String title, int width, int height, boolean vsync, boolean fullscreen, boolean resizable, boolean vismouse) throws Exception {
+	private Window(String title, int width, int height, boolean vsync, boolean fullscreen, boolean resizable, boolean vismouse) throws Exception {
 
 		this.title = title;
 		this.width = width;
@@ -250,7 +264,7 @@ public class Window {
 
 		frameRateCounter = new FrameRateCounter();
 
-		Loader loader = new Loader();
+		Loader loader = Loader.create();
 		GuiShader shader = new GuiShader();
 		GuiRenderer gr = new GuiRenderer(shader, loader);
 		BufferedImage image = ResourceLoader.loadImage("/logo.png");
@@ -313,6 +327,7 @@ public class Window {
 		windowSizeCallback.free();
 		errorCallback.free();
 		glfwTerminate();
+		instance = null;
 	}
 
 	/**
@@ -570,28 +585,36 @@ public class Window {
 	 * @param format			File format
 	 * @throws IOException		Exception for not being able write to file
 	 */
-	public void takeScreenshot(String output, String format) throws IOException {
+	public void takeScreenshot(String output, String format) {
 		glReadBuffer(GL_FRONT);
 		int width = Application.getValue("WIDTH");
 		int height = Application.getValue("HEIGHT");
 		int bpp = 4;
 		ByteBuffer buffer = BufferUtils.createByteBuffer(width * height * bpp);
 		glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-		File file = new File(output);
-		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-		for(int x = 0; x < width; x++) 
-		{
-			for(int y = 0; y < height; y++)
+		Runnable capture = () -> {
+			File file = new File(output);
+			BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+			for(int x = 0; x < width; x++) 
 			{
-				int i = (x + (width * y)) * bpp;
-				int r = buffer.get(i) & 0xFF;
-				int g = buffer.get(i + 1) & 0xFF;
-				int b = buffer.get(i + 2) & 0xFF;
-				image.setRGB(x, height - (y + 1), (0xFF << 24) | (r << 16) | (g << 8) | b);
+				for(int y = 0; y < height; y++)
+				{
+					int i = (x + (width * y)) * bpp;
+					int r = buffer.get(i) & 0xFF;
+					int g = buffer.get(i + 1) & 0xFF;
+					int b = buffer.get(i + 2) & 0xFF;
+					image.setRGB(x, height - (y + 1), (0xFF << 24) | (r << 16) | (g << 8) | b);
+				}
 			}
-		}
 
-		ImageIO.write(image, format, file);
+			try {
+				ImageIO.write(image, format, file);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		};
+		
+		new Thread(capture).start();
 
 	}
 	

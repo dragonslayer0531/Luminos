@@ -21,7 +21,7 @@ import tk.luminos.maths.MathUtils;
 import tk.luminos.maths.Vector;
 import tk.luminos.maths.Vector2;
 import tk.luminos.maths.Vector3;
-import tk.luminos.utilities.FractalNoise;
+import tk.luminos.util.FractalNoise;
 /**
  * 
  * Terrain class

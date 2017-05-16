@@ -20,10 +20,10 @@ public class ShadowBox {
 	private static int WIDTH = Application.getValue("HEIGHT");
 	private static int HEIGHT = Application.getValue("HEIGHT");
 	
-	private static final float OFFSET = 20;
     private static final Vector4 UP = new Vector4(0, 1, 0, 0);
     private static final Vector4 FORWARD = new Vector4(0, 0, -1, 0);
     public static float SHADOW_DISTANCE = 125;
+    public static float OFFSET = 0;
  
     private float minX, maxX;
     private float minY, maxY;

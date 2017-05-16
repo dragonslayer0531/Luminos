@@ -125,7 +125,6 @@ public class LuminosImage {
 				BufferedImage biRGBA = null;
 				try {
 					biRGBA = ImageIO.read(new File(file));
-					System.out.println(file + " " + biRGBA.getColorModel().toString());
 				}
 				catch (Exception e)
 				{

@@ -5,13 +5,17 @@ import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.GL_FILL;
+import static org.lwjgl.opengl.GL11.GL_FRONT_AND_BACK;
 import static org.lwjgl.opengl.GL11.GL_LESS;
+import static org.lwjgl.opengl.GL11.GL_LINE;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glCullFace;
 import static org.lwjgl.opengl.GL11.glDepthFunc;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glPolygonMode;
 import static org.lwjgl.opengl.GL30.GL_CLIP_DISTANCE0;
 
 import java.util.ArrayList;
@@ -20,8 +24,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static org.lwjgl.opengl.GL11.*;
 
 import tk.luminos.Application;
 import tk.luminos.gameobjects.GameObject;
@@ -68,8 +70,8 @@ public class MasterRenderer {
 
 	public static float FOV = 70;
 	public static float NEAR_PLANE = .15f;
-	public static float FAR_PLANE = 800f;
-	public static float SKYBOX_PLANE = 1500f;
+	public static float FAR_PLANE = 1500f;
+	public static float SKYBOX_PLANE = 1500 * 1.8f;
 
 	public static float RED = 135.0f / 255.0f;
 	public static float GREEN = 206.0f / 255.0f;
@@ -103,15 +105,31 @@ public class MasterRenderer {
 	private Map<TexturedModel, List<GameObject>> entities = new HashMap<TexturedModel,List<GameObject>>();
 	private Map<TexturedModel, List<GameObject>> normalMapEntities = new HashMap<TexturedModel,List<GameObject>>();
 	private List<Terrain> terrains = new ArrayList<Terrain>();
+	
+	private static MasterRenderer instance;
+	
+	public static MasterRenderer create(Camera camera) throws Exception {
+		if (instance != null) {
+			System.err.println("ERROR: MINOR - MasterRenderer already created.");
+			return instance;
+		}
+		return (instance = new MasterRenderer(camera));
+	}
+	
+	public static MasterRenderer getInstance() {
+		if (instance == null)
+			throw new NullPointerException("Master Renderer is not initialized!");
+		return instance;
+	}
 
 	/**
 	 * Constructor used to create a Master Renderer
 	 * 
-	 * @param loader		Passes loader used for rendering
+	 * @param Loader.getInstance()		Passes Loader.getInstance() used for rendering
 	 * @param camera		Camera used to create projection matrix of
 	 * @throws Exception	Exception for if file isn't found or cannot be handled
 	 */
-	public MasterRenderer(Loader loader, Camera camera) throws Exception {
+	private MasterRenderer(Camera camera) throws Exception {
 		enableCulling();
 		cullFace(GL_BACK);
 		gameObjectShader = new GameObjectShader();
@@ -122,18 +140,18 @@ public class MasterRenderer {
 		terrainShader = new TerrainShader();
 		textShader = new TextShader();
 		waterShader = new WaterShader();
-
+		
 		projectionMatrix = createProjectionMatrix(FOV, FAR_PLANE, NEAR_PLANE);
 		skyboxMatrix = createProjectionMatrix(FOV, SKYBOX_PLANE, NEAR_PLANE);
 		gameObjectRenderer = new GameObjectRenderer(gameObjectShader, projectionMatrix);
-		guiRenderer = new GuiRenderer(guiShader, loader);
+		guiRenderer = new GuiRenderer(guiShader, Loader.getInstance());
 		normalMapRenderer = new NormalMapRenderer(normalMapShader, projectionMatrix);
 		shadowRenderer = new ShadowMapMasterRenderer(shadowShader, camera);		
-		skyboxRenderer = new SkyboxRenderer(skyboxShader, loader, skyboxMatrix);
+		skyboxRenderer = new SkyboxRenderer(skyboxShader, Loader.getInstance(), skyboxMatrix);
 		terrainRenderer = new TerrainRenderer(terrainShader, projectionMatrix);
-		textRenderer = new TextRenderer(textShader, loader);
+		textRenderer = new TextRenderer(textShader, Loader.getInstance());
 		buffers = new WaterFrameBuffers();
-		waterRenderer = new WaterRenderer(loader, waterShader, projectionMatrix, buffers, "res/textures/waterdudv.png", "res/textures/waternormal.png");
+		waterRenderer = new WaterRenderer(Loader.getInstance(), waterShader, projectionMatrix, buffers, "res/textures/waterdudv.png", "res/textures/waternormal.png");
 
 		fis = new FrustumIntersectionFilter();
 	}
@@ -151,8 +169,14 @@ public class MasterRenderer {
 	 */
 	public void renderScene(List<GameObject> entities, List<Terrain> terrains, List<PointLight> lights, DirectionalLight sun, Vector3 focalPoint, Camera camera, Vector4 clipPlane) {
 		fis.update(projectionMatrix, MathUtils.createViewMatrix(camera));
-		if (entities == null)
-			entities = new ArrayList<GameObject>();
+		
+		Runnable filter = () -> {
+			entities.parallelStream().forEach(entity -> entity.setRenderable(fis.inside(entity.getPosition(), 10)));
+			entities.parallelStream().forEach(entity -> entity.setRenderable(MathUtils.getDistance(entity.getPosition(), camera.getPosition()) < entity.getRenderDistance()));
+		};
+		Thread filterRunner = new Thread(filter);
+		filterRunner.start();
+		
 		if (terrains == null) 
 			terrains = new ArrayList<Terrain>();
 		Iterator<Terrain> terrainIterator = terrains.iterator();
@@ -165,6 +189,8 @@ public class MasterRenderer {
 		if (lights == null) {
 			lights = new ArrayList<PointLight>();
 		}
+		
+		while (filterRunner.isAlive()) {};
 		if (!STREAMS) {
 			Iterator<GameObject> gameObjectIterator = entities.iterator();
 			while (gameObjectIterator.hasNext()) {
@@ -177,7 +203,7 @@ public class MasterRenderer {
 			this.entities = entities
 					.stream()
 					.parallel()
-					.filter(entity -> MathUtils.getDistance(entity.getPosition(), camera.getPosition()) < entity.getRenderDistance())
+					.filter(entity -> entity.isRenderable())
 					.collect(Collectors.groupingBy(GameObject::getModel));
 		}
 		if (WIREFRAME)
@@ -248,7 +274,7 @@ public class MasterRenderer {
 		float distance = 2 * (camera.getPosition().y);
 		camera.getPosition().y -= distance;
 		camera.invertPitch();
-		renderScene(gameObjects, terrains, lights, sun, focalPoint, camera, new Vector4(0, 1, 0, 1));
+		renderScene(gameObjects, terrains, lights, sun, focalPoint, camera, new Vector4(0, 1, 0, 0.01f));
 		camera.getPosition().y += distance;
 		camera.invertPitch();
 		buffers.bindRefractionFrameBuffer();
@@ -385,7 +411,7 @@ public class MasterRenderer {
 			}
 			else {
 				entities = ents.stream().parallel()
-						.filter(entity -> entity.isRenderable() && MathUtils.getDistance(entity.getPosition(), focalPoint) < (entity.getRenderDistance() < ShadowBox.SHADOW_DISTANCE ? entity.getRenderDistance() : ShadowBox.SHADOW_DISTANCE))
+						.filter(entity -> entity.isRenderable() && MathUtils.getDistance(entity.getPosition(), focalPoint) < (entity.getRenderDistance() < ShadowBox.SHADOW_DISTANCE ? entity.getRenderDistance() : ShadowBox.SHADOW_DISTANCE * 2))
 						.collect(Collectors.groupingBy(GameObject::getModel));
 			}
 			if (ters == null)
@@ -393,7 +419,7 @@ public class MasterRenderer {
 			Iterator<Terrain> terrains = ters.iterator();
 			while (terrains.hasNext()) {
 				Terrain terrain = terrains.next();
-				if (MathUtils.getDistance((Vector3) terrain.getPosition(), focalPoint) < ShadowBox.SHADOW_DISTANCE) 
+				if (MathUtils.getDistance((Vector3) terrain.getPosition(), focalPoint) < ShadowBox.SHADOW_DISTANCE + ShadowBox.OFFSET) 
 					processTerrain(terrain);
 			}
 			shadowRenderer.render(this.entities, this.terrains, sun);
@@ -482,5 +508,3 @@ public class MasterRenderer {
 	}
 
 }
-
-

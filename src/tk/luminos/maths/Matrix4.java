@@ -645,5 +645,29 @@ public class Matrix4 {
 		mat.m33 = data[15];
 		return mat;
 	}
+	
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Matrix4))
+			return false;
+		Matrix4 other = (Matrix4) obj;
+		return other.m00 == m00 &&
+			   other.m01 == m01 &&
+			   other.m02 == m02 &&
+			   other.m03 == m03 &&
+			   other.m10 == m10 &&
+			   other.m11 == m11 &&
+			   other.m12 == m12 &&
+			   other.m13 == m13 &&
+			   other.m20 == m20 &&
+			   other.m21 == m21 &&
+			   other.m22 == m22 &&
+			   other.m23 == m23 &&
+			   other.m30 == m30 &&
+			   other.m31 == m31 &&
+			   other.m32 == m32 &&
+			   other.m33 == m33;
+	}
 
 }

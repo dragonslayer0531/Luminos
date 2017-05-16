@@ -28,6 +28,26 @@ public class Loader {
 	
 	private ModelLoader modelLoader = new ModelLoader();
 	private ImageLoader imageLoader = new ImageLoader();
+	
+	private static Loader instance;
+	
+	public static Loader create() {
+		if (instance != null) {
+			System.err.println("ERROR: MINOR - Loader already created.");
+			return instance;
+		}
+		return (instance = new Loader());
+	}
+	
+	public static Loader getInstance() {
+		if (instance == null)
+			throw new NullPointerException("Loader is not initialized!");
+		return instance;
+	}
+	
+	private Loader() {
+		
+	}
 
 	/**
 	 * Loads an array of positions to the graphics card
@@ -146,10 +166,11 @@ public class Loader {
 	/**
 	 * Removes all VAOs, VBOs, and Textures from the VRAM
 	 */
-	public void cleanUp() {
+	public void dispose() {
 		for (Integer vao : vaos) GL30.glDeleteVertexArrays(vao);
 		for (Integer vbo : vbos) GL15.glDeleteBuffers(vbo);
 		for (Integer texture : textures) GL11.glDeleteTextures(texture);
+		instance = null;
 	}
 
 }

@@ -44,5 +44,18 @@ public class TexturedModel {
 	public Material getMaterial() {
 		return material;
 	}
+	
+	/**
+	 * Checks if TexturedModels have the same material and raw model
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		if (!(obj instanceof TexturedModel)) 
+			return false;
+		TexturedModel other = (TexturedModel) obj;
+		return other.getRawModel().equals(this.getRawModel()) && other.getMaterial().equals(this.getMaterial());
+	}
 
 }

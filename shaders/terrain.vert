@@ -50,7 +50,7 @@ void main(void){
 	
 	distance = distance - (shadowDistance - transitionDistance);
 	distance = distance / transitionDistance;
-	shadowCoords.w = clamp(1 - distance, 0, 1);
+	shadowCoords.w = clamp(1.0 - distance, 0.0, 1.0);
 	
 	for (int i = 0; i < _MAX_LIGHTS_; i++) {
 		pass_PointLights[i].attenuation = pointLights[i].attenuation;

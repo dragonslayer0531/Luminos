@@ -9,19 +9,19 @@ import tk.luminos.maths.Vector3;
 
 /**
  * 
- * Interface for game objects
+ * Base class for game objects
  * 
  * @author Nick Clark
  * @version 1.0
  *
  */
 
-public abstract class GameObject extends ComponentEntity implements SceneObject {
+public class GameObject extends ComponentEntity implements SceneObject {
 	
-	private TexturedModel model;
 	private boolean isRenderable;
 	private float renderDistance;
 	private Transformation transform;
+	private String id = "DEFAULT";
 		
 	/**
 	 * Creates new game object
@@ -32,7 +32,7 @@ public abstract class GameObject extends ComponentEntity implements SceneObject 
 	 * @param scale		scale of object
 	 */
 	public GameObject(TexturedModel model, Vector3 position, Vector3 rotation, Vector3 scale) {
-		this.model = model;
+		this.addComponent(new Model(model));
 		transform = new Transformation(position, rotation, scale);
 		transform.constructModelMatrix();
 		isRenderable = true;
@@ -43,7 +43,7 @@ public abstract class GameObject extends ComponentEntity implements SceneObject 
 	 * 
 	 * @param position	new position
 	 */
-	public void setPosition(Vector3 position) {
+	public final void setPosition(Vector3 position) {
 		transform.position = position;
 		transform.constructModelMatrix();
 	}
@@ -53,7 +53,7 @@ public abstract class GameObject extends ComponentEntity implements SceneObject 
 	 * 
 	 * @param rotation	new rotation
 	 */
-	public void setRotation(Vector3 rotation) {
+	public final void setRotation(Vector3 rotation) {
 		transform.rotation = rotation;
 		transform.constructModelMatrix();
 	}
@@ -63,7 +63,7 @@ public abstract class GameObject extends ComponentEntity implements SceneObject 
 	 * 
 	 * @param scale		new scale
 	 */
-	public void setScale(Vector3 scale) {
+	public final void setScale(Vector3 scale) {
 		transform.scale = scale;
 		transform.constructModelMatrix();
 	}
@@ -73,7 +73,7 @@ public abstract class GameObject extends ComponentEntity implements SceneObject 
 	 * 
 	 * @return	model matrix
 	 */
-	public Matrix4 getModelMatrix() {
+	public final Matrix4 getModelMatrix() {
 		return transform.getComponent();
 	}
 	
@@ -82,8 +82,8 @@ public abstract class GameObject extends ComponentEntity implements SceneObject 
 	 * 
 	 * @return	model
 	 */
-	public TexturedModel getModel() {
-		return model;
+	public final TexturedModel getModel() {
+		return (TexturedModel) this.getComponent(Model.class).getComponent();
 	}
 	
 	/**
@@ -91,7 +91,7 @@ public abstract class GameObject extends ComponentEntity implements SceneObject 
 	 * 
 	 * @return	position
 	 */
-	public Vector3 getPosition() {
+	public final Vector3 getPosition() {
 		return transform.position;
 	}
 	
@@ -100,7 +100,7 @@ public abstract class GameObject extends ComponentEntity implements SceneObject 
 	 * 
 	 * @return	rotation
 	 */
-	public Vector3 getRotation() {
+	public final Vector3 getRotation() {
 		return transform.rotation;
 	}
 	
@@ -109,7 +109,7 @@ public abstract class GameObject extends ComponentEntity implements SceneObject 
 	 * 
 	 * @return	scale
 	 */
-	public Vector3 getScale() {
+	public final Vector3 getScale() {
 		return transform.scale;
 	}
 	
@@ -118,7 +118,7 @@ public abstract class GameObject extends ComponentEntity implements SceneObject 
 	 * 
 	 * @return	is object renderable
 	 */
-	public boolean isRenderable() {
+	public final boolean isRenderable() {
 		return isRenderable;
 	}
 	
@@ -127,7 +127,7 @@ public abstract class GameObject extends ComponentEntity implements SceneObject 
 	 * 
 	 * @return		render distance
 	 */
-	public float getRenderDistance() {
+	public final float getRenderDistance() {
 		return renderDistance;
 	}
 
@@ -136,7 +136,7 @@ public abstract class GameObject extends ComponentEntity implements SceneObject 
 	 * 
 	 * @param renderDistance		new render distance
 	 */
-	public void setRenderDistance(float renderDistance) {
+	public final void setRenderDistance(float renderDistance) {
 		this.renderDistance = renderDistance;
 	}
 
@@ -145,7 +145,7 @@ public abstract class GameObject extends ComponentEntity implements SceneObject 
 	 * 
 	 * @param isRenderable		is object renderable
 	 */
-	public void setRenderable(boolean isRenderable) {
+	public final void setRenderable(boolean isRenderable) {
 		this.isRenderable = isRenderable;
 	}
 	
@@ -156,7 +156,7 @@ public abstract class GameObject extends ComponentEntity implements SceneObject 
 	 */
 	@Override
 	public String getID() {
-		return null;
+		return id;
 	}
 	
 	/**
@@ -166,7 +166,7 @@ public abstract class GameObject extends ComponentEntity implements SceneObject 
 	 */
 	@Override
 	public void setID(String id) {
-		
+		this.id = id;
 	}
 
 	/**
@@ -176,7 +176,22 @@ public abstract class GameObject extends ComponentEntity implements SceneObject 
 	 * @param factor		Factor of movement
 	 */
 	public void move(List<Terrain> terrains, float factor) {
-		
+		// DEFAULT MOVE METHOD: DOES NOTHING
+	}
+	
+	/**
+	 * Checks if two Game Objects are equivalent
+	 * 
+	 * @return				If equivalent
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		if (!(obj instanceof GameObject))
+			return false;
+		GameObject other = (GameObject) obj;
+		return other.getModel().equals(this.getModel()) && other.getModelMatrix().equals(this.getModelMatrix());
 	}
 	
 }

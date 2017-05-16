@@ -28,17 +28,6 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Luminos/lib/native-win"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/jar/lwjgl-stb.jar" sourcepath="lib/source/lwjgl-stb-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/Luminos/lib/javadoc/lwjgl-stb-javadoc.jar!/"/>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Luminos/lib/native-win"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="lib/jar/lwjgl-opencl.jar" sourcepath="lib/source/lwjgl-opencl-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/Luminos/lib/javadoc/lwjgl-opencl-javadoc.jar!/"/>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Luminos/lib/native-win"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

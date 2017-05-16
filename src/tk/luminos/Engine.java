@@ -10,7 +10,7 @@ import tk.luminos.graphics.render.MasterRenderer;
 import tk.luminos.graphics.shaders.GLSLVersion;
 import tk.luminos.loaders.Loader;
 import tk.luminos.physics.PhysicsEngine;
-import tk.luminos.utilities.Timer;
+import tk.luminos.util.Timer;
 
 /**
  * 
@@ -45,8 +45,8 @@ public class Engine {
 	 * @param loader			Loads the required objects to the GPU
 	 * @throws Exception 		Thrown if shader programs do not compile properly
 	 */
-	public static void createEngine(MasterRenderer masterRenderer, Loader loader) throws Exception {
-		renderEngine = new RenderEngine(new SceneManager(masterRenderer, loader));
+	public static void createEngine(MasterRenderer masterRenderer) throws Exception {
+		renderEngine = new RenderEngine(new SceneManager(masterRenderer, Loader.getInstance()));
 		Thread.currentThread().setName("LUMINOS_ENGINE:_GRAPHICS");
 	}
 	
@@ -115,6 +115,7 @@ public class Engine {
 		renderEngine.dispose();
 		renderEngine.join();
 		glErrorCallback.free();
+		Loader.getInstance().dispose();
 	}
 	
 	/**

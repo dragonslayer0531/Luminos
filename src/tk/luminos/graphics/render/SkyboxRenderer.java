@@ -19,7 +19,7 @@ import tk.luminos.graphics.shaders.SkyboxShader;
 import tk.luminos.loaders.Loader;
 import tk.luminos.maths.Matrix4;
 import tk.luminos.maths.Vector3;
-import tk.luminos.utilities.DateUtils;
+import tk.luminos.util.DateUtils;
 
 /**
  * 

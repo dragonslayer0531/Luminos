@@ -240,5 +240,18 @@ public class Material {
 	public void setFakeLighting(int fakeLighting) {
 		this.fakeLighting = fakeLighting;		
 	}
+	
+	/**
+	 * Checks to see if material ids are equivalent 
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Material)) 
+			return false;
+		Material other = (Material) obj;
+		return other.getDiffuseID() == this.getDiffuseID() && other.getSpecularID() == this.getSpecularID() && other.getBumpID() == this.getBumpID() && other.getNormalID() == this.getNormalID();
+	}
 
 }

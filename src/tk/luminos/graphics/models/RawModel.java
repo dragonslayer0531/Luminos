@@ -41,5 +41,18 @@ public class RawModel {
 	public int getVertexCount() {
 		return vertexCount;
 	}
+	
+	/**
+	 * Checks raw models for equality
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		if (!(obj instanceof RawModel)) 
+			return false;
+		RawModel other = (RawModel) obj;
+		return vaoID == other.vaoID;
+	}
 
 }

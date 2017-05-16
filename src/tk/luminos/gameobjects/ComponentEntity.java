@@ -11,15 +11,15 @@ import java.util.Map;
  */
 abstract class ComponentEntity {
 	
-	protected Map<String, Component<?>> components = new HashMap<String, Component<?>>();
+	protected Map<Class<?>, Component<?>> components = new HashMap<Class<?>, Component<?>>();
 	
 	/**
 	 * Get the component corresponding to the given name
 	 * 
-	 * @param name		name of component
+	 * @param name		class of component
 	 * @return			value of component
 	 */
-	public Component<?> getComponent(String name)
+	public Component<?> getComponent(Class<?> name)
 	{
 		return components.get(name);
 	}
@@ -27,12 +27,11 @@ abstract class ComponentEntity {
 	/**
 	 * Adds a component to the entity
 	 * 
-	 * @param name		Name of component
 	 * @param value		Value of component
 	 */
-	public void addComponent(String name, Component<?> value)
+	public void addComponent(Component<?> value)
 	{
-		components.put(name, value);
+		components.put(value.getClass(), value);
 	}
 	
 	/**

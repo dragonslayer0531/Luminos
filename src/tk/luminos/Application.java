@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tk.luminos.display.Window;
-import tk.luminos.utilities.Configuration;
+import tk.luminos.util.Configuration;
 
 /**
  * 
@@ -24,14 +24,32 @@ public class Application extends Thread implements Runnable {
 	
 	private static Configuration config;
 	
+	/**
+	 * Loads the settings file to all applications
+	 * 
+	 * @param file				name of file
+	 * @throws IOException		thrown if file cannot be found/opened
+	 */
 	public static void loadSettings(String file) throws IOException {
 		config = Configuration.loadSettings(file);
 	}
 	
+	/**
+	 * Sets configuration setting
+	 * 
+	 * @param setting		name of setting
+	 * @param value			value of setting
+	 */
 	public static void setValue(String setting, Integer value)  {
 		config.setValue(setting, value);
 	}
 	
+	/**
+	 * Gets integer value of configuration
+	 * 
+	 * @param setting		name of setting
+	 * @return				value of setting
+	 */
 	public static Integer getValue(String setting) {
 		return config.getValue(setting);
 	}
