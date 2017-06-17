@@ -4,8 +4,10 @@ import java.util.List;
 
 import tk.luminos.graphics.SceneObject;
 import tk.luminos.graphics.models.TexturedModel;
-import tk.luminos.maths.Matrix4;
 import tk.luminos.maths.Vector3;
+import tk.luminos.serialization.DBObject;
+import tk.luminos.serialization.DBObjectType;
+import tk.luminos.serialization.Serializable;
 
 /**
  * 
@@ -16,12 +18,15 @@ import tk.luminos.maths.Vector3;
  *
  */
 
-public class GameObject extends ComponentEntity implements SceneObject {
+public class GameObject extends ComponentEntity implements Serializable<DBObject>, SceneObject {
 	
 	private boolean isRenderable;
 	private float renderDistance;
 	private Transformation transform;
 	private String id = "DEFAULT";
+	
+	private List<GameObject> children = null;
+	private GameObject parent = null;
 		
 	/**
 	 * Creates new game object
@@ -32,10 +37,27 @@ public class GameObject extends ComponentEntity implements SceneObject {
 	 * @param scale		scale of object
 	 */
 	public GameObject(TexturedModel model, Vector3 position, Vector3 rotation, Vector3 scale) {
-		this.addComponent(new Model(model));
+		this.addComponent("model", new Model(model));
 		transform = new Transformation(position, rotation, scale);
 		transform.constructModelMatrix();
 		isRenderable = true;
+	}
+	
+	/**
+	 * Creates new game object
+	 * 
+	 * @param model		model to render
+	 * @param position	position of object
+	 * @param rotation	rotation of object
+	 * @param scale		scale of object
+	 * @param children	children of object
+	 */
+	public GameObject(TexturedModel model, Vector3 position, Vector3 rotation, Vector3 scale, List<GameObject> children) {
+		this.addComponent("model", new Model(model));
+		transform = new Transformation(position, rotation, scale);
+		transform.constructModelMatrix();
+		isRenderable = true;
+		this.children = children;
 	}
 	
 	/**
@@ -73,8 +95,8 @@ public class GameObject extends ComponentEntity implements SceneObject {
 	 * 
 	 * @return	model matrix
 	 */
-	public final Matrix4 getModelMatrix() {
-		return transform.getComponent();
+	public final Transformation getTransformation() {
+		return transform;
 	}
 	
 	/**
@@ -83,7 +105,7 @@ public class GameObject extends ComponentEntity implements SceneObject {
 	 * @return	model
 	 */
 	public final TexturedModel getModel() {
-		return (TexturedModel) this.getComponent(Model.class).getComponent();
+		return (TexturedModel) this.getComponent("model").getComponent();
 	}
 	
 	/**
@@ -92,7 +114,10 @@ public class GameObject extends ComponentEntity implements SceneObject {
 	 * @return	position
 	 */
 	public final Vector3 getPosition() {
-		return transform.position;
+		if (parent == null)
+			return transform.position;
+		else 
+			return Vector3.add(transform.position, parent.transform.position, null);
 	}
 	
 	/**
@@ -101,7 +126,10 @@ public class GameObject extends ComponentEntity implements SceneObject {
 	 * @return	rotation
 	 */
 	public final Vector3 getRotation() {
-		return transform.rotation;
+		if (parent == null)
+			return transform.rotation;
+		else 
+			return Vector3.add(transform.rotation, parent.transform.rotation, null);
 	}
 	
 	/**
@@ -168,15 +196,50 @@ public class GameObject extends ComponentEntity implements SceneObject {
 	public void setID(String id) {
 		this.id = id;
 	}
+	
+	/**
+	 * Gets the children
+	 * 
+	 * @return the children
+	 */
+	public List<GameObject> getChildren() {
+		return children;
+	}
 
 	/**
-	 * Moves entity across terrains
+	 * Gets the parent GameObject
 	 * 
-	 * @param terrains		Terrain list of world
-	 * @param factor		Factor of movement
+	 * @return the parent
 	 */
-	public void move(List<Terrain> terrains, float factor) {
-		// DEFAULT MOVE METHOD: DOES NOTHING
+	public GameObject getParent() {
+		return parent;
+	}
+	
+	/**
+	 * Adds a child game object
+	 * 
+	 * @parma child		child to add
+	 */
+	public void addChild(GameObject child) {
+		this.children.add(child);
+		child.parent = this;
+	}
+	
+	/**
+	 * Removes a child game object
+	 * 
+	 * @param child		child to remove
+	 */
+	public void removeChild(GameObject child) {
+		this.children.remove(child);
+		child.parent = null;
+	}
+	
+	/**
+	 * Default update method: does nothing
+	 */
+	public void update() {
+		// DEFAULT UPDATE METHOD: DOES NOTHING
 	}
 	
 	/**
@@ -191,7 +254,15 @@ public class GameObject extends ComponentEntity implements SceneObject {
 		if (!(obj instanceof GameObject))
 			return false;
 		GameObject other = (GameObject) obj;
-		return other.getModel().equals(this.getModel()) && other.getModelMatrix().equals(this.getModelMatrix());
+		return other.getModel().equals(this.getModel()) && other.getTransformation().getComponent().equals(this.getTransformation().getComponent());
+	}
+	
+	public DBObject serialize(String name) {
+		DBObject object = new DBObject(name, DBObjectType.GAMEOBJECT);
+		object.addArray(transform.position.serialize("position"));
+		object.addArray(transform.rotation.serialize("rotation"));
+		object.addArray(transform.scale.serialize("scale"));
+		return object;
 	}
 	
 }

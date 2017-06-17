@@ -9,7 +9,7 @@ package tk.luminos.graphics;
  *
  */
 
-public class TerrainTexture implements Texture {
+public class TerrainTexture {
 	
 	private int textureID;
 

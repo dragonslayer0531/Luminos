@@ -1,6 +1,7 @@
 package tk.luminos.graphics;
 
 import tk.luminos.gameobjects.GameObject;
+import tk.luminos.graphics.render.SceneRenderer;
 import tk.luminos.maths.Vector3;
 
 /**
@@ -28,19 +29,28 @@ public class Camera {
 	 * 
 	 * @param player	Determines the focal {@link GameObject} of the camera
 	 */
-	public Camera(GameObject player){
+	public Camera(GameObject player) {
 		this.player = player;
+		try {
+			SceneRenderer.getInstance();
+		} catch (NullPointerException e) {
+			try {
+				SceneRenderer.create(this);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
 	}
 	
 	/**
 	 * Called after the focal entity moves.  Moves the camera in respect to the entity
 	 */
-	public void move(){
+	public void move() {
 		float horizontalDistance = calculateHorizontalDistance();
 		float verticalDistance = calculateVerticalDistance();
 		calculateCameraPosition(horizontalDistance, verticalDistance);
 		yaw = 180 - (player.getRotation().y + angleAroundPlayer);
-		yaw%=360;
+		yaw %= 360;
 	}
 
 	/**
@@ -103,7 +113,7 @@ public class Camera {
 	 * @param horizDistance  	Horizontal distance between camera and entity
 	 * @param verticDistance	Vertical distance between camera and entity
 	 */
-	private void calculateCameraPosition(float horizDistance, float verticDistance){
+	private void calculateCameraPosition(float horizDistance, float verticDistance) {
 		float theta = player.getRotation().y + angleAroundPlayer;
 		float offsetX = (float) (horizDistance * Math.sin(Math.toRadians(theta)));
 		float offsetZ = (float) (horizDistance * Math.cos(Math.toRadians(theta)));
@@ -118,7 +128,7 @@ public class Camera {
 	 * 
 	 * @return X offset of camera
 	 */
-	private float calculateHorizontalDistance(){
+	private float calculateHorizontalDistance() {
 		return (float) (distanceFromPlayer * Math.cos(Math.toRadians(pitch)));
 	}
 	
@@ -127,7 +137,7 @@ public class Camera {
 	 * 
 	 * @return Z offset of camera
 	 */
-	private float calculateVerticalDistance(){
+	private float calculateVerticalDistance() {
 		return (float) (distanceFromPlayer * Math.sin(Math.toRadians(pitch)));
 	}
 	

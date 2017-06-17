@@ -16,7 +16,7 @@ import tk.luminos.util.Configuration;
  *
  */
 
-public class Application extends Thread implements Runnable {
+public class Application {
 	
 	private List<Event> actions = new ArrayList<Event>();
 	private List<Thread> threads = new ArrayList<Thread>();
@@ -61,22 +61,6 @@ public class Application extends Thread implements Runnable {
 	public boolean shouldClose = false;
 	
 	/**
-	 * Calls the run method of the current thread
-	 */
-	@Override
-	public void run() {
-		super.run();
-	}
-	
-	/**
-	 * Calls the start method of the current thread
-	 */
-	@Override
-	public void start() {
-		super.start();
-	}
-	
-	/**
 	 * Renders the current scene to the default frame buffer
 	 * 
 	 * @param window		Window to render to
@@ -84,12 +68,14 @@ public class Application extends Thread implements Runnable {
 	 */
 	public void render(Window window) throws Exception {
 		while (!window.shouldClose() && !shouldClose) {
-			Engine.update(scene, window);
 			for (Event action : actions) {
 				if (action.eventPerformed())
 					action.act();
 			}
+			scene.getGameObjects().stream().parallel().forEach(obj -> obj.update());
+			Engine.update(scene, window);
 		}
+		this.shouldClose = true;
 	}
 	
 	/**
@@ -107,7 +93,7 @@ public class Application extends Thread implements Runnable {
 	 * @param scene		Scene to render
 	 * @return			Previous scene
 	 */
-	public Scene swapScene(Scene scene) {
+	public Scene setActiveScene(Scene scene) {
 		Scene old = this.scene;
 		this.scene = scene;
 		return old;
@@ -138,7 +124,6 @@ public class Application extends Thread implements Runnable {
 		for (Thread thread : threads) {
 			thread.join();
 		}
-		this.join();
 	}
 	
 	/**

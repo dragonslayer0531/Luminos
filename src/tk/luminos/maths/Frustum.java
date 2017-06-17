@@ -11,6 +11,8 @@ import tk.luminos.physics.BoundingSphere;
  */
 public class Frustum {
 	
+	public final static int SIZE = 24;
+	
 	static final int PLANE_NX = 0x0;
 	static final int PLANE_PX = 0x1;
 	static final int PLANE_NY = 0x2;

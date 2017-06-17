@@ -1,5 +1,8 @@
 package tk.luminos.maths;
 
+import tk.luminos.serialization.DBArray;
+import tk.luminos.serialization.Serializable;
+
 /**
  * 
  * Creates 3 float array
@@ -8,12 +11,14 @@ package tk.luminos.maths;
  * @version 1.0
  *
  */
-public class Vector4 implements Vector {
+public class Vector4 implements Serializable<DBArray>, Vector {
 
 	/**
 	 * Entry variables
 	 */
 	public float x, y, z, w;
+	
+	public final static int SIZE = 4;
 
 	/**
 	 * Constructor initializing vector values to zero
@@ -182,11 +187,27 @@ public class Vector4 implements Vector {
 		return (left.x * right.x) + (left.y * right.y) + (left.z * right.z) + (left.w * right.w);
 	}
 	
+	public float dot(Vector y) {
+		if (!(y instanceof Vector4))
+			throw new IllegalArgumentException("Can only dot Vector4 with Vector4");
+		Vector4 other = (Vector4) y;
+		return this.x * other.x + this.y * other.y + this.z * other.z + this.w + other.w;
+	}
+	
 	/**
 	 * Converts vector to string
 	 */
 	public String toString() {
 		return "Vector4f [" + x + "," + y + "," + z + "," + w + "]";
+	}
+	
+	/**
+	 * Serializes a Vector4 object
+	 * 
+	 * @return data base array of object
+	 */
+	public DBArray serialize(String name) {
+		return DBArray.createFloatArray(name, new float[] {x, y, z, w});
 	}
 
 }

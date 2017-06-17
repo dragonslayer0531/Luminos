@@ -21,4 +21,12 @@ public interface Vector {
 	 */
 	public void normalize();
 
+	/**
+	 * Calculates the dot product of two vectors
+	 * 
+	 * @param y		right side vector
+	 * @return		dot product
+	 */
+	public float dot(Vector y);
+
 }

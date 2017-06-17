@@ -9,13 +9,10 @@ import javax.imageio.ImageIO;
 
 import tk.luminos.Application;
 import tk.luminos.Debug;
-import tk.luminos.filesystem.serialization.LDatabase;
-import tk.luminos.filesystem.serialization.LField;
-import tk.luminos.filesystem.serialization.LObject;
 import tk.luminos.graphics.ProceduralTerrainTexture;
 import tk.luminos.graphics.TerrainTexture;
 import tk.luminos.graphics.TerrainTexturePack;
-import tk.luminos.graphics.models.RawModel;
+import tk.luminos.graphics.VertexArray;
 import tk.luminos.loaders.Loader;
 import tk.luminos.maths.MathUtils;
 import tk.luminos.maths.Vector;
@@ -41,8 +38,7 @@ public class Terrain {
 
 	private float x;
 	private float z;
-	private int seed;
-	private RawModel model;
+	private VertexArray model;
 	private TerrainTexturePack texturePack;
 	private TerrainTexture blendMap;
 	private boolean renderable = true;
@@ -58,17 +54,15 @@ public class Terrain {
 	 * @param gridX			Terrain Grid X Position
 	 * @param gridZ			Terrain Grid Z Position
 	 * @param seed			PerlinNoise seed
-	 * @param loader		Loader to use
 	 * @param texturePack	Texture Pack to use
 	 */
-	public Terrain(float gridX, float gridZ, int seed, Loader loader, TerrainTexturePack texturePack) {
+	public Terrain(float gridX, float gridZ, int seed, TerrainTexturePack texturePack) {
 		this.texturePack = texturePack;
 		this.x = gridX * SIZE;
 		this.z = gridZ * SIZE;
-		this.seed = seed;
 		this.noise = new FractalNoise((int) gridX, (int) gridZ, VERTEX_COUNT, seed, TerrainType.Type.HILLS);
-		this.model = generateTerrain(loader, noise);
-		this.blendMap = new TerrainTexture(loader.loadTexture(ProceduralTerrainTexture.generateTerrainMap(this)));
+		this.model = generateTerrain(noise);
+		this.blendMap = new TerrainTexture(Loader.getInstance().loadTexture(ProceduralTerrainTexture.generateTerrainMap(this)));
 	}
 
 	/**
@@ -76,23 +70,22 @@ public class Terrain {
 	 * 
 	 * @param gridX			Terrain Grid X Position
 	 * @param gridZ			Terrain Grid Z Position
-	 * @param loader		Loader to use
 	 * @param texturePack	Texture Pack to use
 	 * @param blendMap		Blend Map for textures
 	 * @param heightMap		Height map to use
 	 */
-	public Terrain(float gridX, float gridZ, Loader loader, TerrainTexturePack texturePack, TerrainTexture blendMap, String heightMap) {
+	public Terrain(float gridX, float gridZ, TerrainTexturePack texturePack, TerrainTexture blendMap, String heightMap) {
 		this.texturePack = texturePack;
 		this.blendMap = blendMap;
 		this.x = gridX * SIZE;
 		this.z = gridZ * SIZE;
-		this.model = generateTerrain(loader, heightMap);
+		this.model = generateTerrain(heightMap);
 	}
 	
 	/**
 	 * Constructor
 	 * 
-	 * @param model			RawModel describing terrain
+	 * @param model			Vertex array describing terrain
 	 * @param heights		2 dimensional array describing height values
 	 * @param textures		2 dimensional array describing texture coordinates
 	 * @param blendMap		BufferedImage to use as blend map
@@ -101,7 +94,7 @@ public class Terrain {
 	 * @param gridZ			Grid Z coordinate
 	 * @throws Exception	Exception for if file isn't found or cannot be handled
 	 */
-	public Terrain(RawModel model, float[][] heights, List<String> textures, BufferedImage blendMap, Loader loader, float gridX, float gridZ) throws Exception {
+	public Terrain(VertexArray model, float[][] heights, List<String> textures, BufferedImage blendMap, Loader loader, float gridX, float gridZ) throws Exception {
 		this.model = model;
 		this.heights = heights;
 		this.texturePack = new TerrainTexturePack(new TerrainTexture(loader.loadTexture(textures.get(0))), 
@@ -116,14 +109,14 @@ public class Terrain {
 	/**
 	 * Constructor
 	 * 
-	 * @param model			RawModel describing terrain
+	 * @param model			VertexArray describing terrain
 	 * @param heights		2 dimensional array describing height values
 	 * @param textures		Texture Pack
 	 * @param blendMap		BufferedImage to use as blend map
 	 * @param x				X coordinate of terrain
 	 * @param z				Z coordinate of terrain
 	 */
-	public Terrain(RawModel model, float[][] heights, TerrainTexturePack textures, TerrainTexture blendMap, float x, float z) {
+	public Terrain(VertexArray model, float[][] heights, TerrainTexturePack textures, TerrainTexture blendMap, float x, float z) {
 		this.model = model;
 		this.heights = heights;
 		this.texturePack = textures;
@@ -180,9 +173,9 @@ public class Terrain {
 	/**
 	 * Get terrain's model
 	 * 
-	 * @return model describing terrain
+	 * @return vertex array describing terrain
 	 */
-	public RawModel getRawModel() {
+	public VertexArray getVertexArray() {
 		return model;
 	}
 
@@ -252,11 +245,10 @@ public class Terrain {
 	/**
 	 * Generates raw model of terrain
 	 * 
-	 * @param loader	Loader to be used
-	 * @param noise		Fractal Noise to be used in terrain height generation
+		 * @param noise		Fractal Noise to be used in terrain height generation
 	 * @return 			Model of terrain
 	 */
-	private RawModel generateTerrain(Loader loader, FractalNoise noise) {
+	private VertexArray generateTerrain(FractalNoise noise) {
 		int count = (int) Math.pow(VERTEX_COUNT, 2);
 		heights = new float[VERTEX_COUNT][VERTEX_COUNT];
 		vertices = new float[count * 3];
@@ -299,17 +291,16 @@ public class Terrain {
 			}
 		}
 		
-		return loader.loadToVAO(vertices, textureCoords, normals, indices);
+		return Loader.getInstance().load(vertices, textureCoords, normals, indices);
 	}
 
 	/**
 	 * Creates model of terrain
 	 * 
-	 * @param loader		Loader to be used
 	 * @param heightMap		Heightmap file to be used
 	 * @return 				Model describing the terrain
 	 */
-	private RawModel generateTerrain(Loader loader, String heightMap) {
+	private VertexArray generateTerrain(String heightMap) {
 
 		BufferedImage image = null;
 		try {
@@ -356,7 +347,7 @@ public class Terrain {
 				indices[pointer++] = bottomRight;
 			}
 		}
-		return loader.loadToVAO(vertices, textureCoords, normals, indices);
+		return Loader.getInstance().load(vertices, textureCoords, normals, indices);
 	}
 
 	/**
@@ -406,25 +397,6 @@ public class Terrain {
 		Vector2 increase = (Vector2) delta;
 		this.x += increase.x;
 		this.z += increase.y;
-	}
-	
-	public byte[] getBytes() {
-		LObject object = getLuminosObject();
-		byte[] data = new byte[object.getSize()];
-		object.getBytes(data, 0);
-		return data;
-	}
-	
-	public LObject getLuminosObject() {
-		LObject object = new LObject("terrain" + x +"_" + z);
-		object.addField(LField.Float("x", getX()));
-		object.addField(LField.Float("z", getZ()));
-		object.addField(LField.Integer("seed", seed));
-		return object;
-	}
-	
-	public void attachToLuminosDatabase(LDatabase database) {
-		database.addObject(getLuminosObject());
 	}
 	
 	public void setRenderable(boolean renderable) {

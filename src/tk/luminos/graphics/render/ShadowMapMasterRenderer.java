@@ -15,7 +15,6 @@ import tk.luminos.graphics.DirectionalLight;
 import tk.luminos.graphics.ShadowBox;
 import tk.luminos.graphics.ShadowFrameBuffer;
 import tk.luminos.graphics.models.TexturedModel;
-import tk.luminos.graphics.shaders.ShadowShader;
 import tk.luminos.maths.Matrix4;
 import tk.luminos.maths.Vector2;
 import tk.luminos.maths.Vector3;
@@ -34,7 +33,6 @@ public class ShadowMapMasterRenderer {
 	public static int SHADOW_MAP_SIZE = 8192;
 	 
     private ShadowFrameBuffer shadowFbo;
-    private ShadowShader shader;
     private ShadowBox shadowBox;
     private Matrix4 projectionMatrix = new Matrix4();
     private Matrix4 lightViewMatrix = new Matrix4();
@@ -46,14 +44,13 @@ public class ShadowMapMasterRenderer {
     /**
      * Constructor
      * 
-     * @param shader	Defines shader to be rendered with
      * @param camera	Camera to be passed to shadow box
+     * @throws Exception	Thrown if shader cannot be loaded
      */
-    public ShadowMapMasterRenderer(ShadowShader shader, Camera camera) {
-        this.shader = shader;
+    public ShadowMapMasterRenderer(Camera camera) throws Exception {
         shadowBox = new ShadowBox(lightViewMatrix, camera);
         shadowFbo = new ShadowFrameBuffer(SHADOW_MAP_SIZE, SHADOW_MAP_SIZE);
-        entityRenderer = new ShadowMapEntityRenderer(shader, projectionViewMatrix);
+        entityRenderer = new ShadowMapEntityRenderer(projectionViewMatrix);
     }
 
     /**
@@ -84,7 +81,7 @@ public class ShadowMapMasterRenderer {
      * Cleans up shader and fbo
      */
     public void dispose() {
-        shader.dispose();
+        entityRenderer.shader.dispose();
         shadowFbo.cleanUp();
     }
     
@@ -121,14 +118,14 @@ public class ShadowMapMasterRenderer {
         shadowFbo.bindFrameBuffer();
         glEnable(GL_DEPTH_TEST);
         glClear(GL_DEPTH_BUFFER_BIT);
-        shader.start();
+        entityRenderer.shader.start();
     }
 
     /** 
      * Stops shader and unbinds FBO
      */
     private void finish() {
-        shader.stop();
+        entityRenderer.shader.stop();
         shadowFbo.unbindFrameBuffer();
     }
 

@@ -21,6 +21,7 @@ import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
+import tk.luminos.graphics.FrameBufferObject;
 import tk.luminos.graphics.models.RawModel;
 import tk.luminos.graphics.shaders.ImageShader;
 import tk.luminos.loaders.Loader;
@@ -33,17 +34,27 @@ public class ImageRenderer {
 	
 	private RawModel quad;
 	private ImageShader shader;
+	
+	private FrameBufferObject fbo;
 
 	/**
 	 * Constructor
 	 * 
-	 * @param loader		Creates quad to render to
 	 * @throws Exception 	Thrown if shader file cannot be found, compiled, validated
 	 * 						or linked
 	 */
-	public ImageRenderer(Loader loader) throws Exception {
-		quad = loader.loadToVAO(POSITIONS, 2);
+	public ImageRenderer() throws Exception {
+		quad = Loader.getInstance().loadToVAO(POSITIONS, 2);
 		shader = new ImageShader();
+	}
+	
+	/**
+	 * Creates a new image renderer
+	 * 
+	 * @param fbo		Framebuffer Object to render to
+	 */
+	public ImageRenderer(FrameBufferObject fbo) {
+		this.fbo = fbo;
 	}
 	
 	/**
@@ -71,6 +82,15 @@ public class ImageRenderer {
 	 */
 	public void dispose() {
 		shader.dispose();
+	}
+	
+	/**
+	 * Get the attached frame buffer object
+	 * 
+	 * @return frame buffer object
+	 */
+	public FrameBufferObject getFrameBufferObject() {
+		return fbo;
 	}
 
 }

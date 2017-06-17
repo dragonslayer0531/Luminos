@@ -21,7 +21,7 @@ public interface List<T> extends Iterable<T> {
 	
 	/**
 	 * Adds an object to the list at a given position.  If the index is out of
-	 * bounds, the method throws an {@link ArrayIndexOutOfBounds} exception.
+	 * bounds, the method throws an {@link ArrayIndexOutOfBoundsException} exception.
 	 * 
 	 * @param index		Index to add at
 	 * @param obj		Object to add
@@ -30,7 +30,7 @@ public interface List<T> extends Iterable<T> {
 	
 	/**
 	 * Gets the object at a specified index.  If the index is out of
-	 * bounds, the method throws an {@link ArrayIndexOutOfBounds} exception.
+	 * bounds, the method throws an {@link ArrayIndexOutOfBoundsException} exception.
 	 * 
 	 * @param index		index to retreive
 	 * @return 			Object at index
@@ -56,7 +56,7 @@ public interface List<T> extends Iterable<T> {
 	
 	/**
 	 * Removes the object at the given index from the list.  If the index is out of
-	 * bounds, the method throws an {@link ArrayIndexOutOfBounds} exception.
+	 * bounds, the method throws an {@link ArrayIndexOutOfBoundsException} exception.
 	 * 
 	 * @param index		Index of object to remove
 	 * @return 			Object at that instance

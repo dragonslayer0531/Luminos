@@ -9,7 +9,7 @@ package tk.luminos.graphics;
  *
  */
 
-public class ParticleTexture implements Texture {
+public class ParticleTexture {
 
 	private int textureID;
 	private int numberOfRows;

@@ -39,14 +39,19 @@ public class PostProcessRenderer {
 	private List<PostProcess> processes = new ArrayList<PostProcess>();
 	private RawModel quad;
 	
+	private ImageRenderer imgRender;
+	
 	/**
 	 * Constructor
-	 * 
-	 * @param loader		Loads quad to GPU
 	 */
-	public PostProcessRenderer(Loader loader) {
-		quad = loader.loadToVAO(POSITIONS, 2);
-	}
+	public PostProcessRenderer() {
+		quad = Loader.getInstance().loadToVAO(POSITIONS, 2);
+		try {
+			imgRender = new ImageRenderer();
+		} catch (Exception e) {
+			throw new RuntimeException("Post processing was enabled, but could not be initialized:\n\n" + e.getMessage());
+		}
+ 	}
 	
 	/**
 	 * Loads shader to pipeline
@@ -89,11 +94,16 @@ public class PostProcessRenderer {
 		glBindVertexArray(0);
 	}
 	
+	public void render() {
+		
+	}
+	
 	/**
 	 * Cleans up all post processing shaders
 	 */
 	public void dispose() {
-		for(PostProcess shader : processes) shader.dispose();
+		for(PostProcess shader : processes)
+			shader.dispose();
 	}
 	
 	/**
@@ -103,6 +113,15 @@ public class PostProcessRenderer {
 		for(PostProcess process : processes) {
 			removeShader(process);
 		}
+	}
+	
+	/**
+	 * Gets the final renderer
+	 * 
+	 * @return final image renderer
+	 */
+	public ImageRenderer getRenderer() {
+		return imgRender;
 	}
 
 }

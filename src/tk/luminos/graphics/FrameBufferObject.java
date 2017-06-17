@@ -83,7 +83,8 @@ public class FrameBufferObject {
     private static int HEIGHT = Application.getValue("HEIGHT");
  
     /**
-     * Constructor
+     * Creates a new frame buffer object.  It can be used to store texture and depth
+     * data about the scene.
      * 
      * @param width				the width of the FBO.
      * @param height			the height of the FBO.
@@ -96,15 +97,17 @@ public class FrameBufferObject {
     }
     
     /**
-     * Constructor 
+     * Creates a new frame buffer object.  It can be used to store texture data
+     * about the scene.
      * 
      * @param width				Width of the FBO
      * @param height			Height of the FBO
+     * @param multisample		Determines if FBO should use MSAA
      */
-    public FrameBufferObject(int width, int height) {
+    public FrameBufferObject(int width, int height, boolean multisample) {
         this.width = width;
         this.height = height;
-        this.multisample = true;
+        this.multisample = multisample;
         initialiseFrameBuffer(DEPTH_RENDER_BUFFER);
     }
  
@@ -176,7 +179,7 @@ public class FrameBufferObject {
     	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     	glBindFramebuffer(GL_READ_FRAMEBUFFER, this.frameBuffer);
     	glDrawBuffer(GL_BACK);
-    	glBlitFramebuffer(0, 0, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    	glBlitFramebuffer(0, 0, width, height, 0, 0, WIDTH, HEIGHT, GL_COLOR_BUFFER_BIT, GL_NEAREST);
     	this.unbindFrameBuffer();
     }
  

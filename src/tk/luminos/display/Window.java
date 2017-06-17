@@ -1,5 +1,6 @@
 package tk.luminos.display;
 
+import static org.lwjgl.glfw.GLFW.GLFW_BLUE_BITS;
 import static org.lwjgl.glfw.GLFW.GLFW_CLIENT_API;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MAJOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MINOR;
@@ -8,9 +9,11 @@ import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_DISABLED;
 import static org.lwjgl.glfw.GLFW.GLFW_CURSOR_NORMAL;
 import static org.lwjgl.glfw.GLFW.GLFW_DOUBLEBUFFER;
 import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
+import static org.lwjgl.glfw.GLFW.GLFW_GREEN_BITS;
 import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_API;
 import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_DEBUG_CONTEXT;
 import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_FORWARD_COMPAT;
+import static org.lwjgl.glfw.GLFW.GLFW_RED_BITS;
 import static org.lwjgl.glfw.GLFW.GLFW_REFRESH_RATE;
 import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
 import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
@@ -18,12 +21,17 @@ import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
 import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
 import static org.lwjgl.glfw.GLFW.glfwFocusWindow;
 import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
+import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwSetCursorPosCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetFramebufferSizeCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetInputMode;
+import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowMonitor;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowSizeCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowTitle;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
@@ -31,7 +39,7 @@ import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.glfw.GLFW.glfwWindowHint;
-import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.opengl.GL.createCapabilities;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
@@ -56,8 +64,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -70,19 +76,17 @@ import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWMouseButtonCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
+import org.lwjgl.system.Platform;
 
 import tk.luminos.Application;
 import tk.luminos.Luminos;
 import tk.luminos.filesystem.ResourceLoader;
-import tk.luminos.graphics.render.GuiRenderer;
-import tk.luminos.graphics.shaders.GuiShader;
-import tk.luminos.graphics.ui.GUITexture;
-import tk.luminos.graphics.ui.UI;
+import tk.luminos.graphics.render.ImageRenderer;
 import tk.luminos.input.Keyboard;
 import tk.luminos.input.Mouse;
 import tk.luminos.input.MousePosition;
+import tk.luminos.loaders.AssetCache;
 import tk.luminos.loaders.Loader;
-import tk.luminos.maths.Vector2;
 
 /**
  * 
@@ -102,35 +106,49 @@ public class Window {
 	private GLFWErrorCallback errorCallback;
 	private GLFWKeyCallback keyCallback;
 	private GLFWMouseButtonCallback mouseButtonCallback;
-	private GLFWCursorPosCallback cursorPosCallback;
 	private GLFWFramebufferSizeCallback framebufferCallback;
 	private GLFWWindowSizeCallback windowSizeCallback;
+	private GLFWCursorPosCallback mousePosition;
 
-	private Keyboard keyboard;
-	private Mouse mouse;
-	private MousePosition mousePosition;
 
 	private String title;
 	private int width, height;
 	private boolean vsync, fullscreen, visible = false, resizable, vismouse;
 	private long window;
 	private FrameRateCounter frameRateCounter;
-	private float mouseX, mouseY, mouseDX, mouseDY;
 	private Device device;
+	
+	private static Window instance;
 	
 	/**
 	 * Refresh rate of the {@link Device} displaying the window
 	 */
 	public static int REFRESH_RATE = 60;
 	
-	private static Window instance;
-	
+	/**
+	 * Creates a new GLFW window
+	 * 
+	 * @param title 		Sets the GLFW Window's title
+	 * @param width			Width of GLFW window
+	 * @param height		Height of GLFW window
+	 * @param vsync			Determines whether the window utilizes Vertical Synchronization
+	 * @param fullscreen 	Determines whether the window and OpenGL Viewport is fullscreen.  Overrides the Width and Height if true
+	 * @param resizable		Determines if the window is resizable
+	 * @param vismouse		Determines if the mouse is visible when window is in focus
+	 * @return				New global GLFW window
+	 * @throws Exception	Thrown if GLFW cannot be initialized
+	 */
 	public static Window create(String title, int width, int height, boolean vsync, boolean fullscreen, boolean resizable, boolean vismouse) throws Exception {
 		if (instance != null) 
-			throw new RuntimeException("Loader already initialized!");
+			throw new RuntimeException("Window already initialized!");
 		return (instance = new Window(title, width, height, vsync, fullscreen, resizable, vismouse));
 	}
 	
+	/**
+	 * Gets the current global instance of the Window
+	 * 
+	 * @return				Global GLFW window instance
+	 */
 	public static Window getInstance() {
 		if (instance == null)
 			throw new NullPointerException("Window is not initialized");
@@ -150,7 +168,6 @@ public class Window {
 	 * @throws Exception	Thrown if GLFW cannot be initialized
 	 */
 	private Window(String title, int width, int height, boolean vsync, boolean fullscreen, boolean resizable, boolean vismouse) throws Exception {
-
 		this.title = title;
 		this.width = width;
 		this.height = height;
@@ -159,9 +176,8 @@ public class Window {
 		this.fullscreen = fullscreen;
 		this.resizable = resizable;
 		this.vismouse = vismouse;
-
+				
 		init();
-		
 	}
 
 	/**
@@ -185,15 +201,16 @@ public class Window {
 			throw new Exception("COULD NOT INSTANTIATE GLFW INSTANCE");
 		}
 		
-
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 		glfwWindowHint(GLFW_VISIBLE, visible ? GLFW_TRUE : GLFW_FALSE);
 		glfwWindowHint(GLFW_RESIZABLE, resizable ? GLFW_TRUE : GLFW_FALSE);
-		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+		if (Platform.get() == Platform.MACOSX)
+			glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
 		glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
-		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+		if (Application.getValue("DEBUG") == 1)
+			glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 		glfwWindowHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE);
 
 		if(fullscreen) {
@@ -207,6 +224,9 @@ public class Window {
 		} else {
 			window = glfwCreateWindow(width, height, title, NULL, NULL);
 		}
+		
+		if (window == NULL)
+			throw new RuntimeException("Failed to create window!");
 
 		glfwMakeContextCurrent(window);
 
@@ -224,31 +244,37 @@ public class Window {
 		glfwSetWindowSizeCallback(window, windowSizeCallback = new GLFWWindowSizeCallback() {
 			public void invoke(long window, int width, int height) {
 				Window.this.width = width;
-				Window.this.height = height;;
+				Window.this.height = height;
 				ASPECT_RATIO = (float) width / (float) height;
 			}
 		});
+		
+		glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
+			
+			@Override
+			public void invoke(long window, int key, int scancode, int action, int mods) {
+				Keyboard.getInstance().update(key, action);
+			}
+			
+		});
 
-		keyCallback = keyboard = new Keyboard();
-		keyCallback.set(window);
+		
+		glfwSetMouseButtonCallback(window, mouseButtonCallback = new GLFWMouseButtonCallback() {
 
-		mouseButtonCallback = mouse = new Mouse();
-		mouse.set(window);
+			@Override
+			public void invoke(long window, int button, int action, int mods) {
+				Mouse.getInstance().update_buttons(button, action);
+			}
+			
+		});
 
-		mouseX = mouseY = mouseDX = mouseDY = 0;
-
-		glfwSetCursorPosCallback(window, cursorPosCallback = mousePosition = new MousePosition() {
+		glfwSetCursorPosCallback(window, mousePosition = new MousePosition() {
 
 			public void invoke(long window, double xpos, double ypos) {
-				mouseDX += xpos - mouseX;
-				mouseDY += ypos - mouseY;
-				mouseX = (float) xpos;
-				mouseY = (float) ypos;
+				Mouse.getInstance().update_position(xpos, ypos);
 			}
 
 		});
-
-		mousePosition.set(window);
 
 		glfwSwapInterval(vsync ? 1 : 0);
 
@@ -264,16 +290,13 @@ public class Window {
 
 		frameRateCounter = new FrameRateCounter();
 
-		Loader loader = Loader.create();
-		GuiShader shader = new GuiShader();
-		GuiRenderer gr = new GuiRenderer(shader, loader);
+		Loader.create();
+		ImageRenderer gr = new ImageRenderer();
 		BufferedImage image = ResourceLoader.loadImage("/logo.png");
-		GUITexture logo = new GUITexture(loader.loadTexture(image), new Vector2(0, 0), new Vector2(1, 1));
-		List<GUITexture> textures = new ArrayList<GUITexture>();
-		textures.add(logo);
-		gr.render(textures);
+		int textureid = Loader.getInstance().loadTexture(image);
+		
+		gr.render(textureid);
 		gr.dispose();
-		textures.clear();
 		glfwSwapBuffers(window);
 		
 		Application.setValue("FULLSCREEN", fullscreen ? 1 : 0);
@@ -283,6 +306,8 @@ public class Window {
 		
 		Application.setValue("WIDTH", width);
 		Application.setValue("HEIGHT", height);
+		
+		AssetCache.load();
 	}
 	
 	/**
@@ -309,20 +334,19 @@ public class Window {
 	 */
 	public void update() throws Exception {
 		frameRateCounter.start();
-		keyboard.update();
-		glfwSwapBuffers(window);
 		glfwPollEvents();
-		UI.poll();
+		glfwSwapBuffers(window);
+		clear();
 		frameRateCounter.calculate();
 	}
 
 	/**
 	 * Releases all callbacks and disposes of the window
 	 */
-	public void close() {
+	public void close() {        
 		keyCallback.free();
 		mouseButtonCallback.free();
-		cursorPosCallback.free();
+		mousePosition.free();
 		framebufferCallback.free();
 		windowSizeCallback.free();
 		errorCallback.free();
@@ -391,24 +415,6 @@ public class Window {
 	 */
 	public void setMouseButtonCallback(GLFWMouseButtonCallback mouseButtonCallback) {
 		this.mouseButtonCallback = mouseButtonCallback;
-	}
-
-	/**
-	 * Gets the GLFWWindow's Cursor Position Callback
-	 * 
-	 * @return Cursor Position Callback of the GLFW Instance
-	 */
-	public GLFWCursorPosCallback getCursorPosCallback() {
-		return cursorPosCallback;
-	}
-
-	/**
-	 * Sets the GLFWWindow's Cursor Position Callback
-	 * 
-	 * @param cursorPosCallback 	GLFWCursorPosCallback to be used by the GLFW Instance
-	 */
-	public void setCursorPosCallback(GLFWCursorPosCallback cursorPosCallback) {
-		this.cursorPosCallback = cursorPosCallback;
 	}
 
 	/**
@@ -535,9 +541,7 @@ public class Window {
 	 * @return Value of the delta x in the mouse movement
 	 */
 	public float getDX() {
-		float dx = mouseDX;
-		mouseDX = 0;
-		return dx;
+		return (float) Mouse.getInstance().getDX();
 	}
 
 	/**
@@ -546,9 +550,7 @@ public class Window {
 	 * @return Value of the delta y in the mouse movement
 	 */
 	public float getDY() {
-		float dy = -mouseDY;
-		mouseDY = 0;
-		return dy;
+		return (float) Mouse.getInstance().getDY();
 	}
 
 	/**
@@ -557,7 +559,7 @@ public class Window {
 	 * @return Value of the x position of the mouse
 	 */
 	public float getX() {
-		return mouseX;
+		return (float) Mouse.getInstance().getX();
 	}
 
 	/**
@@ -566,9 +568,9 @@ public class Window {
 	 * @return Value of the y position of the mouse
 	 */
 	public float getY() {
-		return mouseY;
+		return (float) Mouse.getInstance().getY();
 	}
-	
+
 	/**
 	 * Primes the FPS counter
 	 * 
@@ -583,7 +585,6 @@ public class Window {
 	 * 
 	 * @param output			Output file location
 	 * @param format			File format
-	 * @throws IOException		Exception for not being able write to file
 	 */
 	public void takeScreenshot(String output, String format) {
 		glReadBuffer(GL_FRONT);
@@ -649,7 +650,10 @@ public class Window {
 		
 		return sb.toString();
 	}
-
+	
+	public static boolean isKeyDown(int keycode) {
+		return Keyboard.getInstance().isKeyDown(keycode);
+	}
 }
 
 class FrameRateCounter {
@@ -696,6 +700,7 @@ class FrameRateCounter {
 			fps = frames;
 			frames = 0;
 			start = GLFW.glfwGetTime();
+			System.out.println(fps);
 		}
 		frames++;
 

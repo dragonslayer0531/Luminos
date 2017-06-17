@@ -16,6 +16,8 @@ public class Matrix2 {
 	public float 	m00, m01, 
 					m10, m11;
 	
+	public final static int SIZE = 2 * 2;
+	
 	/**
 	 * Creates new matrix and sets it as identity matrix
 	 */

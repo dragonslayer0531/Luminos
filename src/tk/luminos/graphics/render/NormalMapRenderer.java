@@ -8,16 +8,13 @@ import static org.lwjgl.opengl.GL11.glDrawElements;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
-import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 import java.util.List;
 import java.util.Map;
 
 import tk.luminos.gameobjects.GameObject;
 import tk.luminos.graphics.Material;
-import tk.luminos.graphics.models.RawModel;
+import tk.luminos.graphics.VertexArray;
 import tk.luminos.graphics.models.TexturedModel;
 import tk.luminos.graphics.shaders.NormalMapShader;
 import tk.luminos.maths.MathUtils;
@@ -40,11 +37,11 @@ public class NormalMapRenderer {
 	/**
 	 * Constructor
 	 * 
-	 * @param nms					Shader to use
 	 * @param projectionMatrix		Projection matrix to use
+	 * @throws Exception 			Thrown if shader cannot be loaded
 	 */
-    public NormalMapRenderer(NormalMapShader nms, Matrix4 projectionMatrix) {
-        this.shader = nms;
+    public NormalMapRenderer(Matrix4 projectionMatrix) throws Exception {
+        this.shader = new NormalMapShader();
         shader.start();
         shader.setUniform("projectionMatrix", projectionMatrix);
         shader.connectTextureUnits();
@@ -63,9 +60,9 @@ public class NormalMapRenderer {
             List<GameObject> batch = entities.get(model);
             for (GameObject entity : batch) {
                 prepareInstance(entity);
-                glDrawElements(GL_TRIANGLES, model.getRawModel().getVertexCount(), GL_UNSIGNED_INT, 0);
+                glDrawElements(GL_TRIANGLES, model.getVertexArray().getIndexCount(), GL_UNSIGNED_INT, 0);
             }
-            unbindTexturedModel();
+            unbindTexturedModel(model);
         }
         shader.stop();
     }
@@ -78,32 +75,24 @@ public class NormalMapRenderer {
     }
  
     private void prepareTexturedModel(TexturedModel model) {
-        RawModel rawModel = model.getRawModel();
-        glBindVertexArray(rawModel.getVaoID());
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-        glEnableVertexAttribArray(2);
-        glEnableVertexAttribArray(3);
+        VertexArray vao = model.getVertexArray();
+        vao.bind();
         Material texture = model.getMaterial();
         shader.setUniform("numberOfRows", texture.getRows());
-        if (texture.hasTransparency()) {
-            MasterRenderer.disableCulling();
+        if (texture.isRenderDoubleSided()) {
+            SceneRenderer.disableCulling();
         }
         shader.setUniform("shineDamper", texture.getShineDamper()); 
         shader.setUniform("reflectivity", texture.getReflectivity());
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, model.getMaterial().getDiffuseID());
+        glBindTexture(GL_TEXTURE_2D, model.getMaterial().getTexture().getId());
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, model.getMaterial().getNormalID());
     }
  
-    private void unbindTexturedModel() {
-        MasterRenderer.enableCulling();
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-        glDisableVertexAttribArray(2);
-        glDisableVertexAttribArray(3);
-        glBindVertexArray(0);
+    private void unbindTexturedModel(TexturedModel model) {
+        SceneRenderer.enableCulling();
+        model.getVertexArray().unbind();
     }
  
     private void prepareInstance(GameObject entity) {

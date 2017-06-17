@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL30;
 
+import tk.luminos.graphics.VertexArray;
 import tk.luminos.graphics.models.ModelData;
 import tk.luminos.graphics.models.RawModel;
 
@@ -22,9 +23,9 @@ import tk.luminos.graphics.models.RawModel;
 
 public class Loader {
 	
-	protected static List<Integer> vaos = new ArrayList<Integer>();
-	protected static List<Integer> vbos = new ArrayList<Integer>();
-	protected static List<Integer> textures = new ArrayList<Integer>();
+	public static List<Integer> vaos = new ArrayList<Integer>();
+	public static List<Integer> vbos = new ArrayList<Integer>();
+	public static List<Integer> textures = new ArrayList<Integer>();
 	
 	private ModelLoader modelLoader = new ModelLoader();
 	private ImageLoader imageLoader = new ImageLoader();
@@ -60,8 +61,16 @@ public class Loader {
 		return modelLoader.loadToVAO(positions, dimensions);
 	}
 	
-	public RawModel loadToVAO(float[] positions, int[] indices) {
-		return modelLoader.loadToVAO(positions, indices);
+	/**
+	 * Loads positions to graphics card
+	 * 
+	 * @param positions		floats used to describe the positions of the vertices
+	 * @param elements		integers used to describe the order of the vertices
+	 * @param dimensions	int used to describe the number of dimensions
+	 * @return				RawModel containing GPU data on the vertices
+	 */
+	public RawModel loadToVAO(float[] positions, int[] indices, int dimensions) {
+		return modelLoader.loadToVAO(positions, indices, dimensions);
 	}
 	
 	/**
@@ -127,8 +136,126 @@ public class Loader {
 		return modelLoader.loadToVAO(positions, textureCoords, normals, tangentsArray, indicesArray);
 	}
 	
+	/**
+	 * Loads model data to graphics card
+	 * 
+	 * @param data		Object holding infromation on vertices, texture coordinates, normals, and indices
+	 * @return			RawModel describing the positions, texture coordinates, and normal coordinates loaded
+	 */
 	public RawModel loadToVAO(ModelData data) {
 		return loadToVAO(data.getVertices(), data.getTextureCoords(), data.getNormals(), data.getIndices());
+	}
+	
+	/**
+	 * Loads model data to graphics card
+	 * 
+	 * @param positions		positions of vertices
+	 * @param dimensions	dimensions count
+	 * @return				vertex array representing model information
+	 */
+	public VertexArray load(float positions[], int dimensions) {
+		return modelLoader.load(positions, dimensions);
+	}
+	
+	/**
+	 * Loads model data to graphics card
+	 * 
+	 * @param positions		positions of vertices
+	 * @param indices		order of vertices
+	 * @param dimensions	dimensions count
+	 * @return				vertex array representing model information
+	 */
+	public VertexArray load(float[] positions, int[] indices, int dimensions) {
+		return modelLoader.load(positions, indices, dimensions);
+	}
+	
+	/**
+	 * Loads model data to graphics card
+	 * 
+	 * @param positions		positions of vertices
+	 * @param textureCoords	texture coordinates of vertices
+	 * @param dimensions	dimensions count
+	 * @return				vertex array representing model information
+	 */
+	public VertexArray load(float positions[], float textureCoords[], int dimensions) {
+		return modelLoader.load(positions, textureCoords, dimensions);
+	}
+	
+	/**
+	 * Loads model data to graphics card
+	 * 
+	 * @param positions		positions of vertices
+	 * @param textureCoords	texture coordinates of vertices
+	 * @param indices		order of vertices
+	 * @param dimensions	dimensions count
+	 * @return				vertex array representing model information
+	 */
+	public VertexArray load(float positions[], float textureCoords[], int[] indices, int dimensions) {
+		return modelLoader.load(positions, textureCoords, indices, dimensions);
+	}
+	
+	/**
+	 * Loads model data to graphics card
+	 * 
+	 * @param positions		positions of vertices
+	 * @param textureCoords	texture coordinates of vertices
+	 * @param normals		normal vectors of vertices
+	 * @return				vertex array representing model information
+	 */
+	public VertexArray load(float[] positions, float[] textureCoords, float[] normals) {
+		return modelLoader.load(positions, textureCoords, normals);
+	}
+	
+	/**
+	 * Loads model data to graphics card
+	 * 
+	 * @param positions		positions of vertices
+	 * @param textureCoords	texture coordinates of vertices
+	 * @param normals		normal vectors of vertices
+	 * @param indices		order of vertices
+	 * @return				vertex array representing model information
+	 */
+	public VertexArray load(float[] positions, float[] textureCoords, float[] normals, int[] indices) {
+		return modelLoader.load(positions, textureCoords, normals, indices);
+	}
+	
+	/**
+	 * Loads model data to graphics card
+	 * 
+	 * @param positions		positions of vertices
+	 * @param textureCoords	texture coordinates of vertices
+	 * @param normals		normal vectors of vertices
+	 * @param tangents		tangent vectors of vertices
+	 * @return				vertex array representing model information
+	 */
+	public VertexArray load(float[] positions, float[] textureCoords, float[] normals, float[] tangents) {
+		return modelLoader.load(positions, textureCoords, normals, tangents);
+	}
+	
+	/**
+	 * Loads model data to graphics card
+	 * 
+	 * @param positions		positions of vertices
+	 * @param textureCoords	texture coordinates of vertices
+	 * @param normals		normal vectors of vertices
+	 * @param tangents		tangent vectors of vertices
+	 * @param indices		order of vertices
+	 * @return				vertex array representing model information
+	 */
+	public VertexArray load(float[] positions, float[] textureCoords, float[] normals, float[] tangents, int[] indices) {
+		return modelLoader.load(positions, textureCoords, normals, tangents, indices);
+	}
+	
+	/**
+	 * Loads model data to graphics card
+	 * 
+	 * @param positions		positions of vertices
+	 * @param textureCoords	texture coordinates of vertices
+	 * @param indices		order of vertices
+	 * @return				vertex array representing model information
+	 */
+	public VertexArray load(float[] positions, float[] textureCoords, int[] indices) {
+		return modelLoader.load(positions, textureCoords, indices);
 	}
 	
 	/**
