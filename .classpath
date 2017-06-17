@@ -35,11 +35,5 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Luminos/lib/native-win"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/jar/lwjgl-nuklear.jar" sourcepath="lib/source/lwjgl-nuklear-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/Luminos/lib/javadoc/lwjgl-nuklear-javadoc.jar!/"/>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Luminos/lib/native-win"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
