@@ -10,17 +10,13 @@ import tk.luminos.maths.Vector4;
  */
 public class Material {
 	
-	private int diffuse;
-	private int specular;
 	private int normal;
 	private int bump;
+	private Texture texture;
 	
-	private Vector4 color = new Vector4(0, 0, 0, 1);
-	
-	private int useDiffuse = 0;
-	private int useSpecular = 0;
-	private int useNormal = 0;
-	private int useBump = 0;
+	private Vector4 diffuse = new Vector4(1, 1, 1, 1);
+	private Vector4 specular = new Vector4(1, 1, 1, 1);
+	private Vector4 ambient = new Vector4(1, 1, 1, 1);
 	
 	private int rows = 1;
 	private int transparency = 0;
@@ -35,9 +31,8 @@ public class Material {
 	 * 
 	 * @param id		texture id
 	 */
-	public void attachDiffuse(int id) {
-		this.diffuse = id;
-		useDiffuse = 1;
+	public void attachTexture(Texture texture) {
+		this.texture = texture;
 	}
 	
 	/**
@@ -45,9 +40,8 @@ public class Material {
 	 * 
 	 * @param id		texture id
 	 */
-	public void attachSpecular(int id) {
-		this.specular = id;
-		useSpecular = 1;
+	public void attachSpecular(Vector4 specular) {
+		this.specular = specular;
 	}
 	
 	/**
@@ -55,9 +49,8 @@ public class Material {
 	 * 
 	 * @param id		texture id
 	 */
-	public void attachNormal(int id) {
-		this.normal = id;
-		useNormal = 1;
+	public void attachNormal(int normal) {
+		this.normal = normal;
 	}
 	
 	/**
@@ -67,34 +60,46 @@ public class Material {
 	 */
 	public void attachBump(int id) {
 		this.bump = id;
-		useBump = 1;
 	}
 	
 	/**
 	 * Sets render double sided
 	 * 
 	 * @param doubleSided		if double sided
+	 * @return					reference to itself
 	 */
-	public void setRenderDoubleSided(int doubleSided) {
+	public Material setRenderDoubleSided(int doubleSided) {
 		this.twoSided = doubleSided;
-	}
-	
-	/**
-	 * Sets color
-	 * 
-	 * @param color		new color
-	 */
-	public void setColor(Vector4 color) {
-		this.color = color;
+		return this;
 	}
 	
 	/**
 	 * Sets transparency
 	 * 
 	 * @param transparent		if transparent
+	 * @return					reference to itself
 	 */
-	public void setTransparency(int transparent) {
+	public Material setTransparency(int transparent) {
 		this.transparency = transparent;
+		return this;
+	}
+	
+	/**
+	 * Gets texture id
+	 * 
+	 * @return		texture
+	 */
+	public Texture getTexture() {
+		return texture;
+	}
+	
+	/**
+	 * Sets diffuse color
+	 * 
+	 * @param diffuse 		diffuse color
+	 */
+	public void attachDiffuse(Vector4 diffuse) {
+		this.diffuse = diffuse;
 	}
 	
 	/**
@@ -102,7 +107,7 @@ public class Material {
 	 * 
 	 * @return id
 	 */
-	public int getDiffuseID() {
+	public Vector4 getDiffuse() {
 		return diffuse;
 	}
 	
@@ -111,7 +116,7 @@ public class Material {
 	 * 
 	 * @return id
 	 */
-	public int getSpecularID() {
+	public Vector4 getSpecular() {
 		return specular;
 	}
 	
@@ -131,51 +136,6 @@ public class Material {
 	 */
 	public int getBumpID() {
 		return bump;
-	}
-	
-	/**
-	 * Gets default color
-	 * 
-	 * @return color
-	 */
-	public Vector4 getColor() {
-		return color;
-	}	
-	
-	/**
-	 * Get has diffuse
-	 * 
-	 * @return	has diffuse
-	 */
-	public boolean hasDiffuse() {
-		return useDiffuse == 1;
-	}
-	
-	/**
-	 * Get has specular
-	 * 
-	 * @return	has specular
-	 */
-	public boolean hasSpecular() {
-		return useSpecular == 1;
-	}
-	
-	/**
-	 * Get has normal
-	 * 
-	 * @return	has normal
-	 */
-	public boolean hasNormal() {
-		return useNormal == 1;
-	}
-	
-	/**
-	 * Get has bump
-	 * 
-	 * @return	has bump
-	 */
-	public boolean hasBump() {
-		return useBump == 1;
 	}
 	
 	/**
@@ -236,9 +196,42 @@ public class Material {
 	 * Sets fake lighting
 	 * 
 	 * @param fakeLighting	use fake lighting
+	 * @return				reference to itself
 	 */
-	public void setFakeLighting(int fakeLighting) {
-		this.fakeLighting = fakeLighting;		
+	public Material setFakeLighting(int fakeLighting) {
+		this.fakeLighting = fakeLighting;
+		return this;
+	}
+	
+	/**
+	 * Checks to see if material ids are equivalent 
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Material)) 
+			return false;
+		Material other = (Material) obj;
+		return other.getDiffuse() == this.getDiffuse() && other.getSpecular() == this.getSpecular() && other.getBumpID() == this.getBumpID() && other.getNormalID() == this.getNormalID();
+	}
+
+	/**
+	 * Gets the ambient color
+	 * 
+	 * @return		ambient color
+	 */
+	public Vector4 getAmbient() {
+		return ambient;
+	}
+
+	/**
+	 * Sets the ambient color
+	 * 
+	 * @param ambient		ambient color
+	 */
+	public void attachAmbient(Vector4 ambient) {
+		this.ambient = ambient;
 	}
 
 }

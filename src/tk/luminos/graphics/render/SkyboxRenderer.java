@@ -19,7 +19,7 @@ import tk.luminos.graphics.shaders.SkyboxShader;
 import tk.luminos.loaders.Loader;
 import tk.luminos.maths.Matrix4;
 import tk.luminos.maths.Vector3;
-import tk.luminos.utilities.DateUtils;
+import tk.luminos.util.DateUtils;
 
 /**
  * 
@@ -93,16 +93,15 @@ public class SkyboxRenderer {
 	/**
 	 * Constructor
 	 * 
-	 * @param shader			Defines shader to render with
 	 * @param loader			Loader used for rendering
 	 * @param projectionMatrix	Projection matrix of skybox
-	 * @throws Exception		Exception for if file isn't found or cannot be handled
+	 * @throws Exception		Exception for if file isn't found or cannot be handled or if shader cannot be loaded
 	 */
-	public SkyboxRenderer(SkyboxShader shader, Loader loader, Matrix4 projectionMatrix) throws Exception {
+	public SkyboxRenderer(Loader loader, Matrix4 projectionMatrix) throws Exception {
 		cube = loader.loadToVAO(VERTICES, 3);
 		texture = loader.loadCubeMap(TEXTURE_FILES);
 		nightTexture = loader.loadCubeMap(NIGHT_TEXTURE_FILES);
-		this.shader = shader;
+		this.shader = new SkyboxShader();
 		shader.start();
 		shader.connectTextureUnits();
 		shader.setUniform("projectionMatrix", projectionMatrix);

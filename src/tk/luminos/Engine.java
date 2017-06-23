@@ -1,16 +1,14 @@
 package tk.luminos;
 
 import org.lwjgl.system.Callback;
-import org.lwjgl.system.Configuration;
 
 import tk.luminos.display.Window;
 import tk.luminos.graphics.RenderEngine;
 import tk.luminos.graphics.SceneManager;
-import tk.luminos.graphics.render.MasterRenderer;
 import tk.luminos.graphics.shaders.GLSLVersion;
 import tk.luminos.loaders.Loader;
 import tk.luminos.physics.PhysicsEngine;
-import tk.luminos.utilities.Timer;
+import tk.luminos.util.Timer;
 
 /**
  * 
@@ -28,6 +26,8 @@ public class Engine {
 	private static PhysicsEngine physicsEngine;
 	private static Window window;
 	
+	public static RenderMode mode = RenderMode.NUKLEAR_OPENGL;
+	
 	/**
 	 * Current version of GLSL used by the engine.
 	 */
@@ -41,25 +41,21 @@ public class Engine {
 	/**
 	 * Creates a new Engine
 	 * 
-	 * @param masterRenderer	Wraps all required renderers
-	 * @param loader			Loads the required objects to the GPU
 	 * @throws Exception 		Thrown if shader programs do not compile properly
 	 */
-	public static void createEngine(MasterRenderer masterRenderer, Loader loader) throws Exception {
-		renderEngine = new RenderEngine(new SceneManager(masterRenderer, loader));
+	public static void createEngine() throws Exception {
+		renderEngine = new RenderEngine(new SceneManager());
 		Thread.currentThread().setName("LUMINOS_ENGINE:_GRAPHICS");
 	}
 	
 	/**
 	 * Creates a new Engine
 	 * 
-	 * @param masterRenderer	Wraps all required renderers
-	 * @param loader			Loads the required objects to the GPU
 	 * @param glslVersion		Version of GLSL to use in shader programs
 	 * @throws Exception 		Thrown if shader programs do not compile properly
 	 */
-	public static void createEngine(MasterRenderer masterRenderer, Loader loader, GLSLVersion glslVersion) throws Exception {
-		renderEngine = new RenderEngine(new SceneManager(masterRenderer, loader));
+	public static void createEngine(GLSLVersion glslVersion) throws Exception {
+		renderEngine = new RenderEngine(new SceneManager());
 		Thread.currentThread().setName("LUMINOS_ENGINE:_GRAPHICS");
 	}
 	
@@ -72,11 +68,9 @@ public class Engine {
 		Engine.window = window;
 		Engine.window.showWindow();
 		glErrorCallback = DebugUtil.setupDebugMessageCallback((source, type, id, severity, message) -> {
-			if (severity.equalsIgnoreCase("HIGH")) {
+			if (!severity.equals("NOTIFICATION"))
 				System.err.println(severity + "\n" + source + "\n" + type + "\n" + message);
-			}	
 		});
-		Configuration.DEBUG.set(true);
 		if (physicsEngine != null) {
 			if(System.getProperty("os.name").contains("mac")) {
 				physicsEngine.run();
@@ -115,6 +109,7 @@ public class Engine {
 		renderEngine.dispose();
 		renderEngine.join();
 		glErrorCallback.free();
+		Loader.getInstance().dispose();
 	}
 	
 	/**

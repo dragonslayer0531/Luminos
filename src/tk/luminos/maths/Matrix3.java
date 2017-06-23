@@ -17,6 +17,8 @@ public class Matrix3 {
 					m10, m11, m12,
 					m20, m21, m22;
 	
+	public final static int SIZE = 3 * 3;
+	
 	/**
 	 * Creates new matrix and sets it as identity matrix
 	 */

@@ -5,13 +5,11 @@ import java.util.List;
 import tk.luminos.Application;
 import tk.luminos.gameobjects.GameObject;
 import tk.luminos.gameobjects.Terrain;
-import tk.luminos.graphics.render.MasterRenderer;
 import tk.luminos.graphics.render.PostProcessRenderer;
+import tk.luminos.graphics.render.SceneRenderer;
 import tk.luminos.graphics.shaders.ImageShader;
 import tk.luminos.graphics.shaders.PostProcess;
-import tk.luminos.graphics.ui.GUITexture;
 import tk.luminos.graphics.water.WaterTile;
-import tk.luminos.loaders.Loader;
 import tk.luminos.maths.Vector3;
 import tk.luminos.maths.Vector4;
 
@@ -22,27 +20,25 @@ import tk.luminos.maths.Vector4;
  * @version 1.0
  */
 public class SceneManager {
-
-	private MasterRenderer masterRenderer;
+	
+	private SceneRenderer masterRenderer;
 	private FrameBufferObject input, output;
 	private PostProcessRenderer postProcessRenderer;
 	
 	private static int WIDTH = Application.getValue("WIDTH");
 	private static int HEIGHT = Application.getValue("HEIGHT");
 	private static boolean POSTPROCESS = Application.getValue("POSTPROCESS") == 1;
-
+		
 	/**
 	 * Creates new scene manager
 	 * 
-	 * @param masterRenderer		controls rendering
-	 * @param loader				used to load objects
 	 * @throws Exception			thrown if image shader cannot be created
 	 */
-	public SceneManager(MasterRenderer masterRenderer, Loader loader) throws Exception {
-		this.masterRenderer = masterRenderer;
-		this.input = new FrameBufferObject(WIDTH, HEIGHT);
+	public SceneManager() throws Exception {
+		this.masterRenderer = SceneRenderer.getInstance();
+		this.input = new FrameBufferObject(WIDTH, HEIGHT, true);
 		this.output = new FrameBufferObject(WIDTH, HEIGHT, FrameBufferObject.DEPTH_TEXTURE);
-		postProcessRenderer = new PostProcessRenderer(loader);
+		postProcessRenderer = new PostProcessRenderer();
 		postProcessRenderer.loadShader(new ImageShader());
 	}
 
@@ -59,26 +55,16 @@ public class SceneManager {
 	 */
 	public void renderWorld(List<GameObject> gameObjects, List<Terrain> terrains, List<PointLight> lights, DirectionalLight sun, List<WaterTile> waterTiles, Vector3 focalPoint, Camera camera) {
 		masterRenderer.prepareWater(gameObjects, terrains, lights, sun, focalPoint, camera);
+		masterRenderer.renderShadowMap(gameObjects, terrains, camera.getPosition(), sun);
 		if(POSTPROCESS) 
 			input.bindFrameBuffer();
-		masterRenderer.renderShadowMap(gameObjects, terrains, camera.getPosition(), sun);
 		masterRenderer.renderScene(gameObjects, terrains, lights, sun, focalPoint, camera, new Vector4(0, 1, 0, Float.POSITIVE_INFINITY));
 		masterRenderer.renderWater(waterTiles, camera, lights);
-		masterRenderer.renderGuiText();
 		if(POSTPROCESS) {
 			input.unbindFrameBuffer();
 			input.resolveToFBO(output);
 			postProcessRenderer.render(output.getColorTexture());
 		}
-	}
-
-	/**
-	 * Renders GUI overlay
-	 * 
-	 * @param guiTextures	gui textures
-	 */
-	public void renderOverlay(List<GUITexture> guiTextures)	{
-		if(guiTextures != null) masterRenderer.renderGUI(guiTextures);
 	}
 
 	/**

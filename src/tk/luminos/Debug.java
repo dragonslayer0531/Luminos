@@ -6,10 +6,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import tk.luminos.utilities.DateUtils;
-import tk.luminos.utilities.GLFWInstance;
-import tk.luminos.utilities.JavaEnvironmentInstance;
-import tk.luminos.utilities.OpenGLInstance;
+import tk.luminos.util.DateUtils;
+import tk.luminos.util.GLFWInstance;
+import tk.luminos.util.JavaEnvironmentInstance;
+import tk.luminos.util.OpenGLInstance;
 
 /**
  * 

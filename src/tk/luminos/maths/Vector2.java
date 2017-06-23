@@ -1,5 +1,8 @@
 package tk.luminos.maths;
 
+import tk.luminos.serialization.DBArray;
+import tk.luminos.serialization.Serializable;
+
 /**
  * 
  * Creates 2 float array
@@ -9,12 +12,14 @@ package tk.luminos.maths;
  *
  */
 
-public class Vector2 implements Vector {
+public class Vector2 implements Serializable<DBArray>, Vector {
 	
 	/**
 	 * Entry variables
 	 */
 	public float x, y;
+	
+	public final static int SIZE = 2;
 	
 	/**
 	 * Constructor initializing vector values to zero
@@ -169,6 +174,22 @@ public class Vector2 implements Vector {
 	 */
 	public String toString() {
 		return "Vector2f [" + x + "," + y + "]";
+	}
+	
+	public float dot(Vector y) {
+		if (!(y instanceof Vector2))
+			throw new IllegalArgumentException("Can only dot Vector2 with Vector2");
+		Vector2 other = (Vector2) y;
+		return this.x * other.x + this.y * other.y;
+	}
+	
+	/**
+	 * Serializes a Vector2 object
+	 * 
+	 * @return data base array of object
+	 */
+	public DBArray serialize(String name) {
+		return DBArray.createFloatArray(name, new float[] {x, y});
 	}
 
 

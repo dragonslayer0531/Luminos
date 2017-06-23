@@ -9,7 +9,7 @@ import java.util.Map;
  * @author Nick Clark 
  * @version 1.0
  */
-abstract class ComponentEntity {
+public abstract class ComponentEntity implements Renderable {
 	
 	protected Map<String, Component<?>> components = new HashMap<String, Component<?>>();
 	
@@ -19,7 +19,7 @@ abstract class ComponentEntity {
 	 * @param name		name of component
 	 * @return			value of component
 	 */
-	public Component<?> getComponent(String name)
+	public final Component<?> getComponent(String name)
 	{
 		return components.get(name);
 	}
@@ -30,7 +30,7 @@ abstract class ComponentEntity {
 	 * @param name		Name of component
 	 * @param value		Value of component
 	 */
-	public void addComponent(String name, Component<?> value)
+	public final void addComponent(String name, Component<?> value)
 	{
 		components.put(name, value);
 	}
@@ -41,7 +41,7 @@ abstract class ComponentEntity {
 	 * @param name		name of component
 	 * @return			value of component
 	 */
-	public Component<?> remove(String name)
+	public final Component<?> remove(String name)
 	{
 		return components.remove(name);
 	}

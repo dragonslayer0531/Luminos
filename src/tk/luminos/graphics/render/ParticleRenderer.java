@@ -50,13 +50,13 @@ public class ParticleRenderer {
 	/**
 	 * Constructor
 	 * 
-	 * @param shader			Defines shader to render with
 	 * @param loader			Defines loader to use
 	 * @param projectionMatrix	Defines projection matrix
+	 * @throws Exception		Thrown if shader cannot be loaded
 	 */
-	public ParticleRenderer(ParticleShader shader, Loader loader, Matrix4 projectionMatrix) {
+	public ParticleRenderer(Loader loader, Matrix4 projectionMatrix) throws Exception {
 		quad = loader.loadToVAO(VERTICES, 2);
-		this.shader = shader;
+		this.shader = new ParticleShader();
 		shader.start();
 		shader.setUniform("projectionMatrix", projectionMatrix);
 		shader.stop();

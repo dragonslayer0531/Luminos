@@ -1,41 +1,23 @@
 package tk.luminos.graphics.shaders;
 
-/**
- * 
- * Gui Shader to use in GuiRenderer
- *
- * @author Nick Clark
- * @version 1.1
- */
-
-public class GuiShader extends ShaderProgram {
+public class GUIShader extends ShaderProgram {
 	
-	public static String VERT = "gui.vert";
-	public static String FRAG = "gui.frag";
-
-	/**
-	 * Constructor
-	 * @throws Exception 		Thrown if shader file cannot be found, compiled, validated
-	 * 							or linked
-	 */
-	public GuiShader() throws Exception {
-		super(VERT, FRAG);
+	public static String vert = "gui.vert";
+	public static String frag = "gui.frag";
+	
+	public GUIShader() throws Exception {
+		super(vert, frag);
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see graphics.shaders.ShaderProgram#getAllUniformLocations()
-	 */
+
+	@Override
 	public void getAllUniformLocations() throws Exception {
-		createUniform("transformationMatrix");
+		super.createUniform("transformationMatrix");
+		super.createUniform("color");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see graphics.shaders.ShaderProgram#bindAttributes()
-	 */
+	@Override
 	public void bindAttributes() {
-
+		
 	}
 
 }

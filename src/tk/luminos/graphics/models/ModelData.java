@@ -35,6 +35,13 @@ public class ModelData {
 		this.furthestPoint = furthestPoint;
 		this.tangents = tangents;
 	}
+	
+	public ModelData(float[] vertices, float[] textureCoords, float[] normals, int[] indices) {
+		this.vertices = vertices;
+		this.textureCoords = textureCoords;
+		this.normals = normals;
+		this.indices = indices;
+	}
 
 	/**
 	 * Gets vertex array

@@ -1,7 +1,7 @@
 package tk.luminos.graphics;
 
 import tk.luminos.Application;
-import tk.luminos.graphics.render.MasterRenderer;
+import tk.luminos.graphics.render.SceneRenderer;
 import tk.luminos.maths.Matrix4;
 import tk.luminos.maths.Vector3;
 import tk.luminos.maths.Vector4;
@@ -20,10 +20,10 @@ public class ShadowBox {
 	private static int WIDTH = Application.getValue("HEIGHT");
 	private static int HEIGHT = Application.getValue("HEIGHT");
 	
-	private static final float OFFSET = 20;
     private static final Vector4 UP = new Vector4(0, 1, 0, 0);
     private static final Vector4 FORWARD = new Vector4(0, 0, -1, 0);
     public static float SHADOW_DISTANCE = 125;
+    public static float OFFSET = 0;
  
     private float minX, maxX;
     private float minY, maxY;
@@ -56,7 +56,7 @@ public class ShadowBox {
         Vector3 toFar = new Vector3(forwardVector);
         toFar.scale(SHADOW_DISTANCE);
         Vector3 toNear = new Vector3(forwardVector);
-        toNear.scale(MasterRenderer.NEAR_PLANE);
+        toNear.scale(SceneRenderer.NEAR_PLANE);
         Vector3 centerNear = Vector3.add(toNear, cam.getPosition(), null);
         Vector3 centerFar = Vector3.add(toFar, cam.getPosition(), null);
         Vector4[] points = calculateFrustumVertices(rotation, forwardVector, centerNear,
@@ -206,9 +206,9 @@ public class ShadowBox {
      * Calculate width and height of shadow box
      */
     private void calculateWidthsAndHeights() {
-        farWidth = (float) (OFFSET + SHADOW_DISTANCE * Math.tan(Math.toRadians(MasterRenderer.FOV)));
-        nearWidth = (float) (OFFSET + MasterRenderer.NEAR_PLANE
-                * Math.tan(Math.toRadians(MasterRenderer.FOV)));
+        farWidth = (float) (OFFSET + SHADOW_DISTANCE * Math.tan(Math.toRadians(SceneRenderer.FOV)));
+        nearWidth = (float) (OFFSET + SceneRenderer.NEAR_PLANE
+                * Math.tan(Math.toRadians(SceneRenderer.FOV)));
         farHeight = farWidth / getAspectRatio();
         nearHeight = nearWidth / getAspectRatio();
     }

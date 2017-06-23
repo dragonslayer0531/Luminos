@@ -9,14 +9,16 @@ package tk.luminos.maths;
 public class Quaternion {
 
 	private float x, y, z, w;
+	
+	public final static int SIZE = 4;
 
 	/**
 	 * Creates a quaternion and normalizes it.
 	 * 
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @param w
+	 * @param x			x component of quaternion
+	 * @param y			y component of quaternion
+	 * @param z			z component of quaternion
+	 * @param w			w component of quaternion
 	 */
 	public Quaternion(float x, float y, float z, float w) {
 		this.x = x;
@@ -77,10 +79,10 @@ public class Quaternion {
 	}
 
 	/**
-	 * Extracts the rotation part of a transformation matrix and converts it to
-	 * a quaternion using the magic of maths.
+	 * Creates quaternion from a transformation matrix
 	 * 
 	 * @param matrix	Matrix to retreive rotation from
+	 * @return 			Quaternion representation of matrix
 	 */
 	public static Quaternion fromMatrix(Matrix4 matrix) {
 		float w, x, y, z;
@@ -114,23 +116,18 @@ public class Quaternion {
 	}
 
 	/**
-	 * Interpolates between two quaternion rotations and returns the resulting
-	 * quaternion rotation. The interpolation method here is "nlerp", or
-	 * "normalized-lerp". Another mnethod that could be used is "slerp", and you
-	 * can see a comparison of the methods here:
-	 * https://keithmaggio.wordpress.com/2011/02/15/math-magician-lerp-slerp-and-nlerp/
+	 * Uses slerp to interpolate between two quaternions
 	 * 
-	 * and here:
-	 * http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/
-	 * 
-	 * @param a
-	 * @param b
-	 * @param blend
-	 *            - a value between 0 and 1 indicating how far to interpolate
-	 *            between the two quaternions.
-	 * @return The resulting interpolated rotation in quaternion format.
+	 * @param a			left side quaternion
+	 * @param b			right side quaternion
+	 * @param blend 	Determines the weight of each quaternion.  The blend gives the left quaternion's
+	 * 					weight.  One minus the blend gives the right side quaternion's weight.  The blend
+	 * 					factor needs to be between 0 and 1.
+	 * @return			Interpolated quaternion value
 	 */
 	public static Quaternion interpolate(Quaternion a, Quaternion b, float blend) {
+		if (Math.abs(blend) > 1)
+			throw new IllegalArgumentException("Blend factor needs to be between 0 and 1.");
 		Quaternion result = new Quaternion(0, 0, 0, 1);
 		float dot = a.w * b.w + a.x * b.x + a.y * b.y + a.z * b.z;
 		float blendI = 1f - blend;

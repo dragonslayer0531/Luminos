@@ -12,7 +12,7 @@ import tk.luminos.Scene;
 public class RenderEngine extends EngineComponent {
 	
 	private SceneManager manager;
-
+	
 	/**
 	 * Creates new render engine
 	 * 

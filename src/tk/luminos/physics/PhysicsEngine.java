@@ -18,8 +18,6 @@ public class PhysicsEngine extends EngineComponent {
 	
 	/**
 	 * Creates physics engine
-	 * 
-	 * @param scene		Scene to be attached to engine
 	 */
 	public PhysicsEngine() {
 		colliders = new ArrayList<Collider>();

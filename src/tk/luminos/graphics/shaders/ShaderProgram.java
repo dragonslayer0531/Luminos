@@ -57,14 +57,15 @@ import tk.luminos.maths.Vector4;
  */
 public abstract class ShaderProgram {
 
-	protected final int programID;
+	public final int programID;
 	
 	public static final Integer SCENE_POINT_LIGHTS = 4;
 	public static final Integer SCENE_SPOT_LIGHTS = 4;
 
 	private static FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
-	public final Map<String, Integer> UNIFORMS = new HashMap<String, Integer>();
-	public static final Map<String, String> DEFINES = new HashMap<String, String>();
+	
+	protected final Map<String, Integer> UNIFORMS = new HashMap<String, Integer>();
+	protected static final Map<String, String> DEFINES = new HashMap<String, String>();
 
 	/**
 	 * Constructor
@@ -77,6 +78,7 @@ public abstract class ShaderProgram {
 	public ShaderProgram(String vertexFile, String fragmentFile) throws Exception {
 		programID = createProgram(loadShader(vertexFile, GL_VERTEX_SHADER), loadShader(fragmentFile, GL_FRAGMENT_SHADER));
 		this.start();
+		bindAttributes();
 		getAllUniformLocations();
 		this.stop();
 	}
@@ -92,9 +94,9 @@ public abstract class ShaderProgram {
 	 * 							of the code, it had no effect (direct or indirect) on the final
 	 * 							outputs of the respective shader.
 	 */
-	public void createUniform(String uniformName) throws Exception {
+	public final void createUniform(String uniformName) throws Exception {
 		int uniformLocation = glGetUniformLocation(programID, uniformName);
-		if (uniformLocation == -1) {
+		if (uniformLocation < 0) {
 			throw new Exception("COULD NOT LOCATE: " + uniformName + ".  Uniform may not exist or is not used in the "
 					+ "final output.");
 		}
@@ -109,7 +111,7 @@ public abstract class ShaderProgram {
 	 * 
 	 * @param uniformName		Name of uniform to get location of from GPU
 	 */
-	public void createUniformPointLights(String uniformName) {
+	public final void createUniformPointLights(String uniformName) {
 		for (int i = 0; i < SCENE_POINT_LIGHTS; i++) {
 			createUniformPointLight(uniformName, i);
 		}
@@ -123,7 +125,7 @@ public abstract class ShaderProgram {
 	 * @param uniformName		Name of uniform to get location of from GPU
 	 * @param arrayLocation		Location in array of point lights
 	 */
-	public void createUniformPointLight(String uniformName, int arrayLocation) {
+	public final void createUniformPointLight(String uniformName, int arrayLocation) {
 		String name = uniformName + "[" + arrayLocation + "].color";
 		int uniformLocation = glGetUniformLocation(programID, name);
 		UNIFORMS.put(name, uniformLocation);
@@ -142,7 +144,7 @@ public abstract class ShaderProgram {
 	 * 
 	 * @param uniformName		Name of uniform to get location of from GPU
 	 */
-	public void createUniformPointLight(String uniformName) {
+	public final void createUniformPointLight(String uniformName) {
 		String name = uniformName + ".color";
 		int uniformLocation = glGetUniformLocation(programID, name);
 		UNIFORMS.put(name, uniformLocation);
@@ -161,7 +163,7 @@ public abstract class ShaderProgram {
 	 * 
 	 * @param uniformName		Name of uniform to get location of from GPU
 	 */
-	public void createUniformDirectionalLight(String uniformName) {
+	public final void createUniformDirectionalLight(String uniformName) {
 		UNIFORMS.put(uniformName + ".color", glGetUniformLocation(programID, uniformName + ".color"));
 		UNIFORMS.put(uniformName + ".direction", glGetUniformLocation(programID, uniformName + ".direction"));
 		UNIFORMS.put(uniformName + ".intensity", glGetUniformLocation(programID, uniformName + ".intensity"));
@@ -174,7 +176,7 @@ public abstract class ShaderProgram {
 	 * 
 	 * @param uniformName		Name of uniform to get location of from GPU
 	 */
-	public void createUniformSpotLights(String uniformName) {
+	public final void createUniformSpotLights(String uniformName) {
 		for (int i = 0; i < SCENE_SPOT_LIGHTS; i++) {
 			createUniformSpotLight(uniformName, i);
 		}
@@ -188,7 +190,7 @@ public abstract class ShaderProgram {
 	 * @param uniformName		Name of uniform to get location of from GPU
 	 * @param arrayLocation		Location in array of spot lights
 	 */
-	public void createUniformSpotLight(String uniformName, int arrayLocation) {
+	public final void createUniformSpotLight(String uniformName, int arrayLocation) {
 		createUniformPointLight(uniformName + "[" + arrayLocation + "].light");
 		UNIFORMS.put(uniformName + "[" + arrayLocation + "].direction", glGetUniformLocation(programID, uniformName + "[" + arrayLocation + "].direction"));
 		UNIFORMS.put(uniformName + "[" + arrayLocation + "].angle", glGetUniformLocation(programID, uniformName + "[" + arrayLocation + "].angle"));
@@ -201,7 +203,7 @@ public abstract class ShaderProgram {
 	 * 
 	 * @param uniformName		Name of uniform to get location of from GPU
 	 */
-	public void createUniformSpotLight(String uniformName) {
+	public final void createUniformSpotLight(String uniformName) {
 		createUniformPointLight(uniformName + ".light");
 		UNIFORMS.put(uniformName + ".direction", glGetUniformLocation(programID, uniformName + ".direction"));
 		UNIFORMS.put(uniformName + ".angle", glGetUniformLocation(programID, uniformName + ".angle"));
@@ -216,27 +218,31 @@ public abstract class ShaderProgram {
 	/**
 	 * Starts shader
 	 */
-	public void start(){
+	public final void start(){
 		glUseProgram(programID);
 	}
 
 	/**
 	 * Stops shader
 	 */
-	public void stop(){
+	public final void stop(){
 		glUseProgram(0);
 	}
 
 	/**
 	 * Cleans shader up
 	 */
-	public void dispose(){
+	public final void dispose(){
 		stop();
 		glDeleteProgram(programID);
 	}
 
 	/**
 	 * Bind attribute locations
+	 * 
+	 * Only needs to be used when attribute locations are not specified in
+	 * the shader.  The location qualifier is core in versions 330 and higher,
+	 * and should be used when possible.
 	 */
 	public abstract void bindAttributes();
 
@@ -246,7 +252,7 @@ public abstract class ShaderProgram {
 	 * @param attribute		Attribute to be bound
 	 * @param variableName	Variable name to be bound
 	 */
-	public void bindAttribute(int attribute, String variableName){
+	public final void bindAttribute(int attribute, String variableName){
 		glBindAttribLocation(programID, attribute, variableName);
 	}
 	
@@ -256,7 +262,7 @@ public abstract class ShaderProgram {
 	 * @param location	Location of variable to be bound
 	 * @param value		Value of variable to be bound
 	 */
-	public void setUniform(int location, float value) {
+	public final void setUniform(int location, float value) {
 		glUniform1f(location, value);
 	}
 	
@@ -266,7 +272,7 @@ public abstract class ShaderProgram {
 	 * @param name		Name of variable to be bound
 	 * @param value		Value of variable to be bound
 	 */
-	public void setUniform(String name, float value) {
+	public final void setUniform(String name, float value) {
 		setUniform(getLocation(name), value);
 	}
 
@@ -276,7 +282,7 @@ public abstract class ShaderProgram {
 	 * @param location	Location of variable to be bound
 	 * @param value		Value of variable to be bound
 	 */
-	public void setUniform(int location, int value){
+	public final void setUniform(int location, int value){
 		glUniform1i(location, value);
 	}
 	
@@ -286,7 +292,7 @@ public abstract class ShaderProgram {
 	 * @param name		Name of variable to be bound
 	 * @param value		Value of variable to be bound
 	 */
-	public void setUniform(String name, int value) {
+	public final void setUniform(String name, int value) {
 		setUniform(getLocation(name), value);
 	}
 
@@ -296,7 +302,7 @@ public abstract class ShaderProgram {
 	 * @param location	Location of variable to be bound
 	 * @param vector	Value of variable to be bound
 	 */
-	public void setUniform(int location, Vector3 vector){
+	public final void setUniform(int location, Vector3 vector){
 		glUniform3f(location,vector.x,vector.y,vector.z);
 	}
 	
@@ -306,7 +312,7 @@ public abstract class ShaderProgram {
 	 * @param name		Name of variable to be bound
 	 * @param value		Value of variable to be bound
 	 */
-	public void setUniform(String name, Vector3 value) {
+	public final void setUniform(String name, Vector3 value) {
 		setUniform(getLocation(name), value);
 	}
 
@@ -316,7 +322,7 @@ public abstract class ShaderProgram {
 	 * @param location	Location of variable to be bound
 	 * @param vector	Value of variable to be bound
 	 */
-	public void setUniform(int location, Vector4 vector){
+	public final void setUniform(int location, Vector4 vector){
 		glUniform4f(location, vector.x, vector.y, vector.z, vector.w);
 	}
 	
@@ -326,7 +332,7 @@ public abstract class ShaderProgram {
 	 * @param name		Name of variable to be bound
 	 * @param value	Value of variable to be bound
 	 */
-	public void setUniform(String name, Vector4 value) {
+	public final void setUniform(String name, Vector4 value) {
 		setUniform(getLocation(name), value);
 	}
 
@@ -336,7 +342,7 @@ public abstract class ShaderProgram {
 	 * @param location	Location of variable to be bound
 	 * @param vector	Value of variable to be bound
 	 */
-	public void setUniform(int location, Vector2 vector){
+	public final void setUniform(int location, Vector2 vector){
 		glUniform2f(location,vector.x,vector.y);
 	}
 	
@@ -346,7 +352,7 @@ public abstract class ShaderProgram {
 	 * @param name		Name of variable to be bound
 	 * @param value		Value of variable to be bound
 	 */
-	public void setUniform(String name, Vector2 value) {
+	public final void setUniform(String name, Vector2 value) {
 		setUniform(getLocation(name), value);
 	}
 
@@ -356,12 +362,8 @@ public abstract class ShaderProgram {
 	 * @param location	Location of variable to be bound
 	 * @param value		Value of variable to be bound
 	 */
-	public void setUniform(int location, boolean value){
-		int toLoad = 0;
-		if(value){
-			toLoad = 1;
-		}
-		glUniform1i(location, toLoad);
+	public final void setUniform(int location, boolean value){
+		glUniform1i(location, value ? 1 : 0);
 	}
 	
 	/**
@@ -370,7 +372,7 @@ public abstract class ShaderProgram {
 	 * @param name		Name of variable to be bound
 	 * @param value		Value of variable to be bound
 	 */
-	public void setUniform(String name, boolean value) {
+	public final void setUniform(String name, boolean value) {
 		setUniform(getLocation(name), value);
 	}
 	
@@ -380,7 +382,7 @@ public abstract class ShaderProgram {
 	 * @param name		Name of uniform (No []) to be bound
 	 * @param lights	Value of variable to be bound
 	 */
-	public void setUniformPointLights(String name, List<PointLight> lights) {
+	public final void setUniformPointLights(String name, List<PointLight> lights) {
 		for (int i = 0; i < 4; i++) {
 			if (i < lights.size()) {
 				setUniform(getLocation(name + "[" + i + "].position"), lights.get(i).getPosition());
@@ -401,7 +403,7 @@ public abstract class ShaderProgram {
 	 * @param name			Name of uniform to be bound
 	 * @param light			Value of variable to be bound
 	 */
-	public void setUniformPointLight(String name, PointLight light) {
+	public final void setUniformPointLight(String name, PointLight light) {
 		setUniform(getLocation(name + ".position"), light.getPosition());
 		setUniform(getLocation(name + ".color"), light.getColor());
 		setUniform(getLocation(name + ".attenuation"), light.getAttenuation());
@@ -413,7 +415,7 @@ public abstract class ShaderProgram {
 	 * @param name			Name of uniform to be bound
 	 * @param light			Value of variable to be bound
 	 */
-	public void setUniformDirectionalLight(String name, DirectionalLight light) {
+	public final void setUniformDirectionalLight(String name, DirectionalLight light) {
 		setUniform(getLocation(name + ".color"), light.getColor());
 		setUniform(getLocation(name + ".direction"), light.getDirection());
 		setUniform(getLocation(name + ".intensity"), light.getIntensity());
@@ -425,7 +427,7 @@ public abstract class ShaderProgram {
 	 * @param name			Name of uniform (No []) to be bound
 	 * @param lights		Value of variable to be bound
 	 */
-	public void setUniformSpotLights(String name, List<SpotLight> lights) {
+	public final void setUniformSpotLights(String name, List<SpotLight> lights) {
 		for (int i = 0; i < SCENE_SPOT_LIGHTS; i++) {
 			
 		}
@@ -437,7 +439,7 @@ public abstract class ShaderProgram {
 	 * @param name			Name of variable to be bound
 	 * @param value			Value of variable to be bound
 	 */
-	public void setUniform(String name, Matrix4 value) {
+	public final void setUniform(String name, Matrix4 value) {
 		setUniform(getLocation(name), value);
 	}
 
@@ -447,7 +449,7 @@ public abstract class ShaderProgram {
 	 * @param location	Location of variable to be bound
 	 * @param matrix	Value of variable to be bound
 	 */
-	public void setUniform(int location, Matrix4 matrix){
+	public final void setUniform(int location, Matrix4 matrix){
 		matrix.store(matrixBuffer);
 		matrixBuffer.flip();
 		glUniformMatrix4fv(location, false, matrixBuffer);
@@ -460,7 +462,7 @@ public abstract class ShaderProgram {
 	 * @return			Location of uniform variable in current shader
 	 * @throws NullPointerException		Thrown if uniform variable cannot be found in cache or shader
 	 */
-	public int getLocation(String name) throws NullPointerException {
+	public final int getLocation(String name) throws NullPointerException {
 		try {
 			return UNIFORMS.get(name);
 		}
@@ -504,16 +506,16 @@ public abstract class ShaderProgram {
 		return shaderID;
 	}
 	
-	private int createProgram(int vert, int frag) throws Exception {
+	private int createProgram(int vert, int frag) {
 		int programID = glCreateProgram();
 		glAttachShader(programID, vert);
 		glAttachShader(programID, frag);
 		glLinkProgram(programID);
 		if (glGetProgrami(programID, GL_LINK_STATUS) == GL_FALSE)
-			throw new Exception(glGetProgramInfoLog(programID, 1024));
+			throw new RuntimeException(glGetProgramInfoLog(programID, 1024));
 		glValidateProgram(programID);
 		if (glGetProgrami(programID, GL_VALIDATE_STATUS) == GL_FALSE)
-			throw new Exception(glGetProgramInfoLog(programID, 1024));
+			throw new RuntimeException(glGetProgramInfoLog(programID, 1024));
 		glDetachShader(programID, vert);
 		glDetachShader(programID, frag);
 		glDeleteShader(vert);

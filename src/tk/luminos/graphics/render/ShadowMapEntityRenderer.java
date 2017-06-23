@@ -7,16 +7,13 @@ import static org.lwjgl.opengl.GL11.glBindTexture;
 import static org.lwjgl.opengl.GL11.glDrawElements;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
-import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 import java.util.List;
 import java.util.Map;
 
 import tk.luminos.gameobjects.GameObject;
 import tk.luminos.gameobjects.Terrain;
-import tk.luminos.graphics.models.RawModel;
+import tk.luminos.graphics.VertexArray;
 import tk.luminos.graphics.models.TexturedModel;
 import tk.luminos.graphics.shaders.ShadowShader;
 import tk.luminos.maths.MathUtils;
@@ -35,16 +32,16 @@ import tk.luminos.maths.Vector3;
 public class ShadowMapEntityRenderer {
 
 	private Matrix4 projectionViewMatrix;
-	private ShadowShader shader;
+	protected ShadowShader shader;
 
 	/**
 	 * Constructor
 	 * 
-	 * @param shader				Defines shader to use
 	 * @param projectionViewMatrix	Defines projectionView matrix for rendering
+	 * @throws Exception 			Thrown if shader cannot be loaded
 	 */
-	protected ShadowMapEntityRenderer(ShadowShader shader, Matrix4 projectionViewMatrix) {
-		this.shader = shader;
+	protected ShadowMapEntityRenderer(Matrix4 projectionViewMatrix) throws Exception {
+		this.shader = new ShadowShader();
 		this.projectionViewMatrix = projectionViewMatrix;
 	}
 
@@ -55,39 +52,27 @@ public class ShadowMapEntityRenderer {
 	 */
 	protected void render(Map<TexturedModel, List<GameObject>> entities, List<Terrain> terrains) {
 		for (TexturedModel model : entities.keySet()) {
-			RawModel rawModel = model.getRawModel();
-			bindModel(rawModel);
+			VertexArray rawModel = model.getVertexArray();
+			rawModel.bind();
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, model.getMaterial().getDiffuseID());
+			glBindTexture(GL_TEXTURE_2D, model.getMaterial().getTexture().getId());
 			for (GameObject entity : entities.get(model)) {
 				prepareInstance(entity);
-				glDrawElements(GL_TRIANGLES, rawModel.getVertexCount(), GL_UNSIGNED_INT, 0);
+				glDrawElements(GL_TRIANGLES, rawModel.getIndexCount(), GL_UNSIGNED_INT, 0);
 			}
+			rawModel.unbind();
 		}
 		for (Terrain terrain : terrains) {
-			RawModel model = terrain.getRawModel();
+			VertexArray model = terrain.getVertexArray();
 			glBindTexture(GL_TEXTURE_2D, terrain.getTexturePack().getBackgroundTexture().getID());
-			bindModel(model);
+			model.bind();
 			prepareInstance(terrain);
-			glDrawElements(GL_TRIANGLES, model.getVertexCount(), GL_UNSIGNED_INT, 0);
+			glDrawElements(GL_TRIANGLES, model.getIndexCount(), GL_UNSIGNED_INT, 0);
+			model.unbind();
 		}
-		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
-		glBindVertexArray(0);
 	}
 
 //*************************************Private Methods********************************//
-	
-	/**
-	 * Binds raw model to GPU
-	 * 
-	 * @param rawModel		RawModel to be bound
-	 */
-	private void bindModel(RawModel rawModel) {
-		glBindVertexArray(rawModel.getVaoID());
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-	}
 
 	/**
 	 * Prepares entity to be rendered
@@ -95,9 +80,7 @@ public class ShadowMapEntityRenderer {
 	 * @param entity		Entity to be prepared
 	 */
 	private void prepareInstance(GameObject entity) {
-		Matrix4 modelMatrix = MathUtils.createTransformationMatrix((Vector3) entity.getPosition(),
-				entity.getRotation(), entity.getScale());
-		Matrix4 mvpMatrix = Matrix4.mul(projectionViewMatrix, modelMatrix, null);
+		Matrix4 mvpMatrix = Matrix4.mul(projectionViewMatrix, entity.getTransformation().getComponent(), null);
 		shader.setUniform("mvpMatrix", mvpMatrix);
 	}
 	

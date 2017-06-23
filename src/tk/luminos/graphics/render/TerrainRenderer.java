@@ -12,15 +12,12 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE4;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE5;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
-import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 import java.util.List;
 
 import tk.luminos.gameobjects.Terrain;
 import tk.luminos.graphics.TerrainTexturePack;
-import tk.luminos.graphics.models.RawModel;
+import tk.luminos.graphics.VertexArray;
 import tk.luminos.graphics.shaders.TerrainShader;
 import tk.luminos.maths.MathUtils;
 import tk.luminos.maths.Matrix4;
@@ -44,11 +41,11 @@ public class TerrainRenderer {
 	/**
 	 * Constructor
 	 * 
-	 * @param shader			Shader Program that is used to render terrains
-	 * @param projectionMatrix	Projectioon matrix used to render terrains
+	 * @param projectionMatrix	Projection matrix used to render terrains
+	 * @throws Exception 		Thrown if shader cannot be loaded
 	 */
-	public TerrainRenderer(TerrainShader shader, Matrix4 projectionMatrix) {
-		this.shader = shader;
+	public TerrainRenderer(Matrix4 projectionMatrix) throws Exception {
+		this.shader = new TerrainShader();
 		shader.start();
 		shader.setUniform("projectionMatrix", projectionMatrix);
 		shader.setUniform("tileFactor", tileFactor);
@@ -75,12 +72,19 @@ public class TerrainRenderer {
 		for (Terrain terrain : terrains) {
 			prepareTerrain(terrain, shadowMap);
 			loadModelMatrix(terrain);
-			glDrawElements(GL_TRIANGLES, terrain.getRawModel().getVertexCount(),
+			glDrawElements(GL_TRIANGLES, terrain.getVertexArray().getIndexCount(),
 					GL_UNSIGNED_INT, 0);
-			unbindTexturedModel();
+			unbindTexturedModel(terrain);
 		}
 	}
 	
+	/**
+	 * @return the shader
+	 */
+	public TerrainShader getShader() {
+		return shader;
+	}
+
 	/**
 	 * Gets the density of the fog
 	 * 
@@ -129,11 +133,8 @@ public class TerrainRenderer {
 	 * @param terrain  Terrain to be prepared
 	 */
 	private void prepareTerrain(Terrain terrain, int shadowMap) {
-		RawModel rawModel = terrain.getRawModel();
-		glBindVertexArray(rawModel.getVaoID());
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glEnableVertexAttribArray(2);
+		VertexArray rawModel = terrain.getVertexArray();
+		rawModel.bind();
 		bindTextures(terrain, shadowMap);
 	}
 	
@@ -161,11 +162,8 @@ public class TerrainRenderer {
 	/**
 	 * Unbinds textured model
 	 */
-	private void unbindTexturedModel() {
-		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
-		glDisableVertexAttribArray(2);
-		glBindVertexArray(0);
+	private void unbindTexturedModel(Terrain terrain) {
+		terrain.getVertexArray().unbind();
 	}
 
 	/**
