@@ -12,6 +12,7 @@ uniform DirectionalLight sun;
 uniform float shineDamper;
 uniform float reflectivity;
 uniform vec3 skyColor;
+uniform int numPointLights;
 
 void main(void){
 
@@ -26,7 +27,7 @@ void main(void){
 	vec3 totalDiffuse = vec3(0.0);
 	vec3 totalSpecular = vec3(0.0);
 	
-	for(int i = 0; i < _MAX_LIGHTS_;i++) {
+	for(int i = 0; i < numPointLights;i++) {
 		float distance = length(toLightVector[i]);
 		float attFactor = pass_PointLights[i].attenuation.x + pass_PointLights[i].attenuation.y * distance + pass_PointLights[i].attenuation.z * distance * distance;
 				

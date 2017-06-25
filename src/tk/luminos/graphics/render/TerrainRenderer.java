@@ -12,19 +12,16 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE3;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE4;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE5;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
-import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 import java.util.List;
 
-import tk.luminos.graphics.models.RawModel;
+import tk.luminos.gameobjects.Terrain;
+import tk.luminos.graphics.TerrainTexturePack;
+import tk.luminos.graphics.VertexArray;
 import tk.luminos.graphics.shaders.TerrainShader;
-import tk.luminos.graphics.terrains.Terrain;
-import tk.luminos.graphics.textures.TerrainTexturePack;
-import tk.luminos.tools.Maths;
-import tk.luminos.tools.maths.matrix.Matrix4f;
-import tk.luminos.tools.maths.vector.Vector3f;
+import tk.luminos.maths.MathUtils;
+import tk.luminos.maths.Matrix4;
+import tk.luminos.maths.Vector3;
 
 /**
  * 
@@ -44,11 +41,11 @@ public class TerrainRenderer {
 	/**
 	 * Constructor
 	 * 
-	 * @param shader			Shader Program that is used to render terrains
-	 * @param projectionMatrix	Projectioon matrix used to render terrains
+	 * @param projectionMatrix	Projection matrix used to render terrains
+	 * @throws Exception 		Thrown if shader cannot be loaded
 	 */
-	public TerrainRenderer(TerrainShader shader, Matrix4f projectionMatrix) {
-		this.shader = shader;
+	public TerrainRenderer(Matrix4 projectionMatrix) throws Exception {
+		this.shader = new TerrainShader();
 		shader.start();
 		shader.setUniform("projectionMatrix", projectionMatrix);
 		shader.setUniform("tileFactor", tileFactor);
@@ -56,6 +53,9 @@ public class TerrainRenderer {
 		shader.setUniform("gradient", gradient);
 		shader.setUniform("shineDamper", 1f);
 		shader.setUniform("reflectivity", 0f);
+		shader.setUniform("pcfCount", 2);
+		shader.setUniform("shadowDistance", 200.0f);
+		shader.setUniform("transitionDistance", 20.0f);
 		shader.connectTextureUnits();
 		shader.stop();
 	}
@@ -65,18 +65,26 @@ public class TerrainRenderer {
 	 * 
 	 * @param terrains		List of terrains to be rendered
 	 * @param toShadowSpace	Loads shadow space to shader
+	 * @param shadowMap		Shadow map texture id
 	 */
-	public void render(List<Terrain> terrains, Matrix4f toShadowSpace, int shadowMap) {
+	public void render(List<Terrain> terrains, Matrix4 toShadowSpace, int shadowMap) {
 		shader.setUniform("toShadowMapSpace", toShadowSpace);
 		for (Terrain terrain : terrains) {
 			prepareTerrain(terrain, shadowMap);
 			loadModelMatrix(terrain);
-			glDrawElements(GL_TRIANGLES, terrain.getRawModel().getVertexCount(),
+			glDrawElements(GL_TRIANGLES, terrain.getVertexArray().getIndexCount(),
 					GL_UNSIGNED_INT, 0);
-			unbindTexturedModel();
+			unbindTexturedModel(terrain);
 		}
 	}
 	
+	/**
+	 * @return the shader
+	 */
+	public TerrainShader getShader() {
+		return shader;
+	}
+
 	/**
 	 * Gets the density of the fog
 	 * 
@@ -113,8 +121,8 @@ public class TerrainRenderer {
 		this.gradient = gradient;
 	}
 	
-	public void cleanUp() {
-		shader.cleanUp();
+	public void dispose() {
+		shader.dispose();
 	}
 
 //**********************************Private Methods*****************************************//	
@@ -125,11 +133,8 @@ public class TerrainRenderer {
 	 * @param terrain  Terrain to be prepared
 	 */
 	private void prepareTerrain(Terrain terrain, int shadowMap) {
-		RawModel rawModel = terrain.getRawModel();
-		glBindVertexArray(rawModel.getVaoID());
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glEnableVertexAttribArray(2);
+		VertexArray rawModel = terrain.getVertexArray();
+		rawModel.bind();
 		bindTextures(terrain, shadowMap);
 	}
 	
@@ -157,11 +162,8 @@ public class TerrainRenderer {
 	/**
 	 * Unbinds textured model
 	 */
-	private void unbindTexturedModel() {
-		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
-		glDisableVertexAttribArray(2);
-		glBindVertexArray(0);
+	private void unbindTexturedModel(Terrain terrain) {
+		terrain.getVertexArray().unbind();
 	}
 
 	/**
@@ -170,8 +172,8 @@ public class TerrainRenderer {
 	 * @param terrain	Terrain to calculate Model Matrix of
 	 */
 	private void loadModelMatrix(Terrain terrain) {
-		Matrix4f transformationMatrix = Maths.createTransformationMatrix(
-				new Vector3f(terrain.getX(), 0, terrain.getZ()), 0, 0, 0, 1);
+		Matrix4 transformationMatrix = MathUtils.createTransformationMatrix(
+				new Vector3(terrain.getX(), 0, terrain.getZ()), 0, 0, 0, 1);
 		shader.setUniform("transformationMatrix", transformationMatrix);
 	}
 

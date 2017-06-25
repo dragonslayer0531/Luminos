@@ -1,42 +1,23 @@
 package tk.luminos.graphics.shaders;
 
-import static tk.luminos.ConfigData.POSITION;
-
-/**
- * 
- * Gui Shader to use in GuiRenderer
- *
- * @author Nick Clark
- * @version 1.1
- */
-
-public class GuiShader extends ShaderProgram {
+public class GUIShader extends ShaderProgram {
 	
-	public static String VERT = "gui.vert";
-	public static String FRAG = "gui.frag";
-
-	/**
-	 * Constructor
-	 * @throws Exception 
-	 */
-	public GuiShader() throws Exception {
-		super(VERT, FRAG);
-	}
+	public static String vert = "gui.vert";
+	public static String frag = "gui.frag";
 	
-	/*
-	 * (non-Javadoc)
-	 * @see graphics.shaders.ShaderProgram#getAllUniformLocations()
-	 */
-	public void getAllUniformLocations() {
-		createUniform("transformationMatrix");
+	public GUIShader() throws Exception {
+		super(vert, frag);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see graphics.shaders.ShaderProgram#bindAttributes()
-	 */
+	@Override
+	public void getAllUniformLocations() throws Exception {
+		super.createUniform("transformationMatrix");
+		super.createUniform("color");
+	}
+
+	@Override
 	public void bindAttributes() {
-		super.bindAttribute(POSITION, "position");
+		
 	}
 
 }

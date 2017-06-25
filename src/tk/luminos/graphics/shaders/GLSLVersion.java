@@ -1,5 +1,11 @@
 package tk.luminos.graphics.shaders;
 
+/**
+ * Enumerates OpenGL versions
+ * 
+ * @author Nick Clark
+ * @version 1.0
+ */
 public enum GLSLVersion {
 	
 	VERSION110("#version 110"),
@@ -16,10 +22,18 @@ public enum GLSLVersion {
 	VERSION450("#version 450");
 	
 	private String name;
+	
 	private GLSLVersion(String name) {
 		this.name = name;
 	}
 	
+	/**
+	 * Gets the header for shaders of the provided GLSL version
+	 * 
+	 * @param version		GLSL Version
+	 * @param core			Uses GLSL core
+	 * @return				Header of shaders
+	 */
 	public static String getHeader(GLSLVersion version, boolean core) {
 		if (core) 
 			return version.name + " core";

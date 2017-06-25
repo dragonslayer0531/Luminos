@@ -1,7 +1,5 @@
 package tk.luminos;
 
-import tk.luminos.input.Keyboard;
-
 public class ConfigData {
 		
 	public static final String VERSION = "0.0.1a";
@@ -31,16 +29,5 @@ public class ConfigData {
 	
 	public static Integer SIZE = 100;
 	public static Integer TEXTURE_SIZE = 256;
-	
-	public static Integer POSITION = 0;
-	public static Integer TEXTURES = 1;
-	public static Integer NORMALS = 2;
-	
-	public static Integer SCREENSHOT = Keyboard.KEY_F12;
-	
-	public static final String FORMAT = "format";
-	public static final String BOOLEAN = "bool";
-	public static final String INT = "int";
-	public static final String SHADER_LOC = "shader_loc";
 	
 }

@@ -16,7 +16,9 @@ import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 
+import tk.luminos.graphics.VertexArray;
 import tk.luminos.graphics.models.RawModel;
+import tk.luminos.maths.Matrix4;
 
 /**
  * 
@@ -35,14 +37,30 @@ public class ModelLoader {
 	 * Loads Positions to graphics card
 	 * 
 	 * @param positions		floats used to describe the positions of the vertices
-	 * @param dimensions	int used to describe the number of dimensions [1, 4]
-	 * @return	RawModel	RawModel containing GPU data on the vertices
+	 * @param dimensions	int used to describe the number of dimensions
+	 * @return				RawModel containing GPU data on the vertices
 	 */
 	protected RawModel loadToVAO(float[] positions, int dimensions) {
 		int vaoID = createVAO();
 		this.storeDataInAttributeList(0, dimensions, positions);
 		unbindVAO();
 		return new RawModel(vaoID, positions.length / dimensions);
+	}
+	
+	/**
+	 * Loads positions to graphics card
+	 * 
+	 * @param positions		floats used to describe the positions of the vertices
+	 * @param elements		integers used to describe the order of the vertices
+	 * @param dimensions	int used to describe the number of dimensions
+	 * @return				RawModel containing GPU data on the vertices
+	 */
+	protected RawModel loadToVAO(float[] positions, int[] elements, int dimensions) {
+		int vaoID = createVAO();
+		this.storeDataInAttributeList(0, 3, positions);
+		this.bindIndicesBuffer(elements);
+		this.unbindVAO();
+		return new RawModel(vaoID, positions.length / 3);
 	}
 	
 	/**
@@ -133,6 +151,100 @@ public class ModelLoader {
 		bindIndicesBuffer(indices);
 		unbindVAO();
 		return new RawModel(vaoID, indices.length);
+	}
+	
+	protected VertexArray load(float positions[], int dimensions) {
+		VertexArray vao = new VertexArray();
+		vao.start();
+		vao.createAttribute(0, positions, dimensions);
+		vao.stop();
+		return vao;
+	}
+	
+	protected VertexArray load(float[] positions, int[] indices, int dimensions) {
+		VertexArray vao = new VertexArray();
+		vao.start();
+		vao.createAttribute(0, positions, dimensions);
+		vao.createIndexBuffer(indices);
+		vao.stop();
+		return vao;
+	}
+	
+	protected VertexArray load(float positions[], float textureCoords[], int dimensions) {
+		VertexArray vao = new VertexArray();
+		vao.start();
+		vao.createAttribute(0, positions, dimensions);
+		vao.createAttribute(1, textureCoords, 2);
+		vao.stop();
+		return vao;
+	}
+	
+	protected VertexArray load(float positions[], float textureCoords[], int[] indices, int dimensions) {
+		VertexArray vao = new VertexArray();
+		vao.start();
+		vao.createAttribute(0, positions, dimensions);
+		vao.createAttribute(1, textureCoords, 2);
+		vao.createIndexBuffer(indices);
+		vao.stop();
+		return vao;
+	}
+	
+	protected VertexArray load(float[] positions, float[] textureCoords, float[] normals) {
+		VertexArray vao = new VertexArray();
+		vao.start();
+		vao.createAttribute(0, positions, 3);
+		vao.createAttribute(1, textureCoords, 2);
+		vao.createAttribute(2, normals, 3);
+		vao.stop();
+		return vao;
+	}
+	
+	protected VertexArray load(float[] positions, float[] textureCoords, float[] normals, int[] indices) {
+		VertexArray vao = new VertexArray();
+		vao.start();
+		vao.createAttribute(0, positions, 3);
+		vao.createAttribute(1, textureCoords, 2);
+		vao.createAttribute(2, normals, 3);
+		vao.createIndexBuffer(indices);
+		vao.stop();
+		return vao;
+	}
+	
+	protected VertexArray load(float[] positions, float[] textureCoords, float[] normals, float[] tangents) {
+		VertexArray vao = new VertexArray();
+		vao.start();
+		vao.createAttribute(0, positions, 3);
+		vao.createAttribute(1, textureCoords, 2);
+		vao.createAttribute(2, normals, 3);
+		vao.createAttribute(3, tangents, 3);
+		vao.stop();
+		return vao;
+	}
+	
+	protected VertexArray load(float[] positions, float[] textureCoords, float[] normals, float[] tangents, int[] indices) {
+		VertexArray vao = new VertexArray();
+		vao.start();
+		vao.createAttribute(0, positions, 3);
+		vao.createAttribute(1, textureCoords, 2);
+		vao.createAttribute(2, normals, 3);
+		vao.createAttribute(3, tangents, 3);
+		vao.createIndexBuffer(indices);
+		vao.stop();
+		return vao;
+	}
+	
+	protected VertexArray load(float[] positions, float[] textureCoords, int[] indices) {
+		VertexArray vao = new VertexArray();
+		vao.start();
+		vao.createAttribute(0, positions, 3);
+		vao.createAttribute(1, textureCoords, 2);
+		vao.createIndexBuffer(indices);
+		vao.stop();
+		return vao;
+	}
+	
+	protected VertexArray load(float[] positions, float[] textureCoords, float[] normals, Matrix4[] transformations, int[] indices) {
+		return null;
 	}
 	
 	/**

@@ -4,7 +4,16 @@ import java.io.BufferedReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import tk.luminos.tools.File;
+import tk.luminos.util.File;
+
+/**
+ * 
+ * Parser for XML style files, such as Collada, CFG, and more.
+ * 
+ * @author Nick Clark
+ * @version 1.0
+ *
+ */
 
 public class XMLParser {
 	
@@ -14,6 +23,13 @@ public class XMLParser {
 	private static final Pattern ATTR_VAL = Pattern.compile("\"(.+?)\"");
 	private static final Pattern CLOSED = Pattern.compile("(</|/>)");
 	
+	/**
+	 * Loads an XML file and returns the main node of the file
+	 * 
+	 * @param file				File name
+	 * @return					Main node of file
+	 * @throws Exception		Thrown if file cannot be found or opened
+	 */
 	public static XMLNode loadXMLFile(File file) throws Exception {
 		BufferedReader reader = file.getReader();
 		reader.readLine();

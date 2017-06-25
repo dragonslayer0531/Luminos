@@ -10,22 +10,17 @@ import static org.lwjgl.opengl.GL11.glDrawElements;
 import static org.lwjgl.opengl.GL11.glFrontFace;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
-import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 import java.util.List;
 import java.util.Map;
 
-import tk.luminos.graphics.gameobjects.GameObject;
-import tk.luminos.graphics.models.RawModel;
+import tk.luminos.gameobjects.GameObject;
+import tk.luminos.graphics.Material;
+import tk.luminos.graphics.VertexArray;
 import tk.luminos.graphics.models.TexturedModel;
 import tk.luminos.graphics.shaders.GameObjectShader;
-import tk.luminos.graphics.textures.Material;
-import tk.luminos.tools.Maths;
-import tk.luminos.tools.maths.matrix.Matrix4f;
-import tk.luminos.tools.maths.vector.Vector2f;
-import tk.luminos.tools.maths.vector.Vector3f;
+import tk.luminos.maths.Matrix4;
+import tk.luminos.maths.Vector2;
 
 /**
  * 
@@ -39,17 +34,18 @@ import tk.luminos.tools.maths.vector.Vector3f;
 public class GameObjectRenderer {
 
 	private GameObjectShader shader;
+
 	private float gradient = 5.0f;
 	private float density = 0.001f;
 	
 	/**
 	 * Constructor of GameObjectRenderer
 	 * 
-	 * @param shader			{@link GameObjectShader} that is used for rendering entities
 	 * @param projectionMatrix	Projection Matrix that is used to draw the screen
+	 * @throws Exception 		Thrown if shader cannot be loaded
 	 */
-	public GameObjectRenderer(GameObjectShader shader, Matrix4f projectionMatrix) {
-		this.shader = shader;
+	public GameObjectRenderer(Matrix4 projectionMatrix) throws Exception {
+		this.shader = new GameObjectShader();
 		shader.start();
 		shader.setUniform(shader.getLocation("projectionMatrix"), projectionMatrix);
 		shader.setUniform(shader.getLocation("density"), density);
@@ -61,7 +57,6 @@ public class GameObjectRenderer {
 	 * Renders entities to screen
 	 * 
 	 * @param entities			Defines the map of entities to render
-	 * @param shadowMapSpace	Matrix defining the shadow map transformation
 	 */
 	public void render(Map<TexturedModel, List<GameObject>> entities) {
 		for (TexturedModel model : entities.keySet()) {
@@ -71,13 +66,13 @@ public class GameObjectRenderer {
 				prepareInstance(entity);
 				if(model.getMaterial().isRenderDoubleSided()) {
 					glFrontFace(GL_CW);
-					glDrawElements(GL_TRIANGLES, model.getRawModel().getVertexCount(), GL_UNSIGNED_INT, 0);
+					glDrawElements(GL_TRIANGLES, model.getVertexArray().getIndexCount(), GL_UNSIGNED_INT, 0);
 				}
 				glFrontFace(GL_CCW);
-				glDrawElements(GL_TRIANGLES, model.getRawModel().getVertexCount(),
+				glDrawElements(GL_TRIANGLES, model.getVertexArray().getIndexCount(),
 						GL_UNSIGNED_INT, 0);
 			}
-			unbindTexturedModel();
+			unbindTexturedModel(model);
 		}
 	}
 
@@ -120,8 +115,15 @@ public class GameObjectRenderer {
 	/**
 	 * Cleans up shader program
 	 */
-	public void cleanUp() {
-		shader.cleanUp();
+	public void dispose() {
+		shader.dispose();
+	}
+	
+	/**
+	 * @return the shader
+	 */
+	public GameObjectShader getShader() {
+		return shader;
 	}
 	
 //***********************************Private Methods*********************************//	
@@ -132,32 +134,26 @@ public class GameObjectRenderer {
 	 * @param model		Defines textured model to be prepared
 	 */
 	private void prepareTexturedModel(TexturedModel model) {
-		RawModel rawModel = model.getRawModel();
-		glBindVertexArray(rawModel.getVaoID());
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glEnableVertexAttribArray(2);
+		VertexArray vao = model.getVertexArray();
+		vao.bind();
 		Material texture = model.getMaterial();
 		shader.setUniform(shader.getLocation("numberOfRows"), texture.getRows());
 		if(texture.hasTransparency()){
-			MasterRenderer.disableCulling();
+			SceneRenderer.disableCulling();
 		}
 		shader.setUniform(shader.getLocation("useFakeLighting"), texture.useFakeLighting());
 		shader.setUniform(shader.getLocation("shineDamper"), texture.getShineDamper());
 		shader.setUniform(shader.getLocation("reflectivity"), texture.getReflectivity());
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, model.getMaterial().getDiffuseID());
+		glBindTexture(GL_TEXTURE_2D, model.getMaterial().getTexture().getId());
 	}
 
 	/**
 	 * Unbinds the prepared textured model
 	 */
-	private void unbindTexturedModel() {
-		MasterRenderer.enableCulling();
-		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
-		glDisableVertexAttribArray(2);
-		glBindVertexArray(0);
+	private void unbindTexturedModel(TexturedModel model) {
+		SceneRenderer.enableCulling();
+		model.getVertexArray().unbind();
 	}
 
 	/**
@@ -166,10 +162,8 @@ public class GameObjectRenderer {
 	 * Prepares instance of entity for rendering
 	 */
 	private void prepareInstance(GameObject entity) {
-		Matrix4f transformationMatrix = Maths.createTransformationMatrix((Vector3f) entity.getPosition(),
-				entity.getRotation(), entity.getScale());
-		shader.setUniform(shader.getLocation("transformationMatrix"), transformationMatrix);
-		shader.setUniform(shader.getLocation("offset"), new Vector2f(0, 0));
+		shader.setUniform(shader.getLocation("transformationMatrix"), entity.getTransformation().getComponent());
+		shader.setUniform(shader.getLocation("offset"), new Vector2(0, 0));
 	}
 
 }

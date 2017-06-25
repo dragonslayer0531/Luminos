@@ -65,13 +65,31 @@ import org.lwjgl.opengl.GLDebugMessageCallback;
 import org.lwjgl.opengl.KHRDebug;
 import org.lwjgl.system.Callback;
 
+/**
+ * Creates debugging utility for OpenGL
+ * 
+ * @author Nick Clark
+ * @version 1.0
+ */
 public class DebugUtil {
 
+	/**
+	 * Creates a functional debug callback interface
+	 * 
+	 * @author Nick Clark
+	 * @version 1.0
+	 */
     @FunctionalInterface
     public interface DebugCallback {
         void callback(String source, String type, int id, String severity, String message);
     }
 
+    /**
+     * Sets up a debug message callback
+     * 
+     * @param callback		Debugging callback
+     * @return				Callback for OpenGL
+     */
     public static Callback setupDebugMessageCallback(DebugCallback callback) {
 
         GLCapabilities caps = GL.getCapabilities();

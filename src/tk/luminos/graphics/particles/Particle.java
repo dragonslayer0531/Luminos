@@ -1,184 +1,32 @@
 package tk.luminos.graphics.particles;
 
-import tk.luminos.graphics.display.Window;
-import tk.luminos.graphics.textures.ParticleTexture;
-import tk.luminos.tools.maths.vector.Vector2f;
-import tk.luminos.tools.maths.vector.Vector3f;
+import tk.luminos.gameobjects.GameObject;
+import tk.luminos.graphics.models.TexturedModel;
+import tk.luminos.maths.Vector3;
 
-/**
- * 
- * Describes 2D particle used for particle effects
- *
- * @author Nick Clark
- * @version 1.0
- * 
- */
-
-public class Particle {
+public class Particle extends GameObject {
 	
-	private Vector3f position;
-	private Vector3f velocity;
-	private float grav;
-	private float life;
-	private float rotation;
-	private float scale;
-	private ParticleTexture texture;
-	private float elapsedTime = 0;
-	
-	private Vector2f offsetOne = new Vector2f();
-	private Vector2f offsetTwo = new Vector2f();
-	private float blend;
+	private Vector3 velocity;
+	private float life, elapsedTime;
 
-	public Vector2f getOffsetOne() {
-		return offsetOne;
-	}
-
-	public Vector2f getOffsetTwo() {
-		return offsetTwo;
-	}
-
-	public float getBlend() {
-		return blend;
-	}
-
-	/**
-	 * Constructor
-	 * 
-	 * @param texture		GPU index of the {@link ParticleTexture}
-	 * @param position		Describes the original position
-	 * @param velocity		Describes the original velocity
-	 * @param grav			Describes the gravitational effect
-	 * @param life			Describes the lifespan of the particle
-	 * @param rotation		Describes the original rotation
-	 * @param scale			Describes the original scale
-	 */
-	public Particle(ParticleTexture texture, Vector3f position, Vector3f velocity, float grav, float life, float rotation, float scale) {
-		this.texture = texture;
-		this.position = position;
+	public Particle(TexturedModel model, Vector3 position, Vector3 rotation, Vector3 scale, Vector3 velocity, float life) {
+		super(model, position, rotation, scale);
+		
 		this.velocity = velocity;
-		this.grav = grav;
 		this.life = life;
-		this.rotation = rotation;
-		this.scale = scale;
+		this.elapsedTime = 0;
 	}
 
-	/**
-	 * Gets the particle's velocity
-	 * 
-	 * @return Velocity of particle
-	 */
-	public Vector3f getVelocity() {
+	public Vector3 getVelocity() {
 		return velocity;
 	}
 
-	/**
-	 * Gets the particle's gravitational proportion
-	 * 
-	 * @return gravitational effect
-	 */
-	public float getGrav() {
-		return grav;
-	}
-
-	/**
-	 * Gets the particle's life span
-	 * 
-	 * @return Life span of particle
-	 */
 	public float getLife() {
 		return life;
 	}
 
-	
-	/**
-	 * Gets the texture of the particle
-	 * 
-	 * @return Particle's texture
-	 */
-	public ParticleTexture getTexture() {
-		return texture;
-	}
-
-	/**
-	 * Gets the time the particle has been alive
-	 * 
-	 * @return Time particle has been alive
-	 */
 	public float getElapsedTime() {
 		return elapsedTime;
-	}
-
-	/**
-	 * Updates particle position and velocity
-	 * 
-	 * @param window	{@link GLFWWindow} to get the frame time of
-	 * @return boolean 	Whether the particle is alive
-	 */
-	public boolean update(Window window) {
-		velocity.y += 50 * grav * window.getFrameTime();
-		Vector3f change = new Vector3f(velocity.x, velocity.y, velocity.z);
-		change.scale(window.getFrameTime());
-		Vector3f.add(change, position, position);
-		updateTextureCoordInfo();
-		elapsedTime += window.getFrameTime();
-		return elapsedTime < life;
-	}
-	
-	/**
-	 * Gets particles's position
-	 * 
-	 * @return Vector describing world position 
-	 */
-	public Vector3f getPosition() {
-		return position;
-	}
-
-	/**
-	 * Get's particles rotation
-	 * 
-	 * @return Vector describing the velocity
-	 */
-	public float getRotation() {
-		return rotation;
-	}
-
-	/**
-	 * Gets particle's scale
-	 * 
-	 * @return Float describing size of particle
-	 * 
-	 */
-	public float getScale() {
-		return scale;
-	}
-
-//***************************************Private Methods**************************************//
-	
-	/**
-	 * Updates the texture coordinates of the particle
-	 */
-	private void updateTextureCoordInfo() {
-		float lifeFactor = elapsedTime / life;
-		int stageCount = texture.getNumberOfRows() * texture.getNumberOfRows();
-		float atlasProgression = lifeFactor * stageCount;
-		int index1 = (int) Math.floor(atlasProgression);
-		int index2 = index1 < stageCount - 1 ? index1 + 1 : index1;
-		this.blend = atlasProgression % 1;
-		setTextureOffset(offsetOne, index1);
-		setTextureOffset(offsetTwo, index2);
-	}
-	
-	/**
-	 * Sets the texture offsets
-	 * 
-	 * @param offset	Previous offset
-	 * @param index		Current position
-	 */
-	private void setTextureOffset(Vector2f offset, int index) {
-		int column = index % texture.getNumberOfRows();
-		int row = index / texture.getNumberOfRows();
-		offset.x = (float) column / texture.getNumberOfRows();
-		offset.y = (float) row / texture.getNumberOfRows();
 	}
 
 }

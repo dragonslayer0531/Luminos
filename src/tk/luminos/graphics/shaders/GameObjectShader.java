@@ -1,9 +1,5 @@
 package tk.luminos.graphics.shaders;
 
-import static tk.luminos.ConfigData.NORMALS;
-import static tk.luminos.ConfigData.POSITION;
-import static tk.luminos.ConfigData.TEXTURES;
-
 /**
  * 
  * Entity Shader to use in Entity Renderer
@@ -19,7 +15,8 @@ public class GameObjectShader extends ShaderProgram {
 
 	/**
 	 * Constructor
-	 * @throws Exception 
+	 * @throws Exception		Thrown if shader file cannot be found, compiled, validated
+	 * 							or linked
 	 */
 	public GameObjectShader() throws Exception {
 		super(VERT, FRAG);
@@ -30,16 +27,14 @@ public class GameObjectShader extends ShaderProgram {
 	 * @see graphics.shaders.ShaderProgram#bindAttributes()
 	 */
 	public void bindAttributes() {
-		super.bindAttribute(POSITION, "position");
-		super.bindAttribute(TEXTURES, "textureCoordinates");
-		super.bindAttribute(NORMALS, "normal");
+
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * @see graphics.shaders.ShaderProgram#getAllUniformLocations()
 	 */
-	public void getAllUniformLocations() {
+	public void getAllUniformLocations() throws Exception {
 		createUniform("transformationMatrix");
 		createUniform("projectionMatrix");
 		createUniform("viewMatrix");
@@ -53,13 +48,14 @@ public class GameObjectShader extends ShaderProgram {
 		createUniform("density");
 		createUniform("gradient");
 		createUniform("modelTexture");
+		createUniform("numPointLights");
+//		createUniform("numSpotLights");
 		createUniformDirectionalLight("sun");
-		
-//		for (String s : super.uniforms.keySet()) {
-//			System.out.println(s + ", " + super.uniforms.get(s));
-//		}
 	}
 	
+	/**
+	 * Connects the texture units to locations
+	 */
 	public void connectTextureUnits() {
 
 	}

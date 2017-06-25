@@ -18,9 +18,8 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import java.util.ArrayList;
 import java.util.List;
 
-import tk.luminos.ConfigData;
 import tk.luminos.graphics.models.RawModel;
-import tk.luminos.graphics.shaders.postprocess.PostProcess;
+import tk.luminos.graphics.shaders.PostProcess;
 import tk.luminos.loaders.Loader;
 
 /**
@@ -40,14 +39,19 @@ public class PostProcessRenderer {
 	private List<PostProcess> processes = new ArrayList<PostProcess>();
 	private RawModel quad;
 	
+	private ImageRenderer imgRender;
+	
 	/**
 	 * Constructor
-	 * 
-	 * @param loader		Loads quad to GPU
 	 */
-	public PostProcessRenderer(Loader loader) {
-		quad = loader.loadToVAO(POSITIONS, 2);
-	}
+	public PostProcessRenderer() {
+		quad = Loader.getInstance().loadToVAO(POSITIONS, 2);
+		try {
+			imgRender = new ImageRenderer();
+		} catch (Exception e) {
+			throw new RuntimeException("Post processing was enabled, but could not be initialized:\n\n" + e.getMessage());
+		}
+ 	}
 	
 	/**
 	 * Loads shader to pipeline
@@ -64,7 +68,7 @@ public class PostProcessRenderer {
 	 * @param process		{@link PostProcess} to remove from pipeline
 	 */
 	public void removeShader(PostProcess process) {
-		process.cleanUp();
+		process.dispose();
 		processes.remove(process);
 	}
 	
@@ -75,7 +79,7 @@ public class PostProcessRenderer {
 	 */
 	public void render(int textureID) {
 		glBindVertexArray(quad.getVaoID());
-		glEnableVertexAttribArray(ConfigData.POSITION);
+		glEnableVertexAttribArray(0);
 		glDisable(GL_DEPTH_TEST);
 		glActiveTexture(GL_TEXTURE0);
 		for(PostProcess shader : processes) {
@@ -86,15 +90,20 @@ public class PostProcessRenderer {
 			shader.stop();
 		}
 		glEnable(GL_DEPTH_TEST);
-		glDisableVertexAttribArray(ConfigData.POSITION);
+		glDisableVertexAttribArray(0);
 		glBindVertexArray(0);
+	}
+	
+	public void render() {
+		
 	}
 	
 	/**
 	 * Cleans up all post processing shaders
 	 */
-	public void cleanUp() {
-		for(PostProcess shader : processes) shader.cleanUp();
+	public void dispose() {
+		for(PostProcess shader : processes)
+			shader.dispose();
 	}
 	
 	/**
@@ -104,6 +113,15 @@ public class PostProcessRenderer {
 		for(PostProcess process : processes) {
 			removeShader(process);
 		}
+	}
+	
+	/**
+	 * Gets the final renderer
+	 * 
+	 * @return final image renderer
+	 */
+	public ImageRenderer getRenderer() {
+		return imgRender;
 	}
 
 }

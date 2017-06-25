@@ -1,11 +1,11 @@
 in float visibility;
-in int pass_maxLights;
 in PointLight pass_PointLights[_MAX_LIGHTS_];
 in vec2 pass_textureCoordinates;
 in vec3 surfaceNormal;
 in vec3 toCameraVector;
 in vec3 toLightVector[_MAX_LIGHTS_];
 in vec4 shadowCoords;
+in vec4 pass_Position;
 
 out vec4 out_Color;
 
@@ -20,15 +20,14 @@ uniform int tileFactor;
 uniform float shineDamper;
 uniform float reflectivity;
 uniform vec3 skyColor;
-uniform int maxLights;
+uniform int numPointLights;
+uniform int useWater;
 
-const int pcfCount = 2;
-const float totalTexels = (pcfCount * 2.0 + 1.0) * (pcfCount * 2.0 + 1.0);
+uniform int pcfCount;
+float totalTexels = (pcfCount * 2.0 + 1.0) * (pcfCount * 2.0 + 1.0);
 
-void main(void){
+void main(void) {
 	
-	float mapSize = 2048 * 4;
-	float texelSize = 1.0 / mapSize;
 	float total = 0.0;
 	
 	for(int x=-pcfCount; x<=pcfCount; x++){
@@ -38,6 +37,7 @@ void main(void){
 		}
 	}
 	
+	total *= sun.intensity;
 	total /= totalTexels;
 	
 	float lightFactor = 1.0 - (total * shadowCoords.w);
@@ -59,7 +59,7 @@ void main(void){
 	vec3 totalDiffuse = vec3(0.0);
 	vec3 totalSpecular = vec3(0.0);
 	
-	for(int i = 0; i < _MAX_LIGHTS_; i++){
+	for(int i = 0; i < numPointLights; i++){
 		float distance = length(toLightVector[i]);
 		float attFactor = pass_PointLights[i].attenuation.x + (pass_PointLights[i].attenuation.y * distance) + (pass_PointLights[i].attenuation.z * distance * distance);
 		vec3 unitLightVector = normalize(toLightVector[i]);	
@@ -89,4 +89,8 @@ void main(void){
 
 	out_Color =  vec4(totalDiffuse,1.0) * totalColor + vec4(totalSpecular,1.0);
 	out_Color = mix(vec4(skyColor,1.0),out_Color, visibility);
+	
+	if (useWater == 0 && (pass_Position).y > 0) {
+		out_Color.a = 0;
+	}
 }

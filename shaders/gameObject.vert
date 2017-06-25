@@ -42,7 +42,6 @@ void main(void) {
 	
 	surfaceNormal = (transformationMatrix * vec4(actualNormal,0.0)).xyz;
 	for(int i = 0; i < _MAX_LIGHTS_; i++){
-//		toLightVector[i] = lightPosition[i] - worldPosition.xyz;
 		toLightVector[i] = pointLights[i].position - worldPosition.xyz;
 	}
 	toCameraVector = (inverse(viewMatrix) * vec4(0.0,0.0,0.0,1.0)).xyz - worldPosition.xyz;
@@ -54,7 +53,8 @@ void main(void) {
 	distance = distance - (shadowDistance - transitionDistance);
 	distance = distance / transitionDistance;
 	for (int i = 0; i < _MAX_LIGHTS_; i++) {
-		pass_PointLights[i] = pointLights[i];
+		pass_PointLights[i].attenuation = pointLights[i].attenuation;
+		pass_PointLights[i].color = pointLights[i].color;
 	}
 	
 }

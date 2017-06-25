@@ -1,8 +1,6 @@
 package tk.luminos.graphics.shaders;
 
-import static tk.luminos.ConfigData.POSITION;
-
-import tk.luminos.graphics.gameobjects.PointLight;
+import tk.luminos.graphics.PointLight;
 
 /**
  * 
@@ -19,7 +17,8 @@ public class WaterShader extends ShaderProgram {
 
 	/**
 	 * Constructor
-	 * @throws Exception 
+	 * @throws Exception 		Thrown if shader file cannot be found, compiled, validated
+	 * 							or linked
 	 */
 	public WaterShader() throws Exception {
 		super(VERT, FRAG);
@@ -30,14 +29,14 @@ public class WaterShader extends ShaderProgram {
 	 * @see graphics.shaders.ShaderProgram#bindAttributes()
 	 */
 	public void bindAttributes() {
-		bindAttribute(POSITION, "position");
+
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * @see graphics.shaders.ShaderProgram#getAllUniformLocations()
 	 */
-	public void getAllUniformLocations() {
+	public void getAllUniformLocations() throws Exception {
 		createUniform("projectionMatrix");
 		createUniform("viewMatrix");
 		createUniform("modelMatrix");

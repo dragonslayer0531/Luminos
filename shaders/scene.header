@@ -1,3 +1,5 @@
+#define _MAX_LIGHTS_ 5
+
 struct PointLight {
 	vec3 color;
 	vec3 position;

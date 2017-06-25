@@ -1,8 +1,5 @@
 package tk.luminos.graphics.shaders;
 
-import static tk.luminos.ConfigData.POSITION;
-import static tk.luminos.ConfigData.TEXTURES;
-
 /**
  * 
  * Shadow Shader for Shadow Renderers
@@ -17,6 +14,11 @@ public class ShadowShader extends ShaderProgram {
     public static String VERT = "shadow.vert";
     public static String FRAG = "shadow.frag";
     
+    /**
+     * Constructor
+     * @throws Exception		Thrown if shader file cannot be found, compiled, validated
+	 * 							or linked
+     */
 	public ShadowShader() throws Exception {
         super(VERT, FRAG);
     }
@@ -25,7 +27,7 @@ public class ShadowShader extends ShaderProgram {
 	 * (non-Javadoc)
 	 * @see graphics.shaders.ShaderProgram#getAllUniformLocations()
 	 */
-    public void getAllUniformLocations() {
+    public void getAllUniformLocations() throws Exception {
        createUniform("mvpMatrix");  
     }
  
@@ -34,8 +36,7 @@ public class ShadowShader extends ShaderProgram {
      * @see graphics.shaders.ShaderProgram#bindAttributes()
      */
     public void bindAttributes() {
-        super.bindAttribute(POSITION, "in_position");
-        super.bindAttribute(TEXTURES, "in_textureCoords");
+    	
     }
 	
 }

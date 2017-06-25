@@ -1,87 +1,168 @@
 package tk.luminos;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import tk.luminos.graphics.display.Window;
-import tk.luminos.graphics.gameobjects.Camera;
-import tk.luminos.graphics.gameobjects.DirectionalLight;
-import tk.luminos.graphics.gameobjects.GameObject;
-import tk.luminos.graphics.gameobjects.PointLight;
-import tk.luminos.graphics.render.MasterRenderer;
-import tk.luminos.graphics.terrains.Terrain;
+import tk.luminos.display.Window;
+import tk.luminos.gameobjects.GameObject;
+import tk.luminos.gameobjects.Terrain;
+import tk.luminos.graphics.Camera;
+import tk.luminos.graphics.DirectionalLight;
+import tk.luminos.graphics.Light;
+import tk.luminos.graphics.PointLight;
+import tk.luminos.graphics.SceneManager;
 import tk.luminos.graphics.water.WaterTile;
-import tk.luminos.tools.SceneManager;
 
 /**
  * 
- * Interface which determines what the engine needs to render
+ * Abstract class which determines what the engine needs to render
  * 
  * @author Nick Clark
  * @version 1.0
  *
  */
 
-public interface Scene {
+public abstract class Scene {
+	
+	private List<GameObject> objects;
+	private List<Terrain> terrains;
+	private List<WaterTile> tiles;
+	private List<PointLight> pointLights;
+	
+	protected DirectionalLight directionalLight;
+	protected Camera camera;
+	protected GameObject gameObject;
+	
+	/**
+	 * Creates new Scene object
+	 */
+	public Scene() {
+		objects = new ArrayList<GameObject>();
+		terrains = new ArrayList<Terrain>();
+		tiles = new ArrayList<WaterTile>();
+		pointLights = new ArrayList<PointLight>();
+	}
 
 	/**
-	 * Gets the terrains in a logic scenario
+	 * Gets the terrains in a scene 
 	 * 
-	 * @return	The terrains in a scenario
+	 * @return	The terrains in a scene
 	 */
-	public List<Terrain> getTerrains();
+	public List<Terrain> getTerrains() {
+		return terrains;
+	}
 	
 	/**
 	 * 
-	 * Gets the GameObjects in a logic scenario
+	 * Gets the GameObjects in a scene 
 	 * 
-	 * @return	Game Objects in scenario
+	 * @return	Game Objects in scene
 	 */
-	public List<GameObject> getGameObjects();
+	public List<GameObject> getGameObjects() {
+		return objects;
+	}
+		
+	/**
+	 * 
+	 * Gets the WaterTiles in a scene scenario
+	 * 
+	 * @return	Water tiles in scene
+	 */
+	public List<WaterTile> getWaterTiles() {
+		return tiles;
+	}
 	
 	/**
 	 * 
-	 * Gets the WaterTiles in a logic scenario
+	 * Gets the Lights in a scene
 	 * 
-	 * @return	Water tiles in scenario
+	 * @return	Lights in scene
 	 */
-	public List<WaterTile> getWaterTiles();
+	public List<PointLight> getPointLights() {
+		return pointLights;
+	}
 	
 	/**
+	 * Gets the scene's directional light
 	 * 
-	 * Gets the Lights in a logic scenario
-	 * 
-	 * @return	Lights in scenario
+	 * @return	directional light
 	 */
-	public List<PointLight> getPointLights();
-	
-	public DirectionalLight getDirectionalLight();
+	public DirectionalLight getDirectionalLight() {
+		return directionalLight;
+	}
 	
 	/**
-	 * Renders logic to world
+	 * Renders scene to world
 	 * 
 	 * @param mangager		Abstracts the rendering process
-	 * @param camera		Camera to view from
 	 */
-	public void render(SceneManager mangager, Camera camera);
+	public void render(SceneManager mangager) {
+		
+	}
 	
 	/**
-	 * Manages inputs to logic
+	 * Manages inputs to scene
 	 * 
 	 * @param window	Window to render to
-	 * @param entity	Entity that is focal to scene
-	 * @param camera	Camera that is used for rendering
 	 */
-	public void input(Window window, GameObject entity, Camera camera);
+	public void input(Window window) {
+		
+	}
 	
 	/**
-	 * Updates physics for GameLogic
+	 * Gets the focal object of the scene
+	 * 
+	 * @return		Scene's focal game object
 	 */
-	public void update(float interval);
+	public GameObject getFocalObject() {
+		return gameObject;
+	}
 	
-	public GameObject getFocalObject();
+	/**
+	 * Gets the camera used to render the scene
+	 * 
+	 * @return		Camera used by scene
+	 */
+	public Camera getCamera() {
+		return camera;
+	}
+
+	/**
+	 * Adds game object to the scene
+	 * 
+	 * @param object		Object added to scene
+	 */
+	public void addGameObject(GameObject object) {
+		object.setID("DEFAULT" + objects.size());
+		objects.add(object);
+	}
 	
-	public Camera getCamera();
+	/**
+	 * Adds terrain to the scene
+	 * 
+	 * @param terrain		Terrain added to scene
+	 */
+	public void addTerrain(Terrain terrain) {
+		terrains.add(terrain);
+	}
+
+	/**
+	 * Adds light to the scene
+	 * 
+	 * @param light			Light added to scene
+	 */
+	public void addLight(Light light) {
+		if (light instanceof PointLight) 
+			pointLights.add((PointLight) light);
+	}
 	
-	public MasterRenderer getRenderer();
+	/**
+	 * Adds water tile to the scene
+	 * 
+	 * @param tile			Water tile added to scene
+	 */
+	public void addWaterTile(WaterTile tile) {
+		tiles.add(tile);
+	}
 
 }

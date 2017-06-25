@@ -1,49 +1,109 @@
 package tk.luminos;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import tk.luminos.graphics.display.Window;
+import tk.luminos.display.Window;
+import tk.luminos.util.Configuration;
 
-public class Application extends Thread {
+/**
+ * 
+ * Class implemented for running the application
+ * 
+ * @author Nick Clark
+ * @version 1.0
+ *
+ */
+
+public class Application {
 	
-	private List<Action> actions = new ArrayList<Action>();
+	private List<Event> actions = new ArrayList<Event>();
 	private List<Thread> threads = new ArrayList<Thread>();
+	private Scene scene;
 	
-	public boolean application_Close = false;
+	private static Configuration config;
 	
-	public Scene scene;
-	
-	@Override
-	public void run() {
-		super.run();
+	/**
+	 * Loads the settings file to all applications
+	 * 
+	 * @param file				name of file
+	 * @throws IOException		thrown if file cannot be found/opened
+	 */
+	public static void loadSettings(String file) throws IOException {
+		config = Configuration.loadSettings(file);
 	}
 	
-	@Override
-	public void start() {
-		super.start();
+	/**
+	 * Sets configuration setting
+	 * 
+	 * @param setting		name of setting
+	 * @param value			value of setting
+	 */
+	public static void setValue(String setting, Integer value)  {
+		config.setValue(setting, value);
 	}
 	
-	public void render(Engine engine, Window window) throws Exception {
-		while (!window.shouldClose() && !application_Close) {
-			engine.render(scene, window);
-			for (Action action : actions) {
-				if (action.actionPerformed())
+	/**
+	 * Gets integer value of configuration
+	 * 
+	 * @param setting		name of setting
+	 * @return				value of setting
+	 */
+	public static Integer getValue(String setting) {
+		return config.getValue(setting);
+	}
+	
+	/**
+	 * Represents whether or not the application should close.  It is
+	 * set to false by default.
+	 */
+	public boolean shouldClose = false;
+	
+	/**
+	 * Renders the current scene to the default frame buffer
+	 * 
+	 * @param window		Window to render to
+	 * @throws Exception	Thrown if rendering failed
+	 */
+	public void render(Window window) throws Exception {
+		while (!window.shouldClose() && !shouldClose) {
+			for (Event action : actions) {
+				if (action.eventPerformed())
 					action.act();
 			}
+			scene.getGameObjects().stream().parallel().forEach(obj -> obj.update());
+			Engine.update(scene, window);
 		}
+		this.shouldClose = true;
 	}
 	
-	public void addAction(Action action) {
+	/**
+	 * Adds {@link Event} to the application
+	 * 
+	 * @param action		Action to add
+	 */
+	public void addEvent(Event action) {
 		this.actions.add(action);
 	}
 	
-	public Scene swapScene(Scene scene) {
+	/**
+	 * Swaps current rendering scene
+	 * 
+	 * @param scene		Scene to render
+	 * @return			Previous scene
+	 */
+	public Scene setActiveScene(Scene scene) {
 		Scene old = this.scene;
 		this.scene = scene;
 		return old;
 	}
 	
+	/**
+	 * Attaches thread to application
+	 * 
+	 * @param thread		Thread to attach
+	 */
 	public void attachThread(Thread thread) {
 		threads.add(thread);
 		String os_name = System.getProperty("os.name");
@@ -55,17 +115,32 @@ public class Application extends Thread {
 		}
 	}
 	
+	/**
+	 * Forces all threads to join
+	 * 
+	 * @throws Exception		Thrown if threads fail to join
+	 */
 	public void close() throws Exception {
 		for (Thread thread : threads) {
 			thread.join();
 		}
-		this.join();
 	}
 	
+	/**
+	 * Gets all threads attached to application
+	 * 
+	 * @return		Threads attached to application
+	 */
 	public List<Thread> getThreads() {
 		return threads;
 	}
 	
+	/**
+	 * Gets the thread attached to application defined by some name
+	 * 
+	 * @param name		Name of thread to search for
+	 * @return			Thread with given name
+	 */
 	public Thread getThreadByName(String name) {
 		for (Thread thread : threads) 
 			if (thread.getName().equals(name))
