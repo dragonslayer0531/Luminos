@@ -1,0 +1,88 @@
+package tk.luminos.graphics.render;
+
+/**
+ * Renders texture to screen
+ * 
+ * @author Nick Clark
+ * @version 1.0
+ */
+import tk.luminos.graphics.FrameBufferObject;
+import tk.luminos.graphics.models.RawModel;
+import tk.luminos.graphics.shaders.ImageShader;
+import tk.luminos.loaders.Loader;
+
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
+import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
+
+public class ImageRenderer {
+	
+	private static final float[] POSITIONS = {
+			-1, 1, -1, -1, 1, 1, 1, -1
+	};
+	
+	private RawModel quad;
+	private ImageShader shader;
+
+	private FrameBufferObject fbo;
+
+	/**
+	 * Constructor
+	 * 
+	 * @throws Exception 	Thrown if shader file cannot be found, compiled, validated
+	 * 						or linked
+	 */
+	public ImageRenderer() throws Exception {
+		quad = Loader.getInstance().loadToVAO(POSITIONS, 2);
+		shader = new ImageShader();
+	}
+
+	/**
+	 * Creates a new image renderer
+	 *
+	 * @param fbo		Framebuffer Object to render to
+	 */
+	public ImageRenderer(FrameBufferObject fbo) {
+		this.fbo = fbo;
+	}
+	
+	/**
+	 * Renders texture to quad
+	 * 
+	 * @param textureID		texture to be rendered to quad
+	 */
+	public void render(int textureID) {
+		glBindVertexArray(quad.getVaoID());
+		glEnableVertexAttribArray(0);
+		glDisable(GL_DEPTH_TEST);
+		glActiveTexture(GL_TEXTURE0);
+		shader.start();
+		glBindTexture(GL_TEXTURE_2D, textureID);
+		glClear(GL_COLOR_BUFFER_BIT);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, quad.getVertexCount());
+		shader.stop();
+		glEnable(GL_DEPTH_TEST);
+		glDisableVertexAttribArray(0);
+		glBindVertexArray(0);
+	}
+	
+	/**
+	 * Cleans up {@link ImageShader} program
+	 */
+	public void dispose() {
+		shader.dispose();
+	}
+	
+	/**
+	 * Get the attached frame buffer object
+	 * 
+	 * @return frame buffer object
+	 */
+	public FrameBufferObject getFrameBufferObject() {
+		return fbo;
+	}
+
+}
